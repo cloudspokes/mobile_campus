@@ -1,0 +1,23 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" contentType="text/html" cache="false">
+  <!-- controller="ContentController"> -->
+    <apex:outputText escape="false" value="{!"<!DOCTYPE html>"}"/>
+<apex:pageMessages />
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <link rel="Stylesheet" type="text/css" href="{!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.min.css"></link>
+    <script type="text/javascript" src="{!$Resource.phonegap}"></script>
+    <script type="text/javascript" src="{!$Resource.jquery1dot7}"></script>
+    <script type="text/javascript" src="{!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.min.js"></script>
+    <script type="text/javascript" src="{!$Resource.jquerytmpl}"></script>  
+    <script type="text/javascript" src="{!$Resource.appirioPlugins}"></script>
+    <script type="text/javascript" src="{!$Resource.mob_MapJS}"></script>
+    <script type="text/javascript" src="{!$Resource.mob_XML2JSON}"></script>
+    
+  </head>
+  <body>
+      <div id="tt-content">
+      </div>
+  </body>
+</html> 
+</apex:page>

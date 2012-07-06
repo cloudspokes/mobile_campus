@@ -1,0 +1,78 @@
+<apex:page controller="LeadSearchController">
+<style type="text/css">
+      .odd { background-color: white; }
+      .even { background-color: LightGray; }
+</style>
+    
+<apex:pageBlock title="Search Criteria">
+    <apex:form >
+    <table>
+        <tr>
+            <td width="15%" align="right"> First Name:</td>
+            <td width="35%" align="left"><apex:inputText value="{!fname}" /></td>
+            <td width="15%" align="right"> Last Name:</td>
+            <td width="35%" align="left"><apex:inputText value="{!lname}" /></td>
+        </tr>
+        <tr>
+            <td width="15%" align="right"> PSoft Student ID:</td>
+            <td width="35%" align="left"><apex:inputText value="{!psoftStudentID}" /></td>
+            <td width="15%" align="right"> Career:</td>
+            <td width="35%" align="left"><apex:selectList size="1" value="{!career}"> 
+                                                <apex:selectOptions value="{!careers}" />
+                                         </apex:selectList>
+             </td>
+        </tr>
+        <tr>
+            <td align="left"><apex:CommandButton action="{!dosearch}" id="searchbutton"  value="Search"/></td>
+        </tr>
+    </table>    
+      </apex:form>
+</apex:pageBlock>
+
+<apex:pageBlock title="Search Results" rendered="true" id="resultsblock">
+      <apex:actionStatus startText="Requesting...">
+          <apex:facet name="stop">
+              <apex:outputPanel id="resultspanel">
+              <apex:form >
+                  <apex:dataTable value="{!searchresults}" var="c" id="theTable" rowClasses="odd,even" columnsWidth="200px, 200px, 100px, 100px, 200px, 100px">
+                      <!-- 
+                      <apex:facet name="caption">table caption</apex:facet>
+                      <apex:facet name="header">table header</apex:facet>
+                      <apex:facet name="footer">table footer</apex:facet>
+                      -->
+                      <apex:column >
+                          <apex:facet name="header">First Name</apex:facet>
+                          <apex:outputText value="{!c.FirstName}"/>
+                      </apex:column>
+                      <apex:column >
+                          <apex:facet name="header">Last Name</apex:facet>
+                          <apex:outputText value="{!c.LastName}"/>
+                      </apex:column>
+                      <apex:column >
+                          <apex:facet name="header">PeopleSoft ID</apex:facet>
+                          <apex:outputText value="{!c.PeopleSoft_Person_ID__c}"/>
+                      </apex:column>
+                      <apex:column > 
+                          <apex:facet name="header">Career</apex:facet>
+                          <apex:outputText value="{!c.Career_Latest_Opp__c}"/>
+                      </apex:column>
+                      <apex:column >
+                          <apex:facet name="header">Owner</apex:facet>
+                          <apex:outputText value="{!c.Owner.LastName}"/>, <apex:outputText value="{!c.Owner.FirstName}"/> 
+                      </apex:column>
+                      <apex:column >
+                        <apex:facet name="header"></apex:facet>
+                          
+                            <apex:commandLink action="{!showLeadDetails}" value="More Details" >
+                                <apex:param assignTo="{!selectedid}" value="{!c.Id}" name="selectedid" />
+                            </apex:commandLink>
+                       
+                     </apex:column>
+                  </apex:dataTable>
+                   </apex:form>
+              </apex:outputPanel>
+          </apex:facet>
+      </apex:actionStatus>
+  </apex:pageBlock>
+
+</apex:page>

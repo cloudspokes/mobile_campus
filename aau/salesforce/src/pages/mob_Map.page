@@ -1,0 +1,172 @@
+<apex:page showHeader="false" sidebar="false">
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />    
+    <link rel="Stylesheet" type="text/css" href="{!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.min.css"></link>
+    <script type="text/javascript" src="{!$Resource.phonegap}"></script>
+    <script type="text/javascript" src="{!$Resource.jquery1dot7}"></script>
+    <script type="text/javascript" src="{!$Resource.jquerytmpl}"></script>  
+    <script type="text/javascript" src="{!$Resource.appirioPlugins}"></script>
+    <script type="text/javascript" src="{!$Resource.mob_MapJS}"></script>
+    <script type="text/javascript" src="{!$Resource.mob_XML2JSON}"></script>
+    <script type="text/javascript" src="{!$Resource.jquerymobile1dot1}"></script>
+
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map_canvas { height: 100% }
+    </style>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?sensor=false">
+    </script>
+    
+    <script type="text/javascript">
+    var ajaxLoading = false;
+    var map;
+    var jsonResponse;
+    var markers = {};
+    var geocoder = null;
+    var busStops = {};
+    var stopIndex;
+   
+    $(document).ready(function(){
+           /*       
+        $.post("https://aau--dev5--c.cs12.visual.force.com/services/proxy", 
+             {strAccountId: "309411", strUserName: "api_account", strPwd:"9sb^jd8G2"}, 
+             {'SalesforceProxy-Endpoint':"https://xmlgateway.teletrac.net/AsciiService.asmx/GetVehicles"},
+             function(data,ts,xhr){
+                 console.log("success");
+        });
+                */
+                 
+        
+        if(!false){
+                ajaxLoading = true;
+                $.ajax({
+                    type: "GET",
+                    url: "https://aau--dev6--c.cs12.visual.force.com/services/proxy",
+                    dataType: "xml",
+                    cache: false,
+                    success: function(data, ts, xhr){
+                        console.log('Success with REST call: ');
+                        jsonResponse = $.xml2json(xhr.responseText);
+                        console.log('    Respone :   ' + JSON.stringify(jsonResponse));
+                        
+                        
+                        /*console.log('    Response: ' + JSON.stringify(xhr.responseText));
+                        var vehicleList = $('Vehicle',xhr.responseText);
+                        $(vehicleList).each(function(){
+                            console.log('Vehicle Name: '+$('VehicleName',this).html());
+                        });*/
+                        
+                        initialize();
+                        
+                    },
+                    error: function(jqXHR, ts, et) {
+                        console.log('Error in REST call: ');
+                        console.log('    textStatus: ' + ts + '. errorThrown: ' + et);
+                        console.log('    errorResponse: ' + JSON.stringify(jqXHR));
+                    },
+                    headers: {
+                        "SalesforceProxy-Endpoint": "https://xmlgateway.teletrac.net/AsciiService.asmx/GetVehicles?strAccountId=309411&strUserName=api_account&strPwd=9sb^jd8G2"
+                    }
+
+                });
+            }
+
+                    
+    });
+        
+    function initialize() {
+                        var myLatlng = new google.maps.LatLng(37.788008, -122.400682);
+                        var myOptions = {
+                          center: myLatlng,
+                          zoom: 15,
+                          mapTypeId: google.maps.MapTypeId.ROADMAP
+                        };
+                
+                        map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);
+                        geocoder = new google.maps.Geocoder();
+                        
+                        $(jsonResponse.Vehicle).each(function() {
+                          var marker = new google.maps.Marker({
+                            position: new google.maps.LatLng(this.Latitude, this.Longitude),
+                            title: this.VehicleName,
+                            animation: google.maps.Animation.DROP
+                          });
+                          
+                          marker.setMap(map);
+                          
+                          markers[this.VehicleName] = marker;
+                        });
+                        
+                        setStopMarkers();
+                        
+                        setTimeout(setMarkers, 30000);
+    }
+    
+    function setMarkers() {
+                $.ajax({
+                    type: "GET",
+                    url: "https://aau--dev5--c.cs12.visual.force.com/services/proxy",
+                    dataType: "xml",
+                    cache: false,
+                    success: function(data, ts, xhr){
+                        console.log('Success with REST call: ');
+                        jsonResponse = $.xml2json(xhr.responseText);
+                        console.log('    Respone :   ' + JSON.stringify(jsonResponse));
+                        
+                        $(jsonResponse.Vehicle).each(function() {
+                          markers[this.VehicleName].setPosition(new google.maps.LatLng(this.Latitude, this.Longitude));
+                        });
+                        
+                        setTimeout(setMarkers, 30000);
+                        
+                                                
+                    },
+                    error: function(jqXHR, ts, et) {
+                        console.log('Error in REST call: ');
+                        console.log('    textStatus: ' + ts + '. errorThrown: ' + et);
+                        console.log('    errorResponse: ' + JSON.stringify(jqXHR));
+                    },
+                    headers: {
+                        "SalesforceProxy-Endpoint": "https://xmlgateway.teletrac.net/AsciiService.asmx/GetVehicles?strAccountId=309411&strUserName=api_account&strPwd=9sb^jd8G2"
+                    }
+
+                });
+                
+            }
+            
+    function setStopMarkers(){
+    	busStops = [{"stopName": "1849 Washington ST", "address": "1849 Washington ST, San Francisco, CA"},
+    						  {"stopName": "625 Polk", "address": "625 Polk, San Francisco, CA"}];
+    	
+    	for(stopIndex = 0; stopIndex < busStops.length; ++stopIndex){
+    		console.log('    stop:  ' + stopIndex + "  "+ busStops[stopIndex].stopName);
+    		console.log('    stop:  ' + stopIndex + "  "+ busStops[stopIndex].address);
+	    	geocoder.geocode({'address': busStops[stopIndex].address}, function(results, status) {
+	    					if(status == google.maps.GeocoderStatus.OK){
+	    						var marker = new google.maps.Marker({
+	    							position: results[0].geometry.location,
+	    							title: busStops[stopIndex].stopName,
+	    							animation: google.maps.Animation.DROP,
+	    							icon: {
+	    								path: google.maps.SymbolPath.CIRCLE,
+	    								scale: 6
+	    							}
+	    						});
+	    						
+	    						marker.setMap(map);
+	    						markers[busStops[stopIndex].stopName] = marker;
+	    					}else{
+	    						alert("Geocode was not successful for the follow reason: " + status);
+	    					}
+	    					});
+    	}
+    }      
+    </script>
+    
+  </head>
+  <body>
+    <div id="map_canvas" style="width:100%; height:100%"></div>
+  </body>
+</apex:page>

@@ -1,0 +1,37 @@
+<apex:page controller="LeadSearchController">
+ <apex:dataTable value="{!searchresults}" var="c" id="theTable" rowClasses="odd,even"  columnsWidth="200px, 200px, 100px, 100px, 200px, 100px">
+                      <!-- 
+                      <apex:facet name="caption">table caption</apex:facet>
+                      <apex:facet name="header">table header</apex:facet>
+                      <apex:facet name="footer">table footer</apex:facet>
+                      -->
+                      <apex:column >
+                          <apex:facet name="header">First Name</apex:facet>
+                          <apex:outputText value="{!c.FirstName}"/>
+                      </apex:column>
+                      <apex:column >
+                          <apex:facet name="header">Last Name</apex:facet>
+                          <apex:outputText value="{!c.LastName}"/>
+                      </apex:column>
+                      <apex:column >
+                          <apex:facet name="header">PeopleSoft ID</apex:facet>
+                          <apex:outputText value="{!c.PeopleSoft_Person_ID__c}"/>
+                      </apex:column>
+                      <apex:column > 
+                          <apex:facet name="header">Career</apex:facet>
+                          <apex:outputText value="{!c.Career_Latest_Opp__c}"/>
+                      </apex:column>
+                      <apex:column >
+                          <apex:facet name="header">Owner</apex:facet>
+                          <apex:outputText value="{!c.Owner.LastName}"/>, <apex:outputText value="{!c.Owner.FirstName}"/> 
+                      </apex:column>
+                      <apex:column >
+                        <apex:facet name="header"></apex:facet>
+                          <apex:form id="selectform">
+                            <apex:commandLink action="{!showLeadDetails}" value="More Details" >
+                                <apex:param assignTo="{!selectedid}" value="{!c.Id}" name="selectedid" id="assignbtn" />
+                            </apex:commandLink>
+                        </apex:form>
+                     </apex:column>
+                  </apex:dataTable>
+</apex:page>

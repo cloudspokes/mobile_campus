@@ -1,0 +1,108 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" contentType="text/html" cache="false">
+<head>
+  <style type="text/css">
+html, body {
+    font-size: .9em;
+    font-family: Arial, Helvetica, Sans-serif;
+    background: #666666;
+    padding: 0px;
+}
+
+.details-page {
+    width: 100%;
+    height: 100%;
+}
+
+#map_content {
+    padding: 0px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+#map_canvas {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    text-shadow: none;
+}
+  
+  </style>
+        <title>Details | ComDynamics NZQuake</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />
+        <link rel="stylesheet" href="/nzquake/css/mobile.css" />
+
+        <meta name="layout" content="mobile"/>
+
+<script>
+/*!
+  NZQuake (c) Copyright Greg Smith
+*/
+
+var map;
+
+function createQuakeEventMarker(quakeEventLatlng) {
+    return new google.maps.Marker({position: quakeEventLatlng, map: map});
+}
+
+function setupMap(lat, lng, mapZoom, showOverviewControl) {
+    var mapLatlng = new google.maps.LatLng(lat, lng);
+    var myOptions = {
+        zoom: mapZoom,
+        center: mapLatlng,
+        overviewMapControl: showOverviewControl,
+        zoomControl: true,
+        zoomControlOptions: {
+            style: google.maps.ZoomControlStyle.SMALL,
+            position: google.maps.ControlPosition.LEFT_TOP
+
+        },
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+}
+
+</script>
+</head>
+
+    <body>
+        <div id="details" data-role="page" class="details-page">
+            <div data-role="header" data-theme="a">
+                <h3>NZQuake Details</h3>
+                <a href="/nzquake/history" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home" data-ajax="false">Home</a>
+            </div>
+
+            <div data-role="content" id="map_content" data-theme="a">
+                <div id="map_content">
+                    <div id="map_canvas"></div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="/nzquake/js/mobile.js"></script>
+
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+        <script type="text/javascript" src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
+        <script type="text/javascript">
+
+            function initialize() {
+                setupMap(-43.60132, 172.11984, 11, true);
+                var quakeEventLatlng = new google.maps.LatLng(-43.601, 172.12);
+                var marker = createQuakeEventMarker(quakeEventLatlng)
+                marker.setAnimation(google.maps.Animation.DROP)
+            }
+
+            // Initialize the map when the jQuery Mobile pageshow event is triggered
+            $('.details-page').live("pageshow", function() {
+                if (map == null) {
+                    initialize();
+                }
+            });
+
+        </script>
+
+    </body>
+
+</apex:page>

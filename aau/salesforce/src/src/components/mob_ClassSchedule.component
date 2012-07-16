@@ -1,0 +1,20 @@
+<apex:component >
+<style>
+ 
+</style>
+
+<script id="student-schedule-template" type="text/x-jquery-tmpl">
+			<li onclick="aauMobile.classSchedule.showClassDetails('${meetingTime}','${meetingTopic}','${meetingInstructor}','${classNameDv}','${cDescription}','${mLocation}');"><a href="#">
+                 <table border=".8px">
+                      <tr> 
+                           <td padding="1px">${stTime}</br>-</br>${edTime}</td>
+                           <td padding="1px">${topic}  ${className} </br> ${meetingLocation}</td> 
+                      </tr>    
+                 </table>
+                </a>
+            </li>
+</script> 
+<script id="student-scheduleDivider-template" type="text/x-jquery-tmpl">
+            <li data-role="list-divider">${MeetingDayAndDay}</li>
+</script> 
+</apex:component>

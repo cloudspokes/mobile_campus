@@ -1,0 +1,96 @@
+<apex:page controller="LeadAssignmentController">
+<!-- 
+<apex:pageBlock title="Add Rule">
+
+<apex:form >
+<table>
+		<tr>
+			<td width="70%">
+				<table>
+				
+					<tr>
+						<td width="100" align="right"> Residency Status</td>
+						<td width="100" align="left"><apex:selectList size="5" multiselect="true" value="{!residencystatus}"> 
+												<apex:selectOptions value="{!residencies}" />
+								   		 </apex:selectList></td>
+						<td align="right"> Career</td>
+						<td align="left"><apex:selectList size="2" multiselect="true" value="{!career}"> 
+												<apex:selectOptions value="{!careers}" />
+								   		 </apex:selectList></td></td>
+						<td align="right"> US State</td>
+						<td align="left" rowspan="2"><apex:selectList size="10" multiselect="true" value="{!USAstates}"> 
+												<apex:selectOptions value="{!states}" />
+								   		 </apex:selectList></td></td>	   		 
+					</tr>
+					
+					<tr>
+						<td width="100" align="right"> Recruiting Center:</td>
+						<td width="100" align="left"><apex:selectList size="2" multiselect="true" value="{!recruitingcenter}"> 
+												<apex:selectOptions value="{!recruitingcenters}" />
+								   		 </apex:selectList></td></td>
+						<td align="right"> Admit Term:</td>
+						<td align="left"><apex:selectList value="{!startterm}" multiselect="true" size="5"> 
+												<apex:selectOptions value="{!terms}" />
+								   		 </apex:selectList></td>
+					</tr>
+					<tr>
+					
+					
+					</tr>
+					<tr>
+						
+					</tr>
+				</table>
+			</td>	
+		</tr>
+	</table>
+	<table>
+		<tr>
+			<td align="right"> if Rule Matches Assign Lead To:</td>
+						<td align="left"><apex:selectList value="{!sag}" size="1"> 
+													<apex:selectOptions value="{!sags}" />
+									   		 </apex:selectList></td>
+		</tr>
+		<tr>
+			<td><apex:CommandButton action="{!addrule}" id="addbutton" rerender="resultspanel" value="Add Rule"/></td>
+		</tr>
+	</table>
+</apex:form>
+</apex:pageBlock>
+
+<apex:pageBlock title="Current Rules" rendered="true" id="resultsblock">
+      <apex:actionStatus startText="Requesting...">
+          <apex:facet name="stop">
+              <apex:outputPanel id="resultspanel">
+                  <apex:dataTable value="{!currentRules}" var="rule" id="theTable" rowClasses="odd,even"  columnsWidth="200px, 200px, 200px, 200px, 200px">
+	                   <apex:column >
+	                          <apex:facet name="header">Assign To</apex:facet>
+	                          <apex:outputText value="{!rule.Student_Admissions_Group__c }"/>
+	                     </apex:column>
+	                     <apex:column >
+	                          <apex:facet name="header">Residency Status</apex:facet>
+	                          <apex:outputText value="{!rule.Residency_Status__c }"/>
+	                     </apex:column>
+	                     <apex:column >
+	                          <apex:facet name="header">Career</apex:facet>
+	                          <apex:outputText value="{!rule.Career__c }"/>
+	                     </apex:column>
+	                      <apex:column >
+	                          <apex:facet name="header">Recruiting Center</apex:facet>
+	                          <apex:outputText value="{!rule.Recruiting_Center__c }"/>
+	                     </apex:column>
+	                      <apex:column >
+	                          <apex:facet name="header">Admit Term</apex:facet>
+	                          <apex:outputText value="{!rule.Admit_Term__c }"/>
+	                     </apex:column>
+	                     <apex:column >
+	                          <apex:facet name="header">States (USA)</apex:facet>
+	                          <apex:outputText value="{!rule.State_USA__c }"/>
+	                     </apex:column>
+                   </apex:dataTable>
+               </apex:outputPanel>
+			</apex:facet>
+		</apex:actionStatus>
+</apex:pageBlock>
+-->
+</apex:page>

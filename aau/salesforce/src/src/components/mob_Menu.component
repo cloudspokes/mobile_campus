@@ -1,0 +1,8 @@
+<apex:component >
+
+ <ul data-role="listview"  data-theme="d" id="ulId">
+	<li><a href="#student-home"><h3>Class Schedule</h3></a></li>
+	<li><a href="#transit-map"><h3>Transit Map</h3></a></li>
+ </ul>
+
+</apex:component>

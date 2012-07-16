@@ -1,0 +1,282 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" contentType="text/html" cache="false">
+  <!-- controller="ContentController"> -->
+    <apex:outputText escape="false" value="{!"<!DOCTYPE html>"}"/>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />    
+    <link rel="Stylesheet" type="text/css" href="{!$Resource.mob_jquerymobile1dot1}/jquery.mobile-1.1.0/jquery.mobile-1.1.0.css"></link>
+   <script type="text/javascript" src="{!$Resource.phonegap}"></script>
+    <script type="text/javascript" src="{!$Resource.jquery1dot7}"></script>
+    <script type="text/javascript" src="{!$Resource.jquerytmpl}"></script>  
+    <script type="text/javascript" src="{!$Resource.appirioPlugins}"></script>
+    <script type="text/javascript" src="{!$Resource.mob_XML2JSON}"></script>
+    <script type="text/javascript"  src="{!$Resource.mob_busStopLocations}"></script>
+
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
+
+    <!-- <script type="text/javascript" src="{!$Resource.mob_jquerymobile1dot1}/jquery.mobile-1.1.0/jquery.mobile-1.1.0.js"></script>-->
+    
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map_canvas { height: 100% }
+    </style>
+    
+    <script type="text/javascript">
+    var ajaxLoading = false;
+    var map;
+    var jsonResponse;
+    var markers = {};
+    //var geocoder = null;
+    var stopIndex;
+    var directionsService;
+    var directionsDisplay;
+    var myPosition;
+   
+    $(document).ready(function(){
+    
+		if(navigator.geolocation) {
+           navigator.geolocation.getCurrentPosition(function(position) {
+               	myPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                console.log("IM HERE");
+                console.log(myPosition);
+                });
+        } else {
+        	myPosition = new google.maps.LatLng(37.788008, -122.400682);
+        	console.log(myPosition);
+        }
+        
+        if(ajaxLoading == false){
+                ajaxLoading = true;
+                $.ajax({
+                    type: "GET",
+                    url: "https://aau--dev6--c.cs12.visual.force.com/services/proxy",
+                    dataType: "xml",
+                    cache: false,
+                    success: function(data, ts, xhr){
+                        console.log('Success with REST call: ');
+                        jsonResponse = $.xml2json(xhr.responseText);
+                        //console.log('    Respone :   ' + JSON.stringify(jsonResponse));
+                        
+                        
+                        /*console.log('    Response: ' + JSON.stringify(xhr.responseText));
+                        var vehicleList = $('Vehicle',xhr.responseText);
+                        $(vehicleList).each(function(){
+                            console.log('Vehicle Name: '+$('VehicleName',this).html());
+                        });*/
+                        
+                        
+                        initialize();
+                        
+                        
+                    },
+                    error: function(jqXHR, ts, et) {
+                        console.log('Error in REST call: ');
+                        console.log('    textStatus: ' + ts + '. errorThrown: ' + et);
+                        console.log('    errorResponse: ' + JSON.stringify(jqXHR));
+                    },
+                    headers: {
+                        "SalesforceProxy-Endpoint": "https://xmlgateway.teletrac.net/AsciiService.asmx/GetVehicles?strAccountId=309411&strUserName=api_account&strPwd=9sb^jd8G2"
+                    }
+
+                });
+                ajaxLoading = true;
+            }
+                    
+    });
+    
+    function simpleMarkerListener() {
+      if(infoWindow) {
+        infoWindow.close();
+      }
+    
+      infoWindow = new google.maps.InfoWindow({
+        content: "<div style='margin-top:10px'>" + this.popupInfo + "</div>"
+      });
+      
+      infoWindow.open(map, this);
+    }
+        
+    function initialize() {
+    					
+                        console.log(myPosition);
+                        
+				        
+				        console.log(myPosition);
+                        var myOptions = {
+                          center: myPosition,
+                          zoom: 15,
+                          mapTypeId: google.maps.MapTypeId.ROADMAP
+                        };
+                        
+                      
+                        
+                        directionsService = new google.maps.DirectionsService();
+                
+                        map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);
+                        //geocoder = new google.maps.Geocoder();
+                        
+		
+						var studentMarker = new google.maps.MarkerImage('{!$Resource.mob_StudentMarker}',
+								    	null, //new google.maps.Size((72*0.3), (79*0.3)),
+								    	null, //new google.maps.Point(0,0),
+								    	null, //new google.maps.Point(36,79),
+								    	new google.maps.Size(25, 27) //new google.maps.Size((72*0.3),(79*0.3))											
+								    	);
+						
+				        myMarker = new google.maps.Marker({
+				                     position: myPosition,
+				                     title: "Me",
+				                     animation: google.maps.Animation.DROP,
+				                     icon: studentMarker
+				                  });
+				        
+				        myMarker.popupInfo = "This is where you are!";
+				                  
+				        google.maps.event.addListener(myMarker, 'click', simpleMarkerListener);
+				        
+				        myMarker.setMap(map);
+                        
+                        var busMarker = new google.maps.MarkerImage('{!$Resource.mob_BusMarker}',
+				    	null, //new google.maps.Size((72*0.3), (79*0.3)),
+				    	null, //new google.maps.Point(0,0),
+				    	null, //new google.maps.Point(36,79),
+				    	new google.maps.Size(25, 27) //new google.maps.Size((72*0.3),(79*0.3))											
+				    	);
+				    	
+                        $(jsonResponse.Vehicle).each(function() {
+                          var marker = new google.maps.Marker({
+                            position: new google.maps.LatLng(this.Latitude, this.Longitude),
+                            title: this.VehicleName,
+                            animation: google.maps.Animation.DROP,
+                            icon: busMarker
+                          });
+                          
+                          marker.setMap(map);
+                          
+                          markers[this.VehicleName] = marker;
+                        });
+                        
+                        setStopMarkers();
+                        
+                        //drawRoutesWithDirections();
+                        
+                        setTimeout(setMarkers, 30000);
+    }
+    
+    function setMarkers() {
+                $.ajax({
+                    type: "GET",
+                    url: "https://aau--dev6--c.cs12.visual.force.com/services/proxy",
+                    dataType: "xml",
+                    cache: false,
+                    success: function(data, ts, xhr){
+                        console.log('Success with REST call: ');
+                        jsonResponse = $.xml2json(xhr.responseText);
+                        //console.log('    Respone :   ' + JSON.stringify(jsonResponse));
+                        
+                        $(jsonResponse.Vehicle).each(function() {
+                          markers[this.VehicleName].setPosition(new google.maps.LatLng(this.Latitude, this.Longitude));
+                        });
+                        
+                        setTimeout(setMarkers, 30000);
+                        
+                                                
+                    },
+                    error: function(jqXHR, ts, et) {
+                        console.log('Error in REST call: ');
+                        console.log('    textStatus: ' + ts + '. errorThrown: ' + et);
+                        console.log('    errorResponse: ' + JSON.stringify(jqXHR));
+                    },
+                    headers: {
+                        "SalesforceProxy-Endpoint": "https://xmlgateway.teletrac.net/AsciiService.asmx/GetVehicles?strAccountId=309411&strUserName=api_account&strPwd=9sb^jd8G2"
+                    }
+
+                });
+                
+            }
+            
+    function setStopMarkers(){
+    	$.each(busStops, function(key, value) {
+    					var marker = new google.maps.Marker({
+    						position: new google.maps.LatLng(value.lat, value.long),
+    						title: value.stopName,
+    						animation: google.maps.Animation.DROP,
+    					});
+    					
+    					marker.setMap(map);
+    					markers[value.stopName] = marker;
+    			});    		
+    	}
+    	
+    
+    function drawRoutesWithDirections(){
+        var polylineOptions1 = {
+        	strokeColor: "#FF0000",
+        	strokeOpacity: 0.5,
+        	strokeWeight: 4
+        };
+        var rendererOptions = {
+                        	map: map,
+                        	hideRouteList: true,
+                        	draggable: false,
+                        	polylineOptions: polylineOptions1,
+                        	suppressMarkers: true 
+                        };
+        directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
+    	var routeMWayPoints = [
+					{location: new google.maps.LatLng(busStops[4].lat, busStops[4].long), stopover: true},
+					{location: new google.maps.LatLng(busStops[3].lat, busStops[3].long), stopover: true},
+					{location: new google.maps.LatLng(busStops[1].lat, busStops[1].long), stopover: true},
+					{location: new google.maps.LatLng(busStops[0].lat, busStops[0].long), stopover: true}
+				];
+		var directionRequest = {
+			origin: new google.maps.LatLng(busStops[5].lat, busStops[5].long),
+			destination: new google.maps.LatLng(busStops[5].lat, busStops[5].long),
+			waypoints: routeMWayPoints,
+			travelMode: google.maps.DirectionsTravelMode.DRIVING
+		};
+		directionsService.route(directionRequest, function(response, status){
+			console.log(response);
+			directionsDisplay.setDirections(response);
+		});
+		
+		var polylineOptions2 = {
+        	strokeColor: "#0000FF",
+        	strokeOpacity: 0.5,
+        	strokeWeight: 4
+        };
+        rendererOptions = {
+                        	map: map,
+                        	hideRouteList: true,
+                        	draggable: false,
+                        	polylineOptions: polylineOptions2,
+                        	suppressMarkers: true 
+                        };
+		var directionsDisplay2 = new google.maps.DirectionsRenderer(rendererOptions);
+		
+		var routeAWayPoints = [{location: new google.maps.LatLng(busStops[4].lat, busStops[4].long), stopover: true},
+					   {location: new google.maps.LatLng(busStops[5].lat, busStops[5].long), stopover: true},
+					   {location: new google.maps.LatLng(busStops[9].lat, busStops[9].long), stopover: true},
+					   {location: new google.maps.LatLng(busStops[2].lat, busStops[2].long), stopover: true},
+					   {location: new google.maps.LatLng(busStops[1].lat, busStops[1].long), stopover: true},];
+					   
+		var directionRequest = {
+			origin: new google.maps.LatLng(busStops[3].lat, busStops[3].long),
+			destination: new google.maps.LatLng(busStops[3].lat, busStops[3].long),
+			waypoints: routeAWayPoints,
+			travelMode: google.maps.DirectionsTravelMode.DRIVING
+		};
+		directionsService.route(directionRequest, function(response, status){
+			console.log(response);
+			directionsDisplay2.setDirections(response);
+		});
+    }   
+    </script>
+    
+  </head>
+  <body>
+    <div id="map_canvas" style="width:100%; height:100%"></div>
+  </body>
+  </html>
+</apex:page>

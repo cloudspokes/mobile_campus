@@ -1,0 +1,75 @@
+<apex:component >
+<style>
+
+.detail-scroll-container {
+    overflow-x:hidden;
+    -webkit-overflow-scrolling: touch;
+    overflow-y:scroll;
+    height:850px;
+    /*
+    min-height:600px;
+    max-height:800px;
+    background-image: -webkit-linear-gradient(top, #dfdfdf 0%, #dfdfdf 100%);
+    box-shadow: inset 0px 0px 10px 2px #959696;
+    */
+}
+.classDetail-icon1 {
+    background:url({!$Resource.mob_Design}/mob_Design/iconsprite_grey.png) no-repeat 0px 0px;
+    float:left;
+    background-position-y: -245px;
+    width: 50px;
+    height: 36px;
+    margin-left:0px;
+}
+.classDetail-icon2 {
+    background:url({!$Resource.mob_Design}/mob_Design/iconsprite_grey.png) no-repeat 0px -0px;
+    float:left;
+    background-position-y: -40px;
+    width:50px;
+    height:36px;
+    margin-left:0px;
+}
+.classDetail-icon3{
+    background:url({!$Resource.mob_Design}/mob_Design/iconsprite_grey.png) no-repeat 0px -0px;
+    float:left;
+    background-position-y: -282px;
+    width:50px;
+    height:36px;
+    margin-left:0px;
+}    
+.classLi{
+   margin="0px";
+}    
+    
+}
+
+</style>
+<script type="text/javascript">
+ $("#student-detail").live("pagebeforeshow", function(event) {
+    
+ });
+</script>
+
+<script id="student-classDetail-template" type="text/x-jquery-tmpl">
+               <li data-role="list-divider"></li>	            
+               <li class="classLi">
+                    <span class="classDetail-icon1" /> <a href="#">
+                       ${meetingTime}
+                    </a>  
+                </li>  
+                <li data-role="list-divider"></li>
+				<li class="classLi">
+                   <span class="classDetail-icon2" /> <a href="#">
+                       ${meetingTopic} &nbsp;&nbsp; ${mLocation}</br>Location
+                    </a>  
+                </li>
+                <li data-role="list-divider"></li>
+				<li class="classLi">
+                   <span class="classDetail-icon3" /><a href="#">
+                       ${meetingInstruction}
+                       </br>Instructor
+                    </a>  
+                </li>
+                <li data-role="list-divider"></li>
+</script> 
+</apex:component>

@@ -1,0 +1,3 @@
+<apex:page contentType="application/xml" showHeader="false" sidebar="false" controller="TeletracController">
+  <apex:outputText value="{!busInfo}" escape="false" />
+</apex:page>

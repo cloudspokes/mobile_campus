@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <fields>
+        <fullName>End_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>End Date</label>
+        <required>true</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Start_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Start Date</label>
+        <required>true</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Term_Code__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <description>PeopleSoft&apos;s Term Code</description>
+        <externalId>true</externalId>
+        <label>Term Code</label>
+        <length>4</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <label>ps_Term</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>Term_Code__c</columns>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>All1</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <label>Term Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>ps_Terms</pluralLabel>
+    <searchLayouts>
+        <listViewButtons>Delete</listViewButtons>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <webLinks>
+        <fullName>Delete</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Delete</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>// Include and initialize the AJAX Toolkit javascript library
+//
+{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/connection.js&quot;)}
+
+
+// Get the list of accounts that should be deleted.
+// Use the $ObjectType merge field to indicate the type of
+// record Ids that are expected.
+//
+var idsToDelete = {!GETRECORDIDS( $ObjectType.Contact )};
+var deleteWarning = &apos;Are you sure you wish to delete &apos; +
+                    idsToDelete.length + &apos; terms?&apos;;
+
+if (idsToDelete.length &amp;&amp; (window.confirm(deleteWarning))) {
+
+   // Delete the records, and pass a function into the call
+   // so that the toolkit refreshes the current page
+   // asynchronously when the call succeeds.
+   //
+   sforce.connection.deleteIds(idsToDelete,
+          function() {navigateToUrl(window.location.href);});
+
+} else if (idsToDelete.length == 0) {
+   alert(&quot;Please select the contacts you wish to delete.&quot;);
+}</url>
+    </webLinks>
+</CustomObject>

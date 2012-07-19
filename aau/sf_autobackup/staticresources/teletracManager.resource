@@ -38,6 +38,11 @@ var TeletracManager = function() {
         }
     }
     
+    // Private function to parse bus stops to plot on gmap from response form SFDC
+    function parseStops(results){
+    	
+    }
+    
     return {
         // Returns all bus stops
         getBusStops: function() {

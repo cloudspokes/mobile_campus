@@ -31,6 +31,7 @@
     var myPosition;
     // The info window
     var infoWindow;
+    var directionsDisplayMap = [];
    
     $(document).ready(function(){
 		/*if(navigator.geolocation) {
@@ -201,6 +202,8 @@
                         	
                         });*/
                         drawRoute(busRoutes.routes[0]);
+                        setTimeout(clearRoute("D"), 20000);
+                        
     }
     
     function setMarkers() {
@@ -281,10 +284,8 @@
     	directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
     	
     	var routeWayPoints = [];
-    	console.log(route.stops);
     	for(var i = 1; i < route.stops.length; i++){
     		routeWayPoints.push({location: new google.maps.LatLng(route.stops[i].lat, route.stops[i].long), stopover: true});
-    		console.log(routeWayPoints);
     	}
     	
     	var directionRequest = {
@@ -299,6 +300,17 @@
     		console.log(status);
     		directionsDisplay.setDirections(response);
     	});
+    	
+    	directionsDisplayMap.push({"routeName": route.routeName, "directions": directionsDisplay});
+    }
+    
+    function clearRoute(routeName){
+    	$(directionsDisplayMap).each( function(){
+    		if(routeName == this.routeName){
+    			this.directions.setMap(null);
+    		}
+    	});
+    	setTimeout(drawRoute(busRoutes.routes[0]), 20000);
     }
     /*function drawRoutesWithDirections(){
         var polylineOptions1 = {

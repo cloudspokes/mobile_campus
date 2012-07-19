@@ -202,6 +202,7 @@
                         	
                         });*/
                         drawRoute(busRoutes.routes[0]);
+                        console.log('set clear rout timeout: ' );
                         setTimeout(clearRoute("D"), 20000);
                         
     }
@@ -306,10 +307,14 @@
     
     function clearRoute(routeName){
     	$(directionsDisplayMap).each( function(){
+    		console.log('routeName: ' + routeName);
+    		console.log('this.routeName: ' + this.routeName);
     		if(routeName == this.routeName){
     			this.directions.setMap(null);
     		}
     	});
+    	
+    	console.log('set drawRoute timeout: ');
     	setTimeout(drawRoute(busRoutes.routes[0]), 20000);
     }
     /*function drawRoutesWithDirections(){

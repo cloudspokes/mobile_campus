@@ -42,6 +42,8 @@ var MapManager = function() {
     // Defines interval to update user position in milliseconds
     var trackUserPosInterval = 30000;
     
+    
+    
     // Used for updating the user position in regular interval
     function trackUser() {
       if(trackUserPos) {
@@ -63,8 +65,9 @@ var MapManager = function() {
       infoWindow.open(map, this);
     } 
     
-    function doRenderMap(element, stopCallback, stopCallbackParam) {
+    function doRenderMap(element, addStopCallback, getStopCallback) {
         // Icon associated with the student marker
+        var busStops = getStopCallback();
         var studentMarkerImage = new google.maps.MarkerImage(imgStudentMarker,
 				    	null, //new google.maps.Size((72*0.3), (79*0.3)),
 				    	null, //new google.maps.Point(0,0),
@@ -92,13 +95,15 @@ var MapManager = function() {
         google.maps.event.addListener(myMarker, 'click', simpleMarkerListener);
         
         myMarker.setMap(map);
-        stopCallback(stopCallbackParam);
+        
+        console.log('bus stops : ' + busStops);
+		addStopCallback(busStops);
         utils.log('add stops called from doRenderMap');
     }
     
     return {
       // Update user's position and optionally pan to that position
-      updateUserPos: function(pan, callback, param, stopCallback, stopCallbackParam) {
+      updateUserPos: function(pan, callback, param, addStopCallback, getStopCallback) {
         // finds location
         if(useGeolocation && navigator && navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
@@ -118,7 +123,7 @@ var MapManager = function() {
                 
                 if(callback) {
                   if(param) {
-                    callback(param, stopCallback, stopCallbackParam);
+                    callback(param, addStopCallback, getStopCallback);
                   } else { 
                     callback();
                   }   
@@ -138,33 +143,33 @@ var MapManager = function() {
             
             if(callback) {
               if(param) {
-                callback(param);
+                callback(param, addStopCallback, getStopCallback);
               } else { 
                 callback();
               }   
             }
         }
         
-      },
+      }, //updateUserPos
     
       // Centers the map on the student
       centerOnStudent: function() {
         map.panTo(myMarker.getPosition());
-      },
+      }, //centeronStudent
       
       // Trigger a resize event on the map so it redraws on the full canvas
       triggerResize: function() {
         if(map)
           google.maps.event.trigger(map, 'resize');
-      },
+      }, //triggerResize
     
       // Renders a map in a specific element on the page, centralizing the map
       // in the specified latitude and longitude
-      renderMap: function(element, stopCallback, stopCallbackParam) {
+      renderMap: function(element, addStopCallback, getStopCallback) {
         
-        this.updateUserPos(false, doRenderMap, element, stopCallback, stopCallbackParam);
+        this.updateUserPos(false, doRenderMap, element, addStopCallback, getStopCallback);
         
-      },
+      }, //renderMap
       
       // Given a JSON array of objects returned from teletrac, adds markers for those
       // vehicles to the map. If a marker for a vehicle with the same name already exists,
@@ -198,35 +203,31 @@ var MapManager = function() {
 
             vehicleMarkers[this.VehicleName] = marker;
         });
-        utils.log('map from add vehicles' + map);
         
-      },
+      }, //addVehicles
       
       // Adds bus stops markers to the map
       addStops: function(stops) {
-      	
         $(stops).each( function() {
-        			if(this.active == true){	
-    					var marker = new google.maps.Marker({
-    						position: new google.maps.LatLng(this.lat, this.long),
-    						title: this.stopName,
-    						animation: google.maps.Animation.DROP
-    					});
+					var marker = new google.maps.Marker({
+						position: new google.maps.LatLng(this.lat, this.long),
+						title: this.stopName,
+						animation: google.maps.Animation.DROP
+					});
  
-                        marker.popupInfo = "Stop at: " + this.stopName;
+                    marker.popupInfo = "Stop at: " + this.stopName;
               
-                        google.maps.event.addListener(marker, 'click', simpleMarkerListener);
-    					marker.setMap(map);
-    				}
+                    google.maps.event.addListener(marker, 'click', simpleMarkerListener);
+					marker.setMap(map);
     	});
-      },
+      }, //addSTops
       
       // Configures tracking of user position
       setTrackUserPos: function(track) {
         trackUserPos = track;
       
         trackUser();
-      }
+      } //setTrackUserPos
     };
 };
 

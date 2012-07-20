@@ -1,6 +1,15 @@
 <apex:component >
-  <!-- Begin Default Content REMOVE THIS -->
-  <h1>Congratulations</h1>
-  This is your new Component
-  <!-- End Default Content REMOVE THIS -->
+
+<div id="feed-container">
+	<ul data-role="listview" data-theme="g" id="feed-ul">
+	</ul>
+</div>
+
+
+<script id="rss-feed-template" type="text/x-jquery-tmpl">
+<li class="feed-li"><a href="#feed-detail">
+	<div class="feed-title">${feedTitle}</div>
+	<div class="feed-origin">${feedOrigin}</div>
+</a></li>
+</script> 
 </apex:component>

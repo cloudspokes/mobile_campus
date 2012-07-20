@@ -134,6 +134,71 @@ classSchedule: {
 		$("#ulDlId").listview("refresh");      
 		$("#ulDlId").css("margin","0px");
     }
+},
+
+rssFeed: {
+	feedData: {},
+
+	init: function() {
+		var rssUrl = 'https://www.academyart.edu/news.rss';
+		RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
+
+		rssUrl = 'http://www.artuathletics.com/services/calendar.ashx/calendar.rss';
+		RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
+
+		rssUrl = 'https://spreadsheets.google.com/feeds/list/0AvROhDzo3UybdDQ5aEFzVDZqSzFDdVVENTRxTXdXcHc/od6/public/basic?alt=rss';
+		RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
+
+		rssUrl = 'https://spreadsheets.google.com/feeds/list/0AvROhDzo3UybdHF3Q3FiZnNibk1qV2xpRVFMTUM2NXc/od6/public/basic?alt=rss';
+		RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
+
+		rssUrl = 'https://spreadsheets.google.com/feeds/list/0AvROhDzo3UybdHVSWFVwczdOekJlWjNVRmtpLU5scWc/od6/public/basic?alt=rss';
+		RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
+
+	},
+
+	buildFeed: function(result) {
+
+		result = $.xml2json(result);
+		console.log('RSS Feed Success! ' + result.channel.title);
+		console.log('Result: ' + JSON.stringify(result));
+
+		var feedTemplate = $("#rss-feed-template");
+		var feedContainer = $("#feed-ul"); //.empty();
+
+		$.each(result.channel.item, function(index, item){
+
+			if(index < 3){
+				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: result.channel.title}).appendTo(feedContainer);			
+			}else{
+				return;
+			}
+
+		});
+	},
+
+	initFailure: function(result) {
+		console.log('RSS Feed Failure. ' + result);
+	},
+
+	showFeedDetails: function() {
+		rssUrl = 'https://www.academyart.edu//news/school/making-a-difference-through-photography.html';
+		RestDataPlugin.getData(aauMobile.rssFeed.buildFeedDetail, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "text");
+	},
+
+	buildFeedDetail: function(result) {
+		
+		var feedCtnr = $('#feed-detail-container');
+		var feedArt = $('.news_article_col', result);
+		$('a', feedArt).each(function(index, item){
+			//item.href = 'https://www.academyart.edu'+item.href;
+			item.href = 'https://www.academyart.edu' + $.mobile.path.parseUrl(item.href).pathname;
+		});
+
+		$(feedArt).appendTo(feedCtnr);
+		return;
+
+	}
 }
 
 };
@@ -141,10 +206,17 @@ classSchedule: {
 $("#student-home").live("pageinit", function(event) {
     // init Class Schedule data
 	aauMobile.classSchedule.init();
+	aauMobile.rssFeed.init();
+	aauMobile.rssFeed.showFeedDetails();
 
     $('#menuButton').bind('click',function(){
 	     $.mobile.changePage('#menu-page');
     });
+});
+
+$("#feed-list").live("pageinit", function(event) {
+    // init RSS Feed data
+
 });
 
 

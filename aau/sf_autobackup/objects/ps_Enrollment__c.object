@@ -42,6 +42,7 @@
         <externalId>false</externalId>
         <label>Class Section</label>
         <referenceTo>ps_Class__c</referenceTo>
+        <relationshipLabel>ps_Enrollments</relationshipLabel>
         <relationshipName>Enrollments</relationshipName>
         <relationshipOrder>0</relationshipOrder>
         <type>MasterDetail</type>

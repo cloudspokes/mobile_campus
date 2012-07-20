@@ -101,6 +101,26 @@
      </div>
 </div>
 
+<div data-role="page" id="feed-list" class="page-container">
+    <div data-role="header">
+		<a href="#menu-page" data-role="button" data-inline="true" data-direction="reverse" class="back-root">Menu</a>
+		<h1>Campus News and Events</h1>
+    </div>
+    <div data-role="content">
+		<c:mob_Feed />  
+    </div>
+</div>
+
+<div data-role="page" id="feed-detail" class="page-container">
+    <div data-role="header">
+		<a href="#feed-list" data-role="button" data-inline="true" data-direction="reverse" class="back-root">Back</a>
+		<h1>News Article</h1>
+    </div>
+    <div data-role="content">
+		<c:mob_FeedDetail />  
+    </div>
+</div>
+
 <div data-role="page" id="transit-map" class="page-container">
     <div data-role="header">
 		<a href="#menu-page" data-role="button" data-inline="true" data-direction="reverse" class="back-root">Menu</a>

@@ -12,7 +12,11 @@ global with sharing class mob_StudentRest {
 		psEnrlMents.classMeetings = new Map<String,ClassMeeting>();
 		 
 		Set<Id> enrolledClasses = new Set<Id>();
-		  
+		if(contactId!=null && contactId.startsWith('005')){
+			for(ContactShare conShare :[Select contactid from ContactShare where UserOrGroupId =:contactId and rowcause='Manual']){
+				contactId = conShare.ContactId;
+			}
+		}  
 	    for(ps_Enrollment__c ps_Enrolmnt:[SELECT Id,Class_Section__c,Student__r.Id,Student__r.Name,Class_Section__r.Name,Class_Section__r.Course_Description__c,Class_Section__r.Catalog_Nbr__c, Class_Section__r.Term__c,Class_Section__r.Term__r.End_Date__c From ps_Enrollment__c 
 	               where Student__c =: contactId AND Enrollment_Status__c = 'Enrolled' AND Class_Section__r.Term__r.End_Date__c > :date.today() ]){
 	    	MobStudentEnrolled mobStdEnrolled = new MobStudentEnrolled();

@@ -16,6 +16,7 @@ var mockData = JSON.parse('{"Vehicle":[{"StreetAddress":"84 UPTON ST","City":"SA
 var TeletracManager = function() {
     // Static list of bus stops
     var busStops = [];
+    var busStopNames = [];
 
     // When auto refresh is enabled, this is the interval in miliseconds in which
     // bus markers are refreshed
@@ -30,6 +31,9 @@ var TeletracManager = function() {
     //holder for response converted to json
     var jsonResponse;
     
+    // Bus Routes with Stops
+    var routes = {};
+    
     // Private function that performs the auto refresh of vehicles
     function autoRefreshVehiclesPosition() {
         if(autoRefresh) {
@@ -38,9 +42,18 @@ var TeletracManager = function() {
         }
     }
     
+
     // Private function to parse bus stops to plot on gmap from response form SFDC
+    // using an array to holy stop names to compare against to prevent dup stops
     function parseStops(results){
-    	
+    	$(results).each( function(){
+    		$(this.stops).each( function(){
+    			if(($.inArray(this.stopName, busStopNames)) == -1){
+    				busStopNames.push(this.stopName);
+    				busStops.push(this);
+    			}
+    		});
+    	});
     }
     
     return {
@@ -108,8 +121,24 @@ var TeletracManager = function() {
             						false, 
             						"GET", 
             						"xml");
-        }
-    };
+     }, //getVehicles
+    
+    getRoutes: function() {
+      	var restPath = "/BusStops/"; 
+		RestDataPlugin.getData(function(result){
+								utils.log('Success REST service bus routes:');
+								parseStops(result);
+								routes = result;
+							   },
+							   function(){
+							   	utils.log('Failfure REST service bus routes:');
+							   }, 
+							   restPath, 
+							   true, 
+							   "GET", 
+							   "json");
+	}	
+  };
 };
 
 var teletracManager;

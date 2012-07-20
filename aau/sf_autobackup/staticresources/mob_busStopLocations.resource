@@ -76,7 +76,7 @@ busRoutes = {routes: [{"routeName": "D", stops:[{"stopName": "620 Sutter", "lat"
 
 
 
-var aauMobileMap = aauMobileMap || {
+/*var aauMobileMap = aauMobileMap || {
  
 busStopLocations: {
 	data: {},
@@ -98,7 +98,7 @@ busStopLocations: {
 $("#transit-map").live("pageinit", function(event) {
     // init Class busStopLocations data
 	aauMobileMap.busStopLocations.init();
-});
+});*/
 
 
 

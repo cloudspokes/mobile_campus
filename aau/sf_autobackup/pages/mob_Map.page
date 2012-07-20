@@ -202,8 +202,7 @@
                         	
                         });*/
                         drawRoute(busRoutes.routes[0]);
-                        console.log('set clear rout timeout: ' );
-                        setTimeout(clearRoute("D"), 20000);
+                       
                         
     }
     
@@ -223,6 +222,8 @@
                         });
                         
                         setTimeout(setMarkers, 30000);
+                        console.log('set clear rout timeout: ' );
+                        setTimeout(clearRoute("D"), 10000);
                         
                                                 
                     },
@@ -313,9 +314,6 @@
     			this.directions.setMap(null);
     		}
     	});
-    	
-    	console.log('set drawRoute timeout: ');
-    	setTimeout(drawRoute(busRoutes.routes[0]), 20000);
     }
     /*function drawRoutesWithDirections(){
         var polylineOptions1 = {

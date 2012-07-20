@@ -65,9 +65,8 @@ var MapManager = function() {
       infoWindow.open(map, this);
     } 
     
-    function doRenderMap(element, addStopCallback, getStopCallback) {
+    function doRenderMap(element) {
         // Icon associated with the student marker
-        var busStops = getStopCallback();
         var studentMarkerImage = new google.maps.MarkerImage(imgStudentMarker,
 				    	null, //new google.maps.Size((72*0.3), (79*0.3)),
 				    	null, //new google.maps.Point(0,0),
@@ -95,15 +94,11 @@ var MapManager = function() {
         google.maps.event.addListener(myMarker, 'click', simpleMarkerListener);
         
         myMarker.setMap(map);
-        
-        console.log('bus stops : ' + busStops);
-		addStopCallback(busStops);
-        utils.log('add stops called from doRenderMap');
     }
     
     return {
       // Update user's position and optionally pan to that position
-      updateUserPos: function(pan, callback, param, addStopCallback, getStopCallback) {
+      updateUserPos: function(pan, callback, param) {
         // finds location
         if(useGeolocation && navigator && navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
@@ -123,7 +118,7 @@ var MapManager = function() {
                 
                 if(callback) {
                   if(param) {
-                    callback(param, addStopCallback, getStopCallback);
+                    callback(param);
                   } else { 
                     callback();
                   }   
@@ -143,7 +138,7 @@ var MapManager = function() {
             
             if(callback) {
               if(param) {
-                callback(param, addStopCallback, getStopCallback);
+                callback(param);
               } else { 
                 callback();
               }   
@@ -165,9 +160,9 @@ var MapManager = function() {
     
       // Renders a map in a specific element on the page, centralizing the map
       // in the specified latitude and longitude
-      renderMap: function(element, addStopCallback, getStopCallback) {
+      renderMap: function(element) {
         
-        this.updateUserPos(false, doRenderMap, element, addStopCallback, getStopCallback);
+        this.updateUserPos(false, doRenderMap, element);
         
       }, //renderMap
       
@@ -210,7 +205,7 @@ var MapManager = function() {
       addStops: function(stops) {
         $(stops).each( function() {
 					var marker = new google.maps.Marker({
-						position: new google.maps.LatLng(this.lat, this.long),
+						position: new google.maps.LatLng(this.latitude, this.longitude),
 						title: this.stopName,
 						animation: google.maps.Animation.DROP
 					});
@@ -220,6 +215,7 @@ var MapManager = function() {
                     google.maps.event.addListener(marker, 'click', simpleMarkerListener);
 					marker.setMap(map);
     	});
+    	
       }, //addSTops
       
       // Configures tracking of user position

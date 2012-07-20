@@ -17,6 +17,7 @@ var TeletracManager = function() {
     // Static list of bus stops
     var busStops = [];
     var busStopNames = [];
+    var routeNames = [];
 
     // When auto refresh is enabled, this is the interval in miliseconds in which
     // bus markers are refreshed
@@ -45,7 +46,7 @@ var TeletracManager = function() {
 
     // Private function to parse bus stops to plot on gmap from response form SFDC
     // using an array to holy stop names to compare against to prevent dup stops
-    function parseStops(results){
+    function parseStops(results, callback){
     	$(results).each( function(){
     		$(this.stops).each( function(){
     			if(($.inArray(this.stopName, busStopNames)) == -1){
@@ -54,6 +55,17 @@ var TeletracManager = function() {
     			}
     		});
     	});
+    	
+    	console.log('bus stops ' + busStops);
+    	callback(busStops);
+    }
+    
+    function parseRouteNames(results){
+    	$(results).each(function () {
+    		routeNames.push(this.routeName);
+    	});
+    	
+    	console.log(routeNames);
     }
     
     return {
@@ -123,11 +135,12 @@ var TeletracManager = function() {
             						"xml");
      }, //getVehicles
     
-    getRoutes: function() {
+    getRoutes: function(callback) {
       	var restPath = "/BusStops/"; 
 		RestDataPlugin.getData(function(result){
 								utils.log('Success REST service bus routes:');
-								parseStops(result);
+								parseStops(result, callback);
+								parseRouteNames(result);
 								routes = result;
 							   },
 							   function(){

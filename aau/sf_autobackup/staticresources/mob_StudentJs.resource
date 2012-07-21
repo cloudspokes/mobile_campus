@@ -161,7 +161,7 @@ rssFeed: {
 
 		result = $.xml2json(result);
 		console.log('RSS Feed Success! ' + result.channel.title);
-		console.log('Result: ' + JSON.stringify(result));
+		//console.log('Result: ' + JSON.stringify(result));
 
 		var feedTemplate = $("#rss-feed-template");
 		var feedContainer = $("#feed-ul"); //.empty();
@@ -171,10 +171,13 @@ rssFeed: {
 			if(index < 3){
 				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: result.channel.title}).appendTo(feedContainer);			
 			}else{
-				return;
+				//return;
 			}
 
 		});
+
+		$(feedContainer).trigger('create');
+		$.mobile.hidePageLoadingMsg;
 	},
 
 	initFailure: function(result) {
@@ -206,16 +209,20 @@ rssFeed: {
 $("#student-home").live("pageinit", function(event) {
     // init Class Schedule data
 	aauMobile.classSchedule.init();
-	aauMobile.rssFeed.init();
-	aauMobile.rssFeed.showFeedDetails();
 
     $('#menuButton').bind('click',function(){
 	     $.mobile.changePage('#menu-page');
     });
 });
 
-$("#feed-list").live("pageinit", function(event) {
+$("#feed-list").live("pagecreate", function(event) {
     // init RSS Feed data
+	$.mobile.showPageLoadingMsg
+	aauMobile.rssFeed.init();
+});
+
+$("#feed-detail").live("pagecreate", function(event) {
+	aauMobile.rssFeed.showFeedDetails();
 
 });
 

@@ -121,6 +121,16 @@
     </div>
 </div>
 
+<div data-role="page" id="event-list" class="page-container">
+    <div data-role="header">
+		<a href="#menu-page" data-role="button" data-inline="true" data-direction="reverse" class="back-root">Menu</a>
+		<h1>Sports</h1>
+    </div>
+    <div data-role="content">
+		<c:mob_Events />  
+    </div>
+</div>
+
 <div data-role="page" id="transit-map" class="page-container">
     <div data-role="header">
 		<a href="#menu-page" data-role="button" data-inline="true" data-direction="reverse" class="back-root">Menu</a>

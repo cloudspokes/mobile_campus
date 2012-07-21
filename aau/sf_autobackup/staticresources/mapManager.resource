@@ -42,6 +42,12 @@ var MapManager = function() {
     // Defines interval to update user position in milliseconds
     var trackUserPosInterval = 30000;
     
+    // Holder array for routes currently draw on screen
+    var directionsDisplayMap = [];
+    
+    // Google direction service
+    var directionsService = new google.maps.DirectionsService();
+    
     
     
     // Used for updating the user position in regular interval
@@ -94,6 +100,56 @@ var MapManager = function() {
         google.maps.event.addListener(myMarker, 'click', simpleMarkerListener);
         
         myMarker.setMap(map);
+    }
+    
+    // Private function to draw route on map
+    // param: route object from routes ex {"routeName": "D", stops:[{stopname: abc, lat:123, long:123}, {stopname: def, lat: 123, long:123}]
+    function drawRoute(route){
+    	console.log('Map from draw route: ' + map);
+    	console.log('route from draw mroute: ' + route);
+      	var polylineOptions = {
+    		strokeColor: "#FF0000",
+    		strokeOpacity: 0.5,
+    		strokeWeight: 3
+    	};
+    	var rendererOptions = {
+    		map: map,
+    		hideRouteList: true,
+    		draggable: false,
+    		polytlineOptions: polylineOptions,
+    		suppressMarkers: true
+    	};
+    	var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
+    	
+    	var routeWayPoints = [];
+    	for(var i = 1; i < route.stops.length; i++){
+    		routeWayPoints.push({location: new google.maps.LatLng(route.stops[i].latitude, route.stops[i].longitude), stopover: true});
+    		console.log(route.stops[i].stopName);
+    	}
+    	console.log(routeWayPoints);
+    	
+    	var directionRequest = {
+    		origin: new google.maps.LatLng(route.stops[0].latitude, route.stops[0].longitude),
+    		destination: new google.maps.LatLng(route.stops[0].latitude, route.stops[0].longitude),
+    		waypoints: routeWayPoints,
+    		travelMode: google.maps.DirectionsTravelMode.DRIVING
+    	};
+    	directionsService.route(directionRequest, function(response, status){
+    		console.log(response);
+    		console.log(status);
+    		directionsDisplay.setDirections(response);
+    	});
+    	directionsDisplayMap.push({"routeName": route.routeName, "directions": directionsDisplay});
+      }
+    
+    // Private Function to clear route form map
+    // param: string of route name to clear  
+    function clearRoute(routeName){
+    	$(directionsDisplayMap).each( function(){
+    		if(routeName == this.routeName){
+    			this.directions.setMap(null);
+    		}
+    	});
     }
     
     return {
@@ -223,7 +279,22 @@ var MapManager = function() {
         trackUserPos = track;
       
         trackUser();
-      } //setTrackUserPos
+      }, //setTrackUserPos
+      
+      //Draw route form user input
+     setRouteToDraw: function(routeNameParam, routes){
+     	console.log('routes from setRouteToDraw: ' + routes);
+      	$(routes).each(function(){
+      		if(this.routeName == routeNameParam){
+      			drawRoute(this);
+      		}
+      	});
+      },
+      
+      // Clear Route from User input
+      setRouteToClear: function(routeName){
+      	clearRoute(routeName);
+      }
     };
 };
 

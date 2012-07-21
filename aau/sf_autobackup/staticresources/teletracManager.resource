@@ -74,6 +74,11 @@ var TeletracManager = function() {
             return busStops;
         },
         
+        // Returns route object
+        getRoutes: function(){
+        	return routes;
+        },
+        
         // Configures auto refresh, if first parameter is true will cause
         // the get vehicles function to be called in the pre determined auto refresh interval
         // passing the provided callback function. If false, disables auto refresh
@@ -135,13 +140,14 @@ var TeletracManager = function() {
             						"xml");
      }, //getVehicles
     
-    getRoutes: function(callback) {
+    getRoutesFromSFDC: function(callback) {
       	var restPath = "/BusStops/"; 
 		RestDataPlugin.getData(function(result){
 								utils.log('Success REST service bus routes:');
 								parseStops(result, callback);
 								parseRouteNames(result);
 								routes = result;
+								return routes;
 							   },
 							   function(){
 							   	utils.log('Failfure REST service bus routes:');

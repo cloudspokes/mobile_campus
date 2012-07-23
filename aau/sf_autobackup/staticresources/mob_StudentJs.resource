@@ -7,7 +7,7 @@ classSchedule: {
     
 	init: function(){
 
-		var restPath = "/classSchedule/" + aauMobile.studentId;
+		var restPath = "/classSchedule?id=" + aauMobile.studentId;
 		RestDataPlugin.getData(aauMobile.classSchedule.buildSchedule, aauMobile.classSchedule.initFailure, restPath, true, "GET", "json");
 	},
 	
@@ -115,7 +115,7 @@ classSchedule: {
 		var blockTemplate = $("#student-classDetail-template");
 		var detailContent = $("#ulDlId");
         
-        meetTime = classMeetingDetail.startTime+' - '+classMeetingDetail.endTime;
+        meetTime = classMeetingDetail.startTime+' to '+classMeetingDetail.endTime;
         topic =  classMeetingDetail.specialTopic;
         instructor = classMeetingDetail.instructorName;
         mLocation = classMeetingDetail.location;

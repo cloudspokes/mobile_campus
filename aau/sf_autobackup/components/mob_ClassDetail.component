@@ -6,29 +6,47 @@
     background-position-y: -236px;
     width: 50px;
     height: 45px;
-    margin-left:0px;
+    margin-left: 10px;
 }
 .classDetail-icon2 {
     background:url({!$Resource.mob_Design}/mob_Design/iconsprite_grey.png) no-repeat 0px -0px;
     float:left;
     background-position-y: -40px;
     width:50px;
-    height:36px;
-    margin-left:0px;
+    height:40px;
+    margin-left: 10px;
 }
 .classDetail-icon3{
     background:url({!$Resource.mob_Design}/mob_Design/iconsprite_grey.png) no-repeat 0px -0px;
     float:left;
     background-position-y: -282px;
     width:50px;
-    height:36px;
-    margin-left:0px;
+    height:40px;
+    margin-left: 10px;
 }    
 .classLi{
-   margin="0px";
+   margin: 0px;
    border-bottom: solid 1px #626262;
 }    
-    
+.classDetail-detail{
+    height:28px;
+    font-weight:bold;
+    line-height: 0.9;
+}
+.classDetail-label{
+    font-size:10pt;
+    color: #808080;
+}
+#classDescrDv {
+    padding-left:10px;
+    margin-right:10px;
+}
+#classDescrDv h3 {
+    font-weight: normal;
+}
+
+.classDetail h2{
+    font-size:14pt;
 }
 
 </style>
@@ -39,23 +57,23 @@
 </script>
 
 <script id="student-classDetail-template" type="text/x-jquery-tmpl">
-               <hr/>	            
+               <hr/>                
                <li class="classLi" style="padding-top: 2px;padding-bottom: 2px;">
-                    <span class="classDetail-icon1" /> <a href="#" style="height:28px;" >
+                    <span class="classDetail-icon1" /> <a href="#" class="classDetail-detail">
                        ${meetingTime}
                     </a>  
                 </li>  
-				<li class="classLi" style="padding-top: 2px;padding-bottom: 1px;">
-                   <span class="classDetail-icon2" /> <a href="#" style="height:28px;">
-                       ${meetingTopic} &nbsp;&nbsp; ${mLocation}</br>Location
+                <li class="classLi" style="padding-top: 2px;padding-bottom: 1px;">
+                   <span class="classDetail-icon2" /> <a href="#" class="classDetail-detail" style="padding-top:0.4em">
+                       ${meetingTopic} &nbsp;&nbsp; ${mLocation}
+                       </br><span class="classDetail-label">LOCATION</span>
                     </a>  
                 </li>
-				<li class="classLi" style="padding-top: 2px;padding-bottom: 1px;">
-                   <span class="classDetail-icon3" /><a href="#" style="height:28px;">
+                <li class="classLi" style="padding-top: 2px;padding-bottom: 1px;">
+                   <span class="classDetail-icon3" /><a href="#" class="classDetail-detail" style="padding-top:0.4em">
                        ${meetingInstruction}
-                       </br>Instructor
+                       </br><span class="classDetail-label">INSTRUCTOR</span>
                     </a>  
                 </li>
-                <li data-role="list-divider"></li>
 </script> 
 </apex:component>

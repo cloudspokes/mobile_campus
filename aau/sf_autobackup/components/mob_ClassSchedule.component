@@ -35,6 +35,7 @@
 	text-shadow: 0 1px 1px #808080;
 	font-size: 11pt;
 	padding: 10px 3px;
+	height:60px;
  }
  .course-name{
 	padding: 5px;
@@ -59,7 +60,7 @@
 			<li class="course" onclick="aauMobile.classSchedule.showClassDetails('${meetingId}');"><a class="course-link" href="#">
                  <table border="0" cellpadding="0" cellspacing="0" class="course-table">
                       <tr> 
-                           <td class="course-time">${stTime}</br>-</br>${edTime}</td>
+                           <td class="course-time">${stTime}</br>${edTime}<br/></td>
                            <td class="course-name">${topic}  ${className} </br> <span class="course-location">${meetingLocation}</span></td> 
                       </tr>    
                  </table>

@@ -1,0 +1,61 @@
+<apex:component >
+<style>
+.classDetail-icon1 {
+    background:url({!$Resource.mob_Design}/mob_Design/iconsprite_grey.png) no-repeat 0px 0px;
+    float:left;
+    background-position-y: -236px;
+    width: 50px;
+    height: 45px;
+    margin-left:0px;
+}
+.classDetail-icon2 {
+    background:url({!$Resource.mob_Design}/mob_Design/iconsprite_grey.png) no-repeat 0px -0px;
+    float:left;
+    background-position-y: -40px;
+    width:50px;
+    height:36px;
+    margin-left:0px;
+}
+.classDetail-icon3{
+    background:url({!$Resource.mob_Design}/mob_Design/iconsprite_grey.png) no-repeat 0px -0px;
+    float:left;
+    background-position-y: -282px;
+    width:50px;
+    height:36px;
+    margin-left:0px;
+}    
+.classLi{
+   margin="0px";
+   border-bottom: solid 1px #626262;
+}    
+    
+}
+
+</style>
+<script type="text/javascript">
+ $("#student-detail").live("pagebeforeshow", function(event) {
+    
+ });
+</script>
+
+<script id="student-classDetail-template" type="text/x-jquery-tmpl">
+               <hr/>	            
+               <li class="classLi" style="padding-top: 2px;padding-bottom: 2px;">
+                    <span class="classDetail-icon1" /> <a href="#" style="height:28px;" >
+                       ${meetingTime}
+                    </a>  
+                </li>  
+				<li class="classLi" style="padding-top: 2px;padding-bottom: 1px;">
+                   <span class="classDetail-icon2" /> <a href="#" style="height:28px;">
+                       ${meetingTopic} &nbsp;&nbsp; ${mLocation}</br>Location
+                    </a>  
+                </li>
+				<li class="classLi" style="padding-top: 2px;padding-bottom: 1px;">
+                   <span class="classDetail-icon3" /><a href="#" style="height:28px;">
+                       ${meetingInstruction}
+                       </br>Instructor
+                    </a>  
+                </li>
+                <li data-role="list-divider"></li>
+</script> 
+</apex:component>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <fields>
+        <fullName>Catalog_Nbr__c</fullName>
+        <externalId>false</externalId>
+        <label>Catalog Nbr</label>
+        <length>10</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Class_Section__c</fullName>
+        <externalId>false</externalId>
+        <label>Class Section</label>
+        <length>4</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Course_Component__c</fullName>
+        <description>Short Name of PeopleSoft&apos;s translate value for SSR_COMPONENT</description>
+        <externalId>false</externalId>
+        <label>Course Component</label>
+        <length>10</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Course_Description__c</fullName>
+        <externalId>false</externalId>
+        <label>Course Description</label>
+        <length>32768</length>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Course_Title__c</fullName>
+        <externalId>false</externalId>
+        <label>Course Title</label>
+        <length>100</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Psft_Ext_Id__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <description>Pipe delimited Concatenation of STRM and CLASS_NBR</description>
+        <externalId>true</externalId>
+        <label>Psft_Ext_Id</label>
+        <length>15</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Subject__c</fullName>
+        <externalId>false</externalId>
+        <label>Subject</label>
+        <length>5</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Term__c</fullName>
+        <externalId>false</externalId>
+        <label>Term</label>
+        <referenceTo>ps_Term__c</referenceTo>
+        <relationshipName>Class_Sections</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <label>ps_Class</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Term__c</columns>
+        <columns>Subject__c</columns>
+        <columns>Catalog_Nbr__c</columns>
+        <columns>Class_Section__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>All1</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <label>Class Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>ps_Classes</pluralLabel>
+    <searchLayouts>
+        <listViewButtons>Delete</listViewButtons>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+    <webLinks>
+        <fullName>Delete</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Delete</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>// Include and initialize the AJAX Toolkit javascript library
+//
+{!REQUIRESCRIPT(&quot;/soap/ajax/10.0/connection.js&quot;)}
+
+
+// Get the list of accounts that should be deleted.
+// Use the $ObjectType merge field to indicate the type of
+// record Ids that are expected.
+//
+var idsToDelete = {!GETRECORDIDS( $ObjectType.Contact )};
+var deleteWarning = &apos;Are you sure you wish to delete &apos; +
+                    idsToDelete.length + &apos; contacts?&apos;;
+
+if (idsToDelete.length &amp;&amp; (window.confirm(deleteWarning))) {
+
+   // Delete the records, and pass a function into the call
+   // so that the toolkit refreshes the current page
+   // asynchronously when the call succeeds.
+   //
+   sforce.connection.deleteIds(idsToDelete,
+          function() {navigateToUrl(window.location.href);});
+
+} else if (idsToDelete.length == 0) {
+   alert(&quot;Please select the contacts you wish to delete.&quot;);
+}</url>
+    </webLinks>
+</CustomObject>

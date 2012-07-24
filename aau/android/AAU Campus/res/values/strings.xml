@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, VFConnectorActivity!</string>
+    <string name="app_name">AAU Campus</string>
+    <string name="sf_default_url">https://aau--dev6.cs12.my.salesforce.com</string>
+    
+</resources>

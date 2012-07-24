@@ -3,26 +3,32 @@
 .classDetail-icon1 {
     background:url({!$Resource.mob_Design}/mob_Design/iconsprite_grey.png) no-repeat 0px 0px;
     float:left;
-    background-position-y: -236px;
-    width: 50px;
-    height: 45px;
+    background-position-y: -165px;
+    background-size: 100%;
+    width: 35px;
+    height: 31px;
     margin-left: 10px;
+    margin-top: 5px;
 }
 .classDetail-icon2 {
     background:url({!$Resource.mob_Design}/mob_Design/iconsprite_grey.png) no-repeat 0px -0px;
     float:left;
-    background-position-y: -40px;
-    width:50px;
-    height:40px;
+    background-position-y: -28px;
+    background-size:100%;
+    width:35px;
+    height:29px;
     margin-left: 10px;
+    margin-top: 5px;
 }
 .classDetail-icon3{
     background:url({!$Resource.mob_Design}/mob_Design/iconsprite_grey.png) no-repeat 0px -0px;
     float:left;
-    background-position-y: -282px;
-    width:50px;
-    height:40px;
+    background-position-y: -197px;
+    background-size: 100%;
+    width:35px;
+    height:32px;
     margin-left: 10px;
+    margin-top: 5px;
 }    
 .classLi{
    margin: 0px;
@@ -48,6 +54,9 @@
 .classDetail h2{
     font-size:14pt;
 }
+#classTime div.ui-btn-inner span.ui-icon{
+    display: none;
+}
 
 </style>
 <script type="text/javascript">
@@ -58,7 +67,7 @@
 
 <script id="student-classDetail-template" type="text/x-jquery-tmpl">
                <hr/>                
-               <li class="classLi" style="padding-top: 2px;padding-bottom: 2px;">
+               <li id="classTime" class="classLi" style="padding-top: 2px;padding-bottom: 2px;">
                     <span class="classDetail-icon1" /> <a href="#" class="classDetail-detail">
                        ${meetingTime}
                     </a>  
@@ -66,13 +75,13 @@
                 <li class="classLi" style="padding-top: 2px;padding-bottom: 1px;">
                    <span class="classDetail-icon2" /> <a href="#" class="classDetail-detail" style="padding-top:0.4em">
                        ${meetingTopic} &nbsp;&nbsp; ${mLocation}
-                       </br><span class="classDetail-label">LOCATION</span>
+                       <br/><span class="classDetail-label">LOCATION</span>
                     </a>  
                 </li>
                 <li class="classLi" style="padding-top: 2px;padding-bottom: 1px;">
                    <span class="classDetail-icon3" /><a href="#" class="classDetail-detail" style="padding-top:0.4em">
                        ${meetingInstruction}
-                       </br><span class="classDetail-label">INSTRUCTOR</span>
+                       <br/><span class="classDetail-label">INSTRUCTOR</span>
                     </a>  
                 </li>
 </script> 

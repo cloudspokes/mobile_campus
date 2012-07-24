@@ -1,67 +1,65 @@
 <apex:component >
 <style>
  .date-divider{
-	color: #FFFFFF;
-	text-shadow: 0 1px 1px #000000;
-	background-image: -webkit-linear-gradient( top, #303030 0%, #565656 20%, #565656 80%, #303030 100% );
-	font-size: 13pt;
-	padding: 10px 5px;
-	border: none;
-	box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
+    color: #FFFFFF;
+    text-shadow: 0 1px 1px #000000;
+    background-image: -webkit-linear-gradient( top, #303030 0%, #565656 20%, #565656 80%, #303030 100% );
+    background-color: #565656;
+    font-size: 13pt;
+    padding: 10px 5px;
+    border: none;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
  }
  .course{
- 	padding:0;
- 	border: none;
+    padding:0;
+    border: none;
  } 
- .course span.ui-icon-arrow-r{
- 	background-color: #808080 !important;
- }
  li.course a.course-link{
- 	padding:0 !important;
- 	padding-right:30px !important;
+    padding:0 !important;
+    padding-right:30px !important;
  }
  .course-table{
- 	height: 100%;
- 	width: 100%;
- 	margin: 0;
- 	padding: 0;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
  }
  .course-time{
-	background-color: #808080;
-	width: 20%;
-	text-align: center;
-	color: #FFFFFF;
-	font-weight: normal;
-	text-shadow: 0 1px 1px #808080;
-	font-size: 11pt;
-	padding: 10px 3px;
-	height:60px;
+    background-color: #808080;
+    width: 20%;
+    text-align: center;
+    color: #FFFFFF;
+    font-weight: normal;
+    text-shadow: 0 1px 1px #808080;
+    font-size: 11pt;
+    padding: 10px 3px;
+    height:60px;
  }
  .course-name{
-	padding: 5px;
-	color: #dc2221;
-	font-size: 14pt;
-	white-space: pre-line;
+    padding: 5px;
+    color: #dc2221;
+    font-size: 14pt;
+    white-space: pre-line;
  }
  .course-location{
- 	color: #808080;
-	font-weight: lighter;
-	font-size: 11pt;
+    color: #808080;
+    font-weight: lighter;
+    font-size: 11pt;
  }
  
  /*Override jQuery Mobile Defaults*/
  li.course div.ui-li{
- 	border: none;
- 	border-bottom: solid 1px #626262;
+    border: none;
+    border-bottom: solid 1px #626262;
  }
 </style>
 
 <script id="student-schedule-template" type="text/x-jquery-tmpl">
-			<li class="course" onclick="aauMobile.classSchedule.showClassDetails('${meetingId}');"><a class="course-link" href="#">
+            <li class="course" onclick="aauMobile.classSchedule.showClassDetails('${meetingId}');"><a class="course-link" href="#">
                  <table border="0" cellpadding="0" cellspacing="0" class="course-table">
                       <tr> 
-                           <td class="course-time">${stTime}</br>${edTime}<br/></td>
-                           <td class="course-name">${topic}  ${className} </br> <span class="course-location">${meetingLocation}</span></td> 
+                           <td class="course-time">${stTime}<br/>${edTime}</td>
+                           <td class="course-name">${topic}  ${className} <br/> <span class="course-location">${meetingLocation}</span></td> 
                       </tr>    
                  </table>
                 </a>

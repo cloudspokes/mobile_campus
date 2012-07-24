@@ -95,6 +95,15 @@ var WebViewerPlugin = {
     }
 };
 
+var SalesforceAuth = {
+
+	Logout: function() {
+		//PhoneGap.exec("com.salesforce.oauth", "logout", '');
+		PhoneGap.exec("com.salesforce.oauth", "logout");
+	}
+
+};
+
 var RestDataPlugin = {
 
 	//these need to be set in a VF page
@@ -114,6 +123,7 @@ var RestDataPlugin = {
 	},
 
 	getPhonegapData: function(successCallback, failureCallback, restPath) {
+		restPath = RestDataPlugin.baseUrl + '/services/proxy' + restPath;
 		PhoneGap.exec(successCallback, failureCallback, "com.appirio.mobile.webservice", "getRestData", [restPath]);
 	},
 
@@ -167,7 +177,22 @@ var RestDataPlugin = {
 	*/
 };
 
+// Object with utility functions
+var Utils = function() {
+    // Determines if loggin is enabled, if false calls to utils.log will not
+    // output to the console (ideal for production release). Use true while developing
+    var loggingEnabled = true;
+    
+    return {
+        // Logs an object to the console if the console is available and if logging is enabled
+        log: function(value) {
+            if(loggingEnabled) {
+                if(console) {
+                    console.log(value);
+                }
+            }
+        }
+    }
+};
 
-
-
-
+var utils = new Utils();

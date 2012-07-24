@@ -209,7 +209,15 @@ rssFeed: {
 $("#student-home").live("pageinit", function(event) {
     // init Class Schedule data
 	aauMobile.classSchedule.init();
-
+	
+	//Detect if using an Android phone.
+	var ua = navigator.userAgent.toLowerCase();
+	var isAndroid = ua.indexOf("android") > -1;
+	if(isAndroid) {
+  		//Don't display Back button on Android devices.
+  		$('.mob-back-button').css('display','none');
+	}
+	
     $('#menuButton').bind('click',function(){
 	     $.mobile.changePage('#menu-page');
     });

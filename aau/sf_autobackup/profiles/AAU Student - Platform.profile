@@ -11,6 +11,11 @@
     </classAccesses>
     <fieldLevelSecurities>
         <editable>true</editable>
+        <field>Bus_Route__c.Route_Color__c</field>
+        <hidden>false</hidden>
+    </fieldLevelSecurities>
+    <fieldLevelSecurities>
+        <editable>true</editable>
         <field>Bus_Stop__c.Active__c</field>
         <hidden>false</hidden>
     </fieldLevelSecurities>
@@ -302,10 +307,6 @@
         <object>ps_Term__c</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
-    <pageAccesses>
-        <apexPage>md_mob_Map</apexPage>
-        <enabled>false</enabled>
-    </pageAccesses>
     <pageAccesses>
         <apexPage>mob_Map</apexPage>
         <enabled>false</enabled>

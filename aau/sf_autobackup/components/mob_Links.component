@@ -1,6 +1,15 @@
 <apex:component >
-  <!-- Begin Default Content REMOVE THIS -->
-  <h1>Congratulations</h1>
-  This is your new Component
-  <!-- End Default Content REMOVE THIS -->
+<style>
+.link-li {
+	padding:10px;
+}
+</style>
+
+<ul data-role="listview"  data-theme="d">
+	<li class="link-li"><a href="http://newsfeed.academyart.edu/">
+		<div class="course-name">AAU News</div>
+		<div class="course-location">http://newsfeed.academyart.edu/</div>
+		<span class="ui-icon ui-icon-arrow-r ui-icon-shadow"></span>
+	</a></li>
+</ul>
 </apex:component>

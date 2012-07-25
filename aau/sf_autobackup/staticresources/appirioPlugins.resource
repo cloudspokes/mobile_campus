@@ -98,8 +98,11 @@ var WebViewerPlugin = {
 var SalesforceAuth = {
 
 	Logout: function() {
+	    utils.log("### Phonegap ###" + JSON.stringify(PhoneGap));
 		//PhoneGap.exec("com.salesforce.oauth", "logout", '');
-		PhoneGap.exec("com.salesforce.oauth", "logout");
+		//PhoneGap.exec("com.salesforce.oauth.oauth", "logout", '');
+		PhoneGap.exec(null, null, "com.salesforce.oauth","logoutCurrentUser",[]);
+
 	}
 
 };
@@ -110,6 +113,7 @@ var RestDataPlugin = {
 	accessToken: '',	//$Api.Session_ID
 	clientKey: '',		//$Setup.mob_Student__c.Client_Key__c
 	baseUrl: '',		//$Setup.mob_Student__c.Base_Url__c
+	restUrl: '',		//$Setup.mob_Student__c.Rest_Url__c
 
 	getData: function(successCallback, failureCallback, restPath, isSFDC, restType, dataType) {
 
@@ -123,7 +127,10 @@ var RestDataPlugin = {
 	},
 
 	getPhonegapData: function(successCallback, failureCallback, restPath) {
-		restPath = RestDataPlugin.baseUrl + '/services/proxy' + restPath;
+		//append the rest path if this is a Salesforce REST call
+		if(restPath.substring(0,1) == '/'){
+			restPath = RestDataPlugin.restUrl + '/services/apexrest' + restPath;
+		}
 		PhoneGap.exec(successCallback, failureCallback, "com.appirio.mobile.webservice", "getRestData", [restPath]);
 	},
 
@@ -138,9 +145,11 @@ var RestDataPlugin = {
 	},
 
 	isPhonegap: function(){
-	    if (!PhoneGap.available){
+	    if (!navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)){
+	        utils.log("### PhoneGap not available!");
 			return false;
 		}else{
+	        utils.log("### PhoneGap IS available!");
 			return true;
 		}
 	}

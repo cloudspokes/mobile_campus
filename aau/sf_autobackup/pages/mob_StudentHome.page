@@ -8,7 +8,16 @@
     <link rel="Stylesheet" type="text/css" href="{!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.min.css"></link>
     <link rel="Stylesheet" type="text/css" href="{!$Resource.mob_Design}/mob_Design/AAUjQueryTheme.min.css"></link>
 
-    <script type="text/javascript" src="{!$Resource.phonegap}"></script>
+    <script type="text/javascript">
+      // Atrocious way of loading two diffent phonegap scripts, but other loading methods won't work.
+      // also there shouldn't be two scripts to begin with -- so much for cross-platform.
+      var userAgent = navigator.userAgent.toLowerCase();
+      if (userAgent.match(/android/)) {
+        document.write("<script type='text/javascript' src='{!$Resource.phonegap_android}'><\/script>");
+      } else {
+        document.write("<script type='text/javascript' src='{!$Resource.phonegap}'><\/script>");
+      }
+    </script>    
     <script type="text/javascript" src="{!$Resource.jquery1dot7}"></script>
     <script type="text/javascript" src="{!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.min.js"></script>
     <script type="text/javascript" src="{!$Resource.jquerytmpl}"></script>  
@@ -18,6 +27,7 @@
     <script type="text/javascript" src="{!$Resource.mob_XML2JSON}"></script>
     <c:mob_BackButton /> 
     <c:mob_ListArrow />
+
  <style>
    .page-map, .ui-content, #map-div { width: 100%; height: 100%; padding: 0; }
    .classDetail {
@@ -26,9 +36,11 @@
        color: #DC2221;
     }
    .mob-header-icon{
+		float: left;
+		margin: 5px;
         width: 37px;
         height: 37px;
-        margin:-5px 5px 0 5px;
+        /*margin:-5px 5px 0 5px;*/
         border-radius: 5px;
         border-bottom: solid 1px #999;
         border-right: solid 1px #555;
@@ -41,6 +53,9 @@
         background-image: -o-linear-gradient( #cb1f1e , #aa1816 );
         background-image: -linear-gradient( #cb1f1e , #aa1816 );
    }
+	.header-right{
+		float:right;
+	}
    .mob-header-MenuIcon1 {
         background:url({!$Resource.mob_Design}/mob_Design/iconsprite_white.png) no-repeat 0px 0px;
         float:left;
@@ -49,7 +64,7 @@
         width: 34px;
         height: 18px;
         display:inline;
-        margin-left:7px;
+        margin-left:6px;
         margin-top:9px;
     }
     .mob-header-MenuIcon2 {
@@ -97,7 +112,7 @@
     .mob-header h1.ui-title{
         font-size: 16pt;
         margin: 0.65em 30% .35em;
-    } 
+    }
  </style>
 
 <script type="text/javascript">
@@ -119,6 +134,7 @@
 
     RestDataPlugin.accessToken = '{!$Api.Session_ID}';
     RestDataPlugin.baseUrl = '{!$Setup.mob_Student__c.Base_Url__c}';
+    RestDataPlugin.restUrl = '{!$Setup.mob_Student__c.Rest_Url__c}';
     RestDataPlugin.clientKey = '{!$Setup.mob_Student__c.Client_Key__c}';
 
     aauMobile.studentId = '003V0000009kTN1';
@@ -142,13 +158,11 @@
 
 <div data-role="page" id="student-home" class="page-container">
     <div data-role="header" data-position="fixed" class="mob-header">
-       <table style="width:100%;"><tr><td>
-         <a href="#"><div class="mob-header-icon"><div class="mob-header-MenuIcon1"  id="menuButton"/></div></a>
-         </td><td width="80%" style="text-align:center;">
-        <h1>Class Schedule</h1></td><td>
-         <a href="#"><div class="mob-header-icon"><div class="mob-header-MenuIcon2" /></div></a>
-         </td></tr></table>
+		<div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
+        <div class="mob-header-icon header-right"><div class="mob-header-MenuIcon2" /></div>
+        <h1>Class Schedule</h1>
     </div>
+    
     <div data-role="content" id="conId" class="mob-content">
        <div>
          <ul data-role="listview"  data-theme="d" id="ulId">
@@ -175,7 +189,7 @@
 
 <div data-role="page" id="feed-list" class="page-container">
     <div data-role="header" data-position="fixed"  class="mob-header">
-        <a href="#menu-page" data-role="button" data-inline="true" data-direction="reverse mob-back-button" class="back-root">Menu</a>
+		<div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
         <h1>Campus News and Events</h1>
     </div>
     <div data-role="content" class="mob-content">
@@ -195,7 +209,7 @@
 
 <div data-role="page" id="event-list" class="page-container">
     <div data-role="header" data-position="fixed" class="mob-header">
-        <a href="#menu-page" data-role="button" data-inline="true" data-direction="reverse" class="back-root">Menu</a>
+		<div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
         <h1>Sports</h1>
     </div>
     <div data-role="content" class="mob-content">
@@ -203,21 +217,32 @@
     </div>
 </div>
 
+<div data-role="page" id="link-list" class="page-container">
+    <div data-role="header" data-position="fixed" class="mob-header">
+		<div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
+        <h1>Links</h1>
+    </div>
+    <div data-role="content" class="mob-content">
+        <c:mob_Links />  
+    </div>
+</div>
+
+
 <div data-role="page" id="transit-map" class="page-container">
+    <c:mob_MapSettings />
     <div data-role="header" data-position="fixed"  class="mob-header">
-       <table style="width:100%;"><tr><td>
-         <a href="#menu-page"><div class="mob-header-icon"><div class="mob-header-MenuIcon1" /></div></a>
-         </td><td width="80%" style="text-align:center;">
-         <h1>My Transit</h1></td><td>
-         <a href="#" id="transit-settings"><div class="mob-header-icon"><div class="mob-header-MenuIcon3" /></div></a>
-         </td></tr></table>
+		<div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
+         <div class="mob-header-icon header-right" id="transit-settings"><div class="mob-header-MenuIcon3" /></div>
+         <h1>My Transit</h1>
     </div>
     <c:mob_Map />
-    <c:mob_MapSettings />
+</div>
+<div data-role="page" id="login-page" class="page-map">
+    <c:mob_Login />
 </div>
 
 <div data-role="page" id="menu-page" class="page-map">
-    <div data-role="header" data-position="fixed" >
+    <div data-role="header" data-position="fixed" > 
             <h1>Menu Items</h1>
     </div>
     <c:mob_Menu />

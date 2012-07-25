@@ -202,13 +202,47 @@ rssFeed: {
 		return;
 
 	}
-}
+},
 
+rssEvent: {
+	init: function() {
+		rssUrl = 'http://www.artuathletics.com/services/calendar.ashx/calendar.rss';
+		RestDataPlugin.getData(aauMobile.rssEvent.buildEvents, aauMobile.rssEvent.initFailure, rssUrl, false, "GET", "xml");
+	},
+
+	buildEvents: function(result) {
+		result = $.xml2json(result);
+		console.log('RSS Feed Success! ' + result.channel.title);
+		//console.log('Result: ' + JSON.stringify(result));
+
+		var feedTemplate = $("#rss-feed-template");
+		var feedContainer = $("#feed-ul"); //.empty();
+
+		$.each(result.channel.item, function(index, item){
+
+			if(index < 3){
+				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: result.channel.title}).appendTo(feedContainer);			
+			}else{
+				//return;
+			}
+
+		});
+
+		$(feedContainer).trigger('create');
+
+	},
+
+	initFailure: function(result) {
+		console.log('RSS Feed Failure. ' + result);
+	}
+}
 };
 
-$("#student-home").live("pageinit", function(event) {
+function studentHomePageInit() {
     // init Class Schedule data
 	aauMobile.classSchedule.init();
+	aauMobile.rssFeed.init();
+	aauMobile.rssEvent.init();
 	
 	//Detect if using an Android phone.
 	var ua = navigator.userAgent.toLowerCase();
@@ -218,24 +252,35 @@ $("#student-home").live("pageinit", function(event) {
   		$('.mob-back-button').css('display','none');
 	}
 	
-    $('#menuButton').bind('click',function(){
+    $('.menu-btn').bind('click',function(){
 	     $.mobile.changePage('#menu-page');
     });
-});
+}
 
-$("#feed-list").live("pagecreate", function(event) {
+function feedListPageCreate() {
     // init RSS Feed data
-	$.mobile.showPageLoadingMsg
-	aauMobile.rssFeed.init();
-});
+	//$.mobile.showPageLoadingMsg
+	//aauMobile.rssFeed.init();
+}
 
-$("#feed-detail").live("pagecreate", function(event) {
+function feedDetailPageCreate() {
 	aauMobile.rssFeed.showFeedDetails();
+}
 
-});
+function bindEvents() {
+  $("#student-home").live("pageinit", studentHomePageInit);
+  $("#feed-list").live("pagecreate", feedListPageCreate);
+  $("#feed-detail").live("pagecreate", feedDetailPageCreate);
 
+}
 
-
-
-
-
+if(!navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
+  bindEvents();
+} else {
+  document.addEventListener("deviceready", function() {
+    studentHomePageInit();
+    feedListPageCreate();
+    feedDetailPageCreate();
+    bindEvents();
+  }, false);
+}

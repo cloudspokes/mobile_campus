@@ -11,8 +11,17 @@
     </style>
 
     <script>
-      var imgStudentMarker = "{!$Resource.mob_Design}/mob_Design/images/marker_person.png";
-      var imgBusMarker =  "{!$Resource.mob_Design}/mob_Design/images/marker_bus.png";
+    var busMarkers = {};
+      var imgStudentMarker = "{!$Resource.mob_Design}/mob_Design/images/Transit/marker_person.png";
+      busMarkers['A'] = "{!$Resource.mob_Design}/mob_Design/images/Transit/marker_A.png";
+      busMarkers['D'] = "{!$Resource.mob_Design}/mob_Design/images/Transit/marker_D.png";
+      busMarkers['E'] = "{!$Resource.mob_Design}/mob_Design/images/Transit/marker_E.png";
+      busMarkers['G'] = "{!$Resource.mob_Design}/mob_Design/images/Transit/marker_G.png";
+      busMarkers['H'] = "{!$Resource.mob_Design}/mob_Design/images/Transit/marker_H.png";
+      busMarkers['I'] = "{!$Resource.mob_Design}/mob_Design/images/Transit/marker_I.png";
+      busMarkers['M'] = "{!$Resource.mob_Design}/mob_Design/images/Transit/marker_M.png";
+      var imgStopMarker = "{!$Resource.mob_Design}/mob_Design/images/Transit/marker_busstop.png";
+      var busRefreshRate = "{!$Setup.mob_Student__c.Bus_Refresh_Rate__c}";
     </script>
 
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeo7wiR8G2REfIzQbeTLrVFuluE2jA9ao&sensor=true"></script>

@@ -176,7 +176,7 @@ rssFeed: {
 
 		});
 
-		$(feedContainer).trigger('create');
+		$(feedContainer).listview('refresh');
 		$.mobile.hidePageLoadingMsg;
 	},
 
@@ -213,22 +213,21 @@ rssEvent: {
 	buildEvents: function(result) {
 		result = $.xml2json(result);
 		console.log('RSS Feed Success! ' + result.channel.title);
-		//console.log('Result: ' + JSON.stringify(result));
 
-		var feedTemplate = $("#rss-feed-template");
-		var feedContainer = $("#feed-ul"); //.empty();
+		var feedTemplate = $("#event-template");
+		var feedContainer = $("#event-ul"); //.empty();
 
 		$.each(result.channel.item, function(index, item){
 
-			if(index < 3){
-				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: result.channel.title}).appendTo(feedContainer);			
+			if(index < 20){
+				feedTemplate.tmpl({eventTitle: item.title, eventOrigin: result.channel.title}).appendTo(feedContainer);			
 			}else{
 				//return;
 			}
 
 		});
 
-		$(feedContainer).trigger('create');
+		$(feedContainer).listview('refresh');
 
 	},
 
@@ -255,10 +254,12 @@ function studentHomePageInit() {
     $('.menu-btn').bind('click',function(){
 	     $.mobile.changePage('#menu-page');
     });
+    
+    $('#result-list').listview();
 }
 
 function feedListPageCreate() {
-    // init RSS Feed data
+    //init RSS Feed data
 	//$.mobile.showPageLoadingMsg
 	//aauMobile.rssFeed.init();
 }
@@ -271,7 +272,6 @@ function bindEvents() {
   $("#student-home").live("pageinit", studentHomePageInit);
   $("#feed-list").live("pagecreate", feedListPageCreate);
   $("#feed-detail").live("pagecreate", feedDetailPageCreate);
-
 }
 
 if(!navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {

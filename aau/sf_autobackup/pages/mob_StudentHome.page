@@ -113,6 +113,12 @@
         font-size: 16pt;
         margin: 0.65em 30% .35em;
     }
+    #external-page-frame{
+    	border: none;
+    	height: 100%;
+    	width: 100%;
+    	-webkit-overflow-scrolling: touch;
+    }
  </style>
 
 <script type="text/javascript">
@@ -228,18 +234,25 @@
 </div>
 
 
-<div data-role="page" id="transit-map" class="page-container">
-    <c:mob_MapSettings />
+<div data-role="page" id="transit-map" class="page-container" style="position:fixed; opacity: 1.0;">
     <div data-role="header" data-position="fixed"  class="mob-header">
 		<div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
          <div class="mob-header-icon header-right" id="transit-settings"><div class="mob-header-MenuIcon3" /></div>
          <h1>My Transit</h1>
     </div>
+    <c:mob_MapSettings />
     <c:mob_Map />
 </div>
-<div data-role="page" id="login-page" class="page-map">
-    <c:mob_Login />
-</div>
+
+<!-- <div data-role="page" id="external-page" class="page-container">
+    <div data-role="header" data-position="fixed"  class="mob-header">
+        <a href="#" id="external-page-back" data-role="button" data-inline="true" data-direction="reverse" class="back-root mob-back-button">Back</a>
+        <h1 id="external-page-title">External Page</h1>
+    </div>
+    <div data-role="content" id="external-page-content" class="mob-content">
+    	<iframe id="external-page-frame" src="http://newsfeed.academyart.edu/"></iframe>
+     </div>
+</div> -->
 
 <div data-role="page" id="menu-page" class="page-map">
     <div data-role="header" data-position="fixed" > 

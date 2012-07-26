@@ -119,7 +119,16 @@ var RestDataPlugin = {
 
 		if(RestDataPlugin.isPhonegap()){
 			console.log('Rest call via Phonegap...');
-			RestDataPlugin.getPhonegapData(successCallback, failureCallback, restPath);
+			//RestDataPlugin.getPhonegapData(successCallback, failureCallback, restPath, isSFDC, restType, dataType);
+			RestDataPlugin.getPhonegapData(function (rawResult) {
+			  utils.log("This is the rawResult from PhoneGap: " + rawResult);
+			  try {
+			    var json = JSON.parse(rawResult);
+			    successCallback(json);
+			  } catch (e) {
+                successCallback(rawResult);			  
+			  } 
+			}, failureCallback, restPath);
 		}else{
 			console.log('Rest call via AJAX Toolkit...');
 			RestDataPlugin.getAjaxDataByForceTK(successCallback, failureCallback, restPath, isSFDC, restType, dataType);
@@ -145,7 +154,7 @@ var RestDataPlugin = {
 	},
 
 	isPhonegap: function(){
-	    if (!navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)){
+	    if (!PhoneGap.available){
 	        utils.log("### PhoneGap not available!");
 			return false;
 		}else{

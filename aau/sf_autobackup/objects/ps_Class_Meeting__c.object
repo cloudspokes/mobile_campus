@@ -55,6 +55,7 @@
         <referenceTo>ps_Class__c</referenceTo>
         <relationshipName>Class_Meeting</relationshipName>
         <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
         <type>MasterDetail</type>
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
@@ -92,6 +93,7 @@
     </fields>
     <fields>
         <fullName>Instructor_1__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
         <label>Instructor 1</label>
         <referenceTo>ps_Person__c</referenceTo>
@@ -110,6 +112,7 @@
     </fields>
     <fields>
         <fullName>Instructor_2__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
         <label>Instructor 2</label>
         <referenceTo>ps_Person__c</referenceTo>

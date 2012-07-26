@@ -1,0 +1,16 @@
+<apex:component >
+ 
+<div id="event-container">
+    <ul data-role="listview" data-theme="g" id="event-ul">
+    </ul>
+</div>
+
+
+<script id="event-template" type="text/x-jquery-tmpl">
+<li class="event-li"><a href="#">
+    <div class="event-title">${eventTitle}</div>
+    <div class="event-origin">${eventOrigin}</div>
+</a></li>
+</script> 
+
+</apex:component>

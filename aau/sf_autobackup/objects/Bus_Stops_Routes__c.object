@@ -46,6 +46,7 @@
         <relationshipLabel>Bus Stops Routes</relationshipLabel>
         <relationshipName>Bus_Stops_Routes</relationshipName>
         <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
         <type>MasterDetail</type>
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
@@ -57,6 +58,7 @@
         <relationshipLabel>Bus Stops Routes</relationshipLabel>
         <relationshipName>Bus_Stops_Routes</relationshipName>
         <relationshipOrder>1</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
         <type>MasterDetail</type>
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>

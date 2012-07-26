@@ -6,7 +6,7 @@
 </style>
 
 <ul data-role="listview"  data-theme="d">
-	<li class="link-li"><a href="http://newsfeed.academyart.edu/">
+	<li class="link-li"><a href="javascript:WebViewer.showWebView('http://newsfeed.academyart.edu/');">
 		<div class="course-name">AAU News</div>
 		<div class="course-location">http://newsfeed.academyart.edu/</div>
 		<span class="ui-icon ui-icon-arrow-r ui-icon-shadow"></span>

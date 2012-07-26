@@ -107,6 +107,13 @@ var SalesforceAuth = {
 
 };
 
+var WebViewer = {
+
+	showWebView: function(url) {
+		PhoneGap.exec(null, null, "com.appirio.mobile.webviewer","showWebView",[url]);
+	}
+}
+
 var RestDataPlugin = {
 
 	//these need to be set in a VF page

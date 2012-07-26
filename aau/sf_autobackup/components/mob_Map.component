@@ -30,7 +30,7 @@
     <script type="text/javascript" src="{!$Resource.mob_mapJS}"></script>
     
 
-    <div data-role="content" class="mob-content" style="width:100%; height:90%; padding:0;"> 
+    <div data-role="content" class="mob-content" style="width:100%; height:90%; padding:0; position:fixed; top:50px;"> 
       <div id="map_div" style="width: 100%"></div>
     </div>
 

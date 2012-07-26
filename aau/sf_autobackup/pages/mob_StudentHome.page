@@ -234,13 +234,13 @@
 </div>
 
 
-<div data-role="page" id="transit-map" class="page-container" style="position:fixed; opacity: 1.0;">
+<div data-role="page" id="transit-map" class="page-container">
     <div data-role="header" data-position="fixed"  class="mob-header">
 		<div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
          <div class="mob-header-icon header-right" id="transit-settings"><div class="mob-header-MenuIcon3" /></div>
          <h1>My Transit</h1>
-    </div>
-    <c:mob_MapSettings />
+    </div> 
+     <c:mob_MapSettings />
     <c:mob_Map />
 </div>
 

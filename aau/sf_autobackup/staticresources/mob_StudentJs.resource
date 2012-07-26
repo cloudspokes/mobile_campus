@@ -140,6 +140,11 @@ rssFeed: {
 	feedData: {},
 
 	init: function() {
+		//TODO: clear feed data here.
+		//TODO: change call back to sortFeed.
+		//TODO: call buildFeed when a counter = 4
+		
+		
 		var rssUrl = 'https://www.academyart.edu/news.rss';
 		RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
 
@@ -249,6 +254,9 @@ function studentHomePageInit() {
 	if(isAndroid) {
   		//Don't display Back button on Android devices.
   		$('.mob-back-button').css('display','none');
+  		//Replace CSS for fixed and transformed items.
+  		$('#result-list').removeClass('result-ul').addClass('result-ul-android');
+  		$('#result-arrow').removeClass('result-arrow').addClass('result-arrow-android');
 	}
 	
     $('.menu-btn').bind('click',function(){

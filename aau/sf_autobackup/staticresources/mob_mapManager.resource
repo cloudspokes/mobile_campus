@@ -62,7 +62,7 @@ var MapManager = function() {
     function parseVehicleName(vehicleName) {
       var result = {}
 
-      result.route = vehicleName.match("\{[\.\,\?\;\:\(\)\-\_\+\=\!\@\#\$\%\^\&\*\'\"\`\ a-zA-Z0-9]*\}");
+      result.route = vehicleName.match(/_[ a-zA-Z0-9\.\[\,\?\;\:\(\)\-\_\+\=\!\@\#\$\%\^\&\*\'\"\`]*_/);
 
       result.name = vehicleName;
 
@@ -71,8 +71,7 @@ var MapManager = function() {
 
         result.name = result.name.replace(result.route, "");
 
-        result.route = result.route.replace("\{", "");
-        result.route = result.route.replace("\}", "");
+        result.route = result.route.replace(/_/g, "");
       }
       return result;     
     }    

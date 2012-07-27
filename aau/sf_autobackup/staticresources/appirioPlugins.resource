@@ -161,13 +161,15 @@ var RestDataPlugin = {
 	},
 
 	isPhonegap: function(){
-	    if (!PhoneGap.available){
-	        utils.log("### PhoneGap not available!");
-			return false;
-		}else{
-	        utils.log("### PhoneGap IS available!");
-			return true;
+	    var isPhonegapAvailable = false;
+	
+		if(utils.isAndroid()) {
+		  isPhonegapAvailable = true;
+		} else {
+		  isPhonegapAvailable = PhoneGap.available;
 		}
+		
+		return isPhonegapAvailable;
 	}
 
 	/*
@@ -207,8 +209,18 @@ var Utils = function() {
     // Determines if loggin is enabled, if false calls to utils.log will not
     // output to the console (ideal for production release). Use true while developing
     var loggingEnabled = true;
+    var android = null;
     
     return {
+        isAndroid: function() {
+          if(android == null) {
+            var ua = navigator.userAgent.toLowerCase();
+	        android = ua.indexOf("android") > -1;
+          }
+          
+          return android;
+        },
+        
         // Logs an object to the console if the console is available and if logging is enabled
         log: function(value) {
             if(loggingEnabled) {

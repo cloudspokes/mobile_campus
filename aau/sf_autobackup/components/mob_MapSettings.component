@@ -110,7 +110,7 @@
 .result-ul-android li.ui-li span.ui-icon-arrow-r{
     z-index: 1200;
     background: url('{!$Resource.mob_Design}/mob_Design/images/settings-list-hack.png');
-	margin-top: -26px;
+	margin-top: -8px;
 	opacity: 1.0;
 	width: 10px;
 	height: 12px;
@@ -182,7 +182,7 @@ div.ui-slider-switch.ui-slider-mini a.ui-slider-handle .ui-btn-inner {
 <script id="settings-route-refresh-toggle" type="text/x-jquery-tmpl">
 	 <li>
          <label for="auto-refresh-toggle">Live Bus Updates</label>
-         <select name="auto-refresh-toggle" id="auto-refresh-toggle" data-role="slider" data-mini="true">
+         <select onchange="teletracManager.toggleRefresh(this);" name="auto-refresh-toggle" id="auto-refresh-toggle" data-role="slider" data-mini="true">
             {{if refreshOn}}
 			 <option value="off">Off</option>
              <option value="on" selected="selected">On</option>

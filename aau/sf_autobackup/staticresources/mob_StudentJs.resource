@@ -6,7 +6,7 @@ classSchedule: {
 	data: {},
     
 	init: function(){
-
+		
 		var restPath = "/classSchedule?id=" + aauMobile.studentId;
 		RestDataPlugin.getData(aauMobile.classSchedule.buildSchedule, aauMobile.classSchedule.initFailure, restPath, true, "GET", "json");
 	},
@@ -85,7 +85,7 @@ classSchedule: {
 				}
 			});
 		}
-
+		
 		$("#ulId").listview("refresh");     
 		$("#ulId").css("margin","0px");
 
@@ -130,26 +130,30 @@ classSchedule: {
 			mLocation:mLocation
 		});
 
-		detailBlock.appendTo(detailContent);
+		detailBlock.appendTo(detailContent);  
 		$("#ulDlId").listview("refresh");      
 		$("#ulDlId").css("margin","0px");
     }
 },
 
 rssFeed: {
-	feedData: {},
+	feedData: [],
+	
+	feedCount: 0,
 
 	init: function() {
 		//TODO: clear feed data here.
 		//TODO: change call back to sortFeed.
 		//TODO: call buildFeed when a counter = 4
 		
+		aauMobile.rssFeed.feedCount = 0;
+		aauMobile.rssFeed.feedData = [];
 		
 		var rssUrl = 'https://www.academyart.edu/news.rss';
 		RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
 
-		rssUrl = 'http://www.artuathletics.com/services/calendar.ashx/calendar.rss';
-		RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
+		//rssUrl = 'http://www.artuathletics.com/services/calendar.ashx/calendar.rss';
+		//RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
 
 		rssUrl = 'https://spreadsheets.google.com/feeds/list/0AvROhDzo3UybdDQ5aEFzVDZqSzFDdVVENTRxTXdXcHc/od6/public/basic?alt=rss';
 		RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
@@ -167,20 +171,26 @@ rssFeed: {
 		result = $.xml2json(result);
 		console.log('RSS Feed Success! ' + result.channel.title);
 		//console.log('Result: ' + JSON.stringify(result));
-
+		
+		$.each(result.channel.item, function(index, item){
+			item.origin = result.channel.title;
+			aauMobile.rssFeed.feedData.push(item);
+		});
+		
+		console.log('Feed Data: ' + JSON.stringify(aauMobile.rssFeed.feedData));
+		aauMobile.rssFeed.feedData.sort(function(a,b){
+			//console.log('sorting a: ' + a.title + ' compared to b: ' + b.title);
+			return a.title.localeCompare(b.title);
+		});
+		aauMobile.rssFeed.feedCount++;
+		
 		var feedTemplate = $("#rss-feed-template");
 		var feedContainer = $("#feed-ul"); //.empty();
-
-		$.each(result.channel.item, function(index, item){
-
-			if(index < 3){
-				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: result.channel.title}).appendTo(feedContainer);			
-			}else{
-				//return;
-			}
-
-		});
-
+		if(aauMobile.rssFeed.feedCount > 3){
+			$.each(aauMobile.rssFeed.feedData, function(index, item){
+					feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin}).appendTo(feedContainer);			
+			});
+		}
 		$(feedContainer).listview('refresh');
 		$.mobile.hidePageLoadingMsg;
 	},
@@ -221,7 +231,7 @@ rssEvent: {
 
 		var feedTemplate = $("#event-template");
 		var feedContainer = $("#event-ul"); //.empty();
-
+		
 		$.each(result.channel.item, function(index, item){
 
 			if(index < 20){
@@ -231,8 +241,8 @@ rssEvent: {
 			}
 
 		});
-
-		$(feedContainer).listview('refresh');
+		
+		$("#event-ul").listview('refresh');
 
 	},
 
@@ -243,6 +253,14 @@ rssEvent: {
 };
 
 function studentHomePageInit() {
+    
+    //Create the list views that are updated with AJAX data.
+	$('#ulId').trigger('create');
+	$('#ulDlId').trigger('create');
+	$('#feed-ul').trigger('create');
+	$('#event-ul').trigger('create');
+	$('#result-list').trigger('create');
+		
     // init Class Schedule data
 	aauMobile.classSchedule.init();
 	aauMobile.rssFeed.init();
@@ -262,8 +280,6 @@ function studentHomePageInit() {
     $('.menu-btn').bind('click',function(){
 	     $.mobile.changePage('#menu-page');
     });
-    
-    $('#result-list').listview();
 }
 
 function feedListPageCreate() {

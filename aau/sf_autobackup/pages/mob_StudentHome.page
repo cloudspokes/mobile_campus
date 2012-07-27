@@ -111,7 +111,8 @@
     }
     .mob-header h1.ui-title{
         font-size: 16pt;
-        margin: 0.65em 30% .35em;
+        margin: 0.65em 0 .35em 0;
+        text-overflow: clip;
     }
     #external-page-frame{
     	border: none;
@@ -196,7 +197,7 @@
 <div data-role="page" id="feed-list" class="page-container">
     <div data-role="header" data-position="fixed"  class="mob-header">
 		<div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
-        <h1>Campus News and Events</h1>
+        <h1>News and Events</h1>
     </div>
     <div data-role="content" class="mob-content">
         <c:mob_Feed />  
@@ -205,7 +206,7 @@
 
 <div data-role="page" id="feed-detail" class="page-container">
     <div data-role="header" data-position="fixed"  class="mob-header">
-        <a href="#feed-list" data-role="button" data-inline="true" data-direction="reverse" class="back-root">Back</a>
+        <a href="#feed-list" data-role="button" data-inline="true" data-direction="reverse" class="back-root mob-back-button">Back</a>
         <h1>News Article</h1>
     </div>
     <div data-role="content" class="mob-content">
@@ -240,7 +241,7 @@
          <div class="mob-header-icon header-right" id="transit-settings"><div class="mob-header-MenuIcon3" /></div>
          <h1>My Transit</h1>
     </div> 
-     <c:mob_MapSettings />
+    <c:mob_MapSettings />
     <c:mob_Map />
 </div>
 

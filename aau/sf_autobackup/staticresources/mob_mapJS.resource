@@ -35,9 +35,9 @@ $(document).bind("pageshow", function(event) {
 	  
     }
   
-  	var autoRefreshSetting = localStorage.getItem("autoRefreshSetting");
+  	var autoRefreshSetting = localStorage.getItem('autoRefreshSetting');
   	
-  	if(autoRefreshSetting == "on" || !autoRefreshSetting){
+  	if(autoRefreshSetting == 'on' || !autoRefreshSetting){
 	    // Set up vehicle auto refresh
 	    teletracManager.setAutoRefreshVehiclesPosition(true, mapManager.addVehicles);
     } else {

@@ -86,7 +86,9 @@ classSchedule: {
 			});
 		}
 		
-		$("#ulId").listview("refresh");     
+		if($($.mobile.activePage).attr('id') == 'student-home'){
+			$("#ulId").listview('refresh');
+		}  
 		$("#ulId").css("margin","0px");
 
 	},
@@ -131,7 +133,9 @@ classSchedule: {
 		});
 
 		detailBlock.appendTo(detailContent);  
-		$("#ulDlId").listview("refresh");      
+		if($($.mobile.activePage).attr('id') == 'student-detail'){
+			$("#ulDlId").listview('refresh');
+		}   
 		$("#ulDlId").css("margin","0px");
     }
 },
@@ -142,18 +146,12 @@ rssFeed: {
 	feedCount: 0,
 
 	init: function() {
-		//TODO: clear feed data here.
-		//TODO: change call back to sortFeed.
-		//TODO: call buildFeed when a counter = 4
 		
 		aauMobile.rssFeed.feedCount = 0;
 		aauMobile.rssFeed.feedData = [];
 		
 		var rssUrl = 'https://www.academyart.edu/news.rss';
 		RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
-
-		//rssUrl = 'http://www.artuathletics.com/services/calendar.ashx/calendar.rss';
-		//RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
 
 		rssUrl = 'https://spreadsheets.google.com/feeds/list/0AvROhDzo3UybdDQ5aEFzVDZqSzFDdVVENTRxTXdXcHc/od6/public/basic?alt=rss';
 		RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
@@ -177,9 +175,7 @@ rssFeed: {
 			aauMobile.rssFeed.feedData.push(item);
 		});
 		
-		console.log('Feed Data: ' + JSON.stringify(aauMobile.rssFeed.feedData));
 		aauMobile.rssFeed.feedData.sort(function(a,b){
-			//console.log('sorting a: ' + a.title + ' compared to b: ' + b.title);
 			return a.title.localeCompare(b.title);
 		});
 		aauMobile.rssFeed.feedCount++;
@@ -191,7 +187,9 @@ rssFeed: {
 					feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin}).appendTo(feedContainer);			
 			});
 		}
-		$(feedContainer).listview('refresh');
+		if($($.mobile.activePage).attr('id') == 'feed-list'){
+			$(feedContainer).listview('refresh');
+		}
 		$.mobile.hidePageLoadingMsg;
 	},
 
@@ -220,6 +218,7 @@ rssFeed: {
 },
 
 rssEvent: {
+
 	init: function() {
 		rssUrl = 'http://www.artuathletics.com/services/calendar.ashx/calendar.rss';
 		RestDataPlugin.getData(aauMobile.rssEvent.buildEvents, aauMobile.rssEvent.initFailure, rssUrl, false, "GET", "xml");
@@ -228,7 +227,11 @@ rssEvent: {
 	buildEvents: function(result) {
 		result = $.xml2json(result);
 		console.log('RSS Feed Success! ' + result.channel.title);
-
+		
+		result.channel.item.sort(function(a,b){
+			return a.title.localeCompare(b.title);
+		});
+		
 		var feedTemplate = $("#event-template");
 		var feedContainer = $("#event-ul"); //.empty();
 		
@@ -242,7 +245,9 @@ rssEvent: {
 
 		});
 		
-		$("#event-ul").listview('refresh');
+		if($($.mobile.activePage).attr('id') == 'event-list'){
+			$(feedContainer).listview('refresh');
+		}
 
 	},
 
@@ -253,13 +258,6 @@ rssEvent: {
 };
 
 function studentHomePageInit() {
-    
-    //Create the list views that are updated with AJAX data.
-	$('#ulId').trigger('create');
-	$('#ulDlId').trigger('create');
-	$('#feed-ul').trigger('create');
-	$('#event-ul').trigger('create');
-	$('#result-list').trigger('create');
 		
     // init Class Schedule data
 	aauMobile.classSchedule.init();
@@ -280,6 +278,23 @@ function studentHomePageInit() {
     $('.menu-btn').bind('click',function(){
 	     $.mobile.changePage('#menu-page');
     });
+    
+    //Bind listview refreshes to respective page-before-show methods.
+    $('#student-home').on('pagebeforeshow',function(){
+    	$('#ulId').listview('refresh');
+    }); 
+    $('#student-detail').on('pagebeforeshow',function(){
+    	$('#ulDlId').listview('refresh');
+    }); 
+    $('#feed-list').on('pagebeforeshow',function(){
+    	$('#feed-ul').listview('refresh');
+    }); 
+    $('#event-list').on('pagebeforeshow',function(){
+    	$('#event-ul').listview('refresh');
+    }); 
+    $('#transit-map').on('pagebeforeshow',function(){
+    	$('#result-list').listview('refresh');
+    }); 
 }
 
 function feedListPageCreate() {

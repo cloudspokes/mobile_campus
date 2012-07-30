@@ -20,5 +20,5 @@
     <plugin name="com.salesforce.smartstore" value="com.salesforce.androidsdk.phonegap.SmartStorePlugin"/>
     <plugin name="com.salesforce.testrunner" value="com.salesforce.androidsdk.phonegap.TestRunnerPlugin"/>
 
-    <plugin name="com.appirio.mobile.webservice" value="com.appirio.mobile.plugins.RESTPlugin"/>
+    <plugin name="com.appirio.mobile.webservice" value="com.appirio.mobile.plugins.AMWebService"/>
 </plugins>

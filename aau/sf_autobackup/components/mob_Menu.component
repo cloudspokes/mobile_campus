@@ -1,12 +1,97 @@
 <apex:component >
-
- <ul data-role="listview"  data-theme="d" id="ulId">
-	<li><a href="#student-home"><h3>Class Schedule</h3></a></li>
-	<li><a href="#transit-map"><h3>Transit Map</h3></a></li>
-	<li><a href="#feed-list"><h3>Campus News</h3></a></li>
-	<li><a href="#event-list"><h3>Sports</h3></a></li>
-	<li><a href="#link-list"><h3>External Links</h3></a></li> 
-	<li id="logout-item"><a href="javascript:SalesforceAuth.Logout();"><h3>Logout</h3></a></li>
+<style>
+	#menu-page{
+		background: transparent;
+		z-index:1000;
+	}
+	.slide-menu{
+		width: 180px;
+		height: 100%;
+		background: #121212;
+		margin-left: 0px;
+		z-index: 1001;
+	} 
+	.slide-menu span.ui-icon-arrow-r{
+		display:none;
+	}
+	.slide-menu h3{
+		text-overflow:clip;
+		overflow: visible;
+		color: #FFF;
+		text-shadow: none;
+	}
+	.slide-menu li{
+		height:40px;
+		background: #121212;
+		border: none;
+	}
+	.slide-menu-icon{
+		background: url({!$Resource.mob_Design}/mob_Design/iconsprite_grey.png);
+		background-size: 100%;
+		width:30px;
+		height:24px;
+		display:inline-block;
+		float: left;
+		margin-top:10px;
+		margin-left: 5px;
+	}
+	#slide-menu-icon-schedule{
+		background-position-y: -1px;
+	}
+	#slide-menu-icon-map{
+		background-position-y: -25px;
+	}
+	#slide-menu-icon-news{
+		background-position-y: -50px;
+		height: 17px;
+		margin-top: 13px;
+	}
+	#slide-menu-icon-sports{
+		background-position-y: -94px;
+	}
+	#slide-menu-icon-links{
+		background-position-y: -68px;
+		height:26px
+	}
+	#slide-menu-icon-logout{
+		background-position-y: -118px;
+	}
+	/*
+	.ui-li-heading::before {
+background: url('https://aau--dev6--c.cs12.visual.force.com/resource/1343330448000/mob_Design/mob_Design/iconsprite_grey.png');
+display: inline-block;
+width: 24px;
+height: 19px;
+content: ' ';
+margin-right: 15px;
+background-size: 100%;
+background-position-y: -1px;
+float: left;
+margin-top: -1px;
+}
+	*/
+</style>
+<script type="text/javascript">
+	$('#menu-page').on('click', function(event){
+		console.log('Tapped on the content. GET OUTTA HERE');
+	});
+	$('#slide-menu').on('click', function(event){
+		event.stopPropagation();
+		console.log('Tapped on the menu.');
+	});
+	$('#slide-menu li a').on('click', function(event){
+		event.stopPropagation();
+		event.preventDefault();
+		console.log('Link clicked. Target = ' + $(this).attr('href'));
+	});
+</script>
+ <ul data-role="listview"  data-theme="d" id="slide-menu" class="slide-menu">
+	<li><span id="slide-menu-icon-schedule" class="slide-menu-icon">&nbsp;</span><a href="#student-home"><h3>Class Schedule</h3></a></li>
+	<li><span id="slide-menu-icon-map" class="slide-menu-icon">&nbsp;</span><a href="#transit-map"><h3>Transit Map</h3></a></li>
+	<li><span id="slide-menu-icon-news" class="slide-menu-icon">&nbsp;</span><a href="#feed-list"><h3>Campus News</h3></a></li>
+	<li><span id="slide-menu-icon-sports" class="slide-menu-icon">&nbsp;</span><a href="#event-list"><h3>Sports</h3></a></li>
+	<li><span id="slide-menu-icon-links" class="slide-menu-icon">&nbsp;</span><a href="#link-list"><h3>External Links</h3></a></li> 
+	<li id="logout-item"><span id="slide-menu-icon-logout" class="slide-menu-icon">&nbsp;</span><a href="javascript:SalesforceAuth.Logout();"><h3>Logout</h3></a></li>
  </ul>
 
 </apex:component>

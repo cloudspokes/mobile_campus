@@ -118,7 +118,8 @@ var MapManager = function() {
                      position: currentLocation,
                      title: "Student Marker",
                      animation: google.maps.Animation.DROP,
-                     icon: studentMarkerImage
+                     icon: studentMarkerImage,
+                     zindex: 3
                   });
         
         myMarker.popupInfo = "This is where you are!";
@@ -265,7 +266,7 @@ var MapManager = function() {
             
             
             if(!marker) {
-            	if(nameResult.route){
+            	if(nameResult.route && busMarkers[nameResult.route]){
               	  var busMarker = new google.maps.MarkerImage(busMarkers[nameResult.route],
 												    	null, 
 												    	null, 
@@ -276,7 +277,8 @@ var MapManager = function() {
 	              var marker = new google.maps.Marker({
 	                            position: new google.maps.LatLng(this.Latitude, this.Longitude),
 	                     		animation: google.maps.Animation.DROP,
-	                     		icon: busMarker
+	                     		icon: busMarker,
+	                     		zindex: 2
 	                          });
 	              
 	              marker.popupInfo = "Vehicle Name: " + nameResult.name;
@@ -315,7 +317,8 @@ var MapManager = function() {
 						position: new google.maps.LatLng(this.latitude, this.longitude),
 						title: this.stopName,
 						animation: google.maps.Animation.DROP,
-						icon: stopMarker
+						icon: stopMarker,
+						zindex: 1
 					});
  
                     marker.popupInfo = this.stopName;

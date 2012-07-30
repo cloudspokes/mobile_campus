@@ -308,7 +308,10 @@ function feedDetailPageCreate() {
 }
 
 function bindEvents() {
-  $("#student-home").live("pageinit", studentHomePageInit);
+  $("#menu-page").live("pageinit", function(){
+  	$.mobile.changePage('#student-home');
+  });
+  $("#student-home").live("pagecreate", studentHomePageInit);
   $("#feed-list").live("pagecreate", feedListPageCreate);
   $("#feed-detail").live("pagecreate", feedDetailPageCreate);
 }

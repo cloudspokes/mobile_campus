@@ -7,9 +7,10 @@
     <script type="text/javascript" src="{!$Resource.jquerytmpl}"></script>  
     <script type="text/javascript" src="{!$Resource.appirioPlugins}"></script>
     <script type="text/javascript" src="{!$Resource.mob_XML2JSON}"></script>
-    <script type="text/javascript"  src="{!$Resource.mob_busStopLocations}"></script>
+    <script type="text/javascript" src="{!$Resource.mob_busStopLocations}"></script>
 
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
+    <script type="text/javascript" src="{!$Resource.mob_richMarker}"></script>
 
     <!-- <script type="text/javascript" src="{!$Resource.mob_jquerymobile1dot1}/jquery.mobile-1.1.0/jquery.mobile-1.1.0-rc.1.min.css"></script> -->
     
@@ -125,27 +126,37 @@
 				    	new google.maps.Size(25, 27) //new google.maps.Size((72*0.3),(79*0.3))											
 				    	);*/
 				    	
-				    	var busMarker = {
-				    		anchor: new google.maps.Point(0, 0),
-				    		path: 'M266,358.478v57.647c0,2.619,2.124,4.742,4.743,4.742h20.291L302,437.022l10.967-16.155h20.291 c2.619,0,4.742-2.123,4.742-4.742v-57.647H266z',
+				    	/*var busMarker = {
+				    		path: 'M0.986,0.678v56.951c0,2.589,2.099,4.688,4.688,4.688H25.73l10.839,15.971l10.84-15.971h20.057 c2.589,0,4.688-2.099,4.688-4.688V0.678H0.986z',
 				    		fillColor: '#BF2200',
 				    		fillOpacity: 1,
-				    		scale: 1,
+				    		scale: 0.3,
 				    		strokeColor: '#000',
 				    		strokeWeight: 1
-				    	};
+				    	};*/
 				    	
 				    	
 				    	
                         $(jsonResponse.Vehicle).each(function() {
-                          var marker = new google.maps.Marker({
+                          var marker = new RichMarker({
                             position: new google.maps.LatLng(this.Latitude, this.Longitude),
-                            title: this.VehicleName,
-                            animation: google.maps.Animation.DROP,
-                            icon: busMarker
+                            map: map,
+                            draggable: false,
+                            shadow: '0px 0px 0px rgba(0,0,0,0)',
+                            zindex: 1,
+                            content: '<?xml version="1.0" encoding="utf-8"?>' +
+										'<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' +
+										'<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"'+
+											 'width="26px" height="30" viewBox="0 0 72 79" enable-background="new 0 0 72 79" xml:space="preserve">' +
+										'<path fill="#BF2200" d="M0.986,0.678v56.951c0,2.589,2.099,4.688,4.688,4.688H25.73l10.839,15.971l10.84-15.971h20.057' +
+											'c2.589,0,4.688-2.099,4.688-4.688V0.678H0.986z"/>' +
+										'<path fill="none" stroke="#000000" stroke-width="0.9885" stroke-miterlimit="10" d="M0.986,0.678v56.951' +
+											'c0,2.589,2.099,4.688,4.688,4.688H25.73l10.839,15.971l10.84-15.971h20.057c2.589,0,4.688-2.099,4.688-4.688V0.678H0.986z"/>' +
+										'</svg>'
                           });
                           
-                          marker.setMap(map);
+                          
+                          //marker.setMap(map);
                           
                           markers[this.VehicleName] = marker;
                         });
@@ -165,44 +176,21 @@
 				                     position: myPosition,
 				                     title: "Me",
 				                     animation: google.maps.Animation.DROP,
-				                     icon: studentMarker
+				                     icon: studentMarker,
+				                     zindex: google.maps.Marker.MAX_ZINDEX
 				                  });
+				                  
+				        console.log('max zindex ' + google.maps.Marker.MAX_ZINDEX + 1);
 				        
 				        myMarker.popupInfo = "This is where you are!";
 				                  
 				        google.maps.event.addListener(myMarker, 'click', simpleMarkerListener);
 				        
-				        myMarker.setMap(map);
+				        
                         
                         setTimeout(setMarkers, 30000);
                         
-                        /*google.maps.event.addListener(map, 'zoom_changed', function() {
-                        	$(jsonResponse.Vehicle).each(function() {
-                        		busMarker = {
-						    		anchor: new google.maps.Point(306, 792),
-						    		path: 'M266,358.478v57.647c0,2.619,2.124,4.742,4.743,4.742h20.291L302,437.022l10.967-16.155h20.291 c2.619,0,4.742-2.123,4.742-4.742v-57.647H266z',
-						    		fillColor: '#BF2200',
-						    		fillOpacity: 1,
-						    		scale: 1,
-						    		strokeColor: '#000',
-						    		strokeWeight: 1
-						    	};
-                        		markers[this.VehicleName].setMap(null);
-                        		
-                        		 var marker = new google.maps.Marker({
-		                            position: new google.maps.LatLng(this.Latitude, this.Longitude),
-		                            title: this.VehicleName,
-		                            icon: busMarker
-		                          });
-		                          
-		                          marker.setMap(map);
-		                          
-		                          markers[this.VehicleName] = marker;
-                        	});
-                        	
-                        });*/
-                        drawRoute(busRoutes.routes[0]);
-                       
+                       myMarker.setMap(map);
                         
     }
     

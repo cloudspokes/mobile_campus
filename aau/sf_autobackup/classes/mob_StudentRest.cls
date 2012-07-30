@@ -3,20 +3,28 @@ global with sharing class mob_StudentRest {
 
     @HttpGet
 	global static PsEnrollments getEnrollments(RestRequest req, RestResponse res) {
-		String contactId = req.requestURI.substring(req.requestURI.lastIndexOf('/')+1);
+		String contactId = null;
+		System.debug('::req::'+req);
+		System.debug(':::Paramter ::'+req.params.get('id'));
+		if(req.params != null ){
+			contactId = req.params.get('id');
+		}
+		
     	PsEnrollments psEnrlMents = new PsEnrollments();
 		psEnrlMents.startDate = date.today();
 		psEnrlMents.lastDate = date.today()+7;
 		
 		psEnrlMents.mobStudentsEnrolled = new Map<String,mobStudentEnrolled>();
 		psEnrlMents.classMeetings = new Map<String,ClassMeeting>();
-		 
+		
+		System.debug('::Contact Id ::'+contactId); 
 		Set<Id> enrolledClasses = new Set<Id>();
-		if(contactId!=null && contactId.startsWith('005')){
+		if(contactId != null && contactId.startsWith('005')){
 			for(ContactShare conShare :[Select contactid from ContactShare where UserOrGroupId =:contactId and rowcause='Manual']){
 				contactId = conShare.ContactId;
 			}
-		}  
+		}
+	  
 	    for(ps_Enrollment__c ps_Enrolmnt:[SELECT Id,Class_Section__c,Student__r.Id,Student__r.Name,Class_Section__r.Name,Class_Section__r.Course_Description__c,Class_Section__r.Catalog_Nbr__c, Class_Section__r.Term__c,Class_Section__r.Term__r.End_Date__c From ps_Enrollment__c 
 	               where Student__c =: contactId AND Enrollment_Status__c = 'Enrolled' AND Class_Section__r.Term__r.End_Date__c > :date.today() ]){
 	    	MobStudentEnrolled mobStdEnrolled = new MobStudentEnrolled();

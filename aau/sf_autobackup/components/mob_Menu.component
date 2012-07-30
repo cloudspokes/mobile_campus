@@ -1,0 +1,12 @@
+<apex:component >
+
+ <ul data-role="listview"  data-theme="d" id="ulId">
+	<li><a href="#student-home"><h3>Class Schedule</h3></a></li>
+	<li><a href="#transit-map"><h3>Transit Map</h3></a></li>
+	<li><a href="#feed-list"><h3>Campus News</h3></a></li>
+	<li><a href="#event-list"><h3>Sports</h3></a></li>
+	<li><a href="#link-list"><h3>External Links</h3></a></li> 
+	<li id="logout-item"><a href="javascript:SalesforceAuth.Logout();"><h3>Logout</h3></a></li>
+ </ul>
+
+</apex:component>

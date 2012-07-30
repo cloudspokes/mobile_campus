@@ -95,18 +95,47 @@ var WebViewerPlugin = {
     }
 };
 
+var SalesforceAuth = {
+
+	Logout: function() {
+	    utils.log("### Phonegap ###" + JSON.stringify(PhoneGap));
+		//PhoneGap.exec("com.salesforce.oauth", "logout", '');
+		//PhoneGap.exec("com.salesforce.oauth.oauth", "logout", '');
+		PhoneGap.exec(null, null, "com.salesforce.oauth","logoutCurrentUser",[]);
+
+	}
+
+};
+
+var WebViewer = {
+
+	showWebView: function(url) {
+		PhoneGap.exec(null, null, "com.appirio.mobile.webviewer","showWebView",[url]);
+	}
+}
+
 var RestDataPlugin = {
 
 	//these need to be set in a VF page
 	accessToken: '',	//$Api.Session_ID
 	clientKey: '',		//$Setup.mob_Student__c.Client_Key__c
 	baseUrl: '',		//$Setup.mob_Student__c.Base_Url__c
+	restUrl: '',		//$Setup.mob_Student__c.Rest_Url__c
 
 	getData: function(successCallback, failureCallback, restPath, isSFDC, restType, dataType) {
 
 		if(RestDataPlugin.isPhonegap()){
 			console.log('Rest call via Phonegap...');
-			RestDataPlugin.getPhonegapData(successCallback, failureCallback, restPath);
+			//RestDataPlugin.getPhonegapData(successCallback, failureCallback, restPath, isSFDC, restType, dataType);
+			RestDataPlugin.getPhonegapData(function (rawResult) {
+			  utils.log("This is the rawResult from PhoneGap: " + rawResult);
+			  try {
+			    var json = JSON.parse(rawResult);
+			    successCallback(json);
+			  } catch (e) {
+                successCallback(rawResult);			  
+			  } 
+			}, failureCallback, restPath);
 		}else{
 			console.log('Rest call via AJAX Toolkit...');
 			RestDataPlugin.getAjaxDataByForceTK(successCallback, failureCallback, restPath, isSFDC, restType, dataType);
@@ -114,6 +143,10 @@ var RestDataPlugin = {
 	},
 
 	getPhonegapData: function(successCallback, failureCallback, restPath) {
+		//append the rest path if this is a Salesforce REST call
+		if(restPath.substring(0,1) == '/'){
+			restPath = RestDataPlugin.restUrl + '/services/apexrest' + restPath;
+		}
 		PhoneGap.exec(successCallback, failureCallback, "com.appirio.mobile.webservice", "getRestData", [restPath]);
 	},
 
@@ -128,11 +161,15 @@ var RestDataPlugin = {
 	},
 
 	isPhonegap: function(){
-	    if (!PhoneGap.available){
-			return false;
-		}else{
-			return true;
+	    var isPhonegapAvailable = false;
+	
+		if(utils.isAndroid()) {
+		  isPhonegapAvailable = true;
+		} else {
+		  isPhonegapAvailable = PhoneGap.available;
 		}
+		
+		return isPhonegapAvailable;
 	}
 
 	/*
@@ -167,7 +204,32 @@ var RestDataPlugin = {
 	*/
 };
 
+// Object with utility functions
+var Utils = function() {
+    // Determines if loggin is enabled, if false calls to utils.log will not
+    // output to the console (ideal for production release). Use true while developing
+    var loggingEnabled = true;
+    var android = null;
+    
+    return {
+        isAndroid: function() {
+          if(android == null) {
+            var ua = navigator.userAgent.toLowerCase();
+	        android = ua.indexOf("android") > -1;
+          }
+          
+          return android;
+        },
+        
+        // Logs an object to the console if the console is available and if logging is enabled
+        log: function(value) {
+            if(loggingEnabled) {
+                if(console) {
+                    console.log(value);
+                }
+            }
+        }
+    }
+};
 
-
-
-
+var utils = new Utils();

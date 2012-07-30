@@ -1,0 +1,43 @@
+<apex:component >
+  <style>
+ #event-ul li a{
+    padding:0 !important;
+    padding-right:30px !important;
+ }
+ .event-title{
+    padding: 5px;
+    color: #dc2221;
+    font-size: 14pt;
+    white-space: pre-line;
+ }
+ .event-origin{
+    color: #808080;
+    font-weight: lighter;
+    font-size: 11pt;
+ }
+ 
+ /*Override jQuery Mobile Defaults*/
+ #event-ul li div.ui-li{
+    border: none;
+    border-bottom: solid 1px #626262;
+ }
+ #event-container{
+	 margin-top:10px; 
+	 margin-left: 16px; 
+	 width: 92%;
+ }
+</style>
+<div id="event-container">
+    <ul data-role="listview" data-theme="d" id="event-ul">
+    </ul>
+</div>
+
+
+<script id="event-template" type="text/x-jquery-tmpl">
+<li class="event-li"><a href="#">
+    <div class="event-title">${eventTitle}</div>
+    <div class="event-origin">${eventOrigin}</div>
+</a></li>
+</script> 
+
+</apex:component>

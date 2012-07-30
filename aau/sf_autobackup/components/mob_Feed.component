@@ -1,7 +1,35 @@
 <apex:component >
+<style>
+ #feed-ul li a{
+    padding:0 !important;
+    padding-right:30px !important;
+ }
+ .feed-title{
+    padding: 5px;
+    color: #dc2221;
+    font-size: 14pt;
+    white-space: pre-line;
+ }
+ .feed-origin{
+    color: #808080;
+    font-weight: lighter;
+    font-size: 11pt;
+ }
+ 
+ /*Override jQuery Mobile Defaults*/
+ #feed-ul li div.ui-li{
+    border: none;
+    border-bottom: solid 1px #626262;
+ }
+ #feed-container{
+	 margin-top:10px; 
+	 margin-left: 16px; 
+	 width: 92%;
+ }
+</style>
 
-<div id="feed-container">
-	<ul data-role="listview" data-theme="g" id="feed-ul">
+<div id="feed-container" >
+	<ul data-role="listview" data-theme="d" id="feed-ul">
 	</ul>
 </div>
 

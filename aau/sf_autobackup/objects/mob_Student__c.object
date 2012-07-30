@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <customSettingsVisibility>Public</customSettingsVisibility>
+    <description>Settings for Mobile Student App.</description>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Base_Url__c</fullName>
+        <defaultValue>&quot;https://login.salesforce.com&quot;</defaultValue>
+        <description>Base Url to be used in REST calls, etc.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Base Url to be used in REST calls, etc.</inlineHelpText>
+        <label>Base Url</label>
+        <length>100</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bus_Refresh_Rate__c</fullName>
+        <description>Refresh Rate for Busses in milliseconds</description>
+        <externalId>false</externalId>
+        <label>Bus Refresh Rate</label>
+        <precision>8</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Client_Key__c</fullName>
+        <defaultValue>&quot;3MVG9Oe7T3Ol0ea4rCgfMtZo3n40wB4t890nElRZIKn5z2cjSuFdf13Yrw6bgcwA5vlotolfrrrHGqaimsfyM&quot;</defaultValue>
+        <description>Key used for &quot;Remote Access&quot; when doing REST calls</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Key used for &quot;Remote Access&quot; when doing REST calls</inlineHelpText>
+        <label>Client Key</label>
+        <length>250</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Rest_Url__c</fullName>
+        <defaultValue>&quot;https://aau--dev6.cs12.my.salesforce.com&quot;</defaultValue>
+        <description>This is the Base Url for Rest Calls into Salesforce.  We are passing this to Phonegap.GetRestData</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the Base Url for Rest Calls into Salesforce.</inlineHelpText>
+        <label>Rest Url</label>
+        <length>250</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>mob_Student</label>
+</CustomObject>

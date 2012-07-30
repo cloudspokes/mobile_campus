@@ -13,7 +13,7 @@ Mauricio Created on 07/05/12
 var MapManager = function() {
 
 	// if should use geolocation to pin point user's position, if false, defaults users position to SF
-    var useGeolocation = true;
+    var useGeolocation = false;
     
     // Stores the rendered map
     var map;
@@ -294,6 +294,30 @@ var MapManager = function() {
       // Clear Route from User input
       setRouteToClear: function(routeName){
       	clearRoute(routeName);
+      },
+      
+      // Draw Polyline
+      drawRouteWtihPolyline: function(){
+      	var routeDPathCoods = [
+      		new google.maps.LatLng(37.78924100, -122.41073000),
+      		new google.maps.LatLng(37.78907000, -122.41157700),
+      		new google.maps.LatLng(37.78857000, -122.41460200),
+      		new google.maps.LatLng(37.80363000, -122.41490300),
+      		new google.maps.LatLng(37.80697900, -122.41047900),
+      		new google.maps.LatLng(37.80694500, -122.41889000),
+      		new google.maps.LatLng(37.79610600, -122.42394300),
+      		new google.maps.LatLng(37.79293200, -122.42376700),
+      		new google.maps.LatLng(37.78924100, -122.41073000)
+      	];
+      	
+      	var routeDPath = new google.maps.Polyline( {
+      		path: routeDPathCoods,
+      		strokeColor: "#FF0000",
+      		strokeOpacity: 1.0,
+      		strokeWeight: 2
+      	});
+      	
+      	routeDPath.setMap(map);
       }
     };
 };

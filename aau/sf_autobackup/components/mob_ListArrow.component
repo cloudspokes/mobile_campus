@@ -1,0 +1,17 @@
+<apex:component >
+ <style>
+ span.ui-icon-arrow-r{
+    border: none;
+    background-image: none;
+    margin-top: -5px;
+    height: 7px;
+    width: 7px; 
+    border-top: 3px solid #919191;
+    border-right: 3px solid #919191;
+    -webkit-transform: rotate(45deg);
+    background-color: transparent;
+    border-radius: 0px;
+    box-shadow: 0px 0px;
+ }       
+ </style>
+</apex:component>

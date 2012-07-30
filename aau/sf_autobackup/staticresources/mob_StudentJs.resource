@@ -6,8 +6,8 @@ classSchedule: {
 	data: {},
     
 	init: function(){
-
-		var restPath = "/classSchedule/" + aauMobile.studentId;
+		
+		var restPath = "/classSchedule?id=" + aauMobile.studentId;
 		RestDataPlugin.getData(aauMobile.classSchedule.buildSchedule, aauMobile.classSchedule.initFailure, restPath, true, "GET", "json");
 	},
 	
@@ -85,8 +85,10 @@ classSchedule: {
 				}
 			});
 		}
-
-		$("#ulId").listview("refresh");     
+		
+		if($($.mobile.activePage).attr('id') == 'student-home'){
+			$("#ulId").listview('refresh');
+		}  
 		$("#ulId").css("margin","0px");
 
 	},
@@ -115,7 +117,7 @@ classSchedule: {
 		var blockTemplate = $("#student-classDetail-template");
 		var detailContent = $("#ulDlId");
         
-        meetTime = classMeetingDetail.startTime+' - '+classMeetingDetail.endTime;
+        meetTime = classMeetingDetail.startTime+' to '+classMeetingDetail.endTime;
         topic =  classMeetingDetail.specialTopic;
         instructor = classMeetingDetail.instructorName;
         mLocation = classMeetingDetail.location;
@@ -130,20 +132,25 @@ classSchedule: {
 			mLocation:mLocation
 		});
 
-		detailBlock.appendTo(detailContent);
-		$("#ulDlId").listview("refresh");      
+		detailBlock.appendTo(detailContent);  
+		if($($.mobile.activePage).attr('id') == 'student-detail'){
+			$("#ulDlId").listview('refresh');
+		}   
 		$("#ulDlId").css("margin","0px");
     }
 },
 
 rssFeed: {
-	feedData: {},
+	feedData: [],
+	
+	feedCount: 0,
 
 	init: function() {
+		
+		aauMobile.rssFeed.feedCount = 0;
+		aauMobile.rssFeed.feedData = [];
+		
 		var rssUrl = 'https://www.academyart.edu/news.rss';
-		RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
-
-		rssUrl = 'http://www.artuathletics.com/services/calendar.ashx/calendar.rss';
 		RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
 
 		rssUrl = 'https://spreadsheets.google.com/feeds/list/0AvROhDzo3UybdDQ5aEFzVDZqSzFDdVVENTRxTXdXcHc/od6/public/basic?alt=rss';
@@ -162,21 +169,27 @@ rssFeed: {
 		result = $.xml2json(result);
 		console.log('RSS Feed Success! ' + result.channel.title);
 		//console.log('Result: ' + JSON.stringify(result));
-
+		
+		$.each(result.channel.item, function(index, item){
+			item.origin = result.channel.title;
+			aauMobile.rssFeed.feedData.push(item);
+		});
+		
+		aauMobile.rssFeed.feedData.sort(function(a,b){
+			return a.title.localeCompare(b.title);
+		});
+		aauMobile.rssFeed.feedCount++;
+		
 		var feedTemplate = $("#rss-feed-template");
 		var feedContainer = $("#feed-ul"); //.empty();
-
-		$.each(result.channel.item, function(index, item){
-
-			if(index < 3){
-				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: result.channel.title}).appendTo(feedContainer);			
-			}else{
-				//return;
-			}
-
-		});
-
-		$(feedContainer).trigger('create');
+		if(aauMobile.rssFeed.feedCount > 3){
+			$.each(aauMobile.rssFeed.feedData, function(index, item){
+					feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin}).appendTo(feedContainer);			
+			});
+		}
+		if($($.mobile.activePage).attr('id') == 'feed-list'){
+			$(feedContainer).listview('refresh');
+		}
 		$.mobile.hidePageLoadingMsg;
 	},
 
@@ -202,32 +215,111 @@ rssFeed: {
 		return;
 
 	}
-}
+},
 
+rssEvent: {
+
+	init: function() {
+		rssUrl = 'http://www.artuathletics.com/services/calendar.ashx/calendar.rss';
+		RestDataPlugin.getData(aauMobile.rssEvent.buildEvents, aauMobile.rssEvent.initFailure, rssUrl, false, "GET", "xml");
+	},
+
+	buildEvents: function(result) {
+		result = $.xml2json(result);
+		console.log('RSS Feed Success! ' + result.channel.title);
+		
+		result.channel.item.sort(function(a,b){
+			return a.title.localeCompare(b.title);
+		});
+		
+		var feedTemplate = $("#event-template");
+		var feedContainer = $("#event-ul"); //.empty();
+		
+		$.each(result.channel.item, function(index, item){
+
+			if(index < 20){
+				feedTemplate.tmpl({eventTitle: item.title, eventOrigin: result.channel.title}).appendTo(feedContainer);			
+			}else{
+				//return;
+			}
+
+		});
+		
+		if($($.mobile.activePage).attr('id') == 'event-list'){
+			$(feedContainer).listview('refresh');
+		}
+
+	},
+
+	initFailure: function(result) {
+		console.log('RSS Feed Failure. ' + result);
+	}
+}
 };
 
-$("#student-home").live("pageinit", function(event) {
+function studentHomePageInit() {
+		
     // init Class Schedule data
 	aauMobile.classSchedule.init();
-
-    $('#menuButton').bind('click',function(){
+	aauMobile.rssFeed.init();
+	aauMobile.rssEvent.init();
+	
+	//Detect if using an Android phone.
+	var ua = navigator.userAgent.toLowerCase();
+	var isAndroid = ua.indexOf("android") > -1;
+	if(isAndroid) {
+  		//Don't display Back button on Android devices.
+  		$('.mob-back-button').css('display','none');
+  		//Replace CSS for fixed and transformed items.
+  		$('#result-list').removeClass('result-ul').addClass('result-ul-android');
+  		$('#result-arrow').removeClass('result-arrow').addClass('result-arrow-android');
+	}
+	
+    $('.menu-btn').bind('click',function(){
 	     $.mobile.changePage('#menu-page');
     });
-});
+    
+    //Bind listview refreshes to respective page-before-show methods.
+    $('#student-home').on('pagebeforeshow',function(){
+    	$('#ulId').listview('refresh');
+    }); 
+    $('#student-detail').on('pagebeforeshow',function(){
+    	$('#ulDlId').listview('refresh');
+    }); 
+    $('#feed-list').on('pagebeforeshow',function(){
+    	$('#feed-ul').listview('refresh');
+    }); 
+    $('#event-list').on('pagebeforeshow',function(){
+    	$('#event-ul').listview('refresh');
+    }); 
+    $('#transit-map').on('pagebeforeshow',function(){
+    	$('#result-list').listview('refresh');
+    }); 
+}
 
-$("#feed-list").live("pagecreate", function(event) {
-    // init RSS Feed data
-	$.mobile.showPageLoadingMsg
-	aauMobile.rssFeed.init();
-});
+function feedListPageCreate() {
+    //init RSS Feed data
+	//$.mobile.showPageLoadingMsg
+	//aauMobile.rssFeed.init();
+}
 
-$("#feed-detail").live("pagecreate", function(event) {
+function feedDetailPageCreate() {
 	aauMobile.rssFeed.showFeedDetails();
+}
 
-});
+function bindEvents() {
+  $("#student-home").live("pageinit", studentHomePageInit);
+  $("#feed-list").live("pagecreate", feedListPageCreate);
+  $("#feed-detail").live("pagecreate", feedDetailPageCreate);
+}
 
-
-
-
-
-
+if(!navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
+  bindEvents();
+} else {
+  document.addEventListener("deviceready", function() {
+    studentHomePageInit();
+    feedListPageCreate();
+    feedDetailPageCreate();
+    bindEvents();
+  }, false);
+}

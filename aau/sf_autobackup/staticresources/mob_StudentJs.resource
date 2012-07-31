@@ -167,7 +167,7 @@ rssFeed: {
 	buildFeed: function(result) {
 
 		result = $.xml2json(result);
-		console.log('RSS Feed Success! ' + result.channel.title);
+		//console.log('RSS Feed Success! ' + result.channel.title);
 		//console.log('Result: ' + JSON.stringify(result));
 		
 		$.each(result.channel.item, function(index, item){
@@ -229,16 +229,18 @@ rssEvent: {
 		console.log('RSS Feed Success! ' + result.channel.title);
 		
 		result.channel.item.sort(function(a,b){
-			return a.title.localeCompare(b.title);
+			//return a.title.localeCompare(b.title);
+			return a.localstartdate.localeCompare(b.localstartdate);
 		});
 		
 		var feedTemplate = $("#event-template");
 		var feedContainer = $("#event-ul"); //.empty();
 		
 		$.each(result.channel.item, function(index, item){
+			console.log('Event Item: ' + JSON.stringify(item));
 
-			if(index < 20){
 				feedTemplate.tmpl({eventTitle: item.title, eventOrigin: result.channel.title}).appendTo(feedContainer);			
+			if(index < 20){
 			}else{
 				//return;
 			}
@@ -275,9 +277,7 @@ function studentHomePageInit() {
   		$('#result-arrow').removeClass('result-arrow').addClass('result-arrow-android');
 	}
 	
-    $('.menu-btn').bind('click',function(){
-	     $.mobile.changePage('#menu-page');
-    });
+
     
     //Bind listview refreshes to respective page-before-show methods.
     $('#student-home').on('pagebeforeshow',function(){
@@ -307,10 +307,76 @@ function feedDetailPageCreate() {
 	aauMobile.rssFeed.showFeedDetails();
 }
 
+function activateSlideMenu(){
+	//We don't want the menu visible by default, we want to show the schedule.
+	$.mobile.changePage('#student-home');
+	
+	//When clicking on the menu page(which is transparent over the current page),
+	//We want to close the menu and return the user to the current content.
+	$('#menu-page').on('click', function(event){
+		console.log('Tapped on the content. Closing Menu.');
+		$('#menu-page').css('position','absolute');
+		$('#slide-menu').animate({marginLeft:'-180px'},250, function(){$('#menu-page').css('display','none');});
+		$($.mobile.activePage).animate({marginLeft:'0px'},250, function(){$('.mob-header').css('position','fixed');});
+	});
+	
+	//The UL needs to stretch the entire length of the page, and not allow the 
+	//underlying part of the page to fire the close event.
+	$('#slide-menu').on('click', function(event){
+		event.stopPropagation();
+		console.log('Tapped on the menu.');
+	});
+	
+	//We want to close the menu, and slide in the new page when a link is clicked.
+	$('#slide-menu li a').on('click', function(event){
+		event.stopPropagation();
+		event.preventDefault();
+		
+		var pageLink = $(this).attr('href');
+		if(pageLink.length <= 1){
+			//jQuery Mobile has hijacked our link to prevent the address bar from showing.
+			pageLink = $(this).data('href');
+		}
+		console.log('Link clicked. Target = ' + pageLink);
+		
+		//Logout if logout link clicked.
+		//Otherwise go to page.
+		if($(this).attr('id') == 'logout-link'){
+			console.log('Logging out');
+			SalesforceAuth.Logout();
+		}
+		else{
+			$.mobile.changePage(pageLink);
+			
+			//Align it with the menu.
+			$(pageLink).css('margin-left','180px');
+			
+			//Slide the page and the menu back to starting position.
+			$('#slide-menu').animate({marginLeft:'-180px'},250, function(){$('#menu-page').css('display','none');});
+			$(pageLink).animate({marginLeft:'0px'},250, function(){$('.mob-header').css('position','fixed');});
+		}
+	});
+	
+	$('.menu-btn').live('click',function(){
+	     //$.mobile.changePage('#menu-page');
+		$('#menu-page').css('display','block');
+		$('.mob-header').css('position', 'absolute');
+		$('#slide-menu').animate({marginLeft:'0px'},250, function(){$('#slide-menu').css('position','fixed');});
+		$($.mobile.activePage).animate({marginLeft:'180px'},250);
+    });
+}
+
 function bindEvents() {
-  $("#menu-page").live("pageinit", function(){
-  	$.mobile.changePage('#student-home');
-  });
+  //Disable page transitions. With the way the menu works, we have to use our own.
+  $.mobile.defaultPageTransition = 'none';	
+  
+  //iOS loads before an event can be triggered. Have to check and see if we're initialized.
+  if($('#menu-page').hasClass('ui-page')){
+  	activateSlideMenu();
+  }else{
+  	$('#menu-page').live('pageinit', activateSlideMenu);
+  }
+  
   $("#student-home").live("pagecreate", studentHomePageInit);
   $("#feed-list").live("pagecreate", feedListPageCreate);
   $("#feed-detail").live("pagecreate", feedDetailPageCreate);

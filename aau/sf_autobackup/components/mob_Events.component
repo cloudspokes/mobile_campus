@@ -34,10 +34,10 @@
 
 
 <script id="event-template" type="text/x-jquery-tmpl">
-<li class="event-li"><a href="#">
+<li class="event-li">
     <div class="event-title">${eventTitle}</div>
     <div class="event-origin">${eventOrigin}</div>
-</a></li>
+</li>
 </script> 
 
 </apex:component>

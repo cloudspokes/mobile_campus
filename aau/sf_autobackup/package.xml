@@ -6,6 +6,7 @@
         <members>mob_BusStops_Routes_Test</members>
         <members>mob_StudentRest</members>
         <members>mob_StudentRest_Test</members>
+        <members>mob_teletracRest</members>
         <name>ApexClass</name>
     </types>
     <types>
@@ -35,6 +36,51 @@
         <name>CustomApplication</name>
     </types>
     <types>
+        <members>Contact.Academic_Action_Date__c</members>
+        <members>Contact.Academic_Admit_Term__c</members>
+        <members>Contact.Academic_Career__c</members>
+        <members>Contact.Academic_Cumulative_GPA__c</members>
+        <members>Contact.Academic_Expected_Grade_Term__c</members>
+        <members>Contact.Academic_Plan__c</members>
+        <members>Contact.Academic_Program_Action__c</members>
+        <members>Contact.Academic_Program_Reason__c</members>
+        <members>Contact.Academic_Program_Status__c</members>
+        <members>Contact.Academic_Program__c</members>
+        <members>Contact.Academic_Requirement_Term__c</members>
+        <members>Contact.Academic_Sub_Plan__c</members>
+        <members>Contact.Academic_Units_Completed__c</members>
+        <members>Contact.Advisor__c</members>
+        <members>Contact.Billing_Address__c</members>
+        <members>Contact.Billing_City__c</members>
+        <members>Contact.Billing_Country__c</members>
+        <members>Contact.Billing_Postal__c</members>
+        <members>Contact.Billing_State__c</members>
+        <members>Contact.Business_Address__c</members>
+        <members>Contact.Business_City__c</members>
+        <members>Contact.Business_Country__c</members>
+        <members>Contact.Business_Email__c</members>
+        <members>Contact.Business_Phone_Country_Code__c</members>
+        <members>Contact.Business_Phone_Number__c</members>
+        <members>Contact.Business_Postal__c</members>
+        <members>Contact.Business_State__c</members>
+        <members>Contact.Financial_Aid_Advisor__c</members>
+        <members>Contact.Home_Email__c</members>
+        <members>Contact.Is_Student__c</members>
+        <members>Contact.Mailing_Address__c</members>
+        <members>Contact.Mailing_City__c</members>
+        <members>Contact.Mailing_Country__c</members>
+        <members>Contact.Mailing_Postal__c</members>
+        <members>Contact.Mailing_State__c</members>
+        <members>Contact.Other_Address__c</members>
+        <members>Contact.Permanent_Address__c</members>
+        <members>Contact.Permanent_City__c</members>
+        <members>Contact.Permanent_Country__c</members>
+        <members>Contact.Permanent_Postal__c</members>
+        <members>Contact.Permanent_State__c</members>
+        <members>Contact.Preferred_First_Name__c</members>
+        <members>Contact.Preferred_Last_Name__c</members>
+        <members>Contact.Preferred_Phone__c</members>
+        <members>Contact.Program_Effective_Status__c</members>
         <members>Contact.Student_User__c</members>
         <name>CustomField</name>
     </types>

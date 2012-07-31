@@ -48,9 +48,6 @@ var MapManager = function() {
     // Google direction service
     var directionsService = new google.maps.DirectionsService();
     
-    //hash of marker to route
-    var markerToRouteHash = {};
-    
     //routes Currently being drawn on map
     var routesOnScreen;
     

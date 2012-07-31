@@ -39,6 +39,7 @@ var TeletracManager = function() {
     // Private function that performs the auto refresh of vehicles
     function autoRefreshVehiclesPosition() {
         if(autoRefresh) {
+          getVehicleInfo();
           teletracManager.getVehicles(autoRefreshCallback);
           setTimeout(autoRefreshVehiclesPosition, refreshInterval);
         }

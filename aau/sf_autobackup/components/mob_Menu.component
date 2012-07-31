@@ -8,7 +8,7 @@
 		width: 180px;
 		height: 100%;
 		background: #121212;
-		margin-left: 0px;
+		margin-left: -180px;
 		z-index: 1001;
 	} 
 	.slide-menu span.ui-icon-arrow-r{
@@ -25,6 +25,10 @@
 		background: #121212;
 		border: none;
 	}
+	.slide-menu li a{
+		padding: .5em 5px .7em 5px;
+		padding-right: 5px;
+	}
 	.slide-menu-icon{
 		background: url({!$Resource.mob_Design}/mob_Design/iconsprite_grey.png);
 		background-size: 100%;
@@ -32,8 +36,8 @@
 		height:24px;
 		display:inline-block;
 		float: left;
-		margin-top:10px;
-		margin-left: 5px;
+		margin-top:2px;
+		margin-right: 5px;
 	}
 	#slide-menu-icon-schedule{
 		background-position-y: -1px;
@@ -44,7 +48,7 @@
 	#slide-menu-icon-news{
 		background-position-y: -50px;
 		height: 17px;
-		margin-top: 13px;
+		margin-top: 7px;
 	}
 	#slide-menu-icon-sports{
 		background-position-y: -94px;
@@ -56,42 +60,16 @@
 	#slide-menu-icon-logout{
 		background-position-y: -118px;
 	}
-	/*
-	.ui-li-heading::before {
-background: url('https://aau--dev6--c.cs12.visual.force.com/resource/1343330448000/mob_Design/mob_Design/iconsprite_grey.png');
-display: inline-block;
-width: 24px;
-height: 19px;
-content: ' ';
-margin-right: 15px;
-background-size: 100%;
-background-position-y: -1px;
-float: left;
-margin-top: -1px;
-}
-	*/
+
 </style>
-<script type="text/javascript">
-	$('#menu-page').on('click', function(event){
-		console.log('Tapped on the content. GET OUTTA HERE');
-	});
-	$('#slide-menu').on('click', function(event){
-		event.stopPropagation();
-		console.log('Tapped on the menu.');
-	});
-	$('#slide-menu li a').on('click', function(event){
-		event.stopPropagation();
-		event.preventDefault();
-		console.log('Link clicked. Target = ' + $(this).attr('href'));
-	});
-</script>
+
  <ul data-role="listview"  data-theme="d" id="slide-menu" class="slide-menu">
-	<li><span id="slide-menu-icon-schedule" class="slide-menu-icon">&nbsp;</span><a href="#student-home"><h3>Class Schedule</h3></a></li>
-	<li><span id="slide-menu-icon-map" class="slide-menu-icon">&nbsp;</span><a href="#transit-map"><h3>Transit Map</h3></a></li>
-	<li><span id="slide-menu-icon-news" class="slide-menu-icon">&nbsp;</span><a href="#feed-list"><h3>Campus News</h3></a></li>
-	<li><span id="slide-menu-icon-sports" class="slide-menu-icon">&nbsp;</span><a href="#event-list"><h3>Sports</h3></a></li>
-	<li><span id="slide-menu-icon-links" class="slide-menu-icon">&nbsp;</span><a href="#link-list"><h3>External Links</h3></a></li> 
-	<li id="logout-item"><span id="slide-menu-icon-logout" class="slide-menu-icon">&nbsp;</span><a href="javascript:SalesforceAuth.Logout();"><h3>Logout</h3></a></li>
+	<li><a id="schedule-link" href="#student-home" data-transition="slide"><span id="slide-menu-icon-schedule" class="slide-menu-icon">&nbsp;</span><h3>Class Schedule</h3></a></li>
+	<li><a id="transit-map-link" href="#transit-map" data-transition="slide"><span id="slide-menu-icon-map" class="slide-menu-icon">&nbsp;</span><h3>Transit Map</h3></a></li>
+	<li><a id="feed-list-link" href="#feed-list" data-transition="slide"><span id="slide-menu-icon-news" class="slide-menu-icon">&nbsp;</span><h3>Campus News</h3></a></li>
+	<li><a id="event-list-link" href="#event-list" data-transition="slide"><span id="slide-menu-icon-sports" class="slide-menu-icon">&nbsp;</span><h3>Sports</h3></a></li>
+	<li><a id="link-list-link" href="#link-list" data-transition="slide"><span id="slide-menu-icon-links" class="slide-menu-icon">&nbsp;</span><h3>External Links</h3></a></li> 
+	<li id="logout-item"><a href="#" id="logout-link"><span id="slide-menu-icon-logout" class="slide-menu-icon">&nbsp;</span><h3>Logout</h3></a></li>
  </ul>
 
 </apex:component>

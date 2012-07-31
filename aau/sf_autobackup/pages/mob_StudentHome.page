@@ -176,7 +176,9 @@
     <div id="tt-content">
     </div>
     <!--  STORY DETAIL PAGE - LIST OF STORY FIELDS-->
-
+<div data-role="page" id="menu-page" class="page-map">
+    <c:mob_Menu />
+</div>
 <div data-role="page" id="student-home" class="page-container">
     <div data-role="header" data-position="fixed" class="mob-header">
 		<div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
@@ -268,10 +270,6 @@
     	<iframe id="external-page-frame" src="http://newsfeed.academyart.edu/"></iframe>
      </div>
 </div> -->
-
-<div data-role="page" id="menu-page" class="page-map">
-    <c:mob_Menu />
-</div>
 
 </body>
 </html> 

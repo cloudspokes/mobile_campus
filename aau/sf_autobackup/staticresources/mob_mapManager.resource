@@ -129,10 +129,7 @@ var MapManager = function() {
     // Private function to draw route on map
     // param: route object from routes ex {"routeName": "D", stops:[{stopname: abc, lat:123, long:123}, {stopname: def, lat: 123, long:123}]
     function drawRoute(route){
-    	console.log('Map from draw route: ' + map);
-    	console.log('route from draw route: ' + route);
     	var routeColor = route.stops[0].color || "#BF2200";
-    	console.log(routeColor);
       	var polylineOptions = {
     		strokeColor: routeColor,
     		strokeOpacity: .6,

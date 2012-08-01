@@ -152,27 +152,27 @@
 </head>
 
 <script>
-
+/********* Initialize Variables from Salesforce Data ********************/
     RestDataPlugin.accessToken = '{!$Api.Session_ID}';
     RestDataPlugin.baseUrl = '{!$Setup.mob_Student__c.Base_Url__c}';
     RestDataPlugin.restUrl = '{!$Setup.mob_Student__c.Rest_Url__c}';
     RestDataPlugin.clientKey = '{!$Setup.mob_Student__c.Client_Key__c}';
 
-    aauMobile.studentId = '003V0000009kTN1';
+    //aauMobile.studentId = '003V0000009kTN1'; //hardcoded Student.  Need to remove.
     try { 
         aauMobile.studentId = '{!$CurrentPage.parameters.Id}' || aauMobile.studentId;
-        console.log('Student id ::'+aauMobile.studentId + 'Current Logged in User ::'+'{!$User.Id}' );
+        //console.log('Student id ::'+aauMobile.studentId + 'Current Logged in User ::'+'{!$User.Id}' );
     }catch(ex){
         aauMobile.studentId = '{!$User.Id}';
-        console.log('Student id not available Current Logged in User  ::'+aauMobile.studentId);
+        //console.log('Student id not available Current Logged in User  ::'+aauMobile.studentId);
     }
 
     if(aauMobile.studentId == '' || aauMobile.studentId == null){
         aauMobile.studentId = '{!$User.Id}';
     }
-
 </script>
-<body id="homepage">
+
+<body id="homepage" style="background:#121212">
     <div id="tt-content">
     </div>
     <!--  STORY DETAIL PAGE - LIST OF STORY FIELDS-->

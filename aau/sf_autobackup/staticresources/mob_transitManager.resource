@@ -36,6 +36,9 @@ var TeletracManager = function() {
     // Bus Routes with Stops
     var routes = {};
     
+    // Bus stops with all routes that run through it
+    var stopNamesWithRoutes = {};
+    
     // Private function that performs the auto refresh of vehicles
     function autoRefreshVehiclesPosition() {
         if(autoRefresh) {
@@ -47,10 +50,21 @@ var TeletracManager = function() {
     
 
     // Private function to parse bus stops to plot on gmap from response form SFDC
-    // using an array to holy stop names to compare against to prevent dup stops
+    // using an array to hold stop names to compare against to prevent dup stops
+    // Function also creates an associative array of stopName: [route] in stopNamesWtihRoutes
     function parseStops(results, callback){
     	$(results).each( function(){
+    	   
+    	   var that = this;
+    	   
     		$(this.stops).each( function(){
+    		  var routeNameArray = stopNamesWithRoutes[this.stopName];
+    		  if(!routeNameArray) {
+    		    routeNameArray = [];
+    		  }
+    		  routeNameArray.push(that.routeName);
+    		  stopNamesWithRoutes[this.stopName] = routeNameArray;  
+    			
     			if(($.inArray(this.stopName, busStopNames)) == -1 && this.active == true){
     				busStopNames.push(this.stopName);
     				busStops.push(this);
@@ -61,16 +75,19 @@ var TeletracManager = function() {
     	callback(busStops);
     }
     
+    // Private function to create array with routes and colors together for route
+    // drawing. Then create appropriate check box on shuffle popover
     function parseRouteNamesAndColors(results){
-		results.sort(function(a,b){
-			return a.routeName.localeCompare(b.routeName);
-		});
-		if(localStorage.getItem('autoRefreshSetting') == 'on' || !localStorage.getItem('autoRefreshSetting')){
-			var refreshToggle = $("#settings-route-refresh-toggle").tmpl({refreshOn: true});
-		} else {
-			console.log('IM OFF');
-			var refreshToggle = $("#settings-route-refresh-toggle").tmpl({refreshOn: false});
-		}
+      //Stort routes Alphabetically 
+  		results.sort(function(a,b){
+  			return a.routeName.localeCompare(b.routeName);
+  		});
+  		if(localStorage.getItem('autoRefreshSetting') == 'on' || !localStorage.getItem('autoRefreshSetting')){
+  			var refreshToggle = $("#settings-route-refresh-toggle").tmpl({refreshOn: true});
+  		} else {
+  			console.log('IM OFF');
+  			var refreshToggle = $("#settings-route-refresh-toggle").tmpl({refreshOn: false});
+  		}
 			refreshToggle.appendTo($('#result-list'));
 			$('#auto-refresh-toggle').slider();
     	$(results).each(function () {
@@ -88,12 +105,16 @@ var TeletracManager = function() {
         },
         
         // Returns route object
-        getRoutes: function(){
+        getRoutes: function() {
         	return routes;
         },
         
-        getRouteNamesAndColors: function(){
+        getRouteNamesAndColors: function() {
         	return routeNamesAndColors;
+        },
+        
+        getStopNamesWithRoutes: function() {
+          return stopNamesWithRoutes;
         },
         
         // Configures auto refresh, if first parameter is true will cause

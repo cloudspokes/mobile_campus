@@ -13,7 +13,7 @@ classSchedule: {
 	
 	buildSchedule: function(result){
 
-		//console.log("successCallback Result: "+ JSON.stringify(result));
+		console.log("ClassSchedule Result: "+ JSON.stringify(result));
 		aauMobile.classSchedule.data = result;
 		var classData = {
 			enrollments:result.mobStudentsEnrolled,
@@ -226,7 +226,7 @@ rssEvent: {
 
 	buildEvents: function(result) {
 		result = $.xml2json(result);
-		console.log('RSS Feed Success! ' + result.channel.title);
+		//console.log('RSS Feed Success! ' + result.channel.title);
 		
 		result.channel.item.sort(function(a,b){
 			//return a.title.localeCompare(b.title);
@@ -237,7 +237,7 @@ rssEvent: {
 		var feedContainer = $("#event-ul"); //.empty();
 		
 		$.each(result.channel.item, function(index, item){
-			console.log('Event Item: ' + JSON.stringify(item));
+			//console.log('Event Item: ' + JSON.stringify(item));
 
 				feedTemplate.tmpl({eventTitle: item.title, eventOrigin: result.channel.title}).appendTo(feedContainer);			
 			if(index < 20){
@@ -309,15 +309,19 @@ function feedDetailPageCreate() {
 
 function activateSlideMenu(){
 	//We don't want the menu visible by default, we want to show the schedule.
-	$.mobile.changePage('#student-home');
+	$.mobile.changePage('#student-home', {changeHash: true});
 	
 	//When clicking on the menu page(which is transparent over the current page),
 	//We want to close the menu and return the user to the current content.
 	$('#menu-page').on('click', function(event){
 		console.log('Tapped on the content. Closing Menu.');
 		$('#menu-page').css('position','absolute');
-		$('#slide-menu').animate({marginLeft:'-180px'},250, function(){$('#menu-page').css('display','none');});
-		$($.mobile.activePage).animate({marginLeft:'0px'},250, function(){$('.mob-header').css('position','fixed');});
+		
+		$('#menu-page').removeClass('slide-out');
+		$($.mobile.activePage).removeClass('slide-out');
+		//OLD METHOD
+		//$('#slide-menu').animate({marginLeft:'-180px'},250, function(){$('#menu-page').css('display','none');});
+		//$($.mobile.activePage).animate({marginLeft:'0px'},250, function(){$('.mob-header').css('position','fixed');});
 	});
 	
 	//The UL needs to stretch the entire length of the page, and not allow the 
@@ -346,23 +350,49 @@ function activateSlideMenu(){
 			SalesforceAuth.Logout();
 		}
 		else{
-			$.mobile.changePage(pageLink);
+		
+			//Align it with the menu before displaying.
+			$(pageLink).addClass('slide-out');
 			
-			//Align it with the menu.
-			$(pageLink).css('margin-left','180px');
+			$.mobile.changePage(pageLink, {changeHash: true});
+			
+			//Remove the fixed so that Android 2.3 doesn't freak.
+			$('#menu-page').css('position','absolute');
 			
 			//Slide the page and the menu back to starting position.
-			$('#slide-menu').animate({marginLeft:'-180px'},250, function(){$('#menu-page').css('display','none');});
-			$(pageLink).animate({marginLeft:'0px'},250, function(){$('.mob-header').css('position','fixed');});
+			$('#menu-page').removeClass('slide-out');
+			$(pageLink).removeClass('slide-out');
+			
+			//Old Method
+			//$('#slide-menu').animate({marginLeft:'-180px'},250, function(){$('#menu-page').css('display','none');});
+			//$(pageLink).animate({marginLeft:'0px'},250, function(){$('.mob-header').css('position','fixed');});
 		}
 	});
 	
 	$('.menu-btn').live('click',function(){
-	     //$.mobile.changePage('#menu-page');
-		$('#menu-page').css('display','block');
+	    console.log('MENU BUTTON CLICKED');
+		//Bring the menu-page to the forefront. And give headers the ability to move.
 		$('.mob-header').css('position', 'absolute');
-		$('#slide-menu').animate({marginLeft:'0px'},250, function(){$('#slide-menu').css('position','fixed');});
-		$($.mobile.activePage).animate({marginLeft:'180px'},250);
+		
+		//Activate the sliding.
+		$('#menu-page').addClass('slide-out');
+		$($.mobile.activePage).addClass('slide-out');
+		
+		//OLD METHOD
+		//$('#slide-menu').animate({marginLeft:'0px'},250, function(){$('#slide-menu').css('position','fixed');});
+		//$($.mobile.activePage).animate({marginLeft:'180px'},250);
+		
+    });
+    
+    $('#menu-page').on('webkitTransitionEnd', function(){
+    	if($(this).hasClass('slide-out')){
+    		$(this).css('position','fixed');
+    	}
+    });
+    $('.ui-page').on('webkitTransitionEnd', function(){
+    	if(!$(this).hasClass('slide-out')){
+    		$('.mob_header').css('position','fixed');
+    		}
     });
 }
 
@@ -380,6 +410,7 @@ function bindEvents() {
   $("#student-home").live("pagecreate", studentHomePageInit);
   $("#feed-list").live("pagecreate", feedListPageCreate);
   $("#feed-detail").live("pagecreate", feedDetailPageCreate);
+  $("#transit-map").live("pagecreate", getVehicleInfo);
 }
 
 if(!navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {

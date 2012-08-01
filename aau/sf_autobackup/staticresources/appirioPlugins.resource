@@ -98,7 +98,7 @@ var WebViewerPlugin = {
 var SalesforceAuth = {
 
 	Logout: function() {
-	    utils.log("### Phonegap ###" + JSON.stringify(PhoneGap));
+	    //utils.log("### Phonegap ###" + JSON.stringify(PhoneGap));
 		//PhoneGap.exec("com.salesforce.oauth", "logout", '');
 		//PhoneGap.exec("com.salesforce.oauth.oauth", "logout", '');
 		PhoneGap.exec(null, null, "com.salesforce.oauth","logoutCurrentUser",[]);

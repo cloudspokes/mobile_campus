@@ -2,15 +2,40 @@
 <style>
 	#menu-page{
 		background: transparent;
-		z-index:1000;
+		z-index:-1000;
+		margin-left: -180px;
+		display: block !important;
+		-webkit-transition: margin-left 0.5s ease; 
 	}
 	.slide-menu{
 		width: 180px;
 		height: 100%;
 		background: #121212;
-		margin-left: -180px;
-		z-index: 1001;
+		z-index: -999;
 	} 
+	.ui-page-active{
+		margin-left: 0px;
+		-webkit-transition: margin-left 0.5s ease;
+	}
+	
+	/*Specify css for both active and inactive, so that we can set the position of a page to be displayed before displaying it.*/
+	.ui-page.slide-out{
+		margin-left:180px;
+	}
+	.ui-page-active.slide-out{
+		margin-left:180px;
+	}
+	
+	#student-home.slide-out, #transit-map.slide-out, #feed-list.slide-out, #event-list.slide-out, #link-list.slide-out{
+		margin-left: 180px;
+	}
+	#menu-page.ui-page.slide-out .slide-menu{
+		z-index: 1001;
+	}
+	#menu-page.ui-page.slide-out{
+		margin-left: 0;
+		z-index: 1000;
+	}
 	.slide-menu span.ui-icon-arrow-r{
 		display:none;
 	}

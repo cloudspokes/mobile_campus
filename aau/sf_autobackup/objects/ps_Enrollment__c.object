@@ -39,15 +39,14 @@
     <enableReports>false</enableReports>
     <fields>
         <fullName>Class_Section__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
         <label>Class Section</label>
         <referenceTo>ps_Class__c</referenceTo>
         <relationshipLabel>ps_Enrollments</relationshipLabel>
         <relationshipName>Enrollments</relationshipName>
-        <relationshipOrder>0</relationshipOrder>
-        <reparentableMasterDetail>false</reparentableMasterDetail>
-        <type>MasterDetail</type>
-        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+        <required>false</required>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Enrollment_Add_Date__c</fullName>
@@ -109,14 +108,15 @@
     </fields>
     <fields>
         <fullName>Student__c</fullName>
-        <deleteConstraint>Restrict</deleteConstraint>
         <externalId>false</externalId>
         <label>Student</label>
         <referenceTo>Contact</referenceTo>
         <relationshipLabel>xEnrollments</relationshipLabel>
         <relationshipName>xEnrollments</relationshipName>
-        <required>true</required>
-        <type>Lookup</type>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
     <fields>
         <fullName>xStudent__c</fullName>
@@ -135,12 +135,14 @@
         <columns>NAME</columns>
         <columns>Student__c</columns>
         <columns>Enrollment_Status__c</columns>
+        <columns>Enrollment_Add_Date__c</columns>
         <columns>Class_Section__c</columns>
         <columns>CREATED_DATE</columns>
         <columns>LAST_UPDATE</columns>
         <columns>UPDATEDBY_USER</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
+        <language>en_US</language>
     </listViews>
     <nameField>
         <label>Enrollment Name</label>

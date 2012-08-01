@@ -108,6 +108,7 @@
         <members>Bus_Route__c-Bus Route Layout</members>
         <members>Bus_Stop__c-Bus Stop Layout</members>
         <members>Bus_Stops_Routes__c-Bus Stops Routes Layout</members>
+        <members>Contact-AAU Student Layout</members>
         <members>ps_Class_Meeting__c-Class Meeting Layout</members>
         <members>ps_Class__c-Class Section Layout</members>
         <members>ps_Enrollment__c-Enrollment Layout</members>

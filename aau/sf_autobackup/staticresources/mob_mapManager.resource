@@ -207,7 +207,7 @@ var MapManager = function() {
                 
             });
         } else {
-            currentLocation = new google.maps.LatLng(37.781983, -122.407577);
+            currentLocation = new google.maps.LatLng(37.786318, -122.399293);
             if(myMarker) {
               myMarker.setPosition(currentLocation);
             }

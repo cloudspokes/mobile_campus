@@ -29,6 +29,7 @@ classSchedule: {
 		var blockTemplate = $("#student-schedule-template");
 		var blockDivider = $("#student-scheduleDivider-template");
 		var detailContent = $("#ulId");
+		$(detailContent).empty();
 
 		for(var dayCount = 0; stDate < enDate && dayCount < 7; stDate.setDate(stDate.getDate() + 1)){
 			//console.log('::Date :: >>>>'+stDate.toLocaleDateString());
@@ -185,7 +186,9 @@ rssFeed: {
 		aauMobile.rssFeed.feedCount++;
 		
 		var feedTemplate = $("#rss-feed-template");
-		var feedContainer = $("#feed-ul"); //.empty();
+		var feedContainer = $("#feed-ul");
+		$(feedContainer).empty();
+		
 		if(aauMobile.rssFeed.feedCount > 3){
 			$.each(aauMobile.rssFeed.feedData, function(index, item){
 				//console.log('Feed Item: '+JSON.stringify(item));
@@ -256,7 +259,8 @@ rssEvent: {
 		});
 		
 		var feedTemplate = $("#event-template");
-		var feedContainer = $("#event-ul"); //.empty();
+		var feedContainer = $("#event-ul");
+		$(feedContainer).empty();
 		
 		$.each(result.channel.item, function(index, item){
 			//console.log('Event Item: ' + JSON.stringify(item));
@@ -454,15 +458,15 @@ function bindEvents() {
   		//Replace CSS for fixed and transformed items.
   		$('#result-list').removeClass('result-ul').addClass('result-ul-android');
   		$('#result-arrow').removeClass('result-arrow').addClass('result-arrow-android');
-  		/*$(document).on('backbutton', function(){
+  		$(document).on('backbutton', function(){
   			var index = $.mobile.urlHistory.activeIndex - 1;
-			if(index > 0){
+			if(index > 1){
 				event.preventDefault();
 				$.mobile.changePage("#" + $.mobile.urlHistory.getPrev().pageUrl);
 				$.mobile.urlHistory.activeIndex = index;
 				$.mobile.urlHistory.clearForward();
 			}
-  		});*/
+  		});
 	}
   
   $("#student-home").live("pagecreate", studentHomePageInit);

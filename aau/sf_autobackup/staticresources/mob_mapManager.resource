@@ -11,7 +11,10 @@ Mauricio Created on 07/05/12
 
 // Object used to manage Google maps
 var MapManager = function() {
-
+	
+	// The info buble
+	var infoBubble;
+ 	
 	// if should use geolocation to pin point user's position, if false, defaults users position to SF
     var useGeolocation = false;
     
@@ -84,6 +87,7 @@ var MapManager = function() {
     
     // Simple popup listener that just shows content from the popupInfo of the associated object
     function simpleMarkerListener() {
+      /*
       if(infoWindow) {
         infoWindow.close();
       }
@@ -92,6 +96,30 @@ var MapManager = function() {
          content: "<div style='margin-top:10px'>" + this.popupInfo + "</div>"
       });
       infoWindow.open(map, this);
+      */
+      
+      if(infoBubble) {
+        infoBubble.close();
+      }
+    
+        infoBubble = new InfoBubble({
+          map: map,
+          content: '<div class="infoBubbleContent">' + this.popupInfo + "</div>",
+          arrowStyle: 2,
+          arrowPosition: 30,
+          hideCloseButton: true,
+          shadowStyle: 1,
+          padding: 0,
+          backgroundColor: 'rgb(255,0,0)',
+          borderRadius: 4,
+          arrowSize: 10,
+          borderWidth: 1,
+          borderColor: '#FFFFFF',
+          minHeight: 200
+        });
+        
+        infoBubble.open(map, this);
+      
     } 
     
     function doRenderMap(element) {

@@ -8,6 +8,7 @@
     <link rel="Stylesheet" type="text/css" href="{!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.min.css"></link>
     <link rel="Stylesheet" type="text/css" href="{!$Resource.mob_Design}/mob_Design/AAUjQueryTheme.min.css"></link>
 
+
     <script type="text/javascript">
       // Atrocious way of loading two diffent phonegap scripts, but other loading methods won't work.
       // also there shouldn't be two scripts to begin with -- so much for cross-platform.
@@ -39,6 +40,8 @@
     <script type="text/javascript" src="{!$Resource.mob_forceJsToolkit}"></script>
     <script type="text/javascript" src="{!$Resource.mob_StudentJs}"></script>
     <script type="text/javascript" src="{!$Resource.mob_XML2JSON}"></script>
+    <script type="text/javascript" src="{!$Resource.mob_infoBuble}"></script>
+
     <c:mob_BackButton /> 
     <c:mob_ListArrow />
 
@@ -133,6 +136,12 @@
     	height: 100%;
     	width: 100%;
     	-webkit-overflow-scrolling: touch;
+    }
+    .infoBubbleContent {
+	  margin: 4px 4px 4px 4px;
+	  text-shadow: none;
+	  color: white;  
+	  background-color: #FF0000;     
     }
  </style>
 

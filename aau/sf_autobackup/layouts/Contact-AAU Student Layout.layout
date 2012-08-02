@@ -17,6 +17,10 @@
                 <field>Name</field>
             </layoutItems>
             <layoutItems>
+                <behavior>Edit</behavior>
+                <field>PeopleSoft_Person_ID__c</field>
+            </layoutItems>
+            <layoutItems>
                 <behavior>Required</behavior>
                 <field>AccountId</field>
             </layoutItems>
@@ -65,6 +69,10 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>MobilePhone</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Birthdate</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>

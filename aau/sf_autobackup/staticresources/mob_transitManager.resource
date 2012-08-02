@@ -42,7 +42,6 @@ var TeletracManager = function() {
     // Private function that performs the auto refresh of vehicles
     function autoRefreshVehiclesPosition() {
         if(autoRefresh) {
-          getVehicleInfo();
           teletracManager.getVehicles(autoRefreshCallback);
           setTimeout(autoRefreshVehiclesPosition, refreshInterval);
         }
@@ -131,8 +130,7 @@ var TeletracManager = function() {
         // Gets vehicles from teletrac, including their position, parsers the data
         // into json format and passes it to the callback function provided
         getVehicles: function(callback) {
-            //var restPath = "https://xmlgateway.teletrac.net/AsciiService.asmx/GetVehicles?strAccountId=309411&strUserName=api_account&strPwd=9sb^jd8G2";
-            /*var restPath = "/teletracRest/";
+            var restPath = "https://xmlgateway.teletrac.net/AsciiService.asmx/GetVehicles";
             utils.log("made it here");
             RestDataPlugin.getData(function(result){
             							utils.log('Success with REST call: ' + result);
@@ -150,13 +148,12 @@ var TeletracManager = function() {
             							utils.log('Failure in Teletrac REST call: ' + result);
             						}, 
             						restPath, 
-            						true, 
+            						false, 
             						"GET", 
             						"xml");
-            */
+            
             console.log('refreshed vehicles from server');
-            jsonResponse = $.xml2json(teletracHolder);
-            callback(jsonResponse);
+            
      }, //getVehicles
     
     getRoutesFromSFDC: function(callback) {

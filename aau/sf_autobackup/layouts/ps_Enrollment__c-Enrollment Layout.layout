@@ -41,6 +41,10 @@
                 <behavior>Required</behavior>
                 <field>Class_Section__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Psft_Ext_Id__c</field>
+            </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>

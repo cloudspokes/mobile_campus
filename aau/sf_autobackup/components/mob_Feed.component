@@ -35,7 +35,7 @@
 
 
 <script id="rss-feed-template" type="text/x-jquery-tmpl">
-<li class="feed-li"><a href="#feed-detail">
+<li class="feed-li"><a href="javascript:aauMobile.rssFeed.showFeedDetails('${feedId}');">
 	<div class="feed-title">${feedTitle}</div>
 	<div class="feed-origin">${feedOrigin}</div>
 </a></li>

@@ -5,7 +5,7 @@
 		z-index:-1000;
 		margin-left: -180px;
 		display: block !important;
-		-webkit-transition: margin-left 0.5s ease; 
+		-webkit-transition: margin-left 0.25s linear; 
 	}
 	.slide-menu{
 		width: 180px;
@@ -15,7 +15,7 @@
 	} 
 	.ui-page-active{
 		margin-left: 0px;
-		-webkit-transition: margin-left 0.5s ease;
+		-webkit-transition: margin-left 0.25s linear;
 	}
 	
 	/*Specify css for both active and inactive, so that we can set the position of a page to be displayed before displaying it.*/

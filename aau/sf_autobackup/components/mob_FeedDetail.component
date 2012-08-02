@@ -1,3 +1,16 @@
 <apex:component >
+<style>
+#feed-detail-container div {
+	padding:2px 5px;
+}
+</style>
+
 <div id="feed-detail-container"></div>
+
+<script id="feed-detail-template" type="text/x-jquery-tmpl">
+<div class="feed-title">${feedTitle}</div>
+<div class="feed-origin">${feedOrigin}</div>
+<br/>
+<div class="feed-description">${feedDescription}</div>
+</script> 
 </apex:component>

@@ -43,7 +43,7 @@ var MapManager = function() {
     var trackUserPosInterval = 30000;
     
     // Holder array for routes currently draw on screen
-    var directionsDisplayMap = [];
+    var directionsDisplayMap = {};
     
     // Google direction service
     var directionsService = new google.maps.DirectionsService();
@@ -106,7 +106,8 @@ var MapManager = function() {
         var myOptions = {
             center: currentLocation,
             zoom: 15,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            panControl: false
         };
         
         map = new google.maps.Map(element[0], myOptions);        
@@ -129,52 +130,57 @@ var MapManager = function() {
     // Private function to draw route on map
     // param: route object from routes ex {"routeName": "D", stops:[{stopname: abc, lat:123, long:123}, {stopname: def, lat: 123, long:123}]
     function drawRoute(route){
-    	var routeColor = route.stops[0].color || "#BF2200";
-      	var polylineOptions = {
-    		strokeColor: routeColor,
-    		strokeOpacity: .6,
-    		strokeWeight: 5,
-    		clickable: false
-    	};
-    	var rendererOptions = {
-    		map: map,
-    		hideRouteList: true,
-    		draggable: false,
-    		polylineOptions: polylineOptions,
-    		suppressMarkers: true
-    	};
-    	var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
-    	
-    	var routeWayPoints = [];
-    	for(var i = 1; i < route.stops.length; i++){
-    		routeWayPoints.push({location: new google.maps.LatLng(route.stops[i].latitude, route.stops[i].longitude), stopover: true});
-    		console.log(route.stops[i].stopName);
-    	}
-    	console.log(routeWayPoints);
-    	
-    	var directionRequest = {
-    		origin: new google.maps.LatLng(route.stops[0].latitude, route.stops[0].longitude),
-    		destination: new google.maps.LatLng(route.stops[0].latitude, route.stops[0].longitude),
-    		waypoints: routeWayPoints,
-    		travelMode: google.maps.DirectionsTravelMode.DRIVING
-    	};
-    	directionsService.route(directionRequest, function(response, status){
-    		console.log(response);
-    		console.log(status);
-    		directionsDisplay.setDirections(response);
-    	});
-    	directionsDisplayMap.push({"routeName": route.routeName, "directions": directionsDisplay});
+      if(!directionsDisplayMap[route.routeName]) {
+      	var routeColor = route.stops[0].color || "#BF2200";
+        	var polylineOptions = {
+      		strokeColor: routeColor,
+      		strokeOpacity: .6,
+      		strokeWeight: 5,
+      		clickable: false
+      	};
+      	var rendererOptions = {
+      		map: map,
+      		hideRouteList: true,
+      		draggable: false,
+      		polylineOptions: polylineOptions,
+      		suppressMarkers: true
+      	};
+      	var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
+      	
+      	var routeWayPoints = [];
+      	for(var i = 1; i < route.stops.length; i++){
+      		routeWayPoints.push({location: new google.maps.LatLng(route.stops[i].latitude, route.stops[i].longitude), stopover: true});
+      		console.log(route.stops[i].stopName);
+      	}
+      	console.log(routeWayPoints);
+      	
+      	var directionRequest = {
+      		origin: new google.maps.LatLng(route.stops[0].latitude, route.stops[0].longitude),
+      		destination: new google.maps.LatLng(route.stops[0].latitude, route.stops[0].longitude),
+      		waypoints: routeWayPoints,
+      		travelMode: google.maps.DirectionsTravelMode.DRIVING
+      	};
+      	directionsService.route(directionRequest, function(response, status){
+      		console.log(response);
+      		console.log(status);
+      		directionsDisplay.setDirections(response);
+      	});
+      	directionsDisplayMap[route.routeName] = directionsDisplay;
+      } else {
+        directionsDisplayMap[route.routeName].setMap(map);
       }
+    }
     
     // Private Function to clear route form map
     // param: string of route name to clear  
     function clearRoute(routeName){
-    	$(directionsDisplayMap).each( function(index){
+    	/*$(directionsDisplayMap).each( function(index){
     		if(routeName == this.routeName){
     			this.directions.setMap(null);
-    			directionsDisplayMap.splice(index,1);
+    			//directionsDisplayMap.splice(index,1);
     		}
-    	});
+    	});*/
+    	directionsDisplayMap[routeName].setMap(null);
     }
     
     return {
@@ -207,7 +213,7 @@ var MapManager = function() {
                 
             });
         } else {
-            currentLocation = new google.maps.LatLng(37.781983, -122.407577);
+            currentLocation = new google.maps.LatLng(37.786174, -122.400141);
             if(myMarker) {
               myMarker.setPosition(currentLocation);
             }

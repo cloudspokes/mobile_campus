@@ -13,7 +13,7 @@ classSchedule: {
 	
 	buildSchedule: function(result){
 
-		console.log("ClassSchedule Result: "+ JSON.stringify(result));
+		//console.log("ClassSchedule Result: "+ JSON.stringify(result));
 		aauMobile.classSchedule.data = result;
 		var classData = {
 			enrollments:result.mobStudentsEnrolled,
@@ -29,18 +29,10 @@ classSchedule: {
 		var blockTemplate = $("#student-schedule-template");
 		var blockDivider = $("#student-scheduleDivider-template");
 		var detailContent = $("#ulId");
-		var isClassMeeting = true;
 
-		for(; stDate < enDate; stDate.setDate(stDate.getDate() + 1)){
-			console.log('::Date :: >>>>'+stDate.toLocaleDateString());
-			if(isClassMeeting){
-				var localeDate = stDate.toLocaleDateString();
-				localeDate = localeDate.substring(0,localeDate.length-6);
-				var dBlock = blockDivider.tmpl({MeetingDayAndDay:localeDate});
-				dBlock.appendTo(detailContent);
-			}
-
-			isClassMeeting = false;
+		for(var dayCount = 0; stDate < enDate && dayCount < 7; stDate.setDate(stDate.getDate() + 1)){
+			//console.log('::Date :: >>>>'+stDate.toLocaleDateString());
+			var hasClassMeetings = false;
 			$.each(classData.classMeetings, function(index, classMeeting) {
 				//console.log(JSON.stringify(classMeeting));
 
@@ -58,6 +50,14 @@ classSchedule: {
 						(stDate.getDay()== 4 && classMeeting.isThursday) || 
 						(stDate.getDay()== 5 && classMeeting.isFriday) || 
 						(stDate.getDay()== 6 && classMeeting.isSaturday)){
+						
+						if(!hasClassMeetings){
+							var localeDate = stDate.toLocaleDateString();
+							localeDate = localeDate.substring(0,localeDate.length-6);
+							var dBlock = blockDivider.tmpl({MeetingDayAndDay:localeDate});
+							dBlock.appendTo(detailContent);
+							hasClassMeetings = true;
+						}
 						
 						//console.log('creating schedule record');
 
@@ -79,17 +79,21 @@ classSchedule: {
 							meetingId:mId
 						});
 
-						block.appendTo(detailContent);        
-						isClassMeeting = true;       	               
+						block.appendTo(detailContent);              	               
 					} 
 				}
 			});
+			if(hasClassMeetings){
+				dayCount++;
+			}
 		}
 		
 		if($($.mobile.activePage).attr('id') == 'student-home'){
 			$("#ulId").listview('refresh');
 		}  
 		$("#ulId").css("margin","0px");
+
+
 
 	},
 
@@ -104,7 +108,7 @@ classSchedule: {
         
 		
 		//Change the Page to Show the details of Selected Class meeting
-		$.mobile.changePage("#student-detail");
+		$.mobile.changePage("#student-detail", {transition: 'slide', changeHash: true});
 		
 		//Make empty to the components to add selected contents 
 		$('#ulDlId').empty();
@@ -167,7 +171,7 @@ rssFeed: {
 	buildFeed: function(result) {
 
 		result = $.xml2json(result);
-		//console.log('RSS Feed Success! ' + result.channel.title);
+		console.log('RSS Feed Success! ' + result.channel.title);
 		//console.log('Result: ' + JSON.stringify(result));
 		
 		$.each(result.channel.item, function(index, item){
@@ -184,7 +188,8 @@ rssFeed: {
 		var feedContainer = $("#feed-ul"); //.empty();
 		if(aauMobile.rssFeed.feedCount > 3){
 			$.each(aauMobile.rssFeed.feedData, function(index, item){
-					feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin}).appendTo(feedContainer);			
+				//console.log('Feed Item: '+JSON.stringify(item));
+				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin, feedId: item.guid}).appendTo(feedContainer);			
 			});
 		}
 		if($($.mobile.activePage).attr('id') == 'feed-list'){
@@ -197,11 +202,28 @@ rssFeed: {
 		console.log('RSS Feed Failure. ' + result);
 	},
 
-	showFeedDetails: function() {
-		rssUrl = 'https://www.academyart.edu//news/school/making-a-difference-through-photography.html';
-		RestDataPlugin.getData(aauMobile.rssFeed.buildFeedDetail, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "text");
+	showFeedDetails: function(feedId) {
+		//rssUrl = 'https://www.academyart.edu//news/school/making-a-difference-through-photography.html';
+		//RestDataPlugin.getData(aauMobile.rssFeed.buildFeedDetail, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "text");
+
+		//find Feed in the feedData
+		$.each(aauMobile.rssFeed.feedData, function(index, item){
+			if(item.guid == feedId){
+				console.log('Opening Feed: ' + JSON.stringify(item));
+				//parse through feed for anchortag and replace with call to appirioPlugin.webViewer
+				//parse and format description
+				//var desc = $.parseJSON(item.description);
+				//create instance of template for feed Details
+				var feedTemplate = $('#feed-detail-template');
+				var feedContainer = $('#feed-detail-container').empty();
+				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin, feedDescription: item.description}).appendTo(feedContainer);
+			}
+		});
+		//do page transition to detail screen
+		$.mobile.changePage('#feed-detail');
 	},
 
+	//This method is obsolete
 	buildFeedDetail: function(result) {
 		
 		var feedCtnr = $('#feed-detail-container');
@@ -265,19 +287,6 @@ function studentHomePageInit() {
 	aauMobile.classSchedule.init();
 	aauMobile.rssFeed.init();
 	aauMobile.rssEvent.init();
-	
-	//Detect if using an Android phone.
-	var ua = navigator.userAgent.toLowerCase();
-	var isAndroid = ua.indexOf("android") > -1;
-	if(isAndroid) {
-  		//Don't display Back button on Android devices.
-  		$('.mob-back-button').css('display','none');
-  		//Replace CSS for fixed and transformed items.
-  		$('#result-list').removeClass('result-ul').addClass('result-ul-android');
-  		$('#result-arrow').removeClass('result-arrow').addClass('result-arrow-android');
-	}
-	
-
     
     //Bind listview refreshes to respective page-before-show methods.
     $('#student-home').on('pagebeforeshow',function(){
@@ -307,6 +316,23 @@ function feedDetailPageCreate() {
 	aauMobile.rssFeed.showFeedDetails();
 }
 
+function showSlideMenu(event){
+	    event.preventDefault();
+	    console.log('MENU BUTTON CLICKED');
+		//Bring the menu-page to the forefront. And give headers the ability to move.
+		$('.mob-header').css('position', 'absolute');
+		
+		$('#menu-page').data('lastSlide', new Date().getTime());
+		
+		//Activate the sliding.
+		$('#menu-page').addClass('slide-out');
+		$('.page-container').addClass('slide-out');
+		
+		//OLD METHOD
+		//$('#slide-menu').animate({marginLeft:'0px'},250, function(){$('#slide-menu').css('position','fixed');});
+		//$($.mobile.activePage).animate({marginLeft:'180px'},250);
+}
+
 function activateSlideMenu(){
 	//We don't want the menu visible by default, we want to show the schedule.
 	$.mobile.changePage('#student-home', {changeHash: true});
@@ -314,11 +340,21 @@ function activateSlideMenu(){
 	//When clicking on the menu page(which is transparent over the current page),
 	//We want to close the menu and return the user to the current content.
 	$('#menu-page').on('click', function(event){
-		console.log('Tapped on the content. Closing Menu.');
-		$('#menu-page').css('position','absolute');
+		var lastSlide = new Date($(this).data('lastSlide')).getTime();
+		var curTime = new Date().getTime();
+		var timeDiff = curTime - lastSlide;
+		console.log('curTime - lastSlide = ' + timeDiff);
 		
-		$('#menu-page').removeClass('slide-out');
-		$($.mobile.activePage).removeClass('slide-out');
+		//Android vClick bug solution.
+		if(timeDiff > 400){		
+			console.log('Tapped on the content. Closing Menu.');
+			$('#menu-page').css('position','absolute');
+			
+			$('#menu-page').removeClass('slide-out');
+			
+			$('.page-container').removeClass('slide-out');
+		}
+		
 		//OLD METHOD
 		//$('#slide-menu').animate({marginLeft:'-180px'},250, function(){$('#menu-page').css('display','none');});
 		//$($.mobile.activePage).animate({marginLeft:'0px'},250, function(){$('.mob-header').css('position','fixed');});
@@ -336,69 +372,72 @@ function activateSlideMenu(){
 		event.stopPropagation();
 		event.preventDefault();
 		
-		var pageLink = $(this).attr('href');
-		if(pageLink.length <= 1){
-			//jQuery Mobile has hijacked our link to prevent the address bar from showing.
-			pageLink = $(this).data('href');
-		}
-		console.log('Link clicked. Target = ' + pageLink);
+		var lastSlide = new Date($('#menu-page').data('lastSlide')).getTime();
+		var curTime = new Date().getTime();
+		var timeDiff = curTime - lastSlide;
+		console.log('curTime - lastSlide = ' + timeDiff);
 		
-		//Logout if logout link clicked.
-		//Otherwise go to page.
-		if($(this).attr('id') == 'logout-link'){
-			console.log('Logging out');
-			SalesforceAuth.Logout();
-		}
-		else{
-		
-			//Align it with the menu before displaying.
-			$(pageLink).addClass('slide-out');
+		//Android vClick bug solution.
+		if(timeDiff > 400){		
+			var pageLink = $(this).attr('href');
+			if(pageLink.length <= 1){
+				//jQuery Mobile has hijacked our link to prevent the address bar from showing.
+				pageLink = $(this).data('href');
+			}
+			console.log('Link clicked. Target = ' + pageLink);
 			
-			$.mobile.changePage(pageLink, {changeHash: true});
-			
-			//Remove the fixed so that Android 2.3 doesn't freak.
-			$('#menu-page').css('position','absolute');
-			
-			//Slide the page and the menu back to starting position.
-			$('#menu-page').removeClass('slide-out');
-			$(pageLink).removeClass('slide-out');
-			
-			//Old Method
-			//$('#slide-menu').animate({marginLeft:'-180px'},250, function(){$('#menu-page').css('display','none');});
-			//$(pageLink).animate({marginLeft:'0px'},250, function(){$('.mob-header').css('position','fixed');});
+			//Logout if logout link clicked.
+			//Otherwise go to page.
+			if($(this).attr('id') == 'logout-link'){
+				console.log('Logging out');
+				SalesforceAuth.Logout();
+			}
+			else{
+				
+				$.mobile.changePage(pageLink, {changeHash: true});
+				
+				//Remove the fixed so that Android 2.3 doesn't freak.
+				$('#menu-page').css('position','absolute');
+				
+				//Slide the page and the menu back to starting position.
+				$('#menu-page').removeClass('slide-out');
+				$('.page-container').removeClass('slide-out');
+				
+				//Old Method
+				//$('#slide-menu').animate({marginLeft:'-180px'},250, function(){$('#menu-page').css('display','none');});
+				//$(pageLink).animate({marginLeft:'0px'},250, function(){$('.mob-header').css('position','fixed');});
+			}
 		}
 	});
-	
-	$('.menu-btn').live('click',function(){
-	    console.log('MENU BUTTON CLICKED');
-		//Bring the menu-page to the forefront. And give headers the ability to move.
-		$('.mob-header').css('position', 'absolute');
-		
-		//Activate the sliding.
-		$('#menu-page').addClass('slide-out');
-		$($.mobile.activePage).addClass('slide-out');
-		
-		//OLD METHOD
-		//$('#slide-menu').animate({marginLeft:'0px'},250, function(){$('#slide-menu').css('position','fixed');});
-		//$($.mobile.activePage).animate({marginLeft:'180px'},250);
-		
-    });
-    
+	//Detect if using an Android phone.
+	var ua = navigator.userAgent.toLowerCase();
+	var isAndroid = ua.indexOf("android") > -1;
+	if(isAndroid) {
+		$('.menu-btn').live('vclick', showSlideMenu);
+	}else{
+		$('.menu-btn').live('click', showSlideMenu);
+	}
+   
     $('#menu-page').on('webkitTransitionEnd', function(){
     	if($(this).hasClass('slide-out')){
     		$(this).css('position','fixed');
+    		$('#slide-menu').css('height',$(window).height());
     	}
     });
     $('.ui-page').on('webkitTransitionEnd', function(){
-    	if(!$(this).hasClass('slide-out')){
-    		$('.mob_header').css('position','fixed');
-    		}
-    });
+    				if(!$(this).hasClass('slide-out')){
+    					$('.mob-header').css('position','fixed');
+    				}
+    				if($(this).attr('id') == "transit-map"){
+    					mapManager.triggerResize();
+    				}
+   			 });
 }
 
 function bindEvents() {
   //Disable page transitions. With the way the menu works, we have to use our own.
   $.mobile.defaultPageTransition = 'none';	
+  
   
   //iOS loads before an event can be triggered. Have to check and see if we're initialized.
   if($('#menu-page').hasClass('ui-page')){
@@ -406,11 +445,34 @@ function bindEvents() {
   }else{
   	$('#menu-page').live('pageinit', activateSlideMenu);
   }
+  	//Detect if using an Android phone.
+	var ua = navigator.userAgent.toLowerCase();
+	var isAndroid = ua.indexOf("android") > -1;
+	if(isAndroid) {
+  		//Don't display Back button on Android devices.
+  		$('.mob-back-button').css('display','none');
+  		//Replace CSS for fixed and transformed items.
+  		$('#result-list').removeClass('result-ul').addClass('result-ul-android');
+  		$('#result-arrow').removeClass('result-arrow').addClass('result-arrow-android');
+  		/*$(document).on('backbutton', function(){
+  			var index = $.mobile.urlHistory.activeIndex - 1;
+			if(index > 0){
+				event.preventDefault();
+				$.mobile.changePage("#" + $.mobile.urlHistory.getPrev().pageUrl);
+				$.mobile.urlHistory.activeIndex = index;
+				$.mobile.urlHistory.clearForward();
+			}
+  		});*/
+	}
   
   $("#student-home").live("pagecreate", studentHomePageInit);
   $("#feed-list").live("pagecreate", feedListPageCreate);
   $("#feed-detail").live("pagecreate", feedDetailPageCreate);
-  $("#transit-map").live("pagecreate", getVehicleInfo);
+  
+  /*$('#transit-map').live('pageinit',function(){
+    setTimeout(function() { mapManager.triggerRefresh(); }, 3000);
+  }); */
+  
 }
 
 if(!navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {

@@ -63,7 +63,12 @@ global with sharing class mob_StudentRest {
 		      	clsMeeting.name = psClassMeeting.Name;
 		      	clsMeeting.location = psClassMeeting.Location__c;
 		      	clsMeeting.instructorName = psClassMeeting.Instructor_1__r.Name;
-			  	psEnrlMents.classMeetings.put(psClassMeeting.Id,clsMeeting);     
+			  	psEnrlMents.classMeetings.put(psClassMeeting.Id,clsMeeting);    
+			  	
+			  	//Determine what the very last day of the term is.
+			  	if(clsMeeting.endDate > psEnrlMents.lastDate){
+			  		psEnrlMents.lastDate = clsMeeting.endDate;
+			  	} 
 	        }
 	    }
 	    return  psEnrlMents;

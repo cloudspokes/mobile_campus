@@ -188,6 +188,7 @@ rssFeed: {
 		var feedTemplate = $("#rss-feed-template");
 		var feedContainer = $("#feed-ul");
 		$(feedContainer).empty();
+		$(feedContainer).data('refreshed',false);
 		
 		if(aauMobile.rssFeed.feedCount > 3){
 			$.each(aauMobile.rssFeed.feedData, function(index, item){
@@ -197,6 +198,7 @@ rssFeed: {
 		}
 		if($($.mobile.activePage).attr('id') == 'feed-list'){
 			$(feedContainer).listview('refresh');
+			$(feedcontainer).data('refreshed', true);
 		}
 		$.mobile.hidePageLoadingMsg;
 	},
@@ -261,6 +263,7 @@ rssEvent: {
 		var feedTemplate = $("#event-template");
 		var feedContainer = $("#event-ul");
 		$(feedContainer).empty();
+		$(feedContainer).data('refreshed',false);
 		
 		$.each(result.channel.item, function(index, item){
 			//console.log('Event Item: ' + JSON.stringify(item));
@@ -275,6 +278,7 @@ rssEvent: {
 		
 		if($($.mobile.activePage).attr('id') == 'event-list'){
 			$(feedContainer).listview('refresh');
+			$(feedContainer).data('refreshed', true);
 		}
 
 	},
@@ -300,10 +304,18 @@ function studentHomePageInit() {
     	$('#ulDlId').listview('refresh');
     }); 
     $('#feed-list').on('pagebeforeshow',function(){
-    	$('#feed-ul').listview('refresh');
+    	console.log($('#feed-ul').data('refreshed'));
+    	if(!$('#feed-ul').data('refreshed')){
+    		$('#feed-ul').listview('refresh');
+    		$('#feed-ul').data('refreshed',true);
+    	}
     }); 
     $('#event-list').on('pagebeforeshow',function(){
-    	$('#event-ul').listview('refresh');
+    	console.log($('#event-ul').data('refreshed'));
+    	if(!$('#event-ul').data('refreshed')){
+    		$('#event-ul').listview('refresh');
+    		$('#event-ul').data('refreshed',true);
+    	}
     }); 
     $('#transit-map').on('pagebeforeshow',function(){
     	$('#result-list').listview('refresh');
@@ -327,6 +339,7 @@ function showSlideMenu(event){
 		$('.mob-header').css('position', 'absolute');
 		
 		$('#menu-page').data('lastSlide', new Date().getTime());
+		
 		
 		//Activate the sliding.
 		$('#menu-page').addClass('slide-out');
@@ -465,13 +478,15 @@ function bindEvents() {
 				$.mobile.changePage("#" + $.mobile.urlHistory.getPrev().pageUrl);
 				$.mobile.urlHistory.activeIndex = index;
 				$.mobile.urlHistory.clearForward();
+			} else{
+				PhoneGap.exec(function (){}, function(){}, "com.appirio.mobile.closeactivity", "close", []);
 			}
   		});
 	}
   
   $("#student-home").live("pagecreate", studentHomePageInit);
-  $("#feed-list").live("pagecreate", feedListPageCreate);
-  $("#feed-detail").live("pagecreate", feedDetailPageCreate);
+ // $("#feed-list").live("pagecreate", feedListPageCreate);
+ // $("#feed-detail").live("pagecreate", feedDetailPageCreate);
   
   /*$('#transit-map').live('pageinit',function(){
     setTimeout(function() { mapManager.triggerRefresh(); }, 3000);

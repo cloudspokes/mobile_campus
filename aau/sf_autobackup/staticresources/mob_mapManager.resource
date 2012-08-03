@@ -101,25 +101,44 @@ var MapManager = function() {
       if(infoBubble) {
         infoBubble.close();
       }
+      
+      var content = '<div class="infoBubbleContent">' + this.popupInfo + "</div>";
+      
+      var size = 150;
+      var s = content.split(/\<.*?\>/);
+      
+      if(s) {
+        size = 0;
+        $(s).each(function() {
+          if(size < this.length) {
+            size = this.length;
+          }
+        });
+        
+        size = size * 10;
+      }
+      
+      $("#popupMeasureDiv").html(content);
     
         infoBubble = new InfoBubble({
           map: map,
-          content: '<div class="infoBubbleContent">' + this.popupInfo + "</div>",
+          content: content,
           arrowStyle: 2,
           arrowPosition: 30,
-          hideCloseButton: true,
+          hideCloseButton: true,  
           shadowStyle: 1,
           padding: 0,
-          backgroundColor: 'rgb(255,0,0)',
+          backgroundColor: '#AE1917',
           borderRadius: 4,
           arrowSize: 10,
           borderWidth: 1,
           borderColor: '#FFFFFF',
-          minHeight: 200
+          minHeight: 50,
+          minWidth: size
         });
         
         infoBubble.open(map, this);
-      
+        
     } 
     
     function doRenderMap(element) {
@@ -309,7 +328,7 @@ var MapManager = function() {
 	                     		zindex: 2
 	                          });
 	              
-	              marker.popupInfo = "Vehicle Name: " + nameResult.name;
+	              marker.popupInfo = "Vehicle: " + nameResult.name + "<br />Route: " + nameResult.route;
 	              
 	              google.maps.event.addListener(marker, 'click', simpleMarkerListener);
 	
@@ -333,6 +352,8 @@ var MapManager = function() {
       
       // Adds bus stops markers to the map
       addStops: function(stops) {
+        var stpRoutes = teletracManager.getStopNamesWithRoutes();
+        
         $(stops).each( function() {
         			var stopMarker = new google.maps.MarkerImage(imgStopMarker,
 												    	null, 
@@ -349,7 +370,20 @@ var MapManager = function() {
 						zindex: 1
 					});
  
-                    marker.popupInfo = this.stopName;
+                    marker.popupInfo = this.stopName + "<br />";
+                    
+                    if(stpRoutes[this.stopName].length > 1) {
+                      marker.popupInfo += "Routes: "; 
+                    } else if(stpRoutes[this.stopName].length == 1) {
+                      marker.popupInfo += "Route: "; 
+                    }
+                    
+                    var separator = "";
+                    
+                    $(stpRoutes[this.stopName]).each(function() {
+                      marker.popupInfo += separator + this;
+                      separator = ", ";
+                    });
               
                     google.maps.event.addListener(marker, 'click', simpleMarkerListener);
 					marker.setMap(map);

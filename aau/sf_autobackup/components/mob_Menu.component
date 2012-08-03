@@ -7,6 +7,16 @@
 		display: block !important;
 		-webkit-transition: margin-left 0.25s linear; 
 	}
+	#menu-header, #menu-page.slide-out #menu-header{
+		position: absolute !important;
+		left: 180px;
+		width:100%;
+	}
+	#menu-header h1.ui-title{
+        font-size: 16pt;
+        margin: 0.65em 0 .35em 0;
+        text-overflow: clip;
+    }
 	.slide-menu{
 		width: 180px;
 		height: 100%;
@@ -65,7 +75,7 @@
 		margin-right: 5px;
 	}
 	#slide-menu-icon-schedule{
-		background-position-y: -1px;
+		background-position-y: 0px;
 	}
 	#slide-menu-icon-map{
 		background-position-y: -25px;
@@ -87,7 +97,7 @@
 	}
 
 </style>
-
+ <div data-role="header" id="menu-header"/>
  <ul data-role="listview"  data-theme="d" id="slide-menu" class="slide-menu">
 	<li><a id="schedule-link" href="#student-home" data-transition="slide"><span id="slide-menu-icon-schedule" class="slide-menu-icon">&nbsp;</span><h3>Class Schedule</h3></a></li>
 	<li><a id="transit-map-link" href="#transit-map" data-transition="slide"><span id="slide-menu-icon-map" class="slide-menu-icon">&nbsp;</span><h3>Transit Map</h3></a></li>

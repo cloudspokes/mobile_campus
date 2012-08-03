@@ -1,4 +1,4 @@
-<apex:page controller="mob_teletracRest" standardStylesheets="false" sidebar="false" showHeader="false" contentType="text/html" cache="false">
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" contentType="text/html" cache="false">
   <!-- controller="ContentController"> -->
     <apex:outputText escape="false" value="{!"<!DOCTYPE html>"}"/>
 <apex:pageMessages />
@@ -18,20 +18,6 @@
       } else {
         document.write("<script type='text/javascript' src='{!$Resource.phonegap}'><\/script>");
       }
-      
-      // Holder variable for javascript remote response
-      var teletracHolder;
-      // Javascript remove function for calling teletrac from apex
-      // since we cant do a callout to a callout
-      function getVehicleInfo() {
-        Visualforce.remoting.Manager.invokeAction(
-          '{!$RemoteAction.mob_teletracRest.getVehicles}', 
-          function(result, event){
-            teletracHolder = result;
-          }, 
-          {escape: false}
-        );
-       };
     </script>    
     <script type="text/javascript" src="{!$Resource.jquery1dot7}"></script>
     <script type="text/javascript" src="{!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.min.js"></script>
@@ -141,7 +127,7 @@
 	  margin: 4px 4px 4px 4px;
 	  text-shadow: none;
 	  color: white;  
-	  background-color: #FF0000;     
+	  background-color: #AE1917;     
     }
  </style>
 
@@ -191,7 +177,7 @@
 <div data-role="page" id="student-home" class="page-container">
     <div data-role="header" data-position="fixed" class="mob-header">
 		<div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
-        <div class="mob-header-icon header-right"><div class="mob-header-MenuIcon2" /></div>
+        <!-- <div class="mob-header-icon header-right"><div class="mob-header-MenuIcon2" /></div>-->
         <h1>Class Schedule</h1>
     </div>
     

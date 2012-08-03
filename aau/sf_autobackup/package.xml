@@ -4,9 +4,11 @@
         <members>TestUtil</members>
         <members>mob_BusStops_Routes</members>
         <members>mob_BusStops_Routes_Test</members>
+        <members>mob_ContactSharingRecord_Test</members>
         <members>mob_StudentRest</members>
         <members>mob_StudentRest_Test</members>
-        <members>mob_teletracRest</members>
+        <members>mob_TeletracInfoRest_Test</members>
+        <members>mob_teletracInfoRest</members>
         <name>ApexClass</name>
     </types>
     <types>
@@ -63,7 +65,10 @@
         <members>Contact.Business_Phone_Number__c</members>
         <members>Contact.Business_Postal__c</members>
         <members>Contact.Business_State__c</members>
+        <members>Contact.City__c</members>
+        <members>Contact.Country__c</members>
         <members>Contact.Financial_Aid_Advisor__c</members>
+        <members>Contact.Gender__c</members>
         <members>Contact.Home_Email__c</members>
         <members>Contact.Is_Student__c</members>
         <members>Contact.Mailing_Address__c</members>
@@ -72,6 +77,7 @@
         <members>Contact.Mailing_Postal__c</members>
         <members>Contact.Mailing_State__c</members>
         <members>Contact.Other_Address__c</members>
+        <members>Contact.PeopleSoft_Person_ID__c</members>
         <members>Contact.Permanent_Address__c</members>
         <members>Contact.Permanent_City__c</members>
         <members>Contact.Permanent_Country__c</members>
@@ -79,9 +85,15 @@
         <members>Contact.Permanent_State__c</members>
         <members>Contact.Preferred_First_Name__c</members>
         <members>Contact.Preferred_Last_Name__c</members>
+        <members>Contact.Preferred_Middle_Name__c</members>
         <members>Contact.Preferred_Phone__c</members>
         <members>Contact.Program_Effective_Status__c</members>
+        <members>Contact.Skype_Name__c</members>
+        <members>Contact.State_Province__c</members>
+        <members>Contact.Street__c</members>
+        <members>Contact.Student_Email__c</members>
         <members>Contact.Student_User__c</members>
+        <members>Contact.Zip_Postal_Code__c</members>
         <name>CustomField</name>
     </types>
     <types>
@@ -120,16 +132,14 @@
         <members>jquery1dot7</members>
         <members>jquerymobile1dot1</members>
         <members>jquerytmpl</members>
-        <members>mob_BusMarker</members>
         <members>mob_Design</members>
         <members>mob_StudentJs</members>
-        <members>mob_StudentMarker</members>
         <members>mob_XML2JSON</members>
         <members>mob_forceJsToolkit</members>
+        <members>mob_infoBuble</members>
         <members>mob_jquerymobile1dot1</members>
         <members>mob_mapJS</members>
         <members>mob_mapManager</members>
-        <members>mob_richMarker</members>
         <members>mob_transitManager</members>
         <members>phonegap</members>
         <members>phonegap_android</members>

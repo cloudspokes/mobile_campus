@@ -2,15 +2,19 @@
 <style>
 	#menu-page{
 		background: transparent;
-		z-index:-1000;
 		margin-left: -180px;
-		display: block !important;
+		display: block;
 		-webkit-transition: margin-left 0.25s linear; 
+		z-index: 1000;
+	}
+	#menu-page.hidden{
+		z-index:-1000;
 	}
 	#menu-header, #menu-page.slide-out #menu-header{
 		position: absolute !important;
 		left: 180px;
 		width:100%;
+		z-index: 1001;
 	}
 	#menu-header h1.ui-title{
         font-size: 16pt;
@@ -21,7 +25,7 @@
 		width: 180px;
 		height: 100%;
 		background: #121212;
-		z-index: -999;
+		z-index: 1002;
 	} 
 	.ui-page-active{
 		margin-left: 0px;
@@ -39,8 +43,8 @@
 	#student-home.slide-out, #transit-map.slide-out, #feed-list.slide-out, #event-list.slide-out, #link-list.slide-out{
 		margin-left: 180px;
 	}
-	#menu-page.ui-page.slide-out .slide-menu{
-		z-index: 1001;
+	#menu-page.hidden .slide-menu{
+		z-index: -999;
 	}
 	#menu-page.ui-page.slide-out{
 		margin-left: 0;

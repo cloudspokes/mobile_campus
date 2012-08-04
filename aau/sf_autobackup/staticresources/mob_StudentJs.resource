@@ -193,7 +193,11 @@ rssFeed: {
 		if(aauMobile.rssFeed.feedCount > 3){
 			$.each(aauMobile.rssFeed.feedData, function(index, item){
 				//console.log('Feed Item: '+JSON.stringify(item));
-				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin, feedId: item.guid}).appendTo(feedContainer);			
+				if(index < 20){
+					feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin, feedId: item.guid}).appendTo(feedContainer);			
+				}else{
+					return;
+				}
 			});
 		}
 		if($($.mobile.activePage).attr('id') == 'feed-list'){
@@ -268,25 +272,27 @@ rssEvent: {
 		$.each(result.channel.item, function(index, item){
 			//console.log('Event Item: ' + JSON.stringify(item));
 
-				feedTemplate.tmpl({eventTitle: item.title, eventOrigin: result.channel.title}).appendTo(feedContainer);			
 			if(index < 20){
+				feedTemplate.tmpl({eventTitle: item.title, eventOrigin: result.channel.title}).appendTo(feedContainer);			
 			}else{
-				//return;
+				return;
 			}
 
 		});
 		
+		/*
 		if($($.mobile.activePage).attr('id') == 'event-list'){
 			$(feedContainer).listview('refresh');
 			$(feedContainer).data('refreshed', true);
-		}
+		}*/
 
 	},
 
 	initFailure: function(result) {
 		console.log('RSS Feed Failure. ' + result);
 	}
-}
+},
+  isAndroid: (navigator.userAgent.toLowerCase().indexOf("android") >-1)
 };
 
 function studentHomePageInit() {
@@ -332,15 +338,18 @@ function feedDetailPageCreate() {
 	aauMobile.rssFeed.showFeedDetails();
 }
 
+//D
 function showSlideMenu(event){
 	    event.preventDefault();
 	    console.log('MENU BUTTON CLICKED');
 		//Bring the menu-page to the forefront. And give headers the ability to move.
-		$('.mob-header').css('position', 'absolute');
+		//$('.mob-header').css('position', 'absolute');
 		
 		$('#menu-page').data('lastSlide', new Date().getTime());
 		
-		
+		$('#menu-header').html($($.mobile.activePage).find('.mob-header').html());
+		$('#menu-header .menu-btn').removeClass('menu-btn');
+		$('#menu-page').removeClass('hidden');
 		//Activate the sliding.
 		$('#menu-page').addClass('slide-out');
 		$('.page-container').addClass('slide-out');
@@ -350,42 +359,30 @@ function showSlideMenu(event){
 		//$($.mobile.activePage).animate({marginLeft:'180px'},250);
 }
 
-function activateSlideMenu(){
-	//We don't want the menu visible by default, we want to show the schedule.
-	$.mobile.changePage('#student-home', {changeHash: true});
+//Removes the slide-out class, triggering a css transition.
+function hideSlideMenu(event){
+	var lastSlide = new Date($(this).data('lastSlide')).getTime();
+	var curTime = new Date().getTime();
+	var timeDiff = curTime - lastSlide;
+	console.log('curTime - lastSlide = ' + timeDiff);
 	
-	//When clicking on the menu page(which is transparent over the current page),
-	//We want to close the menu and return the user to the current content.
-	$('#menu-page').on('click', function(event){
-		var lastSlide = new Date($(this).data('lastSlide')).getTime();
-		var curTime = new Date().getTime();
-		var timeDiff = curTime - lastSlide;
-		console.log('curTime - lastSlide = ' + timeDiff);
+	//Android vClick bug solution.
+	if(timeDiff > 400){		
+		console.log('Tapped on the content. Closing Menu.');
+		$('#menu-page').css('position','absolute');
 		
-		//Android vClick bug solution.
-		if(timeDiff > 400){		
-			console.log('Tapped on the content. Closing Menu.');
-			$('#menu-page').css('position','absolute');
-			
-			$('#menu-page').removeClass('slide-out');
-			
-			$('.page-container').removeClass('slide-out');
-		}
+		$('#menu-page').removeClass('slide-out');
 		
-		//OLD METHOD
-		//$('#slide-menu').animate({marginLeft:'-180px'},250, function(){$('#menu-page').css('display','none');});
-		//$($.mobile.activePage).animate({marginLeft:'0px'},250, function(){$('.mob-header').css('position','fixed');});
-	});
+		$('.page-container').removeClass('slide-out');
+	}
 	
-	//The UL needs to stretch the entire length of the page, and not allow the 
-	//underlying part of the page to fire the close event.
-	$('#slide-menu').on('click', function(event){
-		event.stopPropagation();
-		console.log('Tapped on the menu.');
-	});
-	
-	//We want to close the menu, and slide in the new page when a link is clicked.
-	$('#slide-menu li a').on('click', function(event){
+	//OLD METHOD
+	//$('#slide-menu').animate({marginLeft:'-180px'},250, function(){$('#menu-page').css('display','none');});
+	//$($.mobile.activePage).animate({marginLeft:'0px'},250, function(){$('.mob-header').css('position','fixed');});
+}
+
+//We want to close the menu, and slide in the new page when a link is clicked.
+function slideMenuLinkClick(event){
 		event.stopPropagation();
 		event.preventDefault();
 		
@@ -410,7 +407,8 @@ function activateSlideMenu(){
 				SalesforceAuth.Logout();
 			}
 			else{
-				
+				$('#menu-header').html($(pageLink).find('.mob-header').html());
+				$('#menu-header .menu-btn').removeClass('menu-btn');
 				$.mobile.changePage(pageLink, {changeHash: true});
 				
 				//Remove the fixed so that Android 2.3 doesn't freak.
@@ -425,11 +423,25 @@ function activateSlideMenu(){
 				//$(pageLink).animate({marginLeft:'0px'},250, function(){$('.mob-header').css('position','fixed');});
 			}
 		}
+	}
+
+function activateSlideMenu(){
+	//We don't want the menu visible by default, we want to show the schedule.
+	$.mobile.changePage('#student-home', {changeHash: true});
+	
+	$('#menu-page').on('click', hideSlideMenu);
+	
+	//The UL needs to stretch the entire length of the page, and not allow the 
+	//underlying part of the page to fire the close event.
+	$('#slide-menu').on('click', function(event){
+		event.stopPropagation();
+		console.log('Tapped on the menu.');
 	});
-	//Detect if using an Android phone.
-	var ua = navigator.userAgent.toLowerCase();
-	var isAndroid = ua.indexOf("android") > -1;
-	if(isAndroid) {
+	
+	$('#slide-menu li a').on('click', slideMenuLinkClick);
+	
+	//Android pre-3.0 devices aren't fully responsive to click.
+	if(aauMobile.isAndroid) {
 		$('.menu-btn').live('vclick', showSlideMenu);
 	}else{
 		$('.menu-btn').live('click', showSlideMenu);
@@ -439,16 +451,15 @@ function activateSlideMenu(){
     	if($(this).hasClass('slide-out')){
     		$(this).css('position','fixed');
     		$('#slide-menu').css('height',$(window).height());
+    	} else{
+    		$(this).addClass('hidden');
     	}
     });
     $('.ui-page').on('webkitTransitionEnd', function(){
-    				if(!$(this).hasClass('slide-out')){
-    					$('.mob-header').css('position','fixed');
-    				}
-    				if($(this).attr('id') == "transit-map"){
-    					mapManager.triggerResize();
-    				}
-   			 });
+		if($(this).attr('id') == "transit-map"){
+			mapManager.triggerResize();
+		}
+   	});
 }
 
 function bindEvents() {
@@ -462,31 +473,28 @@ function bindEvents() {
   }else{
   	$('#menu-page').live('pageinit', activateSlideMenu);
   }
-  	//Detect if using an Android phone.
-	var ua = navigator.userAgent.toLowerCase();
-	var isAndroid = ua.indexOf("android") > -1;
-	if(isAndroid) {
-  		//Don't display Back button on Android devices.
-  		$('.mob-back-button').css('display','none');
-  		//Replace CSS for fixed and transformed items.
-  		$('#result-list').removeClass('result-ul').addClass('result-ul-android');
-  		$('#result-arrow').removeClass('result-arrow').addClass('result-arrow-android');
-  		$(document).on('backbutton', function(){
-  			var index = $.mobile.urlHistory.activeIndex - 1;
-			if(index > 1){
-				event.preventDefault();
-				$.mobile.changePage("#" + $.mobile.urlHistory.getPrev().pageUrl);
-				$.mobile.urlHistory.activeIndex = index;
-				$.mobile.urlHistory.clearForward();
-			} else{
-				PhoneGap.exec(function (){}, function(){}, "com.appirio.mobile.closeactivity", "close", []);
-			}
-  		});
-	}
+  if(aauMobile.isAndroid) {
+  	//Don't display Back button on Android devices.
+  	$('.mob-back-button').css('display','none');
+  	//Replace CSS for fixed and transformed items.
+  	$('#result-list').removeClass('result-ul').addClass('result-ul-android');
+  	$('#result-arrow').removeClass('result-arrow').addClass('result-arrow-android');
+  	$(document).on('backbutton', function(){
+  		var index = $.mobile.urlHistory.activeIndex - 1;
+		if(index > 1){
+			event.preventDefault();
+			$.mobile.changePage("#" + $.mobile.urlHistory.getPrev().pageUrl);
+			$.mobile.urlHistory.activeIndex = index;
+			$.mobile.urlHistory.clearForward();
+		} else{
+			PhoneGap.exec(function (){}, function(){}, "com.appirio.mobile.closeactivity", "close", []);
+		}
+  	});
+  }
   
   $("#student-home").live("pagecreate", studentHomePageInit);
- // $("#feed-list").live("pagecreate", feedListPageCreate);
- // $("#feed-detail").live("pagecreate", feedDetailPageCreate);
+  $("#feed-list").live("pagecreate", feedListPageCreate);
+  $("#feed-detail").live("pagecreate", feedDetailPageCreate);
   
   /*$('#transit-map').live('pageinit',function(){
     setTimeout(function() { mapManager.triggerRefresh(); }, 3000);

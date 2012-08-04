@@ -1,9 +1,9 @@
-<apex:page standardStylesheets="false" sidebar="false" showHeader="false" contentType="text/html" cache="false">
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false">
   <!-- controller="ContentController"> -->
-    <apex:outputText escape="false" value="{!"<!DOCTYPE html>"}"/>
-<apex:pageMessages />
-<html>
+  <!--   <apex:outputText escape="false" value="{!"<!DOCTYPE html>"}"/>-->
+<html manifest="/apex/mob_Manifest">
 <head>
+	<apex:pageMessages />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <link rel="Stylesheet" type="text/css" href="{!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.min.css"></link>
     <link rel="Stylesheet" type="text/css" href="{!$Resource.mob_Design}/mob_Design/AAUjQueryTheme.min.css"></link>
@@ -171,7 +171,7 @@
     <div id="tt-content">
     </div>
     <!--  STORY DETAIL PAGE - LIST OF STORY FIELDS-->
-<div data-role="page" id="menu-page" class="page-map">
+<div data-role="page" id="menu-page" class="page-map hidden">
     <c:mob_Menu />
 </div>
 <div data-role="page" id="student-home" class="page-container">

@@ -89,7 +89,7 @@ classSchedule: {
 			}
 		}
 		
-		if($($.mobile.activePage).attr('id') == 'student-home'){
+		if($('#ulId').hasClass('ui-listview')){
 			$("#ulId").listview('refresh');
 		}  
 		$("#ulId").css("margin","0px");
@@ -138,7 +138,7 @@ classSchedule: {
 		});
 
 		detailBlock.appendTo(detailContent);  
-		if($($.mobile.activePage).attr('id') == 'student-detail'){
+		if($('#ulDlId').hasClass('ui-listview')){
 			$("#ulDlId").listview('refresh');
 		}   
 		$("#ulDlId").css("margin","0px");
@@ -183,15 +183,34 @@ rssFeed: {
 		aauMobile.rssFeed.feedData.sort(function(a,b){
 			return a.title.localeCompare(b.title);
 		});
+		
+		//Increment the feed count
+		aauMobile.rssFeed.feedCount++;
+
+		//If all feeds have returned or failed, display.
+		if(aauMobile.rssFeed.feedCount >3){
+			aauMobile.rssFeed.showFeed();
+		}
+	},
+
+	initFailure: function(result) {
+		console.log('RSS Feed Failure. ' + result);
+		
+		//Increment so we can still display what didn't fail.
 		aauMobile.rssFeed.feedCount++;
 		
+		//If all feeds have returned or failed, display.
+		if(aauMobile.rssFeed.feedCount >3){
+			aauMobile.rssFeed.showFeed();
+		}
+	},
+	
+	showFeed: function(){
 		var feedTemplate = $("#rss-feed-template");
 		var feedContainer = $("#feed-ul");
 		$(feedContainer).empty();
-		$(feedContainer).data('refreshed',false);
 		
-		if(aauMobile.rssFeed.feedCount > 3){
-			$.each(aauMobile.rssFeed.feedData, function(index, item){
+		$.each(aauMobile.rssFeed.feedData, function(index, item){
 				//console.log('Feed Item: '+JSON.stringify(item));
 				if(index < 20){
 					feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin, feedId: item.guid}).appendTo(feedContainer);			
@@ -199,16 +218,12 @@ rssFeed: {
 					return;
 				}
 			});
-		}
-		if($($.mobile.activePage).attr('id') == 'feed-list'){
+		
+		//If jQuery has initialized it, refresh.
+		if($(feedContainer).hasClass('ui-listview')){
 			$(feedContainer).listview('refresh');
-			$(feedcontainer).data('refreshed', true);
 		}
 		$.mobile.hidePageLoadingMsg;
-	},
-
-	initFailure: function(result) {
-		console.log('RSS Feed Failure. ' + result);
 	},
 
 	showFeedDetails: function(feedId) {
@@ -267,7 +282,6 @@ rssEvent: {
 		var feedTemplate = $("#event-template");
 		var feedContainer = $("#event-ul");
 		$(feedContainer).empty();
-		$(feedContainer).data('refreshed',false);
 		
 		$.each(result.channel.item, function(index, item){
 			//console.log('Event Item: ' + JSON.stringify(item));
@@ -280,12 +294,10 @@ rssEvent: {
 
 		});
 		
-		/*
-		if($($.mobile.activePage).attr('id') == 'event-list'){
+		//If jQuery has initialized it, refresh.
+		if($(feedContainer).hasClass('ui-listview')){
 			$(feedContainer).listview('refresh');
-			$(feedContainer).data('refreshed', true);
-		}*/
-
+		}
 	},
 
 	initFailure: function(result) {
@@ -301,31 +313,6 @@ function studentHomePageInit() {
 	aauMobile.classSchedule.init();
 	aauMobile.rssFeed.init();
 	aauMobile.rssEvent.init();
-    
-    //Bind listview refreshes to respective page-before-show methods.
-    $('#student-home').on('pagebeforeshow',function(){
-    	$('#ulId').listview('refresh');
-    }); 
-    $('#student-detail').on('pagebeforeshow',function(){
-    	$('#ulDlId').listview('refresh');
-    }); 
-    $('#feed-list').on('pagebeforeshow',function(){
-    	console.log($('#feed-ul').data('refreshed'));
-    	if(!$('#feed-ul').data('refreshed')){
-    		$('#feed-ul').listview('refresh');
-    		$('#feed-ul').data('refreshed',true);
-    	}
-    }); 
-    $('#event-list').on('pagebeforeshow',function(){
-    	console.log($('#event-ul').data('refreshed'));
-    	if(!$('#event-ul').data('refreshed')){
-    		$('#event-ul').listview('refresh');
-    		$('#event-ul').data('refreshed',true);
-    	}
-    }); 
-    $('#transit-map').on('pagebeforeshow',function(){
-    	$('#result-list').listview('refresh');
-    }); 
 }
 
 function feedListPageCreate() {
@@ -338,7 +325,7 @@ function feedDetailPageCreate() {
 	aauMobile.rssFeed.showFeedDetails();
 }
 
-//D
+
 function showSlideMenu(event){
 	    event.preventDefault();
 	    console.log('MENU BUTTON CLICKED');
@@ -350,6 +337,10 @@ function showSlideMenu(event){
 		$('#menu-header').html($($.mobile.activePage).find('.mob-header').html());
 		$('#menu-header .menu-btn').removeClass('menu-btn');
 		$('#menu-page').removeClass('hidden');
+		
+		//Prevent ugly slide behavior on transit-map
+		$('#result-container').css('position','absolute');
+		
 		//Activate the sliding.
 		$('#menu-page').addClass('slide-out');
 		$('.page-container').addClass('slide-out');
@@ -459,6 +450,9 @@ function activateSlideMenu(){
 		if($(this).attr('id') == "transit-map"){
 			mapManager.triggerResize();
 		}
+		if(!$(this).hasClass('slide-out')){
+			$('#result-container').css('position','fixed');
+		}
    	});
 }
 
@@ -495,10 +489,6 @@ function bindEvents() {
   $("#student-home").live("pagecreate", studentHomePageInit);
   $("#feed-list").live("pagecreate", feedListPageCreate);
   $("#feed-detail").live("pagecreate", feedDetailPageCreate);
-  
-  /*$('#transit-map').live('pageinit',function(){
-    setTimeout(function() { mapManager.triggerRefresh(); }, 3000);
-  }); */
   
 }
 

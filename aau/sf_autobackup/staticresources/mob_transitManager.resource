@@ -97,7 +97,9 @@ var TeletracManager = function() {
     		var routeCheckbox = $("#settings-route-checkbox").tmpl({routeName: this.routeName});
 			routeCheckbox.appendTo($('#result-list'));
     	});
-    	$('#result-list').listview('refresh');
+    	if($('#result-list').hasClass('ui-listview')){
+    		$('#result-list').listview('refresh');
+    	}
     }
     
     return {

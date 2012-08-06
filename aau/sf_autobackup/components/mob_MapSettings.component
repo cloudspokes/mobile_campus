@@ -15,7 +15,7 @@
     min-height:100px;
     max-height:380px;
     width:97%;
-    z-index:1200;
+    z-index:900;
     display: none;
     opacity: 1.0;
     /*padding:8px;*/
@@ -30,7 +30,7 @@
     width:97%;
     padding:10px 7px 7px 7px;
     background-color:#dc2221;
-    z-index:1202;
+    z-index:902;
     /*background-image: -webkit-linear-gradient(bottom, #0d0d0d 0%, #0d0d0d 90%, #adadad 100%);*/
     /*box-shadow: 0px -1px 0px 0px #666;*/
     box-shadow: 0px -1px 0px 0px #a22b2a;
@@ -57,7 +57,7 @@
     -webkit-transform: rotate(45deg);
     transform: rotate(45deg);
     /*background-image: -webkit-linear-gradient(135deg, #0d0d0d 0%, #adadad 50%, #ddd 100%);*/
-    z-index:1101;
+    z-index:801;
     /*box-shadow: -1px -1px 0px 0px #666;*/
     box-shadow: -1px -1px 0px 0px #a22b2a;
 }
@@ -99,7 +99,7 @@
     text-shadow: none;
 }
 .result-ul li.ui-li span.ui-icon-arrow-r{
-    z-index: 1200;
+    z-index: 900;
     border-top: 3px solid #DE7070;
     border-right: 3px solid #DE7070;
     -webkit-transform: rotate(45deg);
@@ -108,7 +108,7 @@
     opacity: 1.0;
 }
 .result-ul-android li.ui-li span.ui-icon-arrow-r{
-    z-index: 1200;
+    z-index: 900;
     background: url('{!$Resource.mob_Design}/mob_Design/images/settings-list-hack.png');
 	margin-top: -8px;
 	opacity: 1.0;
@@ -153,7 +153,6 @@ div.ui-slider-switch.ui-slider-mini a.ui-slider-handle .ui-btn-inner {
 </style>
 
 <script type="text/javascript">
-	
     $("#transit-settings").live('click', function(){
         $('#result-container').toggle(); 
     }); 

@@ -2,7 +2,7 @@
 private class  mob_BusStops_Routes_Test {
 	
 	static testmethod void testStudentRest() {
-		User aaUStudent = TestUtil.makeUser('AAU Student');
+		User aaUStudent = TestUtil.makeUser('AAU Student-Platform');
 		System.runAs(aaUStudent) {
 			    Bus_Route__c busRoute = TestUtil.createBusRoute('new Test');
 			    Double lat =  37.788008;

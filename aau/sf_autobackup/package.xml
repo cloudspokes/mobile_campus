@@ -26,6 +26,7 @@
         <name>ApexComponent</name>
     </types>
     <types>
+        <members>mob_Manifest</members>
         <members>mob_StudentHome</members>
         <name>ApexPage</name>
     </types>

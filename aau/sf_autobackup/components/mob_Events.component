@@ -22,9 +22,7 @@
     border-bottom: solid 1px #626262;
  }
  #event-container{
-	 margin-top:10px; 
-	 margin-left: 16px; 
-	 width: 92%;
+	 width: 100%;
  }
 </style>
 <div id="event-container">

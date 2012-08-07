@@ -223,6 +223,7 @@ rssFeed: {
 		if($(feedContainer).hasClass('ui-listview')){
 			$(feedContainer).listview('refresh');
 		}
+		$(feedContainer).css('margin','0px');
 		$.mobile.hidePageLoadingMsg;
 	},
 
@@ -244,7 +245,7 @@ rssFeed: {
 			}
 		});
 		//do page transition to detail screen
-		$.mobile.changePage('#feed-detail');
+		$.mobile.changePage('#feed-detail', {transition: 'slide', changeHash: true});
 	},
 
 	//This method is obsolete
@@ -298,35 +299,19 @@ rssEvent: {
 		if($(feedContainer).hasClass('ui-listview')){
 			$(feedContainer).listview('refresh');
 		}
+		$(feedContainer).css('margin','0px');
 	},
 
 	initFailure: function(result) {
 		console.log('RSS Feed Failure. ' + result);
 	}
 },
-  isAndroid: (navigator.userAgent.toLowerCase().indexOf("android") >-1)
-};
 
-function studentHomePageInit() {
-		
-    // init Class Schedule data
-	aauMobile.classSchedule.init();
-	aauMobile.rssFeed.init();
-	aauMobile.rssEvent.init();
-}
-
-function feedListPageCreate() {
-    //init RSS Feed data
-	//$.mobile.showPageLoadingMsg
-	//aauMobile.rssFeed.init();
-}
-
-function feedDetailPageCreate() {
-	aauMobile.rssFeed.showFeedDetails();
-}
-
-
-function showSlideMenu(event){
+//Mobile Sliding Menu component. 
+//Displays as a side-bar that slides out and pushes content to the side.
+slideMenu: {
+	//Slides the menu out, and pushes the active page to the right.
+	show: function(event){
 	    event.preventDefault();
 	    console.log('MENU BUTTON CLICKED');
 		//Bring the menu-page to the forefront. And give headers the ability to move.
@@ -348,32 +333,32 @@ function showSlideMenu(event){
 		//OLD METHOD
 		//$('#slide-menu').animate({marginLeft:'0px'},250, function(){$('#slide-menu').css('position','fixed');});
 		//$($.mobile.activePage).animate({marginLeft:'180px'},250);
-}
+	},
 
-//Removes the slide-out class, triggering a css transition.
-function hideSlideMenu(event){
-	var lastSlide = new Date($(this).data('lastSlide')).getTime();
-	var curTime = new Date().getTime();
-	var timeDiff = curTime - lastSlide;
-	console.log('curTime - lastSlide = ' + timeDiff);
-	
-	//Android vClick bug solution.
-	if(timeDiff > 400){		
-		console.log('Tapped on the content. Closing Menu.');
-		$('#menu-page').css('position','absolute');
+	//Removes the slide-out class, causing the active page and 
+	hide: function(event){
+		var lastSlide = new Date($(this).data('lastSlide')).getTime();
+		var curTime = new Date().getTime();
+		var timeDiff = curTime - lastSlide;
+		console.log('curTime - lastSlide = ' + timeDiff);
 		
-		$('#menu-page').removeClass('slide-out');
+		//Android vClick bug solution.
+		if(timeDiff > 400){		
+			console.log('Tapped on the content. Closing Menu.');
+			$('#menu-page').css('position','absolute');
+			
+			$('#menu-page').removeClass('slide-out');
+			
+			$('.page-container').removeClass('slide-out');
+		}
 		
-		$('.page-container').removeClass('slide-out');
-	}
-	
-	//OLD METHOD
-	//$('#slide-menu').animate({marginLeft:'-180px'},250, function(){$('#menu-page').css('display','none');});
-	//$($.mobile.activePage).animate({marginLeft:'0px'},250, function(){$('.mob-header').css('position','fixed');});
-}
+		//OLD METHOD
+		//$('#slide-menu').animate({marginLeft:'-180px'},250, function(){$('#menu-page').css('display','none');});
+		//$($.mobile.activePage).animate({marginLeft:'0px'},250, function(){$('.mob-header').css('position','fixed');});
+	},
 
-//We want to close the menu, and slide in the new page when a link is clicked.
-function slideMenuLinkClick(event){
+	//Changes the active page and slides the menu back into hiding.
+	linkClicked: function(event){
 		event.stopPropagation();
 		event.preventDefault();
 		
@@ -414,59 +399,95 @@ function slideMenuLinkClick(event){
 				//$(pageLink).animate({marginLeft:'0px'},250, function(){$('.mob-header').css('position','fixed');});
 			}
 		}
+	},
+	
+	//Initializes the menu, and relevant events.
+	init: function(){
+		//We don't want the menu visible by default, we want to show the schedule or the current hash.
+		if(window.location.hash.length > 1){
+			$.mobile.changePage(window.location.hash, {changeHash: false});
+		}
+		else{
+			$.mobile.changePage('#student-home', {changeHash: true});
+		}
+		
+		$('#menu-page').on('click', aauMobile.slideMenu.hide);
+		
+		//The UL needs to stretch the entire length of the page, and not allow the 
+		//underlying part of the page to fire the close event.
+		$('#slide-menu').on('click', function(event){
+			event.stopPropagation();
+			console.log('Tapped on the menu.');
+		});
+		
+		$('#slide-menu li a').on('click', aauMobile.slideMenu.linkClicked);
+		
+		//Android pre-3.0 devices aren't fully responsive to click.
+		if(aauMobile.isAndroid) {
+			$('.menu-btn').live('vclick', aauMobile.slideMenu.show);
+		}else{
+			$('.menu-btn').live('click', aauMobile.slideMenu.show);
+		}
+	   	
+	   	//Occurs when the menu finishes sliding.
+	    $('#menu-page').on('webkitTransitionEnd', function(){
+	    	if($(this).hasClass('slide-out')){
+	    		$(this).css('position','fixed');
+	    		$('#slide-menu').css('height',$(window).height());
+	    	} else{
+	    		$(this).addClass('hidden');
+	    	}
+	    });
+	    
+	    //When the current page finishes sliding, this will occur.
+	    $('.ui-page').on('webkitTransitionEnd', function(){
+			if($(this).attr('id') == "transit-map"){
+				mapManager.triggerResize();
+			}
+			if(!$(this).hasClass('slide-out')){
+				$('#result-container').css('position','fixed');
+			}
+	   	});
 	}
+},
 
-function activateSlideMenu(){
-	//We don't want the menu visible by default, we want to show the schedule.
-	$.mobile.changePage('#student-home', {changeHash: true});
-	
-	$('#menu-page').on('click', hideSlideMenu);
-	
-	//The UL needs to stretch the entire length of the page, and not allow the 
-	//underlying part of the page to fire the close event.
-	$('#slide-menu').on('click', function(event){
-		event.stopPropagation();
-		console.log('Tapped on the menu.');
-	});
-	
-	$('#slide-menu li a').on('click', slideMenuLinkClick);
-	
-	//Android pre-3.0 devices aren't fully responsive to click.
-	if(aauMobile.isAndroid) {
-		$('.menu-btn').live('vclick', showSlideMenu);
-	}else{
-		$('.menu-btn').live('click', showSlideMenu);
+isAndroid: (navigator.userAgent.toLowerCase().indexOf("android") >-1),
+
+init: {
+	appActivation: function(){
+
 	}
-   
-    $('#menu-page').on('webkitTransitionEnd', function(){
-    	if($(this).hasClass('slide-out')){
-    		$(this).css('position','fixed');
-    		$('#slide-menu').css('height',$(window).height());
-    	} else{
-    		$(this).addClass('hidden');
-    	}
-    });
-    $('.ui-page').on('webkitTransitionEnd', function(){
-		if($(this).attr('id') == "transit-map"){
-			mapManager.triggerResize();
-		}
-		if(!$(this).hasClass('slide-out')){
-			$('#result-container').css('position','fixed');
-		}
-   	});
+}
+ 
+};
+
+//Initializes Class Schedule and RSS Data
+function studentDataInit() {
+	aauMobile.classSchedule.init();
+	aauMobile.rssFeed.init();
+	aauMobile.rssEvent.init();
 }
 
 function bindEvents() {
   //Disable page transitions. With the way the menu works, we have to use our own.
   $.mobile.defaultPageTransition = 'none';	
-  
-  
+ 
   //iOS loads before an event can be triggered. Have to check and see if we're initialized.
   if($('#menu-page').hasClass('ui-page')){
-  	activateSlideMenu();
+  	aauMobile.slideMenu.init();
   }else{
-  	$('#menu-page').live('pageinit', activateSlideMenu);
+  	$('#menu-page').live('pageinit', aauMobile.slideMenu.init);
   }
+  //Force the menu to be initialized if we're not on it or it's not been touched by jQuery.
+	if($($.mobile.activePage).attr('id') != 'menu-page' && !$('#menu-page').hasClass('ui-page')){
+		$.mobile.changePage('#menu-page', {changeHash: false});
+	}
+		
+  
+  $(document).on('pagechangefailed', function(){
+  	$.mobile.changePage('#student-home', {changeHash: true});
+  });
+  //Special changes to make the Android version function/appear correctly.
   if(aauMobile.isAndroid) {
   	//Don't display Back button on Android devices.
   	$('.mob-back-button').css('display','none');
@@ -485,20 +506,15 @@ function bindEvents() {
 		}
   	});
   }
-  
-  $("#student-home").live("pagecreate", studentHomePageInit);
-  $("#feed-list").live("pagecreate", feedListPageCreate);
-  $("#feed-detail").live("pagecreate", feedDetailPageCreate);
-  
 }
 
 if(!navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
+ document.addEventListener("ready",function(){ studentDataInit();
   bindEvents();
+  }, false);
 } else {
   document.addEventListener("deviceready", function() {
-    studentHomePageInit();
-    feedListPageCreate();
-    feedDetailPageCreate();
+    studentDataInit();
     bindEvents();
   }, false);
 }

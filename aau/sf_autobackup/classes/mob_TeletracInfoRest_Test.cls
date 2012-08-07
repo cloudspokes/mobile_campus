@@ -23,7 +23,7 @@
 private class mob_TeletracInfoRest_Test {
 
     static testMethod void testTeletracRest() {
-        User aaUStudent = TestUtil.makeUser('AAU Student');            // Create user for test
+        User aaUStudent = TestUtil.makeUser('AAU Student-Platform');            // Create user for test
         System.runAs(aaUStudent) {
         	
         	//init custom settings for testing

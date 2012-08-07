@@ -5,6 +5,8 @@
 		margin-left: -180px;
 		display: block;
 		-webkit-transition: margin-left 0.25s linear; 
+		-webkit-transition-timing-function: linear;
+		-webkit-transform: translateZ(0);
 		z-index: 1000;
 	}
 	#menu-page.hidden{

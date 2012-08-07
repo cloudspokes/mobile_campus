@@ -2,10 +2,11 @@
 private class mob_StudentRest_Test {
 	
 	static testmethod void testStudentRest() {
-		User aaUStudent = TestUtil.makeUser('AAU Student');
-		User aaUStudentUser = TestUtil.makeUser('AAU Student');
-		User aaUStudentUser1 = TestUtil.makeUser('AAU Student');
-		System.runAs(aaUStudent) {
+		User sysAdmin = TestUtil.makeUser('System Administrator');
+    User aaUStudent = TestUtil.makeUser('AAU Student-Platform');
+    User aaUStudentUser = TestUtil.makeUser('AAU Student-Platform');
+    User aaUStudentUser1 = TestUtil.makeUser('AAU Student-Platform');
+    System.runAs(sysAdmin) {
 			
 				Contact lead = TestUtil.makeLead('Test', 'ContactShare');
 				lead.student_user__c = aaUStudentUser.Id;

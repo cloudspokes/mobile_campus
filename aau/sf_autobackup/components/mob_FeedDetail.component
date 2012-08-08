@@ -11,6 +11,7 @@
 <div class="feed-title">${feedTitle}</div>
 <div class="feed-origin">${feedOrigin}</div>
 <br/>
-<div class="feed-description">${feedDescription}</div>
+<div class="feed-description">Date: ${feedEventDate}</div>
+<div class="feed-description">Description: ${feedDescription}</div>
 </script> 
 </apex:component>

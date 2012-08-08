@@ -27,6 +27,7 @@
     font-family : sans-serif;
     font-weight: normal;
     -webkit-background-size : 30px;
+    width: 40px;
 }
  
 .mob-back-button:before{

@@ -6,8 +6,8 @@
     background-image: -webkit-linear-gradient( top, #303030 0%, #565656 20%, #565656 80%, #303030 100% );
     background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#303030), color-stop(0.2, #565656), color-stop(0.8, #565656), to(#303030));
     background-color: #565656;
-    font-size: 13pt;
-    padding: 10px 5px;
+    font-size: 11pt;
+    padding: 5px;
     border: none;
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
  }

@@ -117,13 +117,12 @@ var WebViewer = {
 var RestDataPlugin = {
 
 	//these need to be set in a VF page
-	accessToken: '',	//$Api.Session_ID
+	accessToken:  '',	//$Api.Session_ID
 	clientKey: '',		//$Setup.mob_Student__c.Client_Key__c
 	baseUrl: '',		//$Setup.mob_Student__c.Base_Url__c
 	restUrl: '',		//$Setup.mob_Student__c.Rest_Url__c
 
 	getData: function(successCallback, failureCallback, restPath, isSFDC, restType, dataType) {
-
 		if(RestDataPlugin.isPhonegap()){
 			console.log('Rest call via Phonegap...');
 			//RestDataPlugin.getPhonegapData(successCallback, failureCallback, restPath, isSFDC, restType, dataType);
@@ -153,7 +152,8 @@ var RestDataPlugin = {
 	getAjaxDataByForceTK: function(successCallback, failureCallback, restPath, isSFDC, restType, dataType) {
 
 		// Get an instance of the REST API client and set the session ID
-		var client = new forcetk.Client(RestDataPlugin.clientKey); 
+		var client = new forcetk.Client(RestDataPlugin.clientKey);
+		console.log('::Access Token ::'+RestDataPlugin.accessToken); 
 		client.setSessionToken(RestDataPlugin.accessToken);
 		client.setRefreshToken(RestDataPlugin.accessToken);
 

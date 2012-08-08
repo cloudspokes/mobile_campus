@@ -1,6 +1,6 @@
 var aauMobile = aauMobile || {
 
-studentId: '',
+studentId: currentUserId,
  
 classSchedule: {
 	data: {},
@@ -155,27 +155,41 @@ rssFeed: {
 		aauMobile.rssFeed.feedCount = 0;
 		aauMobile.rssFeed.feedData = [];
 		
+		
 		var rssUrl = 'https://www.academyart.edu/news.rss';
-		RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
+		//RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
 
 		rssUrl = 'https://spreadsheets.google.com/feeds/list/0AvROhDzo3UybdDQ5aEFzVDZqSzFDdVVENTRxTXdXcHc/od6/public/basic?alt=rss';
-		RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
+		//RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
 
 		rssUrl = 'https://spreadsheets.google.com/feeds/list/0AvROhDzo3UybdHF3Q3FiZnNibk1qV2xpRVFMTUM2NXc/od6/public/basic?alt=rss';
 		RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
 
 		rssUrl = 'https://spreadsheets.google.com/feeds/list/0AvROhDzo3UybdHVSWFVwczdOekJlWjNVRmtpLU5scWc/od6/public/basic?alt=rss';
-		RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
+		//RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
 
 	},
 
 	buildFeed: function(result) {
 
+		/*console.log('Result:: '+result);
+		console.log('Date '+$(result).find('eventdate').get(0));
+		console.log('Date '+eval(result));
+		console.log('Date '+result.toString());
+		console.log('Date '+$(result).html());
+		console.log('Date '+$(result).text());*/
+
 		result = $.xml2json(result);
+
+
 		console.log('RSS Feed Success! ' + result.channel.title);
 		//console.log('Result: ' + JSON.stringify(result));
 		
 		$.each(result.channel.item, function(index, item){
+
+			//TODO: you may want to move where this is happening (before the conversion to JSON maybe...)
+			item = aauMobile.rssFeed.processItem(item);
+            //console.log('Date >>'+item.eventdate);
 			item.origin = result.channel.title;
 			aauMobile.rssFeed.feedData.push(item);
 		});
@@ -186,11 +200,20 @@ rssFeed: {
 		
 		//Increment the feed count
 		aauMobile.rssFeed.feedCount++;
+		console.log('::Feed Count ::'+aauMobile.rssFeed.feedCount);
+		//TODO :: Remove this. It only to test  
+		aauMobile.rssFeed.showFeed();
 
 		//If all feeds have returned or failed, display.
 		if(aauMobile.rssFeed.feedCount >3){
 			aauMobile.rssFeed.showFeed();
 		}
+	},
+
+	processItem: function(item){
+		//TODO: put all the logic here
+        //console.log('Process Item  >> '+JSON.stringify(item.description.split(",")));
+		return item;
 	},
 
 	initFailure: function(result) {
@@ -209,7 +232,6 @@ rssFeed: {
 		var feedTemplate = $("#rss-feed-template");
 		var feedContainer = $("#feed-ul");
 		$(feedContainer).empty();
-		
 		$.each(aauMobile.rssFeed.feedData, function(index, item){
 				//console.log('Feed Item: '+JSON.stringify(item));
 				if(index < 20){
@@ -241,7 +263,17 @@ rssFeed: {
 				//create instance of template for feed Details
 				var feedTemplate = $('#feed-detail-template');
 				var feedContainer = $('#feed-detail-container').empty();
-				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin, feedDescription: item.description}).appendTo(feedContainer);
+				
+				eventDate = '';
+				eventDescription = '';
+				console.log('Description ::: '+item.description);
+				if(item.description && item.description.split(",")!= null){
+				  eventItem = item.description.split(",");
+				  eventDate = eventItem[0].replace("eventdate:","");
+				  eventDescription = eventItem[1].replace("eventdescription:","");
+				}
+				
+				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin, feedEventDate:eventDate, feedDescription: eventDescription}).appendTo(feedContainer);
 			}
 		});
 		//do page transition to detail screen
@@ -479,9 +511,9 @@ function bindEvents() {
   	$('#menu-page').live('pageinit', aauMobile.slideMenu.init);
   }
   //Force the menu to be initialized if we're not on it or it's not been touched by jQuery.
-	if($($.mobile.activePage).attr('id') != 'menu-page' && !$('#menu-page').hasClass('ui-page')){
+/*	if($($.mobile.activePage).attr('id') != 'menu-page' && !$('#menu-page').hasClass('ui-page')){
 		$.mobile.changePage('#menu-page', {changeHash: false});
-	}
+	}*/
 		
   
   $(document).on('pagechangefailed', function(){
@@ -509,9 +541,8 @@ function bindEvents() {
 }
 
 if(!navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
- document.addEventListener("ready",function(){ studentDataInit();
+  studentDataInit();
   bindEvents();
-  }, false);
 } else {
   document.addEventListener("deviceready", function() {
     studentDataInit();

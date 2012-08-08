@@ -54,7 +54,7 @@
 .classDetail h2{
     font-size:14pt;
 }
-#classTime div.ui-btn-inner span.ui-icon{
+.classLi div.ui-btn-inner span.ui-icon{
     display: none;
 }
 

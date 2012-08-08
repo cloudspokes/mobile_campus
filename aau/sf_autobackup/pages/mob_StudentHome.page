@@ -2,8 +2,8 @@
   <!-- controller="ContentController"> -->
   <!--   <apex:outputText escape="false" value="{!"<!DOCTYPE html>"}"/>-->
 <html manifest="/apex/mob_Manifest">
-<head>
-	<apex:pageMessages />
+<head> 
+    <apex:pageMessages />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <link rel="Stylesheet" type="text/css" href="{!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.min.css"></link>
     <link rel="Stylesheet" type="text/css" href="{!$Resource.mob_Design}/mob_Design/AAUjQueryTheme.min.css"></link>
@@ -24,6 +24,19 @@
     <script type="text/javascript" src="{!$Resource.jquerytmpl}"></script>  
     <script type="text/javascript" src="{!$Resource.appirioPlugins}"></script>
     <script type="text/javascript" src="{!$Resource.mob_forceJsToolkit}"></script>
+     <script>
+        /********* Initialize Variables from Salesforce Data ********************/
+            RestDataPlugin.accessToken = '{!$Api.Session_ID}';
+            RestDataPlugin.baseUrl = '{!$Setup.mob_Student__c.Base_Url__c}';
+            RestDataPlugin.restUrl = '{!$Setup.mob_Student__c.Rest_Url__c}';
+            RestDataPlugin.clientKey = '{!$Setup.mob_Student__c.Client_Key__c}';
+            var currentUserId = '{!$CurrentPage.parameters.Id}';
+            if(currentUserId == '' || currentUserId == null){
+                currentUserId = '{!$User.Id}';
+            }
+            
+     </script>
+    
     <script type="text/javascript" src="{!$Resource.mob_StudentJs}"></script>
     <script type="text/javascript" src="{!$Resource.mob_XML2JSON}"></script>
     <script type="text/javascript" src="{!$Resource.mob_infoBuble}"></script>
@@ -39,8 +52,8 @@
        color: #DC2221;
     }
    .mob-header-icon{
-		float: left;
-		margin: 5px;
+        float: left;
+        margin: 5px;
         width: 37px;
         height: 37px;
         /*margin:-5px 5px 0 5px;*/
@@ -56,9 +69,9 @@
         background-image: -o-linear-gradient( #cb1f1e , #aa1816 );
         background-image: -linear-gradient( #cb1f1e , #aa1816 );
    }
-	.header-right{
-		float:right;
-	}
+    .header-right{
+        float:right;
+    }
    .mob-header-MenuIcon1 {
         background:url({!$Resource.mob_Design}/mob_Design/iconsprite_white.png) no-repeat 0px 0px;
         float:left;
@@ -118,16 +131,18 @@
         text-overflow: clip;
     }
     #external-page-frame{
-    	border: none;
-    	height: 100%;
-    	width: 100%;
-    	-webkit-overflow-scrolling: touch;
+        border: none;
+        height: 100%;
+        width: 100%;
+        -webkit-overflow-scrolling: touch;
     }
     .infoBubbleContent {
-	  margin: 4px 4px 4px 4px;
-	  text-shadow: none;
-	  color: white;  
-	  background-color: #AE1917;     
+      margin: 8px 4px 4px 4px;
+      text-shadow: none;
+      color: white;
+      font-weight: bold;
+      font-size: 13pt;  
+      background-color: transparent;     
     }
  </style>
 
@@ -146,26 +161,7 @@
 </script>
 </head>
 
-<script>
-/********* Initialize Variables from Salesforce Data ********************/
-    RestDataPlugin.accessToken = '{!$Api.Session_ID}';
-    RestDataPlugin.baseUrl = '{!$Setup.mob_Student__c.Base_Url__c}';
-    RestDataPlugin.restUrl = '{!$Setup.mob_Student__c.Rest_Url__c}';
-    RestDataPlugin.clientKey = '{!$Setup.mob_Student__c.Client_Key__c}';
 
-    //aauMobile.studentId = '003V0000009kTN1'; //hardcoded Student.  Need to remove.
-    try { 
-        aauMobile.studentId = '{!$CurrentPage.parameters.Id}' || aauMobile.studentId;
-        //console.log('Student id ::'+aauMobile.studentId + 'Current Logged in User ::'+'{!$User.Id}' );
-    }catch(ex){
-        aauMobile.studentId = '{!$User.Id}';
-        //console.log('Student id not available Current Logged in User  ::'+aauMobile.studentId);
-    }
-
-    if(aauMobile.studentId == '' || aauMobile.studentId == null){
-        aauMobile.studentId = '{!$User.Id}';
-    }
-</script>
 
 <body id="homepage" style="background:#121212">
     <div id="tt-content">
@@ -176,7 +172,7 @@
 </div>
 <div data-role="page" id="student-home" class="page-container">
     <div data-role="header" data-position="fixed" class="mob-header">
-		<div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
+        <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
         <!-- <div class="mob-header-icon header-right"><div class="mob-header-MenuIcon2" /></div>-->
         <h1>Class Schedule</h1>
     </div>
@@ -193,7 +189,7 @@
 
 <div data-role="page" id="student-detail" class="page-container">
     <div data-role="header" data-position="fixed"  class="mob-header">
-        <a href="#student-home" data-role="button" data-inline="true" data-direction="reverse" class="back-root mob-back-button">Back</a>
+        <a href="#student-home" data-role="button" data-inline="true" data-transition="slide" data-direction="reverse" class="back-root mob-back-button">Back</a>
         <h1>Class Info</h1>
     </div>
     <div data-role="content" id="dtlId" class="mob-content">
@@ -207,7 +203,7 @@
 
 <div data-role="page" id="feed-list" class="page-container">
     <div data-role="header" data-position="fixed"  class="mob-header">
-		<div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
+        <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
         <h1>News and Events</h1>
     </div>
     <div data-role="content" class="mob-content">
@@ -217,7 +213,7 @@
 
 <div data-role="page" id="feed-detail" class="page-container">
     <div data-role="header" data-position="fixed"  class="mob-header">
-        <a href="#feed-list" data-role="button" data-inline="true" data-direction="reverse" class="back-root mob-back-button">Back</a>
+        <a href="#feed-list" data-role="button" data-inline="true" data-transition="slide" data-direction="reverse" class="back-root mob-back-button">Back</a>
         <h1>News Article</h1>
     </div>
     <div data-role="content" class="mob-content">
@@ -227,7 +223,7 @@
 
 <div data-role="page" id="event-list" class="page-container">
     <div data-role="header" data-position="fixed" class="mob-header">
-		<div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
+        <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
         <h1>Sports</h1>
     </div>
     <div data-role="content" class="mob-content">
@@ -237,7 +233,7 @@
 
 <div data-role="page" id="link-list" class="page-container">
     <div data-role="header" data-position="fixed" class="mob-header">
-		<div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
+        <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
         <h1>Links</h1>
     </div>
     <div data-role="content" class="mob-content">
@@ -248,12 +244,22 @@
 
 <div data-role="page" id="transit-map" class="page-container">
     <div data-role="header" data-position="fixed"  class="mob-header">
-		<div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
+        <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
          <div class="mob-header-icon header-right" id="transit-settings"><div class="mob-header-MenuIcon3" /></div>
          <h1>My Transit</h1>
     </div> 
     <c:mob_MapSettings />
     <c:mob_Map />
+</div>
+
+<div data-role="page" id="bus-detail" class="page-container">
+    <div data-role="header" data-position="fixed"  class="mob-header">
+        <a href="#transit-map" data-role="button" data-inline="true" data-transition="slide" data-direction="reverse" class="back-root mob-back-button">Back</a>
+        <h1>Bus Schedule</h1>
+    </div>
+    <div data-role="content" class="mob-content">
+        <c:mob_BusDetail />  
+    </div>
 </div>
 
 <!-- <div data-role="page" id="external-page" class="page-container">
@@ -262,7 +268,7 @@
         <h1 id="external-page-title">External Page</h1>
     </div>
     <div data-role="content" id="external-page-content" class="mob-content">
-    	<iframe id="external-page-frame" src="http://newsfeed.academyart.edu/"></iframe>
+        <iframe id="external-page-frame" src="http://newsfeed.academyart.edu/"></iframe>
      </div>
 </div> -->
 

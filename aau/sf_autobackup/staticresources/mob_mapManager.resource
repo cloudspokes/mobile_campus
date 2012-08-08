@@ -128,11 +128,11 @@ var MapManager = function() {
           hideCloseButton: true,  
           shadowStyle: 1,
           padding: 0,
-          backgroundColor: '#AE1917',
+          backgroundColor: 'rgba(0,0,0,0.55)',
           borderRadius: 4,
           arrowSize: 10,
           borderWidth: 1,
-          borderColor: '#FFFFFF',
+          borderColor: '#000',
           minHeight: 50,
           minWidth: size
         });

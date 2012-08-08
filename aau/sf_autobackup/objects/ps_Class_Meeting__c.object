@@ -38,6 +38,15 @@
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
     <fields>
+        <fullName>Building__c</fullName>
+        <externalId>false</externalId>
+        <label>Building</label>
+        <length>30</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Class_Meeting_Number__c</fullName>
         <description>PeopleSoft&apos;s identifier to distinguish meeting patterns for the same class</description>
         <externalId>false</externalId>
@@ -142,6 +151,15 @@
         <label>Psft_Ext_Id__c</label>
         <length>20</length>
         <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Room__c</fullName>
+        <externalId>false</externalId>
+        <label>Room</label>
+        <length>30</length>
+        <required>false</required>
         <type>Text</type>
         <unique>false</unique>
     </fields>

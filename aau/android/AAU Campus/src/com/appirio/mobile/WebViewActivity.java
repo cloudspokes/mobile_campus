@@ -17,11 +17,15 @@ public class WebViewActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_web_view);
         
-        WebView v = (WebView)findViewById(R.id.webView); 
+        WebView v = (WebView)findViewById(R.id.webView);
         
         v.setWebViewClient(new AppirioWebViewClient());
         
         v.getSettings().setSupportZoom(true);
+        v.getSettings().setBuiltInZoomControls(true);
+        
+        v.getSettings().setLoadWithOverviewMode(true);
+        v.getSettings().setUseWideViewPort(true);
         
         v.loadUrl(getIntent().getStringExtra("url"));
     }

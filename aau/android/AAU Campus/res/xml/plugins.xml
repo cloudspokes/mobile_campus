@@ -23,4 +23,5 @@
     <plugin name="com.appirio.mobile.webservice" value="com.appirio.mobile.plugins.AMWebService"/>
     <plugin name="com.appirio.mobile.webviewer.loadUrl" value="com.appirio.mobile.plugins.AMWebViewer"/>
     <plugin name="com.appirio.mobile.webviewer" value="com.appirio.mobile.plugins.AMWebViewer"/>
+    <plugin name="com.appirio.mobile.closeactivity" value="com.appirio.mobile.plugins.AMCloseActivity"/>
 </plugins>

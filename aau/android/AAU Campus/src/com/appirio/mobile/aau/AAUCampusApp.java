@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.appirio.aau.R;
+import com.appirio.mobile.AMSalesforceDroidGapActivity;
 import com.salesforce.androidsdk.app.ForceApp;
 import com.salesforce.androidsdk.ui.LoginActivity;
-import com.salesforce.androidsdk.ui.SalesforceDroidGapActivity;
 import com.salesforce.androidsdk.ui.SalesforceR;
 import com.salesforce.samples.vfconnector.SalesforceRImpl;
 
@@ -23,14 +23,15 @@ public class AAUCampusApp extends ForceApp {
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putString(LoginActivity.SERVER_URL_CURRENT_SELECTION,
 		  getString(R.string.sf_default_url));
+
 		editor.commit();		
 	}
-
+	
 	private SalesforceR salesforceR = new SalesforceRImpl();
 	
 	@Override
 	public Class<? extends Activity> getMainActivityClass() {
-		return SalesforceDroidGapActivity.class;
+		return AMSalesforceDroidGapActivity.class;
 	}
 	
 	@Override

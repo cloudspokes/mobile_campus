@@ -31,7 +31,7 @@
 	} 
 	.ui-page-active{
 		margin-left: 0px;
-		-webkit-transition: margin-left 0.25s linear;
+		/*-webkit-transition: margin-left 0.25s linear;*/
 	}
 	
 	/*Specify css for both active and inactive, so that we can set the position of a page to be displayed before displaying it.*/

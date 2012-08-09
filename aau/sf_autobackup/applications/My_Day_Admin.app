@@ -10,4 +10,5 @@
     <tab>Student_Home</tab>
     <tab>Bus_Stop__c</tab>
     <tab>Bus_Route__c</tab>
+    <tab>Mobile_Links__c</tab>
 </CustomApplication>

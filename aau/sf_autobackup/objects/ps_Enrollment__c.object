@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <actionOverrides>
         <actionName>Accept</actionName>
         <type>Default</type>
@@ -77,11 +77,11 @@
         <label>Enrollment Status</label>
         <picklist>
             <picklistValues>
-                <fullName>Enrolled</fullName>
+                <fullName>E</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Dropped</fullName>
+                <fullName>D</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -118,17 +118,6 @@
         <type>MasterDetail</type>
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
-    <fields>
-        <fullName>xStudent__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>xStudent</label>
-        <referenceTo>ps_Person__c</referenceTo>
-        <relationshipLabel>xEnrollments</relationshipLabel>
-        <relationshipName>Enrollments</relationshipName>
-        <required>false</required>
-        <type>Lookup</type>
-    </fields>
     <label>ps_Enrollment</label>
     <listViews>
         <fullName>All</fullName>
@@ -150,7 +139,7 @@
     </nameField>
     <pluralLabel>ps_Enrollments</pluralLabel>
     <searchLayouts>
-        <lookupDialogsAdditionalFields>xStudent__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields xsi:nil="true"/>
         <lookupDialogsAdditionalFields>Enrollment_Status__c</lookupDialogsAdditionalFields>
     </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>

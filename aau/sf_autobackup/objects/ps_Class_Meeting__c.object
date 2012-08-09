@@ -101,16 +101,6 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>Instructor_1__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>Instructor 1</label>
-        <referenceTo>ps_Person__c</referenceTo>
-        <relationshipName>Class_Meeting</relationshipName>
-        <required>false</required>
-        <type>Lookup</type>
-    </fields>
-    <fields>
         <fullName>Instructor_2_Type__c</fullName>
         <externalId>false</externalId>
         <label>Instructor 2 Type</label>
@@ -118,16 +108,6 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Instructor_2__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>Instructor 2</label>
-        <referenceTo>ps_Person__c</referenceTo>
-        <relationshipName>Class_Meeting1</relationshipName>
-        <required>false</required>
-        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Location__c</fullName>

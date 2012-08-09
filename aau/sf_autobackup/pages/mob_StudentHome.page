@@ -144,6 +144,18 @@
       font-size: 13pt;  
       background-color: transparent;     
     }
+    .infoBubbleLink{
+      background-image: url(/resource/1343330448000/mob_Design/mob_Design/images/icons-18-white.png);
+	  width: 20px;
+	  background-position: -107px 1px;
+	  background-color: #60a0e0;
+	  border-radius: 12px;
+	  display: inline-block;
+	  border: solid 2px white;
+	  position: absolute;
+	  right: 5px;
+	  top: 10px;
+    }
  </style>
 
 <script type="text/javascript">
@@ -221,6 +233,16 @@
     </div>
 </div>
 
+<div data-role="page" id="campus-event-list" class="page-container">
+    <div data-role="header" data-position="fixed" class="mob-header">
+        <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
+        <h1>Campus Events</h1>
+    </div>
+    <div data-role="content" class="mob-content">
+        <c:mob_CampusEvents />  
+    </div>
+</div>
+
 <div data-role="page" id="event-list" class="page-container">
     <div data-role="header" data-position="fixed" class="mob-header">
         <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
@@ -255,9 +277,10 @@
 <div data-role="page" id="bus-detail" class="page-container">
     <div data-role="header" data-position="fixed"  class="mob-header">
         <a href="#transit-map" data-role="button" data-inline="true" data-transition="slide" data-direction="reverse" class="back-root mob-back-button">Back</a>
-        <h1>Bus Schedule</h1>
+        <h1 id="bus-stop-name">Stop Schedule</h1>
     </div>
     <div data-role="content" class="mob-content">
+    	<ul id="bus-stop-list" data-theme="d" data-role="listview"></ul>
         <c:mob_BusDetail />  
     </div>
 </div>

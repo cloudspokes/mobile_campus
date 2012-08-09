@@ -154,19 +154,15 @@ rssFeed: {
 		
 		aauMobile.rssFeed.feedCount = 0;
 		aauMobile.rssFeed.feedData = [];
-		
-		
-		var rssUrl = 'https://www.academyart.edu/news.rss';
-		//RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
 
-		rssUrl = 'https://spreadsheets.google.com/feeds/list/0AvROhDzo3UybdDQ5aEFzVDZqSzFDdVVENTRxTXdXcHc/od6/public/basic?alt=rss';
-		//RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
+		var rssUrl = 'https://spreadsheets.google.com/feeds/list/0AvROhDzo3UybdDQ5aEFzVDZqSzFDdVVENTRxTXdXcHc/od6/public/basic?alt=rss';
+		RestDataPlugin.getData(aauMobile.rssFeed.buildEvents, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
 
 		rssUrl = 'https://spreadsheets.google.com/feeds/list/0AvROhDzo3UybdHF3Q3FiZnNibk1qV2xpRVFMTUM2NXc/od6/public/basic?alt=rss';
-		RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
+		RestDataPlugin.getData(aauMobile.rssFeed.buildEvents, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
 
 		rssUrl = 'https://spreadsheets.google.com/feeds/list/0AvROhDzo3UybdHVSWFVwczdOekJlWjNVRmtpLU5scWc/od6/public/basic?alt=rss';
-		//RestDataPlugin.getData(aauMobile.rssFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
+		RestDataPlugin.getData(aauMobile.rssFeed.buildEvents, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
 
 	},
 
@@ -205,7 +201,7 @@ rssFeed: {
 		aauMobile.rssFeed.showFeed();
 
 		//If all feeds have returned or failed, display.
-		if(aauMobile.rssFeed.feedCount >3){
+		if(aauMobile.rssFeed.feedCount >2){
 			aauMobile.rssFeed.showFeed();
 		}
 	},
@@ -296,10 +292,69 @@ rssFeed: {
 	}
 },
 
+//this is the real RSS Feed! TODO: change the names, so this loads under 'Campus News'
+campusFeed: {
+	
+	init: function() {
+		var rssUrl = 'https://www.academyart.edu/news.rss';
+		RestDataPlugin.getData(aauMobile.campusFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
+
+	},
+	
+	buildFeed: function(result) {
+		result = $.xml2json(result);
+
+		console.log('RSS Feed Success! ' + result.channel.title);
+		//console.log('Result: ' + JSON.stringify(result));
+		
+		$.each(result.channel.item, function(index, item){
+
+			item.origin = result.channel.title;
+			aauMobile.rssFeed.feedData.push(item);
+		});
+		
+		aauMobile.rssFeed.feedData.sort(function(a,b){
+			return a.title.localeCompare(b.title);
+		});
+		
+		var feedTemplate = $("#rss-feed-template");
+		var feedContainer = $("#feed-ul");
+		$(feedContainer).empty();
+		$.each(aauMobile.rssFeed.feedData, function(index, item){
+			//console.log('Feed Item: '+JSON.stringify(item));
+			if(index < 20){
+				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin, feedId: item.guid}).appendTo(feedContainer);			
+			}else{
+				return;
+			}
+		});
+
+	},
+
+	showFeedDetails: function(feedId) {
+
+		//find Feed in the feedData
+		$.each(aauMobile.rssFeed.feedData, function(index, item){
+			if(item.guid == feedId){
+				console.log('Opening Feed: ' + JSON.stringify(item));
+				//create instance of template for feed Details
+				var feedTemplate = $('#feed-detail-template');
+				var feedContainer = $('#feed-detail-container').empty();
+				
+				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin}).appendTo(feedContainer);
+			}
+		});
+		//do page transition to detail screen
+		$.mobile.changePage('#feed-detail', {transition: 'slide', changeHash: true});
+	},
+
+},
+
 rssEvent: {
 
 	init: function() {
-		rssUrl = 'http://www.artuathletics.com/services/calendar.ashx/calendar.rss';
+
+		var rssUrl = 'http://www.artuathletics.com/services/calendar.ashx/calendar.rss';
 		RestDataPlugin.getData(aauMobile.rssEvent.buildEvents, aauMobile.rssEvent.initFailure, rssUrl, false, "GET", "xml");
 	},
 
@@ -339,6 +394,40 @@ rssEvent: {
 	}
 },
 
+externalLinks: {
+	init: function(){
+		//make REST call to RestDataPlugin.getData(); 
+		var restPath = "/ExternalLinks";
+		RestDataPlugin.getData(aauMobile.externalLinks.buildLinks, aauMobile.externalLinks.initFailure, restPath, true, "GET", "json");
+	},
+
+	//this is the successCallback from the rest call in init
+	buildLinks: function(result){
+		//loop through results and use a template to create each item and add to the ul 
+		//console.log('external Links  Success result ! ' + JSON.stringify(result));
+		var linkTemplate = $("#link-template");
+		var linkContainer = $("#link-ul");
+		$(linkContainer).empty();
+		$.each(result, function(index, item){
+			//console.log('Link Item: ' + JSON.stringify(item));
+			if(index < 20){
+				linkTemplate.tmpl({linkName: item.linkName, linkUrl: item.linkUrl}).appendTo(linkContainer);			
+			}else{
+				return;
+			}
+
+		});
+		//If jQuery has initialized it, refresh.
+		if($(linkContainer).hasClass('ui-listview')){
+			$(linkContainer).listview('refresh');
+		}
+		$(linkContainer).css('margin','0px');
+	},
+	initFailure: function(result) {
+		console.log('buildLinks Failure. ' + result);
+	}
+},
+
 //Mobile Sliding Menu component. 
 //Displays as a side-bar that slides out and pushes content to the side.
 slideMenu: {
@@ -360,7 +449,7 @@ slideMenu: {
 		
 		//Activate the sliding.
 		$('#menu-page').addClass('slide-out');
-		$('.page-container').addClass('slide-out');
+		//$('.page-container').addClass('slide-out');
 		
 		//OLD METHOD
 		//$('#slide-menu').animate({marginLeft:'0px'},250, function(){$('#slide-menu').css('position','fixed');});
@@ -381,7 +470,7 @@ slideMenu: {
 			
 			$('#menu-page').removeClass('slide-out');
 			
-			$('.page-container').removeClass('slide-out');
+			//$('.page-container').removeClass('slide-out');
 		}
 		
 		//OLD METHOD
@@ -472,14 +561,14 @@ slideMenu: {
 	    });
 	    
 	    //When the current page finishes sliding, this will occur.
-	    $('.ui-page').on('webkitTransitionEnd', function(){
+	    /*$('.ui-page').on('webkitTransitionEnd', function(){
 			if($(this).attr('id') == "transit-map"){
 				mapManager.triggerResize();
 			}
 			if(!$(this).hasClass('slide-out')){
 				$('#result-container').css('position','fixed');
 			}
-	   	});
+	   	});*/
 	}
 },
 
@@ -487,7 +576,7 @@ isAndroid: (navigator.userAgent.toLowerCase().indexOf("android") >-1),
 
 init: {
 	appActivation: function(){
-
+		utils.log('aauMobile.init.appActivation has been called.');
 	}
 }
  
@@ -498,6 +587,7 @@ function studentDataInit() {
 	aauMobile.classSchedule.init();
 	aauMobile.rssFeed.init();
 	aauMobile.rssEvent.init();
+	aauMobile.externalLinks.init();
 }
 
 function bindEvents() {

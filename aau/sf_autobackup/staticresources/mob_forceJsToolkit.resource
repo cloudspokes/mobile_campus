@@ -122,7 +122,7 @@ if (forcetk.Client === undefined) {
      *                   use the value from the OAuth token.
      */
     forcetk.Client.prototype.setSessionToken = function(sessionId, apiVersion, instanceUrl) {
-		console.log('SetSessionId: '+sessionId);
+		//console.log('SetSessionId: '+sessionId);
         this.sessionId = sessionId;
         this.apiVersion = (typeof apiVersion === 'undefined' || apiVersion === null)
         ? 'v24.0': apiVersion;
@@ -255,10 +255,10 @@ if (forcetk.Client === undefined) {
         var that = this;
 
 		var url = path;
-		console.log('path: '+ url);
+		//console.log('path: '+ url);
 		if(isSFDC){
 			url = this.instanceUrl + '/services/apexrest' + path;
-			console.log('url: '+ url);
+			//console.log('url: '+ url);
 		}
 
         $.ajax({

@@ -57,6 +57,7 @@ var MapManager = function() {
     //cache for vehicles
     var vehicleCache;
     
+    
     // Function to parse vehicle name, returns a json object with name and route properties, if the vehicle
     // has no route associated with the name it route will be undefined. Route names must be in {}
     function parseVehicleName(vehicleName) {
@@ -102,7 +103,12 @@ var MapManager = function() {
         infoBubble.close();
       }
       
-      var content = '<div class="infoBubbleContent">' + this.popupInfo + "</div>";
+      var content = '<div class="infoBubbleContent">' + this.popupInfo;
+      if(this.stopName){
+      	content += '<span onclick="mapManager.getStopDetails(\'' + encodeURIComponent(this.stopName) + '\');" class="infoBubbleLink">&nbsp;</span></div>';
+      } else{
+        content += '</div>';
+      }
       
       var size = 150;
       var s = content.split(/\<.*?\>/);
@@ -115,11 +121,14 @@ var MapManager = function() {
           }
         });
         
-        size = size * 10;
+        size = size * 11;
+      }
+      if(size < 150){
+      	size = 150;
       }
       
       $("#popupMeasureDiv").html(content);
-    
+     
         infoBubble = new InfoBubble({
           map: map,
           content: content,
@@ -133,12 +142,11 @@ var MapManager = function() {
           arrowSize: 10,
           borderWidth: 1,
           borderColor: '#000',
-          minHeight: 50,
+          minHeight: 45,
           minWidth: size
         });
         
         infoBubble.open(map, this);
-        
     } 
     
     function doRenderMap(element) {
@@ -369,7 +377,8 @@ var MapManager = function() {
 						icon: stopMarker,
 						zindex: 1
 					});
- 
+ 					marker.stopName = this.stopName;
+ 					
                     marker.popupInfo = this.stopName + "<br />";
                     
                     if(stpRoutes[this.stopName].length > 1) {
@@ -390,6 +399,84 @@ var MapManager = function() {
     	});
     	
       }, //addSTops
+      
+      // Requests schedule data from Salesforce. This is keyed by stop.
+      getStopDetails: function(busStopName){
+      	var restPath = "/BusStopSchedule?busStopName=" + busStopName;
+		$.mobile.showPageLoadingMsg();
+		RestDataPlugin.getData(mapManager.showStopDetails, mapManager.showStopError, restPath, true, "GET", "json");
+      },
+      
+      // Renders the data returned from Salesforce.
+      showStopDetails: function(data){
+      	console.log(data);
+      	if(data.stop){
+      		$('#bus-stop-name').html(data.stop);
+      	} else{
+      		$('#bus-stop-name').html('Stop Schedule');
+      	}
+      	$('#bus-stop-list').empty();
+      	$.each(data.routes, function(index, route){
+      		var routeName = route.name;
+      		var routeSchedule = route.schedule.join();
+      		var routeColor = "#BF2200";
+      		var routeArrival = "No More Stops Today";
+      		
+      		
+      		$.each(teletracManager.getRouteNamesAndColors(), function(index, color){
+      			if(color.routeName == routeName){
+      				routeColor = color.routeColor;
+      			}
+      		});
+      		
+      		var nextTime;
+      		var nextSchedule;
+      		var currentTime = new Date();
+      		$.each(route.schedule, function(index, schedule){
+      			var temp = schedule.split(':');
+      			var t = temp[1].split(" ");
+      			t.unshift(temp[0]);
+      			
+      			t[0] = parseInt(t[0]);
+      			t[1] = parseInt(t[1]);
+      			
+      			//Add additional hours if PM.
+      			t[0] = (t[2] == "PM" && t[0] != "12")? t[0] + 12 : t[0];
+      			
+      			var stopTime = new Date();
+      			stopTime.setHours(t[0], t[1], 0);
+      			if((!nextTime || nextTime - stopTime > 0) && stopTime - currentTime > 0){
+      				nextTime = stopTime;
+      				nextSchedule = schedule;
+      			}
+      		});
+      		if(nextTime){
+      			var minutesUntil = Math.round((nextTime - currentTime) / 1000 / 60);
+      			if(minutesUntil == 1){
+      				routeArrival = "Next Stop in: <span class='bus-stop-arrival-time'>1 Minute</span>";
+      			}else if(minutesUntil < 60){
+      				routeArrival = "Next Stop in: <span class='bus-stop-arrival-time'>" + minutesUntil + " Minutes</span>";
+      			}else{
+      				routeArrival = "Next Stop at: <span class='bus-stop-arrival-time'>" + nextSchedule + "</span>";
+      			}
+      		}
+      		$("#bus-stop-list").append($("#bus-stop-schedule-template").tmpl({routeName: routeName, 
+      																		  routeArrival: routeArrival,
+      																		  routeColor: routeColor, 
+      																		  routeSchedule: routeSchedule}));
+      		
+      	});
+      	if($("#bus-stop-list").hasClass("ui-listview")){
+      		$("#bus-stop-list").listview("refresh");
+      	}
+      	$.mobile.changePage("#bus-detail", {transition: 'slide', changeHash: true});
+      	$.mobile.hidePageLoadingMsg();
+      },
+      
+      // Renders a data return failure.
+      showStopError: function(data){
+      	console.log(data);
+      },
       
       // Configures tracking of user position
       setTrackUserPos: function(track) {

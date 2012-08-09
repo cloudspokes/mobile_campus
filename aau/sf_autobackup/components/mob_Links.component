@@ -1,15 +1,42 @@
 <apex:component >
 <style>
-.link-li {
-	padding:10px;
-}
+ #link-ul li a{
+    padding:0 !important;
+    padding-right:30px !important;
+ }
+ .link-title{
+    padding: 5px;
+    color: #dc2221;
+    font-size: 14pt;
+    white-space: pre-line;
+ }
+ .link-origin{
+    color: #808080;
+    font-weight: lighter;
+    font-size: 11pt;
+    padding-left: 5px;
+ }
+ 
+ /*Override jQuery Mobile Defaults*/
+ #link-ul li div.ui-li{
+    border: none;
+    border-bottom: solid 1px #626262;
+ }
+ #link-container{
+	 width: 100%;
+ }
 </style>
 
-<ul data-role="listview"  data-theme="d">
-	<li class="link-li"><a href="javascript:WebViewer.showWebView('http://newsfeed.academyart.edu/');">
-		<div class="course-name">AAU News</div>
-		<div class="course-location">http://newsfeed.academyart.edu/</div>
-		<span class="ui-icon ui-icon-arrow-r ui-icon-shadow"></span>
-	</a></li>
-</ul>
+<div id="link-container" >
+	<ul data-role="listview" data-theme="d" id="link-ul">
+	</ul>
+</div>
+
+
+<script id="link-template" type="text/x-jquery-tmpl">
+<li class="link-li"><a href="${linkUrl}">
+	<div class="link-title">${linkName}</div>
+	<div class="link-origin">${linkUrl}</div>
+</a></li>
+</script> 
 </apex:component>

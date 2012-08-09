@@ -153,7 +153,7 @@ var RestDataPlugin = {
 
 		// Get an instance of the REST API client and set the session ID
 		var client = new forcetk.Client(RestDataPlugin.clientKey);
-		console.log('::Access Token ::'+RestDataPlugin.accessToken); 
+		//console.log('::Access Token ::'+RestDataPlugin.accessToken); 
 		client.setSessionToken(RestDataPlugin.accessToken);
 		client.setRefreshToken(RestDataPlugin.accessToken);
 

@@ -2,7 +2,7 @@
 # NOTE: "CACHE MANIFEST" must be on the first line
 
 # change version to trigger a cache refresh
-# version 1.0040
+# version 1.0074
 
 CACHE:
 {!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.min.css

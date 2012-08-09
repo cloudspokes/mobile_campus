@@ -17,7 +17,7 @@ global with sharing class  mob_BusStops_Routes {
             stop.active = busStopRoutes.Bus_Stop__r.Active__c;
             stop.color = busStopRoutes.Bus_Route__r.Route_Color__c;  
             BusRoutes routes = new BusRoutes();
-            routes.stops = new List<BusStop>();
+            routes.stops = new List<BusStop>(); 
             if(busStopMap.containsKey(busStopRoutes.Bus_Route__r.Name)){
                busStopMap.get(busStopRoutes.Bus_Route__r.Name).add(stop);
             }else{

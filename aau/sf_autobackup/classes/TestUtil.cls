@@ -117,7 +117,7 @@ public class TestUtil {
     	psEnrollment.Class_Section__c = classId;
     	psEnrollment.Name = name;
     	psEnrollment.Student__c = studentId;
-    	psEnrollment.Enrollment_Status__c = 'Enrolled';
+    	psEnrollment.Enrollment_Status__c = 'E';
     	insert psEnrollment;
     	return psEnrollment;
     }

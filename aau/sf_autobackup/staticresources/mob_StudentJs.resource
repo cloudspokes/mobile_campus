@@ -431,14 +431,15 @@ externalLinks: {
 //Mobile Sliding Menu component. 
 //Displays as a side-bar that slides out and pushes content to the side.
 slideMenu: {
+	lastSlide: new Date().getTime(),
 	//Slides the menu out, and pushes the active page to the right.
 	show: function(event){
 	    event.preventDefault();
 	    console.log('MENU BUTTON CLICKED');
 		//Bring the menu-page to the forefront. And give headers the ability to move.
-		//$('.mob-header').css('position', 'absolute');
+		$('.mob-header').css('position', 'absolute');
 		
-		$('#menu-page').data('lastSlide', new Date().getTime());
+		aauMobile.slideMenu.lastSlide = new Date().getTime();
 		
 		$('#menu-header').html($($.mobile.activePage).find('.mob-header').html());
 		$('#menu-header .menu-btn').removeClass('menu-btn');
@@ -449,7 +450,7 @@ slideMenu: {
 		
 		//Activate the sliding.
 		$('#menu-page').addClass('slide-out');
-		//$('.page-container').addClass('slide-out');
+		$('.page-container').addClass('slide-out');
 		
 		//OLD METHOD
 		//$('#slide-menu').animate({marginLeft:'0px'},250, function(){$('#slide-menu').css('position','fixed');});
@@ -458,9 +459,8 @@ slideMenu: {
 
 	//Removes the slide-out class, causing the active page and 
 	hide: function(event){
-		var lastSlide = new Date($(this).data('lastSlide')).getTime();
 		var curTime = new Date().getTime();
-		var timeDiff = curTime - lastSlide;
+		var timeDiff = curTime - aauMobile.slideMenu.lastSlide;
 		console.log('curTime - lastSlide = ' + timeDiff);
 		
 		//Android vClick bug solution.
@@ -470,7 +470,9 @@ slideMenu: {
 			
 			$('#menu-page').removeClass('slide-out');
 			
-			//$('.page-container').removeClass('slide-out');
+			$('.page-container').removeClass('slide-out');
+			
+			aauMobile.slideMenu.lastSlide = new Date().getTime();
 		}
 		
 		//OLD METHOD
@@ -483,9 +485,8 @@ slideMenu: {
 		event.stopPropagation();
 		event.preventDefault();
 		
-		var lastSlide = new Date($('#menu-page').data('lastSlide')).getTime();
 		var curTime = new Date().getTime();
-		var timeDiff = curTime - lastSlide;
+		var timeDiff = curTime - aauMobile.slideMenu.lastSlide;
 		console.log('curTime - lastSlide = ' + timeDiff);
 		
 		//Android vClick bug solution.
@@ -515,6 +516,8 @@ slideMenu: {
 				$('#menu-page').removeClass('slide-out');
 				$('.page-container').removeClass('slide-out');
 				
+				aauMobile.slideMenu.lastSlide = new Date().getTime();
+				
 				//Old Method
 				//$('#slide-menu').animate({marginLeft:'-180px'},250, function(){$('#menu-page').css('display','none');});
 				//$(pageLink).animate({marginLeft:'0px'},250, function(){$('.mob-header').css('position','fixed');});
@@ -543,11 +546,16 @@ slideMenu: {
 		
 		$('#slide-menu li a').on('click', aauMobile.slideMenu.linkClicked);
 		
+	
 		//Android pre-3.0 devices aren't fully responsive to click.
-		if(aauMobile.isAndroid) {
+		if(aauMobile.isAndroid()) {
 			$('.menu-btn').live('vclick', aauMobile.slideMenu.show);
+			$('#menu-page').addClass('android-menu');
+			$('.page-container').addClass('android-menu');
 		}else{
 			$('.menu-btn').live('click', aauMobile.slideMenu.show);
+			$('#menu-page').addClass('standard-menu');
+			$('.page-container').addClass('standard-menu');
 		}
 	   	
 	   	//Occurs when the menu finishes sliding.
@@ -557,22 +565,39 @@ slideMenu: {
 	    		$('#slide-menu').css('height',$(window).height());
 	    	} else{
 	    		$(this).addClass('hidden');
+	    		$('.mob_header').css('position','fixed');
 	    	}
 	    });
 	    
 	    //When the current page finishes sliding, this will occur.
-	    /*$('.ui-page').on('webkitTransitionEnd', function(){
+	    $('.ui-page').on('webkitTransitionEnd', function(){
 			if($(this).attr('id') == "transit-map"){
 				mapManager.triggerResize();
 			}
 			if(!$(this).hasClass('slide-out')){
 				$('#result-container').css('position','fixed');
 			}
-	   	});*/
+	   	});
 	}
 },
 
-isAndroid: (navigator.userAgent.toLowerCase().indexOf("android") >-1),
+isAndroid: function(){
+	var ua = navigator.userAgent.toLowerCase();
+	if(ua && ua.indexOf("android") >-1){
+		var androidversion = ua.slice(ua.indexOf("android")+15);
+		 androidversion = androidversion.substr(0, androidversion.indexOf(" "));
+		 androidversion = parseFloat(androidversion);
+		if(androidversion < 3.0){
+			//This is a version of Android that we need to build around.
+			return true;
+		}
+		else{
+			return false;
+		}
+	}else{
+		return false;
+	}
+},
 
 init: {
 	appActivation: function(){
@@ -610,7 +635,7 @@ function bindEvents() {
   	$.mobile.changePage('#student-home', {changeHash: true});
   });
   //Special changes to make the Android version function/appear correctly.
-  if(aauMobile.isAndroid) {
+  if(aauMobile.isAndroid()) {
   	//Don't display Back button on Android devices.
   	$('.mob-back-button').css('display','none');
   	//Replace CSS for fixed and transformed items.

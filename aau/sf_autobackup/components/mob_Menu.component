@@ -2,12 +2,17 @@
 <style>
 	#menu-page{
 		background: transparent;
-		margin-left: -180px;
+		/*margin-left: -180px;*/
 		display: block;
-		-webkit-transition: margin-left 0.25s linear; 
+		-webkit-transition: -webkit-transform 0.15s linear; 
 		-webkit-transition-timing-function: linear;
-		-webkit-transform: translateZ(0);
 		z-index: 1000;
+	}
+	#menu-page.standard-menu{
+		-webkit-transform: translate3d(-180px,0,0);
+	}
+	#menu-page.android-menu{
+		-webkit-transform: translateX(-180px);
 	}
 	#menu-page.hidden{
 		z-index:-1000;
@@ -29,27 +34,41 @@
 		background: #121212;
 		z-index: 1002;
 	} 
-	.ui-page-active{
-		margin-left: 0px;
-		/*-webkit-transition: margin-left 0.25s linear;*/
+	.ui-page-active.standard-menu{
+		-webkit-transition: -webkit-transform 0.15s linear;
+		-webkit-transform: translate3d(0,0,0);
+	}
+	.ui-page-active.android-menu{
+		-webkit-transition: -webkit-transform 0.15s linear;
+		-webkit-transform: translateX(0);
 	}
 	
 	/*Specify css for both active and inactive, so that we can set the position of a page to be displayed before displaying it.*/
 	.ui-page.slide-out{
-		margin-left:180px;
+		-webkit-transform: translate3d(180px,0,0);
 	}
 	.ui-page-active.slide-out{
-		margin-left:180px;
+		-webkit-transform: translate3d(180px,0,0);
 	}
 	
-	#student-home.slide-out, #transit-map.slide-out, #feed-list.slide-out, #event-list.slide-out, #link-list.slide-out{
-		margin-left: 180px;
+	.ui-page.android-menu.slide-out{
+		-webkit-transform: translateX(180px);
 	}
+	.ui-page-active.android-menu.slide-out{
+		-webkit-transform: translateX(180px);
+	}
+
 	#menu-page.hidden .slide-menu{
 		z-index: -999;
 	}
-	#menu-page.ui-page.slide-out{
-		margin-left: 0;
+	#menu-page.ui-page.standard-menu.slide-out{
+		/*margin-left: 0;*/
+		-webkit-transform: translate3d(0,0,0);
+		z-index: 1000;
+	}
+	#menu-page.ui-page.android-menu.slide-out{
+		/*margin-left: 0;*/
+		-webkit-transform: translateX(0);
 		z-index: 1000;
 	}
 	.slide-menu span.ui-icon-arrow-r{

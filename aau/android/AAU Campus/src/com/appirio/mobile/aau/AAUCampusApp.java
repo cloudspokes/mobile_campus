@@ -23,9 +23,10 @@ public class AAUCampusApp extends ForceApp {
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putString(LoginActivity.SERVER_URL_CURRENT_SELECTION,
 		  getString(R.string.sf_default_url));
+
 		editor.commit();		
 	}
-
+	
 	private SalesforceR salesforceR = new SalesforceRImpl();
 	
 	@Override

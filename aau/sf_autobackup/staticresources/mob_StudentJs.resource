@@ -528,13 +528,8 @@ slideMenu: {
 	//Initializes the menu, and relevant events.
 	init: function(){
 		//We don't want the menu visible by default, we want to show the schedule or the current hash.
-		if(window.location.hash.length > 1){
-			$.mobile.changePage(window.location.hash, {changeHash: false});
-		}
-		else{
-			$.mobile.changePage('#student-home', {changeHash: true});
-		}
-		
+		$.mobile.changePage('#student-home', {changeHash: true});
+		utils.log('aauMobile.slideMenu.init called');
 		$('#menu-page').on('click', aauMobile.slideMenu.hide);
 		
 		//The UL needs to stretch the entire length of the page, and not allow the 
@@ -560,17 +555,20 @@ slideMenu: {
 	   	
 	   	//Occurs when the menu finishes sliding.
 	    $('#menu-page').on('webkitTransitionEnd', function(){
+	    	console.log('Menu Transition End');
 	    	if($(this).hasClass('slide-out')){
 	    		$(this).css('position','fixed');
 	    		$('#slide-menu').css('height',$(window).height());
 	    	} else{
 	    		$(this).addClass('hidden');
 	    		$('.mob_header').css('position','fixed');
+	    		$(document).width($(window).width());
 	    	}
 	    });
 	    
 	    //When the current page finishes sliding, this will occur.
-	    $('.ui-page').on('webkitTransitionEnd', function(){
+	    $('.page-container').on('webkitTransitionEnd', function(){
+			console.log('Page Transition End');
 			if($(this).attr('id') == "transit-map"){
 				mapManager.triggerResize();
 			}
@@ -618,15 +616,15 @@ function studentDataInit() {
 function bindEvents() {
   //Disable page transitions. With the way the menu works, we have to use our own.
   $.mobile.defaultPageTransition = 'none';	
- 
+  
   //iOS loads before an event can be triggered. Have to check and see if we're initialized.
   if($('#menu-page').hasClass('ui-page')){
   	aauMobile.slideMenu.init();
   }else{
-  	$('#menu-page').live('pageinit', aauMobile.slideMenu.init);
+  	$('#menu-page').live('pagecreate', aauMobile.slideMenu.init);
   }
   //Force the menu to be initialized if we're not on it or it's not been touched by jQuery.
-/*	if($($.mobile.activePage).attr('id') != 'menu-page' && !$('#menu-page').hasClass('ui-page')){
+	/*	if($($.mobile.activePage).attr('id') != 'menu-page' && !$('#menu-page').hasClass('ui-page')){
 		$.mobile.changePage('#menu-page', {changeHash: false});
 	}*/
 		

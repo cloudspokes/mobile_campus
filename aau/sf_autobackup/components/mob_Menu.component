@@ -1,135 +1,135 @@
 <apex:component >
 <style>
-	#menu-page{
-		background: transparent;
-		/*margin-left: -180px;*/
-		display: block;
-		-webkit-transition: -webkit-transform 0.15s linear; 
-		-webkit-transition-timing-function: linear;
-		z-index: 1000;
-	}
-	#menu-page.standard-menu{
-		-webkit-transform: translate3d(-180px,0,0);
-	}
-	#menu-page.android-menu{
-		-webkit-transform: translateX(-180px);
-	}
-	#menu-page.hidden{
-		z-index:-1000;
-	}
-	#menu-header, #menu-page.slide-out #menu-header{
-		position: absolute !important;
-		left: 180px;
-		width:100%;
-		z-index: 1001;
-	}
-	#menu-header h1.ui-title{
+    #menu-page{
+        background: transparent;
+        /*margin-left: -180px;*/
+        display: block;
+        -webkit-transition: -webkit-transform 0.15s linear; 
+        -webkit-transition-timing-function: linear;
+        z-index: 1000;
+    }
+    #menu-page.standard-menu{
+        -webkit-transform: translate3d(-180px,0,0);
+    }
+    #menu-page.android-menu{
+        -webkit-transform: translateX(-180px);
+    }
+    #menu-page.hidden{
+        z-index:-1000;
+    }
+    #menu-header, #menu-page.slide-out #menu-header{
+        position: absolute !important;
+        left: 180px;
+        width:100%;
+        z-index: 1001;
+    }
+    #menu-header h1.ui-title{
         font-size: 16pt;
         margin: 0.65em 0 .35em 0;
         text-overflow: clip;
     }
-	.slide-menu{
-		width: 180px;
-		height: 100%;
-		background: #121212;
-		z-index: 1002;
-	} 
-	.ui-page-active.standard-menu{
-		-webkit-transition: -webkit-transform 0.15s linear;
-		-webkit-transform: translate3d(0,0,0);
-	}
-	.ui-page-active.android-menu{
-		-webkit-transition: -webkit-transform 0.15s linear;
-		-webkit-transform: translateX(0);
-	}
-	
-	/*Specify css for both active and inactive, so that we can set the position of a page to be displayed before displaying it.*/
-	.ui-page.slide-out{
-		-webkit-transform: translate3d(180px,0,0);
-	}
-	.ui-page-active.slide-out{
-		-webkit-transform: translate3d(180px,0,0);
-	}
-	
-	.ui-page.android-menu.slide-out{
-		-webkit-transform: translateX(180px);
-	}
-	.ui-page-active.android-menu.slide-out{
-		-webkit-transform: translateX(180px);
-	}
+    .slide-menu{
+        width: 180px;
+        height: 100%;
+        background: #121212;
+        z-index: 1002;
+    } 
+    .ui-page-active.standard-menu{
+        -webkit-transition: -webkit-transform 0.15s linear;
+        -webkit-transform: translate3d(0,0,0);
+    }
+    .ui-page-active.android-menu{
+        -webkit-transition: -webkit-transform 0.15s linear;
+        -webkit-transform: translateX(0);
+    }
+    
+    /*Specify css for both active and inactive, so that we can set the position of a page to be displayed before displaying it.*/
+    .ui-page.slide-out{
+        -webkit-transform: translate3d(180px,0,0);
+    }
+    .ui-page-active.slide-out{
+        -webkit-transform: translate3d(180px,0,0);
+    }
+    
+    .ui-page.android-menu.slide-out{
+        -webkit-transform: translateX(180px);
+    }
+    .ui-page-active.android-menu.slide-out{
+        -webkit-transform: translateX(180px);
+    }
 
-	#menu-page.hidden .slide-menu{
-		z-index: -999;
-	}
-	#menu-page.ui-page.standard-menu.slide-out{
-		/*margin-left: 0;*/
-		-webkit-transform: translate3d(0,0,0);
-		z-index: 1000;
-	}
-	#menu-page.ui-page.android-menu.slide-out{
-		/*margin-left: 0;*/
-		-webkit-transform: translateX(0);
-		z-index: 1000;
-	}
-	.slide-menu span.ui-icon-arrow-r{
-		display:none;
-	}
-	.slide-menu h3{
-		text-overflow:clip;
-		overflow: visible;
-		color: #FFF;
-		text-shadow: none;
-	}
-	.slide-menu li{
-		height:40px;
-		background: #121212;
-		border: none;
-	}
-	.slide-menu li a{
-		padding: .5em 5px .7em 5px;
-		padding-right: 5px;
-	}
-	.slide-menu-icon{
-		background: url({!$Resource.mob_Design}/mob_Design/iconsprite_grey.png);
-		background-size: 100%;
-		width:30px;
-		height:24px;
-		display:inline-block;
-		float: left;
-		margin-top:2px;
-		margin-right: 5px;
-	}
-	#slide-menu-icon-schedule{
-		background-position-y: 0px;
-	}
-	#slide-menu-icon-map{
-		background-position-y: -25px;
-	}
-	#slide-menu-icon-news{
-		background-position-y: -50px;
-		height: 17px;
-		margin-top: 7px;
-	}
-	#slide-menu-icon-sports{
-		background-position-y: -94px;
-	}
-	#slide-menu-icon-links{
-		background-position-y: -68px;
-		height:26px
-	}
-	#slide-menu-icon-logout{
-		background-position-y: -118px;
-	}
+    #menu-page.hidden .slide-menu{
+        z-index: -999;
+    }
+    #menu-page.ui-page.standard-menu.slide-out{
+        /*margin-left: 0;*/
+        -webkit-transform: translate3d(0,0,0);
+        z-index: 1000;
+    }
+    #menu-page.ui-page.android-menu.slide-out{
+        /*margin-left: 0;*/
+        -webkit-transform: translateX(0);
+        z-index: 1000;
+    }
+    .slide-menu span.ui-icon-arrow-r{
+        display:none;
+    }
+    .slide-menu h3{
+        text-overflow:clip;
+        overflow: visible;
+        color: #FFF;
+        text-shadow: none;
+    }
+    .slide-menu li{
+        height:44px;
+        background: #121212;
+        border: none;
+    }
+    .slide-menu li a{
+        padding: .5em 5px .7em 5px;
+        padding-right: 5px;
+    }
+    .slide-menu-icon{
+        background: url({!$Resource.mob_Design}/mob_Design/iconsprite_grey.png);
+        background-size: 100%;
+        width:30px;
+        height:24px;
+        display:inline-block;
+        float: left;
+        margin-top:3px;
+        margin-right: 5px;
+    }
+    #slide-menu-icon-schedule{
+        background-position-y: 0px;
+    }
+    #slide-menu-icon-map{
+        background-position-y: -25px;
+    }
+    #slide-menu-icon-news{
+        background-position-y: -50px;
+        height: 17px;
+        margin-top: 7px;
+    }
+    #slide-menu-icon-sports{
+        background-position-y: -94px;
+    }
+    #slide-menu-icon-links{
+        background-position-y: -68px;
+        height:26px
+    }
+    #slide-menu-icon-logout{
+        background-position-y: -118px;
+    }
 
 </style>
  <div data-role="header" id="menu-header"/>
  <ul data-role="listview"  data-theme="d" id="slide-menu" class="slide-menu">
-	<li><a id="schedule-link" href="#student-home" data-transition="slide"><span id="slide-menu-icon-schedule" class="slide-menu-icon">&nbsp;</span><h3>Class Schedule</h3></a></li>
-	<li><a id="transit-map-link" href="#transit-map" data-transition="slide"><span id="slide-menu-icon-map" class="slide-menu-icon">&nbsp;</span><h3>Transit Map</h3></a></li>
-	<li><a id="feed-list-link" href="#feed-list" data-transition="slide"><span id="slide-menu-icon-news" class="slide-menu-icon">&nbsp;</span><h3>Campus News</h3></a></li>
-	<li><a id="event-list-link" href="#event-list" data-transition="slide"><span id="slide-menu-icon-sports" class="slide-menu-icon">&nbsp;</span><h3>Sports</h3></a></li>
-	<li><a id="link-list-link" href="#link-list" data-transition="slide"><span id="slide-menu-icon-links" class="slide-menu-icon">&nbsp;</span><h3>External Links</h3></a></li> 
-	<li id="logout-item"><a href="#" id="logout-link"><span id="slide-menu-icon-logout" class="slide-menu-icon">&nbsp;</span><h3>Logout</h3></a></li>
+    <li><a id="schedule-link" href="#student-home" data-transition="slide"><span id="slide-menu-icon-schedule" class="slide-menu-icon">&nbsp;</span><h3>Class Schedule</h3></a></li>
+    <li><a id="transit-map-link" href="#transit-map" data-transition="slide"><span id="slide-menu-icon-map" class="slide-menu-icon">&nbsp;</span><h3>Transit Map</h3></a></li>
+    <li><a id="feed-list-link" href="#feed-list" data-transition="slide"><span id="slide-menu-icon-news" class="slide-menu-icon">&nbsp;</span><h3>News &amp; Events</h3></a></li>
+    <li><a id="event-list-link" href="#event-list" data-transition="slide"><span id="slide-menu-icon-sports" class="slide-menu-icon">&nbsp;</span><h3>Sports</h3></a></li>
+    <li><a id="link-list-link" href="#link-list" data-transition="slide"><span id="slide-menu-icon-links" class="slide-menu-icon">&nbsp;</span><h3>Helpful Links</h3></a></li> 
+    <li id="logout-item"><a href="#" id="logout-link"><span id="slide-menu-icon-logout" class="slide-menu-icon">&nbsp;</span><h3>Logout</h3></a></li>
  </ul>
 
 </apex:component>

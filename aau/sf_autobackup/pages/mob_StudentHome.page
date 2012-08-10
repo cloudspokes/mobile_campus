@@ -198,7 +198,6 @@
     </div>
     
 </div>
-
 <div data-role="page" id="student-detail" class="page-container">
     <div data-role="header" data-position="fixed"  class="mob-header">
         <a href="#student-home" data-role="button" data-inline="true" data-transition="slide" data-direction="reverse" class="back-root mob-back-button">Back</a>
@@ -216,7 +215,7 @@
 <div data-role="page" id="feed-list" class="page-container">
     <div data-role="header" data-position="fixed"  class="mob-header">
         <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
-        <h1>News and Events</h1>
+        <h1>News &amp; Events</h1>
     </div>
     <div data-role="content" class="mob-content">
         <c:mob_Feed />  
@@ -226,7 +225,7 @@
 <div data-role="page" id="feed-detail" class="page-container">
     <div data-role="header" data-position="fixed"  class="mob-header">
         <a href="#feed-list" data-role="button" data-inline="true" data-transition="slide" data-direction="reverse" class="back-root mob-back-button">Back</a>
-        <h1>News Article</h1>
+        <h1>News &amp; Events</h1>
     </div>
     <div data-role="content" class="mob-content">
         <c:mob_FeedDetail />  
@@ -256,7 +255,7 @@
 <div data-role="page" id="link-list" class="page-container">
     <div data-role="header" data-position="fixed" class="mob-header">
         <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
-        <h1>Links</h1>
+        <h1>Helpful Links</h1>
     </div>
     <div data-role="content" class="mob-content">
         <c:mob_Links />  

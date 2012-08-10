@@ -358,6 +358,43 @@ var MapManager = function() {
        });
       }, //addVehicles
       
+      //Sorts times so that latenight times are always at the end of the array.
+      scheduleSort: function(a,b){
+			//Turn the string into an array. t[0] hour, t[1] minutes, t[2] AM/PM
+			var temp = a.split(':');
+			var ta = temp[1].split(" ");
+			ta.unshift(temp[0]);
+			
+			temp = b.split(':');
+			var tb = temp[1].split(" ");
+			tb.unshift(temp[0]);
+			
+			//Convert to integers.
+			ta[0] = parseInt(ta[0]);
+			tb[0] = parseInt(tb[0]);
+			ta[1] = parseInt(ta[1]);
+			tb[1] = parseInt(tb[1]);
+			
+			//Add additional hours if PM.
+			ta[0] = (ta[2] == "PM" && ta[0] != 12)? ta[0] + 12 : ta[0];
+			tb[0] = (tb[2] == "PM" && tb[0] != 12)? tb[0] + 12 : tb[0];	
+			
+			//Midnight is the 0 hour.
+			if(ta[2] == "AM" && ta[0] == 12){
+				ta[0] = 24;
+			}
+			if(tb[2] == "AM" && tb[0] == 12){
+				tb[0] = 24;
+			}
+			
+			//Return sort value.
+			if(ta[0] == tb[0]){
+				return ta[1] - tb[1];
+			}else{
+				return ta[0] - tb[0];
+			}
+		}, //scheduleSort
+      		
       // Adds bus stops markers to the map
       addStops: function(stops) {
         var stpRoutes = teletracManager.getStopNamesWithRoutes();
@@ -421,7 +458,7 @@ var MapManager = function() {
       		var routeSchedule = route.schedule.join();
       		var routeColor = "#BF2200";
       		var routeArrival = "No More Stops Today";
-      		
+      		route.schedule.sort(mapManager.scheduleSort);
       		
       		$.each(teletracManager.getRouteNamesAndColors(), function(index, color){
       			if(color.routeName == routeName){
@@ -431,6 +468,7 @@ var MapManager = function() {
       		
       		var nextTime;
       		var nextSchedule;
+      		var nextIndex;
       		var currentTime = new Date();
       		$.each(route.schedule, function(index, schedule){
       			var temp = schedule.split(':');
@@ -441,25 +479,47 @@ var MapManager = function() {
       			t[1] = parseInt(t[1]);
       			
       			//Add additional hours if PM.
-      			t[0] = (t[2] == "PM" && t[0] != "12")? t[0] + 12 : t[0];
+      			t[0] = (t[2] == "PM" && t[0] != 12)? t[0] + 12 : t[0];
+      			
+      			//Midnight is the 0 hour.
+      			if(t[2] == "AM" && t[0] == 12){
+      				t[0] = 0;
+      			}
+      			
+      			//If the current time is after 3AM, treat any midnight-3AM stop as tomorrow.
+      			if(currentTime.getHours() > 3 && t[0] < 3){
+      				t[0] += 24;
+      			}
+      			
       			
       			var stopTime = new Date();
       			stopTime.setHours(t[0], t[1], 0);
+      			
       			if((!nextTime || nextTime - stopTime > 0) && stopTime - currentTime > 0){
       				nextTime = stopTime;
       				nextSchedule = schedule;
+      				nextIndex = index;
       			}
       		});
       		if(nextTime){
-      			var minutesUntil = Math.round((nextTime - currentTime) / 1000 / 60);
+      			var minutesUntil = Math.ceil((nextTime - currentTime) / 1000 / 60);
       			if(minutesUntil == 1){
-      				routeArrival = "Next Stop in: <span class='bus-stop-arrival-time'>1 Minute</span>";
+      				routeArrival = "Next Bus in: <span class='bus-stop-arrival-time'>1 Minute</span>";
       			}else if(minutesUntil < 60){
-      				routeArrival = "Next Stop in: <span class='bus-stop-arrival-time'>" + minutesUntil + " Minutes</span>";
+      				routeArrival = "Next Bus in: <span class='bus-stop-arrival-time'>" + minutesUntil + " Minutes</span>";
       			}else{
-      				routeArrival = "Next Stop at: <span class='bus-stop-arrival-time'>" + nextSchedule + "</span>";
+      				routeArrival = "Next Bus at: <span class='bus-stop-arrival-time'>" + nextSchedule + "</span>";
       			}
       		}
+      		var routeSchedule = "No Upcoming Stops.";
+      		if(nextIndex){
+      			var upcoming = route.schedule.slice(nextIndex);
+      			if(upcoming.length > 8){
+      				upcoming = upcoming.slice(0,8);
+      			}
+      			routeSchedule = "Upcoming Stops: " + upcoming.join(", ");
+      		}
+      		
       		$("#bus-stop-list").append($("#bus-stop-schedule-template").tmpl({routeName: routeName, 
       																		  routeArrival: routeArrival,
       																		  routeColor: routeColor, 

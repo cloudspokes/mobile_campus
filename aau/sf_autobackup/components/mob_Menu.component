@@ -23,10 +23,14 @@
         width:100%;
         z-index: 1001;
     }
-    #menu-header h1.ui-title{
+    #menu-header h1{
         font-size: 16pt;
         margin: 0.65em 0 .35em 0;
         text-overflow: clip;
+        position: absolute;
+        width: 100%;
+        text-align: center;
+        pointer-events: none;
     }
     .slide-menu{
         width: 180px;
@@ -124,12 +128,34 @@
 </style>
  <div data-role="header" id="menu-header"/>
  <ul data-role="listview"  data-theme="d" id="slide-menu" class="slide-menu">
-    <li><a id="schedule-link" href="#student-home" data-transition="slide"><span id="slide-menu-icon-schedule" class="slide-menu-icon">&nbsp;</span><h3>Class Schedule</h3></a></li>
-    <li><a id="transit-map-link" href="#transit-map" data-transition="slide"><span id="slide-menu-icon-map" class="slide-menu-icon">&nbsp;</span><h3>Transit Map</h3></a></li>
-    <li><a id="feed-list-link" href="#feed-list" data-transition="slide"><span id="slide-menu-icon-news" class="slide-menu-icon">&nbsp;</span><h3>News &amp; Events</h3></a></li>
-    <li><a id="event-list-link" href="#event-list" data-transition="slide"><span id="slide-menu-icon-sports" class="slide-menu-icon">&nbsp;</span><h3>Sports</h3></a></li>
-    <li><a id="link-list-link" href="#link-list" data-transition="slide"><span id="slide-menu-icon-links" class="slide-menu-icon">&nbsp;</span><h3>Helpful Links</h3></a></li> 
-    <li id="logout-item"><a href="#" id="logout-link"><span id="slide-menu-icon-logout" class="slide-menu-icon">&nbsp;</span><h3>Logout</h3></a></li>
+    <li><a id="schedule-link" href="#student-home" data-transition="slide">
+		<span id="slide-menu-icon-schedule" class="slide-menu-icon">&nbsp;</span>
+		<h3>Class Schedule</h3>
+	</a></li>
+    <li><a id="transit-map-link" href="#transit-map" data-transition="slide">
+		<span id="slide-menu-icon-map" class="slide-menu-icon">&nbsp;</span>
+		<h3>Transit Map</h3>
+	</a></li>
+    <li><a id="feed-list-link" href="#feed-list" data-transition="slide">
+		<span id="slide-menu-icon-news" class="slide-menu-icon">&nbsp;</span>
+		<h3>Campus News</h3>
+	</a></li>
+    <li><a id="campus-event-list-link" href="#campus-event-list" data-transition="slide">
+		<span id="slide-menu-icon-news" class="slide-menu-icon">&nbsp;</span>
+		<h3>Campus Events</h3>
+	</a></li>
+    <li><a id="event-list-link" href="#event-list" data-transition="slide">
+		<span id="slide-menu-icon-sports" class="slide-menu-icon">&nbsp;</span>
+		<h3>Sports</h3>
+	</a></li>
+    <li><a id="link-list-link" href="#link-list" data-transition="slide">
+		<span id="slide-menu-icon-links" class="slide-menu-icon">&nbsp;</span>
+		<h3>Helpful Links</h3>
+	</a></li> 
+    <li id="logout-item"><a href="#" id="logout-link">
+		<span id="slide-menu-icon-logout" class="slide-menu-icon">&nbsp;</span>
+		<h3>Logout</h3>
+	</a></li>
  </ul>
 
 </apex:component>

@@ -105,6 +105,7 @@ classSchedule: {
     showClassDetails: function(meetingId) {
         //get Class detail and Enrollment Details for the selected Class Meeting
         classMeetingDetail = aauMobile.classSchedule.data.classMeetings[meetingId];
+		console.log('ClassMeetingDetail: '+JSON.stringify(classMeetingDetail));
         enrolledClass = aauMobile.classSchedule.data.mobStudentsEnrolled[classMeetingDetail.classSection];
         
 		
@@ -145,24 +146,24 @@ classSchedule: {
     }
 },
 
-rssFeed: {
+campusEvents: {
 	feedData: [],
 	
 	feedCount: 0,
 
 	init: function() {
 		
-		aauMobile.rssFeed.feedCount = 0;
-		aauMobile.rssFeed.feedData = [];
+		aauMobile.campusEvents.feedCount = 0;
+		aauMobile.campusEvents.feedData = [];
 
 		var rssUrl = 'https://spreadsheets.google.com/feeds/list/0AvROhDzo3UybdDQ5aEFzVDZqSzFDdVVENTRxTXdXcHc/od6/public/basic?alt=rss';
-		RestDataPlugin.getData(aauMobile.rssFeed.buildEvents, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
+		RestDataPlugin.getData(aauMobile.campusEvents.buildFeed, aauMobile.campusEvents.initFailure, rssUrl, false, "GET", "xml");
 
 		rssUrl = 'https://spreadsheets.google.com/feeds/list/0AvROhDzo3UybdHF3Q3FiZnNibk1qV2xpRVFMTUM2NXc/od6/public/basic?alt=rss';
-		RestDataPlugin.getData(aauMobile.rssFeed.buildEvents, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
+		RestDataPlugin.getData(aauMobile.campusEvents.buildFeed, aauMobile.campusEvents.initFailure, rssUrl, false, "GET", "xml");
 
 		rssUrl = 'https://spreadsheets.google.com/feeds/list/0AvROhDzo3UybdHVSWFVwczdOekJlWjNVRmtpLU5scWc/od6/public/basic?alt=rss';
-		RestDataPlugin.getData(aauMobile.rssFeed.buildEvents, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
+		RestDataPlugin.getData(aauMobile.campusEvents.buildFeed, aauMobile.campusEvents.initFailure, rssUrl, false, "GET", "xml");
 
 	},
 
@@ -182,27 +183,37 @@ rssFeed: {
 		//console.log('Result: ' + JSON.stringify(result));
 		
 		$.each(result.channel.item, function(index, item){
-
+			console.log('Campus Event Item: '+JSON.stringify(item));
 			//TODO: you may want to move where this is happening (before the conversion to JSON maybe...)
-			item = aauMobile.rssFeed.processItem(item);
-            //console.log('Date >>'+item.eventdate);
+			//item = aauMobile.campusEvents.processItem(item);
 			item.origin = result.channel.title;
-			aauMobile.rssFeed.feedData.push(item);
+
+			console.log('Description ::: '+item.description);
+			if(item.description && item.description.split(",")!= null){
+				var eventItem = item.description.split(",");
+				item.raweventdate = new Date(eventItem[0].replace("eventdate:",""));
+				item.eventdate = item.raweventdate.toLocaleDateString();
+				item.eventdescription = eventItem[1].replace("eventdescription:","");
+				console.log('Campus Event Date: '+item.eventdate);
+			}
+
+			aauMobile.campusEvents.feedData.push(item);
 		});
 		
-		aauMobile.rssFeed.feedData.sort(function(a,b){
-			return a.title.localeCompare(b.title);
+		aauMobile.campusEvents.feedData.sort(function(a,b){
+			//return a.raweventdate.localeCompare(b.raweventdate);
+			return a.eventdate.localeCompare(b.raweventdate);
 		});
 		
 		//Increment the feed count
-		aauMobile.rssFeed.feedCount++;
-		console.log('::Feed Count ::'+aauMobile.rssFeed.feedCount);
+		aauMobile.campusEvents.feedCount++;
+		console.log('::Feed Count ::'+aauMobile.campusEvents.feedCount);
 		//TODO :: Remove this. It only to test  
-		aauMobile.rssFeed.showFeed();
+		aauMobile.campusEvents.showFeed();
 
 		//If all feeds have returned or failed, display.
-		if(aauMobile.rssFeed.feedCount >2){
-			aauMobile.rssFeed.showFeed();
+		if(aauMobile.campusEvents.feedCount >2){
+			aauMobile.campusEvents.showFeed();
 		}
 	},
 
@@ -216,26 +227,26 @@ rssFeed: {
 		console.log('RSS Feed Failure. ' + result);
 		
 		//Increment so we can still display what didn't fail.
-		aauMobile.rssFeed.feedCount++;
+		aauMobile.campusEvents.feedCount++;
 		
 		//If all feeds have returned or failed, display.
-		if(aauMobile.rssFeed.feedCount >3){
-			aauMobile.rssFeed.showFeed();
+		if(aauMobile.campusEvents.feedCount >3){
+			aauMobile.campusEvents.showFeed();
 		}
 	},
 	
 	showFeed: function(){
-		var feedTemplate = $("#rss-feed-template");
-		var feedContainer = $("#feed-ul");
+		var feedTemplate = $("#campus-events-template");
+		var feedContainer = $("#campus-event-ul");
 		$(feedContainer).empty();
-		$.each(aauMobile.rssFeed.feedData, function(index, item){
-				//console.log('Feed Item: '+JSON.stringify(item));
-				if(index < 20){
-					feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin, feedId: item.guid}).appendTo(feedContainer);			
-				}else{
-					return;
-				}
-			});
+		$.each(aauMobile.campusEvents.feedData, function(index, item){
+			//console.log('Feed Item: '+JSON.stringify(item));
+			if(index < 20){
+				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin, feedId: item.guid}).appendTo(feedContainer);			
+			}else{
+				return;
+			}
+		});
 		
 		//If jQuery has initialized it, refresh.
 		if($(feedContainer).hasClass('ui-listview')){
@@ -247,33 +258,35 @@ rssFeed: {
 
 	showFeedDetails: function(feedId) {
 		//rssUrl = 'https://www.academyart.edu//news/school/making-a-difference-through-photography.html';
-		//RestDataPlugin.getData(aauMobile.rssFeed.buildFeedDetail, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "text");
+		//RestDataPlugin.getData(aauMobile.campusEvents.buildFeedDetail, aauMobile.campusEvents.initFailure, rssUrl, false, "GET", "text");
 
 		//find Feed in the feedData
-		$.each(aauMobile.rssFeed.feedData, function(index, item){
+		$.each(aauMobile.campusEvents.feedData, function(index, item){
 			if(item.guid == feedId){
 				console.log('Opening Feed: ' + JSON.stringify(item));
 				//parse through feed for anchortag and replace with call to appirioPlugin.webViewer
 				//parse and format description
 				//var desc = $.parseJSON(item.description);
 				//create instance of template for feed Details
-				var feedTemplate = $('#feed-detail-template');
-				var feedContainer = $('#feed-detail-container').empty();
+				var feedTemplate = $('#campus-detail-template');
+				var feedContainer = $('#campus-detail-container').empty();
 				
+/*
 				eventDate = '';
 				eventDescription = '';
 				console.log('Description ::: '+item.description);
 				if(item.description && item.description.split(",")!= null){
 				  eventItem = item.description.split(",");
-				  eventDate = eventItem[0].replace("eventdate:","");
+				  eventDate = new Date(eventItem[0].replace("eventdate:","")).toLocaleDateString();
 				  eventDescription = eventItem[1].replace("eventdescription:","");
 				}
+*/
 				
-				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin, feedEventDate:eventDate, feedDescription: eventDescription}).appendTo(feedContainer);
+				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin, feedEventDate:item.eventdate, feedDescription: item.eventdescription}).appendTo(feedContainer);
 			}
 		});
 		//do page transition to detail screen
-		$.mobile.changePage('#feed-detail', {transition: 'slide', changeHash: true});
+		$.mobile.changePage('#campus-event-detail', {transition: 'slide', changeHash: true});
 	},
 
 	//This method is obsolete
@@ -294,15 +307,19 @@ rssFeed: {
 
 //this is the real RSS Feed! TODO: change the names, so this loads under 'Campus News'
 campusFeed: {
+	feedData: [],
 	
 	init: function() {
+		aauMobile.campusFeed.feedData = [];
+
 		var rssUrl = 'https://www.academyart.edu/news.rss';
-		RestDataPlugin.getData(aauMobile.campusFeed.buildFeed, aauMobile.rssFeed.initFailure, rssUrl, false, "GET", "xml");
+		RestDataPlugin.getData(aauMobile.campusFeed.buildFeed, aauMobile.campusFeed.initFailure, rssUrl, false, "GET", "xml");
 
 	},
 	
 	buildFeed: function(result) {
 		result = $.xml2json(result);
+		//aauMobile.campusFeed.feedData = result;
 
 		console.log('RSS Feed Success! ' + result.channel.title);
 		//console.log('Result: ' + JSON.stringify(result));
@@ -310,17 +327,17 @@ campusFeed: {
 		$.each(result.channel.item, function(index, item){
 
 			item.origin = result.channel.title;
-			aauMobile.rssFeed.feedData.push(item);
+			aauMobile.campusFeed.feedData.push(item);
 		});
 		
-		aauMobile.rssFeed.feedData.sort(function(a,b){
+		/*aauMobile.campusFeed.feedData.sort(function(a,b){
 			return a.title.localeCompare(b.title);
-		});
+		});*/
 		
 		var feedTemplate = $("#rss-feed-template");
 		var feedContainer = $("#feed-ul");
 		$(feedContainer).empty();
-		$.each(aauMobile.rssFeed.feedData, function(index, item){
+		$.each(aauMobile.campusFeed.feedData, function(index, item){
 			//console.log('Feed Item: '+JSON.stringify(item));
 			if(index < 20){
 				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin, feedId: item.guid}).appendTo(feedContainer);			
@@ -334,14 +351,14 @@ campusFeed: {
 	showFeedDetails: function(feedId) {
 
 		//find Feed in the feedData
-		$.each(aauMobile.rssFeed.feedData, function(index, item){
+		$.each(aauMobile.campusFeed.feedData, function(index, item){
 			if(item.guid == feedId){
 				console.log('Opening Feed: ' + JSON.stringify(item));
 				//create instance of template for feed Details
 				var feedTemplate = $('#feed-detail-template');
 				var feedContainer = $('#feed-detail-container').empty();
 				
-				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin}).appendTo(feedContainer);
+				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin, feedDescription: item.description}).appendTo(feedContainer);
 			}
 		});
 		//do page transition to detail screen
@@ -436,9 +453,7 @@ slideMenu: {
 	show: function(event){
 	    event.preventDefault();
 	    console.log('MENU BUTTON CLICKED');
-		//Bring the menu-page to the forefront. And give headers the ability to move.
-		$('.mob-header').css('position', 'absolute');
-		
+		$('.mob-header').css('position','absolute');
 		aauMobile.slideMenu.lastSlide = new Date().getTime();
 		
 		$('#menu-header').html($($.mobile.activePage).find('.mob-header').html());
@@ -561,7 +576,6 @@ slideMenu: {
 	    		$('#slide-menu').css('height',$(window).height());
 	    	} else{
 	    		$(this).addClass('hidden');
-	    		$('.mob_header').css('position','fixed');
 	    		$(document).width($(window).width());
 	    	}
 	    });
@@ -573,6 +587,7 @@ slideMenu: {
 				mapManager.triggerResize();
 			}
 			if(!$(this).hasClass('slide-out')){
+				$('.mob-header').css('position','fixed');
 				$('#result-container').css('position','fixed');
 			}
 	   	});
@@ -600,6 +615,7 @@ isAndroid: function(){
 init: {
 	appActivation: function(){
 		utils.log('aauMobile.init.appActivation has been called.');
+		//alert("Returned from Background");
 	}
 }
  
@@ -608,7 +624,8 @@ init: {
 //Initializes Class Schedule and RSS Data
 function studentDataInit() {
 	aauMobile.classSchedule.init();
-	aauMobile.rssFeed.init();
+	aauMobile.campusFeed.init();
+	aauMobile.campusEvents.init();
 	aauMobile.rssEvent.init();
 	aauMobile.externalLinks.init();
 }

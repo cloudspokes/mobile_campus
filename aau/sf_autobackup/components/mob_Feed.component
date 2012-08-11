@@ -4,6 +4,9 @@
     padding:0 !important;
     padding-right:30px !important;
  }
+ #feed-ul li{
+ 	border: none;
+ }
  .feed-title{
     padding: 5px;
     color: #dc2221;
@@ -34,7 +37,7 @@
 
 
 <script id="rss-feed-template" type="text/x-jquery-tmpl">
-<li class="feed-li"><a href="javascript:aauMobile.rssFeed.showFeedDetails('${feedId}');">
+<li class="feed-li"><a href="javascript:aauMobile.campusFeed.showFeedDetails('${feedId}');">
 	<div class="feed-title">${feedTitle}</div>
 	<div class="feed-origin">${feedOrigin}</div>
 </a></li>

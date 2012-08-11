@@ -41,10 +41,28 @@ global with sharing class mob_StudentRest {
         }
         
         if(!enrolledClasses.isEmpty()){
-            for(ps_Class_Meeting__c psClassMeeting:[Select id,Class_Section__c,Wednesday__c, Tuesday__c, Thursday__c, Sunday__c, Start_Time__c, Start_Date__c, 
-                                                    Special_Topic__c, Saturday__c, Name, Monday__c, Location__c, Friday__c, End_Time__c,
-                                                    End_Date__c From ps_Class_Meeting__c where Class_Section__c in :enrolledClasses order by Start_Date__c
+            for(ps_Class_Meeting__c psClassMeeting:[Select id,
+														Class_Section__c,
+														Wednesday__c, 
+														Tuesday__c, 
+														Thursday__c, 
+														Sunday__c, 
+														Start_Time__c, 
+														Start_Date__c, 
+														Special_Topic__c, 
+														Saturday__c, 
+														Name, 
+														Monday__c, 
+														Location__c, 
+														toLabel(building__c), 
+														Friday__c, 
+														End_Time__c,
+														End_Date__c 
+													From ps_Class_Meeting__c 
+													where Class_Section__c in :enrolledClasses 
+													order by Start_Date__c
                                                     ]){
+
                 ClassMeeting clsMeeting = new ClassMeeting();
                 clsMeeting.classMeetingId =  psClassMeeting.id;
                 clsMeeting.classSection =psClassMeeting.Class_Section__c;

@@ -163,7 +163,7 @@ div.ui-slider-switch.ui-slider-mini a.ui-slider-handle .ui-btn-inner {
         <div id="result-overlay" class="result-overlay ui-corner-all">
             <div id="result-scroll-container" class="result-scroll-container">
             <ul id="result-list" class="result-ul ui-corner-bottom ui-corner-bl ui-corner-br" data-role="listview" data-theme="c">
-               <li><a href="#" id="static-map-link">Static Map</a></li>
+               <li><a href="javascript:WebViewer.showWebView('http://www.google.com');" id="static-map-link">Static Map</a></li>
             </ul>
             </div>
         </div>

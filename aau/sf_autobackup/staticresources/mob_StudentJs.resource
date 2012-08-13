@@ -181,35 +181,46 @@ campusEvents: {
 
 		console.log('RSS Feed Success! ' + result.channel.title);
 		//console.log('Result: ' + JSON.stringify(result));
-		
+		var currentDate = new Date();
 		$.each(result.channel.item, function(index, item){
-			console.log('Campus Event Item: '+JSON.stringify(item));
+			//console.log('Campus Event Item: '+JSON.stringify(item));
 			//TODO: you may want to move where this is happening (before the conversion to JSON maybe...)
 			//item = aauMobile.campusEvents.processItem(item);
 			item.origin = result.channel.title;
 
-			console.log('Description ::: '+item.description);
+			//console.log('Description ::: '+item.description);
 			if(item.description && item.description.split(",")!= null){
+			
 				var eventItem = item.description.split(",");
 				item.raweventdate = new Date(eventItem[0].replace("eventdate:",""));
 				item.eventdate = item.raweventdate.toLocaleDateString();
-				item.eventdescription = eventItem[1].replace("eventdescription:","");
-				console.log('Campus Event Date: '+item.eventdate);
+				item.eventdescription = '';
+				
+				for(count =1 ;count<eventItem.length-1;count++){
+				   if(count ==1 ){
+				      item.eventdescription = eventItem[count].replace("eventdescription:","");
+				   }else{   
+				      item.eventdescription += ','+ eventItem[count];
+				   }   
+				}
+				 
+				
 			}
-
-			aauMobile.campusEvents.feedData.push(item);
+            //We should also not show any records that are in the past
+            if(item.raweventdate >= currentDate){ 
+			  aauMobile.campusEvents.feedData.push(item);
+			}
 		});
 		
 		aauMobile.campusEvents.feedData.sort(function(a,b){
 			//return a.raweventdate.localeCompare(b.raweventdate);
-			return a.eventdate.localeCompare(b.raweventdate);
+			//return a.eventdate.localeCompare(b.raweventdate);
+			//console.log('::: Event Date::'+ a.raweventdate);
+			return a.raweventdate-b.raweventdate;
 		});
 		
 		//Increment the feed count
 		aauMobile.campusEvents.feedCount++;
-		console.log('::Feed Count ::'+aauMobile.campusEvents.feedCount);
-		//TODO :: Remove this. It only to test  
-		aauMobile.campusEvents.showFeed();
 
 		//If all feeds have returned or failed, display.
 		if(aauMobile.campusEvents.feedCount >2){
@@ -240,7 +251,6 @@ campusEvents: {
 		var feedContainer = $("#campus-event-ul");
 		$(feedContainer).empty();
 		$.each(aauMobile.campusEvents.feedData, function(index, item){
-			//console.log('Feed Item: '+JSON.stringify(item));
 			if(index < 20){
 				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin, feedId: item.guid}).appendTo(feedContainer);			
 			}else{
@@ -263,25 +273,10 @@ campusEvents: {
 		//find Feed in the feedData
 		$.each(aauMobile.campusEvents.feedData, function(index, item){
 			if(item.guid == feedId){
-				console.log('Opening Feed: ' + JSON.stringify(item));
-				//parse through feed for anchortag and replace with call to appirioPlugin.webViewer
-				//parse and format description
-				//var desc = $.parseJSON(item.description);
-				//create instance of template for feed Details
+				//console.log('Opening Feed: ' + JSON.stringify(item));
+				//create instance of template for campus Details
 				var feedTemplate = $('#campus-detail-template');
 				var feedContainer = $('#campus-detail-container').empty();
-				
-/*
-				eventDate = '';
-				eventDescription = '';
-				console.log('Description ::: '+item.description);
-				if(item.description && item.description.split(",")!= null){
-				  eventItem = item.description.split(",");
-				  eventDate = new Date(eventItem[0].replace("eventdate:","")).toLocaleDateString();
-				  eventDescription = eventItem[1].replace("eventdescription:","");
-				}
-*/
-				
 				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin, feedEventDate:item.eventdate, feedDescription: item.eventdescription}).appendTo(feedContainer);
 			}
 		});
@@ -559,11 +554,11 @@ slideMenu: {
 	
 		//Android pre-3.0 devices aren't fully responsive to click.
 		if(aauMobile.isAndroid()) {
-			$('.menu-btn').live('vclick', aauMobile.slideMenu.show);
+			$('.menu-btn').on('vclick', aauMobile.slideMenu.show);
 			$('#menu-page').addClass('android-menu');
 			$('.page-container').addClass('android-menu');
 		}else{
-			$('.menu-btn').live('click', aauMobile.slideMenu.show);
+			$('.menu-btn').on('click', aauMobile.slideMenu.show);
 			$('#menu-page').addClass('standard-menu');
 			$('.page-container').addClass('standard-menu');
 		}
@@ -597,16 +592,16 @@ slideMenu: {
 isAndroid: function(){
 	var ua = navigator.userAgent.toLowerCase();
 	if(ua && ua.indexOf("android") >-1){
-		var androidversion = ua.slice(ua.indexOf("android")+15);
+		/*var androidversion = ua.slice(ua.indexOf("android")+15);
 		 androidversion = androidversion.substr(0, androidversion.indexOf(" "));
 		 androidversion = parseFloat(androidversion);
 		if(androidversion < 3.0){
-			//This is a version of Android that we need to build around.
+			//This is a version of Android that we need to build around.*/
 			return true;
-		}
+		/*}
 		else{
 			return false;
-		}
+		}*/
 	}else{
 		return false;
 	}
@@ -638,7 +633,7 @@ function bindEvents() {
   if($('#menu-page').hasClass('ui-page')){
   	aauMobile.slideMenu.init();
   }else{
-  	$('#menu-page').live('pagecreate', aauMobile.slideMenu.init);
+  	$('#menu-page').on('pagecreate', aauMobile.slideMenu.init);
   }
   //Force the menu to be initialized if we're not on it or it's not been touched by jQuery.
 	/*	if($($.mobile.activePage).attr('id') != 'menu-page' && !$('#menu-page').hasClass('ui-page')){
@@ -658,7 +653,7 @@ function bindEvents() {
   	$('#result-arrow').removeClass('result-arrow').addClass('result-arrow-android');
   	$(document).on('backbutton', function(){
   		var index = $.mobile.urlHistory.activeIndex - 1;
-		if(index > 1){
+		if(index >= 1){
 			event.preventDefault();
 			$.mobile.changePage("#" + $.mobile.urlHistory.getPrev().pageUrl);
 			$.mobile.urlHistory.activeIndex = index;

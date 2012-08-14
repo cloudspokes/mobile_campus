@@ -150,7 +150,7 @@ var TeletracManager = function() {
             							}
             						}, 
             						function(result){
-            							utils.log('Failure in Teletrac REST call: ' + result);
+            							utils.log('Failure in Teletrac REST call: ' + JSON.stringify(result));
             						}, 
             						restPath, 
             						false, 
@@ -171,7 +171,7 @@ var TeletracManager = function() {
 								return routes;
 							   },
 							   function(){
-							   	utils.log('Failfure REST service bus routes:');
+							   	utils.log('Failure REST service bus routes:');
 							   }, 
 							   restPath, 
 							   true, 

@@ -66,6 +66,21 @@
                 </a>
             </li>
 </script> 
+<script id="student-schedule-each-template" type="text/x-jquery-tmpl">
+	{{if isDivider}}
+		 <li data-role="list-divider" class="date-divider">${MeetingDayAndDay}</li>
+	{{else}}
+		 <li class="course" onclick="aauMobile.classSchedule.showClassDetails('${meetingId}');"><a class="course-link" href="#">
+                 <table border="0" cellpadding="0" cellspacing="0" class="course-table">
+                      <tr> 
+                           <td class="course-time">${stTime}<br/>${edTime}</td>
+                           <td class="course-name">${topic}  ${className} <br/> <span class="course-location">${meetingLocation}</span></td> 
+                      </tr>    
+                 </table>
+                </a>
+            </li>
+	{{/if}}
+</script>
 <script id="student-scheduleDivider-template" type="text/x-jquery-tmpl">
             <li data-role="list-divider" class="date-divider">${MeetingDayAndDay}</li>
 </script> 

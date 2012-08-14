@@ -1,7 +1,8 @@
 <apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false">
   <!-- controller="ContentController"> -->
   <!--   <apex:outputText escape="false" value="{!"<!DOCTYPE html>"}"/>-->
-<html manifest="/apex/mob_Manifest">
+<!-- <html manifest="/apex/mob_Manifest"> -->
+<html>
 <head> 
     <apex:pageMessages />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>

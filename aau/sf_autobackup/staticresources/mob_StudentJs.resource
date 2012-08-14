@@ -12,8 +12,7 @@ classSchedule: {
 	},
 	
 	buildSchedule: function(result){
-
-		//console.log("ClassSchedule Result: "+ JSON.stringify(result));
+		//alert("ClassSchedule Result: "+ JSON.stringify(result));
 		aauMobile.classSchedule.data = result;
 		var classData = {
 			enrollments:result.mobStudentsEnrolled,
@@ -25,14 +24,16 @@ classSchedule: {
 
 		var stDate =new Date(classData.startDate.replace(/-/g,'/'));
 		var enDate =new Date(classData.lastDate.replace(/-/g,'/'));
-		  
-		var blockTemplate = $("#student-schedule-template");
-		var blockDivider = $("#student-scheduleDivider-template");
-		var detailContent = $("#ulId");
-		$(detailContent).empty();
-
+		
+		var blockTemplate = $("#student-schedule-each-template");
+		//var blockDivider = $("#student-scheduleDivider-template");
+		var classContainer = $("#ulId").empty();
+		var listItems = [];
+		//console.time('scheduleAppend');
+		//alert('woot'); 
 		for(var dayCount = 0; stDate < enDate && dayCount < 7; stDate.setDate(stDate.getDate() + 1)){
-			//console.log('::Date :: >>>>'+stDate.toLocaleDateString());
+			//alert('::Date :: >>>>'+stDate.toLocaleDateString());
+
 			var hasClassMeetings = false;
 			$.each(classData.classMeetings, function(index, classMeeting) {
 				//console.log(JSON.stringify(classMeeting));
@@ -55,8 +56,9 @@ classSchedule: {
 						if(!hasClassMeetings){
 							var localeDate = stDate.toLocaleDateString();
 							localeDate = localeDate.substring(0,localeDate.length-6);
-							var dBlock = blockDivider.tmpl({MeetingDayAndDay:localeDate});
-							dBlock.appendTo(detailContent);
+							listItems.push({isDivider: true, MeetingDayAndDay: localeDate});
+							//var dBlock = blockDivider.tmpl({MeetingDayAndDay:localeDate});
+							//dBlock.appendTo(detailContent);
 							hasClassMeetings = true;
 						}
 						
@@ -71,7 +73,16 @@ classSchedule: {
 						var startTime =  classMeeting.startTime;
 						var endTime = classMeeting.endTime;
 						var mId = classMeeting.classMeetingId;
-						var block = blockTemplate.tmpl({
+						listItems.push({
+						        isDivider: false,
+							topic:topicName,
+							className:className,
+							meetingLocation:mLocation,
+							stTime:startTime,
+							edTime:endTime,
+							meetingId:mId
+						});
+						/*var block = blockTemplate.tmpl({
 							topic:topicName,
 							className:className,
 							meetingLocation:mLocation,
@@ -80,7 +91,7 @@ classSchedule: {
 							meetingId:mId
 						});
 
-						block.appendTo(detailContent);              	               
+						block.appendTo(detailContent);  */            	               
 					} 
 				}
 			});
@@ -88,13 +99,14 @@ classSchedule: {
 				dayCount++;
 			}
 		}
-		
-		if($('#ulId').hasClass('ui-listview')){
-			$("#ulId").listview('refresh');
+		console.log(listItems);
+		//alert('appending classes');
+		$(blockTemplate).tmpl(listItems).appendTo(classContainer);
+		if(classContainer.hasClass('ui-listview')){
+			classContainer.listview('refresh');
 		}  
-		$("#ulId").css("margin","0px");
-
-
+		//console.timeEnd('scheduleAppend');
+		classContainer.css("margin","0px");
 
 	},
 
@@ -340,7 +352,7 @@ campusFeed: {
 				return;
 			}
 		});
-
+	  $(feedContainer).css('margin', '0px');
 	},
 
 	showFeedDetails: function(feedId) {
@@ -511,8 +523,16 @@ slideMenu: {
 			//Logout if logout link clicked.
 			//Otherwise go to page.
 			if($(this).attr('id') == 'logout-link'){
-				console.log('Logging out');
-				SalesforceAuth.Logout();
+				console.log('Logging out 2');
+
+				//TODO: Change this to be a native plugin instead of phonegap.resource call
+				$.mobile.changePage('#student-home', {changeHash: true});
+				
+				$('#menu-page').css('position','absolute');
+				$('#menu-page').removeClass('slide-out');
+				$('.page-container').removeClass('slide-out');
+				
+				SalesforceOAuthPlugin.logout();
 			}
 			else{
 				$('#menu-header').html($(pageLink).find('.mob-header').html());
@@ -537,9 +557,11 @@ slideMenu: {
 	
 	//Initializes the menu, and relevant events.
 	init: function(){
+		console.log('Start Initialize Menu');
 		//We don't want the menu visible by default, we want to show the schedule or the current hash.
 		$.mobile.changePage('#student-home', {changeHash: true});
 		utils.log('aauMobile.slideMenu.init called');
+		console.log('aauMobile.slideMenu.init called');
 		$('#menu-page').on('click', aauMobile.slideMenu.hide);
 		
 		//The UL needs to stretch the entire length of the page, and not allow the 
@@ -611,6 +633,11 @@ init: {
 	appActivation: function(){
 		utils.log('aauMobile.init.appActivation has been called.');
 		//alert("Returned from Background");
+		studentDataInit();
+	},
+
+	resetApplication: function() {
+		window.location = '/apex/mob_studenthome';
 	}
 }
  
@@ -626,24 +653,26 @@ function studentDataInit() {
 }
 
 function bindEvents() {
+	console.log('bindEvents method called');
   //Disable page transitions. With the way the menu works, we have to use our own.
   $.mobile.defaultPageTransition = 'none';	
   
   //iOS loads before an event can be triggered. Have to check and see if we're initialized.
   if($('#menu-page').hasClass('ui-page')){
+	console.log('iOS load slideMenu');
   	aauMobile.slideMenu.init();
   }else{
-  	$('#menu-page').on('pagecreate', aauMobile.slideMenu.init);
+	//DONT CHANGE BELOW CODE!  THIS ONLY FIRES FOR BROWSER WHEN USING 'LIVE'
+  	$('#menu-page').live('pagecreate', function(){
+		console.log('non iOS load slideMenu');
+		aauMobile.slideMenu.init();
+	});
   }
   //Force the menu to be initialized if we're not on it or it's not been touched by jQuery.
 	/*	if($($.mobile.activePage).attr('id') != 'menu-page' && !$('#menu-page').hasClass('ui-page')){
 		$.mobile.changePage('#menu-page', {changeHash: false});
 	}*/
 		
-  
-  $(document).on('pagechangefailed', function(){
-  	$.mobile.changePage('#student-home', {changeHash: true});
-  });
   //Special changes to make the Android version function/appear correctly.
   if(aauMobile.isAndroid()) {
   	//Don't display Back button on Android devices.
@@ -666,9 +695,10 @@ function bindEvents() {
 }
 
 if(!navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
+  console.log('kicking off init');
   studentDataInit();
   bindEvents();
-} else {
+}else {
   document.addEventListener("deviceready", function() {
     studentDataInit();
     bindEvents();

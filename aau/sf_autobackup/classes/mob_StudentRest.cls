@@ -55,9 +55,11 @@ global with sharing class mob_StudentRest {
 														Monday__c, 
 														Location__c, 
 														toLabel(building__c), 
+														Room__c,
 														Friday__c, 
 														End_Time__c,
-														End_Date__c 
+														End_Date__c,
+														Instructor_Name__c 
 													From ps_Class_Meeting__c 
 													where Class_Section__c in :enrolledClasses 
 													order by Start_Date__c
@@ -79,7 +81,17 @@ global with sharing class mob_StudentRest {
                 clsMeeting.endDate = psClassMeeting.End_Date__c;    
                 clsMeeting.specialTopic = psClassMeeting.Special_Topic__c;
                 clsMeeting.name = psClassMeeting.Name;
-                clsMeeting.location = psClassMeeting.Location__c;
+                clsMeeting.instructorName = psClassMeeting.Instructor_Name__c;
+
+                //clsMeeting.location = psClassMeeting.Location__c;
+				//Don't use Location Field.  Combine the Building and Room fields!
+				if(psClassMeeting.building__c != null && psClassMeeting.building__c != ''){
+					clsMeeting.location = psClassMeeting.building__c;
+					if(psClassMeeting.Room__c != null && psClassMeeting.Room__c != ''){
+						clsMeeting.location += ', Rm: ' + psClassMeeting.Room__c;
+					}
+				}
+
                 psEnrlMents.classMeetings.put(psClassMeeting.Id,clsMeeting);    
                 
                 //Determine what the very last day of the term is.
@@ -125,5 +137,6 @@ global with sharing class mob_StudentRest {
         String  specialTopic{get;set;}
         String  name{get;set;}
         String  location{get;set;}
+        String  instructorName{get;set;}
     }
 }

@@ -16,7 +16,7 @@ var MapManager = function() {
 	var infoBubble;
  	
 	// if should use geolocation to pin point user's position, if false, defaults users position to SF
-    var useGeolocation = false;
+    var useGeolocation = true;
     
     // Stores the rendered map
     var map;
@@ -56,6 +56,9 @@ var MapManager = function() {
     
     //cache for vehicles
     var vehicleCache;
+    
+    // Holder for current popup on screen
+    var currentInfoBubble;
     
     
     // Function to parse vehicle name, returns a json object with name and route properties, if the vehicle
@@ -99,54 +102,59 @@ var MapManager = function() {
       infoWindow.open(map, this);
       */
       
-      if(infoBubble) {
+      if(infoBubble && (this.stopName == currentInfoBubble)) {
         infoBubble.close();
-      }
-      
-      var content = '<div class="infoBubbleContent">' + this.popupInfo;
-      if(this.stopName){
-      	content += '<span onclick="mapManager.getStopDetails(\'' + encodeURIComponent(this.stopName) + '\');" class="infoBubbleLink">&nbsp;</span></div>';
-      } else{
-        content += '</div>';
-      }
-      
-      var size = 150;
-      var s = content.split(/\<.*?\>/);
-      
-      if(s) {
-        size = 0;
-        $(s).each(function() {
-          if(size < this.length) {
-            size = this.length;
-          }
-        });
+        currentInfoBubble = null;
+      } else {
+        if(infoBubble) {
+          infoBubble.close();
+        }
+        currentInfoBubble = this.stopName;
+        var content = '<div class="infoBubbleContent">' + this.popupInfo;
+        if(this.stopName){
+        	content += '<span onclick="mapManager.getStopDetails(\'' + encodeURIComponent(this.stopName) + '\');" class="infoBubbleLink">&nbsp;</span></div>';
+        } else{
+          content += '</div>';
+        }
         
-        size = size * 11;
-      }
-      if(size < 150){
-      	size = 150;
-      }
-      
-      $("#popupMeasureDiv").html(content);
-     
-        infoBubble = new InfoBubble({
-          map: map,
-          content: content,
-          arrowStyle: 2,
-          arrowPosition: 30,
-          hideCloseButton: true,  
-          shadowStyle: 1,
-          padding: 0,
-          backgroundColor: 'rgba(0,0,0,0.55)',
-          borderRadius: 4,
-          arrowSize: 10,
-          borderWidth: 1,
-          borderColor: '#000',
-          minHeight: 45,
-          minWidth: size
-        });
+        var size = 150;
+        var s = content.split(/\<.*?\>/);
         
-        infoBubble.open(map, this);
+        if(s) {
+          size = 0;
+          $(s).each(function() {
+            if(size < this.length) {
+              size = this.length;
+            }
+          });
+          
+          size = size * 11;
+        }
+        if(size < 150){
+        	size = 150;
+        }
+        
+        $("#popupMeasureDiv").html(content);
+       
+          infoBubble = new InfoBubble({
+            map: map,
+            content: content,
+            arrowStyle: 2,
+            arrowPosition: 30,
+            hideCloseButton: true,  
+            shadowStyle: 1,
+            padding: 0,
+            backgroundColor: 'rgba(0,0,0,0.55)',
+            borderRadius: 4,
+            arrowSize: 10,
+            borderWidth: 1,
+            borderColor: '#000',
+            minHeight: 45,
+            minWidth: size
+          });
+          
+          infoBubble.open(map, this);
+      }
     } 
     
     function doRenderMap(element) {
@@ -178,6 +186,13 @@ var MapManager = function() {
         myMarker.popupInfo = "This is where you are!";
                   
         google.maps.event.addListener(myMarker, 'click', simpleMarkerListener);
+        
+        google.maps.event.addListener(map, 'click', function(event) {
+        
+          if(infoBubble) {
+            infoBubble.close();
+          }
+        });
         
         myMarker.setMap(map);
     }
@@ -241,6 +256,13 @@ var MapManager = function() {
     return {
       // Update user's position and optionally pan to that position
       updateUserPos: function(pan, callback, param) {
+              if(callback) {
+                if(param) {
+                  callback(param);
+                } else { 
+                  callback();
+                }   
+              }
         // finds location
         if(useGeolocation && navigator && navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
@@ -266,6 +288,29 @@ var MapManager = function() {
                   }   
                 }
                 
+            },
+            function(error) {
+              console.log('Navigator geolocation Error ' + error.message);
+              alert(error.message);
+              
+              currentLocation = new google.maps.LatLng(37.786174, -122.400141);
+              if(myMarker) {
+                myMarker.setPosition(currentLocation);
+              }
+              
+              if(pan) {
+                if(map)
+                  map.panTo(currentLocation);
+              }
+              
+              /*if(callback) {
+                if(param) {
+                  callback(param);
+                } else { 
+                  callback();
+                }   
+              }*/
+              
             });
         } else {
             currentLocation = new google.maps.LatLng(37.786174, -122.400141);
@@ -278,13 +323,13 @@ var MapManager = function() {
                 map.panTo(currentLocation);
             }
             
-            if(callback) {
+            /*if(callback) {
               if(param) {
                 callback(param);
               } else { 
                 callback();
               }   
-            }
+            }*/
         }
         
       }, //updateUserPos

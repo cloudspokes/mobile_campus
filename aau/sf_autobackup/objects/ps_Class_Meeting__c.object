@@ -210,6 +210,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Instructor_Name__c</fullName>
+        <description>Text Version.  Will use lookup once Faculty are in Salesforce</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Text Version.  Will use lookup once Faculty are in Salesforce</inlineHelpText>
+        <label>Instructor Name</label>
+        <length>200</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Location__c</fullName>
         <externalId>false</externalId>
         <label>Location</label>

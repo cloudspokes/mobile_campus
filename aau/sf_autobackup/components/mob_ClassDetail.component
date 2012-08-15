@@ -7,8 +7,8 @@
     background-size: 100%;
     width: 35px;
     height: 31px;
+    margin: auto;
     margin-left: 10px;
-    margin-top: 5px;
 }
 .classDetail-icon2 {
     background:url({!$Resource.mob_Design}/mob_Design/iconsprite_grey.png) no-repeat 0px -0px;
@@ -35,7 +35,7 @@
    border-bottom: solid 1px #626262;
 }    
 .classDetail-detail{
-    height:28px;
+    /*height:28px;*/
     font-weight:bold;
     line-height: 0.9;
 }
@@ -57,7 +57,9 @@
 .classLi div.ui-btn-inner span.ui-icon{
     display: none;
 }
-
+.detail-value {
+	white-space: normal;
+}
 </style>
 <script type="text/javascript">
  $("#student-detail").live("pagebeforeshow", function(event) {
@@ -69,18 +71,18 @@
                <hr/>                
                <li id="classTime" class="classLi" style="padding-top: 2px;padding-bottom: 2px;">
                     <span class="classDetail-icon1" /> <a href="#" class="classDetail-detail">
-                       ${meetingTime}
+                       <span class="detail-value">${meetingTime}</span>
                     </a>  
                 </li>  
                 <li class="classLi" style="padding-top: 2px;padding-bottom: 1px;">
                    <span class="classDetail-icon2" /> <a href="#" class="classDetail-detail" style="padding-top:0.4em">
-                       ${meetingTopic} &nbsp;&nbsp; ${mLocation}
+                       <span class="detail-value">${mLocation}</span>
                        <br/><span class="classDetail-label">LOCATION</span>
                     </a>  
                 </li>
                 <li class="classLi" style="padding-top: 2px;padding-bottom: 1px;">
                    <span class="classDetail-icon3" /><a href="#" class="classDetail-detail" style="padding-top:0.4em">
-                       ${meetingInstruction}
+                       <span class="detail-value">${meetingInstruction}</span>
                        <br/><span class="classDetail-label">INSTRUCTOR</span>
                     </a>  
                 </li>

@@ -63,6 +63,10 @@
                 <behavior>Required</behavior>
                 <field>Psft_Ext__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Instructor_Name__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

@@ -107,7 +107,8 @@ classSchedule: {
 		}  
 		//console.timeEnd('scheduleAppend');
 		classContainer.css("margin","0px");
-
+		$.mobile.hidePageLoadingMsg();
+		$('.ui-loader').css('display', 'none');
 	},
 
 	initFailure: function(result) {
@@ -136,16 +137,16 @@ classSchedule: {
 		var detailContent = $("#ulDlId");
         
         meetTime = classMeetingDetail.startTime+' to '+classMeetingDetail.endTime;
-        topic =  classMeetingDetail.specialTopic;
+        //topic =  classMeetingDetail.specialTopic;
         instructor = classMeetingDetail.instructorName;
         mLocation = classMeetingDetail.location;
         
 		if(instructor == '' ||instructor ==null ) instructor = 'SFDC Admin'; 
-		if(topic == '' || topic ==null)	topic = 'Topic';  
+		//if(topic == '' || topic ==null)	topic = 'Topic';  
 
 		var detailBlock = blockTemplate.tmpl({
 			meetingTime:meetTime,
-			meetingTopic:topic ,
+			//meetingTopic:topic ,
 			meetingInstruction:instructor,
 			mLocation:mLocation
 		});
@@ -275,7 +276,7 @@ campusEvents: {
 			$(feedContainer).listview('refresh');
 		}
 		$(feedContainer).css('margin','0px');
-		$.mobile.hidePageLoadingMsg;
+		//$.mobile.hidePageLoadingMsg;
 	},
 
 	showFeedDetails: function(feedId) {
@@ -352,22 +353,28 @@ campusFeed: {
 				return;
 			}
 		});
+		if($(feedContainer).hasClass('ui-listview')){
+			$(feedContainer).listview('refresh');
+		}
 	  $(feedContainer).css('margin', '0px');
 	},
 
 	showFeedDetails: function(feedId) {
-
+		var feedContainer = $('#feed-detail-container').empty();
+		
 		//find Feed in the feedData
 		$.each(aauMobile.campusFeed.feedData, function(index, item){
 			if(item.guid == feedId){
 				console.log('Opening Feed: ' + JSON.stringify(item));
 				//create instance of template for feed Details
 				var feedTemplate = $('#feed-detail-template');
-				var feedContainer = $('#feed-detail-container').empty();
 				
 				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin, feedDescription: item.description}).appendTo(feedContainer);
 			}
 		});
+		if($(feedContainer).hasClass('ui-listview')){
+			$(feedContainer).listview('refresh');
+		}
 		//do page transition to detail screen
 		$.mobile.changePage('#feed-detail', {transition: 'slide', changeHash: true});
 	},
@@ -645,6 +652,8 @@ init: {
 
 //Initializes Class Schedule and RSS Data
 function studentDataInit() {
+	$.mobile.showPageLoadingMsg("b", "Loading...", false);
+  	$('.ui-loader').css('display', 'block');
 	aauMobile.classSchedule.init();
 	aauMobile.campusFeed.init();
 	aauMobile.campusEvents.init();
@@ -656,6 +665,10 @@ function bindEvents() {
 	console.log('bindEvents method called');
   //Disable page transitions. With the way the menu works, we have to use our own.
   $.mobile.defaultPageTransition = 'none';	
+  var transitUtil;
+  if(!transitUtil){
+  	transitUtil = new TransitUtil();
+  }
   
   //iOS loads before an event can be triggered. Have to check and see if we're initialized.
   if($('#menu-page').hasClass('ui-page')){
@@ -665,14 +678,13 @@ function bindEvents() {
 	//DONT CHANGE BELOW CODE!  THIS ONLY FIRES FOR BROWSER WHEN USING 'LIVE'
   	$('#menu-page').live('pagecreate', function(){
 		console.log('non iOS load slideMenu');
+		$.mobile.showPageLoadingMsg("b", "Loading...", false);
 		aauMobile.slideMenu.init();
+		transitUtil.init();
 	});
   }
-  //Force the menu to be initialized if we're not on it or it's not been touched by jQuery.
-	/*	if($($.mobile.activePage).attr('id') != 'menu-page' && !$('#menu-page').hasClass('ui-page')){
-		$.mobile.changePage('#menu-page', {changeHash: false});
-	}*/
-		
+  //$('#transit-map').on('pageshow', transitUtil.pageWillShow);
+  //$('#transit-map').on('pagehide', transitUtil.pageWillHide);	
   //Special changes to make the Android version function/appear correctly.
   if(aauMobile.isAndroid()) {
   	//Don't display Back button on Android devices.

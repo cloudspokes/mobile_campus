@@ -37,10 +37,10 @@
             }
             
      </script>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeo7wiR8G2REfIzQbeTLrVFuluE2jA9ao&sensor=true"></script>
+   <!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeo7wiR8G2REfIzQbeTLrVFuluE2jA9ao&sensor=true"></script>
     <script type="text/javascript" src="{!$Resource.mob_transitManager}"></script>
     <script type="text/javascript" src="{!$Resource.mob_mapManager}"></script>
-    <script type="text/javascript" src="{!$Resource.mob_mapJS}"></script>
+    <script type="text/javascript" src="{!$Resource.mob_mapJS}"></script> --> 
     <script type="text/javascript" src="{!$Resource.mob_StudentJs}"></script>
     <script type="text/javascript" src="{!$Resource.mob_XML2JSON}"></script>
     <script type="text/javascript" src="{!$Resource.mob_infoBuble}"></script>

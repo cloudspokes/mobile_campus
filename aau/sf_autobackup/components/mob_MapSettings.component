@@ -46,7 +46,9 @@
     overflow:auto;
     -webkit-overflow-scrolling: touch;
 }
-
+.result-ul li{
+	height: 44px;
+}
 .result-arrow {
     position:absolute;
     top:0px;

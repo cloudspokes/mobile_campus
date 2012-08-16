@@ -11,14 +11,15 @@ Tim Pickard - Took away binding on page show, moving function calles into variab
 
 */
 
-var TransitUtil = function(){
+/*
+var TransitUtil = {
 
-  return{
-	  /*  Function to init everything for transit page */
+	  /*  Function to init everything for transit page 
 	  init: function() {
 	        $("#map_div").css('height', $("body").innerHeight());
 	        
 	        if(!mapManager) {
+	           console.log('IM INITIALIZING');
 	          // Initialize objects
 	          mapManager = new MapManager();
 	          teletracManager = new TeletracManager();
@@ -33,7 +34,7 @@ var TransitUtil = function(){
 	          // render map
 	          // send addStops function and param to render map, to be passed to updateUserPos
 	          // and then to doRenderMap to ensure that the stop are always added after the map is rendered
-	          mapManager.renderMap($("#map_div"));
+	          //mapManager.renderMap($("#map_div"));
 	        
 	        }
 	      
@@ -53,7 +54,7 @@ var TransitUtil = function(){
 	        mapManager.updateUserPos(true);
 	  },
 	  
-	  /* Function to turn off bus/person tracking when user leaves the page */
+	  /* Function to turn off bus/person tracking when user leaves the page 
 	  pageWillHide: function() {
 	        // In this case map page is not being viewed, so if teletracManager exists, stop auto refresh 
 	        if(teletracManager) {
@@ -67,6 +68,7 @@ var TransitUtil = function(){
 	  },
 	  
 	  pageWillShow: function() {
+	     mapManager.renderMap($("#map_div"));
 	        if(teletracManager) {
 	          if(autoRefreshSetting == 'on' || !autoRefreshSetting){
 	            // Set up vehicle auto refresh
@@ -80,11 +82,11 @@ var TransitUtil = function(){
 	          mapManager.setTrackUserPos(true);
 	        }
 	  }
-  }
-}
+};*/
 
 
-/*
+
+
 $(document).bind("pageshow", function(event) {
   // Setting height of the map div, otherwise it will collapse to 0px
   $("#map_div").css('height', $("body").innerHeight());
@@ -138,5 +140,5 @@ $(document).bind("pageshow", function(event) {
     }
   }
   
-});*/
+});
 

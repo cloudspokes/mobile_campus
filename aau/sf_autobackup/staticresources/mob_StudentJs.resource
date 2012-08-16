@@ -636,6 +636,11 @@ isAndroid: function(){
 	}
 },
 
+isIOS: function(){
+	var ua = navigator.userAgent.toLowerCase();
+	return (ua.indexOf('iphone') > -1 || ua.indexOf('ipod') > -1 || ua.indexOf('ipad') > -1);
+},
+
 init: {
 	appActivation: function(){
 		utils.log('aauMobile.init.appActivation has been called.');
@@ -665,11 +670,6 @@ function bindEvents() {
 	console.log('bindEvents method called');
   //Disable page transitions. With the way the menu works, we have to use our own.
   $.mobile.defaultPageTransition = 'none';	
-  var transitUtil;
-  if(!transitUtil){
-  	transitUtil = new TransitUtil();
-  }
-  
   //iOS loads before an event can be triggered. Have to check and see if we're initialized.
   if($('#menu-page').hasClass('ui-page')){
 	console.log('iOS load slideMenu');
@@ -680,11 +680,15 @@ function bindEvents() {
 		console.log('non iOS load slideMenu');
 		$.mobile.showPageLoadingMsg("b", "Loading...", false);
 		aauMobile.slideMenu.init();
-		transitUtil.init();
+		//TransitUtil.init();
 	});
   }
-  //$('#transit-map').on('pageshow', transitUtil.pageWillShow);
-  //$('#transit-map').on('pagehide', transitUtil.pageWillHide);	
+  $('#result-list li').live('click', function(){
+  							var checkbox = $(this).find(':checkbox'); 
+  							checkbox.prop('checked', !checkbox[0].checked).trigger('change');
+  					});
+  //$('#transit-map').live('pagebeforeshow', TransitUtil.pageWillShow);
+  //$('#transit-map').live('pagebeforehide', TransitUtil.pageWillHide);	
   //Special changes to make the Android version function/appear correctly.
   if(aauMobile.isAndroid()) {
   	//Don't display Back button on Android devices.

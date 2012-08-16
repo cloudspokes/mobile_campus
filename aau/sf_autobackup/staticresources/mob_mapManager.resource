@@ -244,12 +244,6 @@ var MapManager = function() {
     // Private Function to clear route form map
     // param: string of route name to clear  
     function clearRoute(routeName){
-    	/*$(directionsDisplayMap).each( function(index){
-    		if(routeName == this.routeName){
-    			this.directions.setMap(null);
-    			//directionsDisplayMap.splice(index,1);
-    		}
-    	});*/
     	directionsDisplayMap[routeName].setMap(null);
     }
     
@@ -265,8 +259,8 @@ var MapManager = function() {
               }
         // finds location
         if(useGeolocation && navigator && navigator.geolocation) {
+            var options = { 'timeout': 5000, 'enableHighAccuracy': true };
             navigator.geolocation.getCurrentPosition(function(position) {
-                utils.log(position);
                 currentLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                 
                 if(myMarker) {
@@ -280,13 +274,13 @@ var MapManager = function() {
                     map.panTo(currentLocation);
                 }
                 
-                if(callback) {
+                /*if(callback) {
                   if(param) {
                     callback(param);
                   } else { 
                     callback();
                   }   
-                }
+                }*/
                 
             },
             function(error) {
@@ -302,7 +296,6 @@ var MapManager = function() {
                 if(map)
                   map.panTo(currentLocation);
               }
-              
               /*if(callback) {
                 if(param) {
                   callback(param);
@@ -311,7 +304,7 @@ var MapManager = function() {
                 }   
               }*/
               
-            });
+            }, options);
         } else {
             currentLocation = new google.maps.LatLng(37.786174, -122.400141);
             if(myMarker) {
@@ -348,7 +341,7 @@ var MapManager = function() {
       // Renders a map in a specific element on the page, centralizing the map
       // in the specified latitude and longitude
       renderMap: function(element) {
-        
+        console.log('*** element for map ' + element);
         this.updateUserPos(false, doRenderMap, element);
         
       }, //renderMap

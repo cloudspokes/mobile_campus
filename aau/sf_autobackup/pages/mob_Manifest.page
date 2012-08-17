@@ -5,33 +5,33 @@
 # version 1.0182
 
 CACHE:
-#{!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.min.css
-#{!$Resource.mob_Design}/mob_Design/AAUjQueryTheme.min.css
-#{!$Resource.jquery1dot7}
-#{!$Resource.jquerytmpl} 
-#{!$Resource.mob_forceJsToolkit}
-#{!$Resource.mob_XML2JSON}
+{!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.min.css
+{!$Resource.mob_Design}/mob_Design/AAUjQueryTheme.min.css
+{!$Resource.jquery1dot7}
+{!$Resource.jquerytmpl} 
+{!$Resource.mob_forceJsToolkit}
+{!$Resource.mob_XML2JSON}
 
-#{!$Resource.appirioPlugins}
-#{!$Resource.mob_StudentJs}
-#{!$Resource.mob_infoBuble}
-#{!$Resource.mob_transitManager}
-#{!$Resource.mob_mapManager}
-#{!$Resource.mob_mapJS}
+{!IF($Setup.mob_Student__c.Cache_Pages__c,'','#')}{!$Resource.appirioPlugins}
+{!IF($Setup.mob_Student__c.Cache_Pages__c,'','#')}{!$Resource.mob_StudentJs}
+{!IF($Setup.mob_Student__c.Cache_Pages__c,'','#')}{!$Resource.mob_infoBuble}
+{!IF($Setup.mob_Student__c.Cache_Pages__c,'','#')}{!$Resource.mob_transitManager}
+{!IF($Setup.mob_Student__c.Cache_Pages__c,'','#')}{!$Resource.mob_mapManager}
+{!IF($Setup.mob_Student__c.Cache_Pages__c,'','#')}{!$Resource.mob_mapJS}
 
-#{!$Resource.mob_Design}/mob_Design/iconsprite_white.png
-#{!$Resource.mob_Design}/mob_Design/iconsprite_grey.png
-#{!$Resource.mob_Design}/mob_Design/images/Transit/marker_person.png
-#{!$Resource.mob_Design}/mob_Design/images/Transit/marker_A.png
-#{!$Resource.mob_Design}/mob_Design/images/Transit/marker_D.png
-#{!$Resource.mob_Design}/mob_Design/images/Transit/marker_E.png
-#{!$Resource.mob_Design}/mob_Design/images/Transit/marker_G.png
-#{!$Resource.mob_Design}/mob_Design/images/Transit/marker_H.png
-#{!$Resource.mob_Design}/mob_Design/images/Transit/marker_I.png
-#{!$Resource.mob_Design}/mob_Design/images/Transit/marker_M.png
-#{!$Resource.mob_Design}/mob_Design/images/Transit/marker_busstop.png
-#{!$Resource.mob_Design}/mob_Design/images/settings-arrow-hack.png
-#{!$Resource.mob_Design}/mob_Design/images/settings-list-hack.png
+{!$Resource.mob_Design}/mob_Design/iconsprite_white.png
+{!$Resource.mob_Design}/mob_Design/iconsprite_grey.png
+{!$Resource.mob_Design}/mob_Design/images/Transit/marker_person.png
+{!$Resource.mob_Design}/mob_Design/images/Transit/marker_A.png
+{!$Resource.mob_Design}/mob_Design/images/Transit/marker_D.png
+{!$Resource.mob_Design}/mob_Design/images/Transit/marker_E.png
+{!$Resource.mob_Design}/mob_Design/images/Transit/marker_G.png
+{!$Resource.mob_Design}/mob_Design/images/Transit/marker_H.png
+{!$Resource.mob_Design}/mob_Design/images/Transit/marker_I.png
+{!$Resource.mob_Design}/mob_Design/images/Transit/marker_M.png
+{!$Resource.mob_Design}/mob_Design/images/Transit/marker_busstop.png
+{!$Resource.mob_Design}/mob_Design/images/settings-arrow-hack.png
+{!$Resource.mob_Design}/mob_Design/images/settings-list-hack.png
 
 NETWORK:
 *

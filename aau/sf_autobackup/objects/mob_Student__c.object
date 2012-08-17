@@ -28,6 +28,15 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Cache_Pages__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Should we turn on the Cache Manifest so pages and files are cached, to improve performance?</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Should we turn on the Cache Manifest so pages and files are cached, to improve performance?</inlineHelpText>
+        <label>Cache Pages?</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Client_Key__c</fullName>
         <defaultValue>&quot;3MVG9Oe7T3Ol0ea4rCgfMtZo3n40wB4t890nElRZIKn5z2cjSuFdf13Yrw6bgcwA5vlotolfrrrHGqaimsfyM&quot;</defaultValue>
         <description>Key used for &quot;Remote Access&quot; when doing REST calls</description>

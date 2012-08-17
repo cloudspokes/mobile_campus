@@ -16,7 +16,7 @@ var MapManager = function() {
 	var infoBubble;
  	
 	// if should use geolocation to pin point user's position, if false, defaults users position to SF
-    var useGeolocation = true;
+    var useGeolocation = false;
     
     // Stores the rendered map
     var map;
@@ -194,7 +194,7 @@ var MapManager = function() {
           }
         });
         
-        myMarker.setMap(map);
+        //myMarker.setMap(map);
     }
     
     // Private function to draw route on map

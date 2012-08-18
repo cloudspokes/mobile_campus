@@ -157,6 +157,7 @@ if (forcetk.Client === undefined) {
             contentType: 'application/json',
             cache: false,
             processData: false,
+			timeout:8000,
             data: payload,
             success: callback,
             error: (!this.refreshToken || retry ) ? error : function(jqXHR, textStatus, errorThrown) {

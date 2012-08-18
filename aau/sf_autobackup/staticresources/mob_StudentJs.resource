@@ -130,6 +130,7 @@ classSchedule: {
 		$('#classNameDv').empty();
 		$('#classDescrDv').empty();
 
+		$("<span class='section-details'>"+enrolledClass.classSubject+"&nbsp;"+enrolledClass.classCatalogNbr+"."+enrolledClass.classSection+"</span>").appendTo('#classNameDv');
 		$("<h2>"+enrolledClass.className+"</h2>").appendTo('#classNameDv');
 		$("<h3>"+enrolledClass.classDescription+"</h3>").appendTo('#classDescrDv');
         
@@ -542,6 +543,8 @@ slideMenu: {
 				SalesforceOAuthPlugin.logout();
 			}
 			else{
+				utils.log("")
+			
 				$('#menu-header').html($(pageLink).find('.mob-header').html());
 				$('#menu-header .menu-btn').removeClass('menu-btn');
 				$.mobile.changePage(pageLink, {changeHash: true});
@@ -687,9 +690,13 @@ function bindEvents() {
   							var checkbox = $(this).find(':checkbox'); 
   							checkbox.prop('checked', !checkbox[0].checked).trigger('change');
   					});
+  
+  //$(document).on('ready', mapInit);
+
   //$('#transit-map').live('pagebeforeshow', TransitUtil.pageWillShow);
   //$('#transit-map').live('pagebeforehide', TransitUtil.pageWillHide);	
   //Special changes to make the Android version function/appear correctly.
+  
   if(aauMobile.isAndroid()) {
   	//Don't display Back button on Android devices.
   	$('.mob-back-button').css('display','none');

@@ -25,8 +25,22 @@ global with sharing class mob_StudentRest {
             }
         }
       
-        for(ps_Enrollment__c ps_Enrolmnt:[SELECT Id,Class_Section__c,Student__r.Id,Student__r.Name,Class_Section__r.Name,Class_Section__r.Course_Description__c,Class_Section__r.Catalog_Nbr__c, Class_Section__r.Term__c,Class_Section__r.Term__r.End_Date__c From ps_Enrollment__c 
-                   where Student__c =: contactId AND Enrollment_Status__c = 'E' AND Class_Section__r.Term__r.End_Date__c > :date.today() ]){
+        for(ps_Enrollment__c ps_Enrolmnt:[SELECT Id,
+												Class_Section__c,
+												Student__r.Id,
+												Student__r.Name,
+												Class_Section__r.Name,
+												Class_Section__r.Course_Description__c,
+												Class_Section__r.Catalog_Nbr__c, 
+												Class_Section__r.Term__c,
+												Class_Section__r.Term__r.End_Date__c, 
+												Class_Section__r.Class_Section__c, 
+												Class_Section__r.Subject__c
+											From ps_Enrollment__c 
+											Where Student__c =: contactId 
+											AND Enrollment_Status__c = 'E' 
+											AND Class_Section__r.Term__r.End_Date__c > :date.today() ]){
+
             MobStudentEnrolled mobStdEnrolled = new MobStudentEnrolled();
             mobStdEnrolled.enrollmentId = ps_Enrolmnt.Id;
             mobStdEnrolled.studentId = ps_Enrolmnt.Student__r.Id;
@@ -35,6 +49,8 @@ global with sharing class mob_StudentRest {
             mobStdEnrolled.classCatalogNbr = ps_Enrolmnt.Class_Section__r.Catalog_Nbr__c;
             mobStdEnrolled.classSectionId = ps_Enrolmnt.Class_Section__c;
             mobStdEnrolled.classDescription = ps_Enrolmnt.Class_Section__r.Course_Description__c;
+            mobStdEnrolled.classSection = ps_Enrolmnt.Class_Section__r.Class_Section__c;
+            mobStdEnrolled.classSubject = ps_Enrolmnt.Class_Section__r.Subject__c;
 
             enrolledClasses.add(ps_Enrolmnt.Class_Section__c);
             psEnrlMents.mobStudentsEnrolled.put(ps_Enrolmnt.Class_Section__c,mobStdEnrolled);
@@ -118,6 +134,8 @@ global with sharing class mob_StudentRest {
         String classCatalogNbr {get;set;}
         String classSectionId {get;set;}
         String classDescription{get;set;}
+        String classSection{get;set;}
+        String classSubject{get;set;}
     } 
     
     public class ClassMeeting{

@@ -53,6 +53,7 @@
 
 .classDetail h2{
     font-size:14pt;
+	margin-top: 2px;
 }
 .classLi div.ui-btn-inner span.ui-icon{
     display: none;
@@ -60,12 +61,13 @@
 .detail-value {
 	white-space: normal;
 }
+.section-details {
+	color:#000;
+	font-size:12px;
+	margin-bottom:0px;
+	padding: 5px 5px 0px 2px;
+}
 </style>
-<script type="text/javascript">
- $("#student-detail").live("pagebeforeshow", function(event) {
-    
- });
-</script>
 
 <script id="student-classDetail-template" type="text/x-jquery-tmpl">
                <hr/>                

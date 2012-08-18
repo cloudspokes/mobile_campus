@@ -158,6 +158,7 @@ var MapManager = function() {
     } 
     
     function doRenderMap(element) {
+        utils.log("rendering the map");
         // Icon associated with the student marker
         var studentMarkerImage = new google.maps.MarkerImage(imgStudentMarker,
 				    	null, 
@@ -173,7 +174,8 @@ var MapManager = function() {
             panControl: false
         };
         
-        map = new google.maps.Map(element[0], myOptions);        
+        var el = element[0] ? element[0] : element;
+        map = new google.maps.Map(el, myOptions);        
 		
         myMarker = new google.maps.Marker({
                      position: currentLocation,

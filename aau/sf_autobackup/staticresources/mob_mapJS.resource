@@ -68,7 +68,7 @@ var TransitUtil = {
 	  },
 	  
 	  pageWillShow: function() {
-	     mapManager.renderMap($("#map_div"));
+	     mapManager.renderMap(document.getElementById('map_div'));
 	        if(teletracManager) {
 	          if(autoRefreshSetting == 'on' || !autoRefreshSetting){
 	            // Set up vehicle auto refresh
@@ -85,16 +85,7 @@ var TransitUtil = {
 };*/
 
 
-
-
-$(document).bind("pageshow", function(event) {
-  // Setting height of the map div, otherwise it will collapse to 0px
-  $("#map_div").css('height', $("body").innerHeight());
-
-  // If the transit-map page is being show, the map is visible, so update it
-  if(event.target.id == "transit-map") {
-    // If mapManager is null this is the first time the map is being rendered, so initialize and prepare everything
-    if(!mapManager) {
+function mapInit() {
       // Initialize objects
       mapManager = new MapManager();
       teletracManager = new TeletracManager();
@@ -109,9 +100,20 @@ $(document).bind("pageshow", function(event) {
       // render map
       // send addStops function and param to render map, to be passed to updateUserPos
       // and then to doRenderMap to ensure that the stop are always added after the map is rendered
-      mapManager.renderMap($("#map_div"));
-	  
+      mapManager.renderMap(document.getElementById('map_div'));
+}
+
+$(document).bind("pageshow", function(event) {
+  // Setting height of the map div, otherwise it will collapse to 0px
+  $("#map_div").css('height', $("body").innerHeight());
+
+  // If the transit-map page is being show, the map is visible, so update it
+  if(event.target.id == "transit-map") {
+    // If mapManager is null this is the first time the map is being rendered, so initialize and prepare everything
+    if(!mapManager) {
+	  mapInit();
     }
+    
   
   	var autoRefreshSetting = localStorage.getItem('autoRefreshSetting');
   	
@@ -127,7 +129,7 @@ $(document).bind("pageshow", function(event) {
     
     // Update user position and center to it
     mapManager.updateUserPos(true);
-
+    
   } else {
     // In this case map page is not being viewed, so if teletracManager exists, stop auto refresh 
     if(teletracManager) {

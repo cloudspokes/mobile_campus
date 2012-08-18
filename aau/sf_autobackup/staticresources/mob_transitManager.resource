@@ -100,7 +100,6 @@ var TeletracManager = function() {
     	if($('#result-list').hasClass('ui-listview')){
     		$('#result-list').listview('refresh');
     	}
-    	console.log('*** CUPCAKES ' + $('#result-list'));
     }
     
     return {

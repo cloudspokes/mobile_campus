@@ -89,18 +89,22 @@ function mapInit() {
       // Initialize objects
       mapManager = new MapManager();
       teletracManager = new TeletracManager();
+	  console.log('mapManager and teletracManager');
+	  
+	  // render map
+      // send addStops function and param to render map, to be passed to updateUserPos
+      // and then to doRenderMap to ensure that the stop are always added after the map is rendered
+      mapManager.renderMap(document.getElementById('map_div'));
+      console.log('rendering the map');
 	  
 	  //variable to add stops function
 	  var addStopFunction = mapManager.addStops;
+	  console.log('mapManager stops added');
 	  
 	  // Pass mapManager add stop function as callback to getRoutes,
 	  // to then be passed to parseStops in teletracManager so stops get plotted
 	  teletracManager.getRoutesFromSFDC(addStopFunction);
-	  
-      // render map
-      // send addStops function and param to render map, to be passed to updateUserPos
-      // and then to doRenderMap to ensure that the stop are always added after the map is rendered
-      mapManager.renderMap(document.getElementById('map_div'));
+	  console.log('teletracManager getting routes from SFDC');
 }
 
 $(document).bind("pageshow", function(event) {
@@ -111,6 +115,7 @@ $(document).bind("pageshow", function(event) {
   if(event.target.id == "transit-map") {
     // If mapManager is null this is the first time the map is being rendered, so initialize and prepare everything
     if(!mapManager) {
+      console.log('mapManager does not exist!');
 	  mapInit();
     }
     

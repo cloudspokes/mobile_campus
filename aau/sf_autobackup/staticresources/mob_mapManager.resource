@@ -171,7 +171,8 @@ var MapManager = function() {
             center: currentLocation,
             zoom: 15,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
-            panControl: false
+            panControl: false,
+            mapTypeControl: false
         };
         
         var el = element[0] ? element[0] : element;
@@ -182,7 +183,7 @@ var MapManager = function() {
                      title: "Student Marker",
                      animation: google.maps.Animation.DROP,
                      icon: studentMarkerImage,
-                     zindex: 3
+                     zindex: 1
                   });
         
         myMarker.popupInfo = "This is where you are!";
@@ -196,6 +197,7 @@ var MapManager = function() {
           }
         });
         
+        // Commented out, geo location not working in iOS
         //myMarker.setMap(map);
     }
     
@@ -261,7 +263,7 @@ var MapManager = function() {
               }
         // finds location
         if(useGeolocation && navigator && navigator.geolocation) {
-            var options = { 'timeout': 5000, 'enableHighAccuracy': true };
+            var options = { timeout: 5000, enableHighAccuracy: true };
             navigator.geolocation.getCurrentPosition(function(position) {
                 currentLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                 
@@ -275,15 +277,6 @@ var MapManager = function() {
                   if(map)
                     map.panTo(currentLocation);
                 }
-                
-                /*if(callback) {
-                  if(param) {
-                    callback(param);
-                  } else { 
-                    callback();
-                  }   
-                }*/
-                
             },
             function(error) {
               console.log('Navigator geolocation Error ' + error.message);
@@ -298,14 +291,6 @@ var MapManager = function() {
                 if(map)
                   map.panTo(currentLocation);
               }
-              /*if(callback) {
-                if(param) {
-                  callback(param);
-                } else { 
-                  callback();
-                }   
-              }*/
-              
             }, options);
         } else {
             currentLocation = new google.maps.LatLng(37.786174, -122.400141);
@@ -317,14 +302,6 @@ var MapManager = function() {
               if(map)
                 map.panTo(currentLocation);
             }
-            
-            /*if(callback) {
-              if(param) {
-                callback(param);
-              } else { 
-                callback();
-              }   
-            }*/
         }
         
       }, //updateUserPos
@@ -452,7 +429,7 @@ var MapManager = function() {
 						title: this.stopName,
 						animation: google.maps.Animation.DROP,
 						icon: stopMarker,
-						zindex: 1
+						zindex: 5
 					});
  					marker.stopName = this.stopName;
  					

@@ -686,12 +686,12 @@ function bindEvents() {
 		//TransitUtil.init();
 	});
   }
-  $('#result-list li').live('click', function(){
+  $('#result-list li.settings-route').live('click', function(){
   							var checkbox = $(this).find(':checkbox'); 
   							checkbox.prop('checked', !checkbox[0].checked).trigger('change');
   					});
   
-  //$(document).on('ready', mapInit);
+  //$(document).on('deviceready', mapInit);
 
   //$('#transit-map').live('pagebeforeshow', TransitUtil.pageWillShow);
   //$('#transit-map').live('pagebeforehide', TransitUtil.pageWillHide);	
@@ -725,5 +725,6 @@ if(!navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
   document.addEventListener("deviceready", function() {
     studentDataInit();
     bindEvents();
+    mapInit();
   }, false);
 }

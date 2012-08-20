@@ -155,7 +155,7 @@ div.ui-slider-switch.ui-slider-mini a.ui-slider-handle .ui-btn-inner {
 </style>
 
 <script type="text/javascript">
-    $("#transit-settings").live('click', function(){
+    $("#transit-settings").live('click', function(){ 
         $('#result-container').toggle(); 
     }); 
 </script>
@@ -165,7 +165,7 @@ div.ui-slider-switch.ui-slider-mini a.ui-slider-handle .ui-btn-inner {
         <div id="result-overlay" class="result-overlay ui-corner-all">
             <div id="result-scroll-container" class="result-scroll-container">
             <ul id="result-list" class="result-ul ui-corner-bottom ui-corner-bl ui-corner-br" data-role="listview" data-theme="c">
-               <!-- <li><a href="javascript:WebViewer.showWebView('http://www.google.com');" id="static-map-link">Static Map</a></li>-->
+              	<li><a href="javascript:WebViewer.showWebView('{!$Setup.mob_Student__c.Base_Url__c}{!URLFOR($Resource.mob_busmap)}');" id="static-map-link">Static Map</a></li>
             </ul>
             </div>
         </div>
@@ -174,7 +174,7 @@ div.ui-slider-switch.ui-slider-mini a.ui-slider-handle .ui-btn-inner {
     </div>
 </div>
 <script id="settings-route-checkbox" type="text/x-jquery-tmpl">
-			<li>
+			<li class='settings-route'>
 				<label>
 					<input onclick="mapManager.toggleRoute(this, '${routeName}');" type="checkbox" name="${routeName}" class="route-checkbox"/>Route&nbsp;${routeName}
 				</label>

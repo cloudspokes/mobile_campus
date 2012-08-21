@@ -39,7 +39,7 @@
 <script id="rss-feed-template" type="text/x-jquery-tmpl">
 <li class="feed-li"><a href="javascript:aauMobile.campusFeed.showFeedDetails('${feedId}');">
 	<div class="feed-title">${feedTitle}</div>
-	<div class="feed-origin">${feedOrigin}</div>
+	<div class="feed-origin">${feedDate}</div>
 </a></li>
 </script> 
 </apex:component>

@@ -27,7 +27,7 @@
  }
  .course-time{
     background-color: #808080;
-    width: 20%;
+    width: 80px;
     text-align: center;
     color: #FFFFFF;
     font-weight: normal;

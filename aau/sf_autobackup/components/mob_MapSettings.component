@@ -47,7 +47,7 @@
     -webkit-overflow-scrolling: touch;
 }
 .result-ul li{
-	height: 44px;
+	height: 20px;
 }
 .result-arrow {
     position:absolute;
@@ -56,8 +56,8 @@
     height:25px;
     width:25px;
     background-color:#dc2221;
-    -webkit-transform: rotate(45deg);
-    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg) !important;
+    transform: rotate(45deg) !important;
     /*background-image: -webkit-linear-gradient(135deg, #0d0d0d 0%, #adadad 50%, #ddd 100%);*/
     z-index:801;
     /*box-shadow: -1px -1px 0px 0px #666;*/
@@ -94,18 +94,20 @@
 }
 .result-ul li.ui-li, .result-ul-android li.ui-li{
     background: #DC2221;
-    border: none;
-    border-bottom: solid 1px #DE7070;
-    color: #fff;
-    font-weight: normal;
-    text-shadow: none;
+	border: none;
+	border-bottom: solid 1px #DE7070;
+	color: #fff;
+	font-weight: normal;
+	text-shadow: none;
+	padding: .7em 15px .7em 15px;
+	font-size: 15px;
 }
 .result-ul li.ui-li span.ui-icon-arrow-r{
     z-index: 900;
     border-top: 3px solid #DE7070;
     border-right: 3px solid #DE7070;
-    -webkit-transform: rotate(45deg);
-    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg) !important;
+    transform: rotate(45deg) !important;
     margin-top: -5px;
     opacity: 1.0;
 }
@@ -136,9 +138,9 @@ div.ui-slider-switch.ui-slider-mini .ui-slider-handle {
     border-radius: 15px;
 }
 label.ui-slider, .result-ul li.ui-li a, .result-ul-android li.ui-li a{
-    font-size: 14px;
+    font-size: 15px;
     color: #fff;
-    margin: 0.2em 0;
+    margin: 0.1em 0;
 }
 div.ui-slider-switch.ui-slider-mini a.ui-slider-handle .ui-btn-inner {
     border: none;
@@ -152,6 +154,35 @@ div.ui-slider-switch.ui-slider-mini a.ui-slider-handle .ui-btn-inner {
     margin-top: -4px;
     background-size: 100%;
 }    
+#result-static-map{
+	padding: .7em 0px .7em 0px
+}
+.settings-route.checked-on span.settings-checkbox{
+	margin-right: 20px;
+	background: url({!$Resource.jquerymobile1dot1}/images/icons-18-white.png);
+	background-repeat: no-repeat;
+	background-position-x: -253px;
+	background-color: #CC0018;
+}
+.settings-route span.settings-checkbox{
+	width: 16px;
+	height: 16px;
+	margin-right: 20px;
+	background-color: #FFF;
+	display: inline-block;
+	border-radius: 10px;
+	border: solid 2px #fff;
+}
+.settings-label{
+	position: absolute;
+	top: 11px;
+}
+#result-static-map{
+	height: 27px;
+}
+#result-static-map a{
+	padding: .5em 15px .5em 15px;
+}
 </style>
 
 <script type="text/javascript">
@@ -165,7 +196,7 @@ div.ui-slider-switch.ui-slider-mini a.ui-slider-handle .ui-btn-inner {
         <div id="result-overlay" class="result-overlay ui-corner-all">
             <div id="result-scroll-container" class="result-scroll-container">
             <ul id="result-list" class="result-ul ui-corner-bottom ui-corner-bl ui-corner-br" data-role="listview" data-theme="c">
-              	<li><a href="javascript:WebViewer.showWebView('{!$Setup.mob_Student__c.Base_Url__c}{!URLFOR($Resource.mob_busmap)}');" id="static-map-link">Static Map</a></li>
+              	<li id="result-static-map"><a href="javascript:WebViewer.showWebView('{!$Setup.mob_Student__c.Base_Url__c}{!URLFOR($Resource.mob_busmap)}');" id="static-map-link">Static Map</a></li>
             </ul>
             </div>
         </div>
@@ -174,14 +205,12 @@ div.ui-slider-switch.ui-slider-mini a.ui-slider-handle .ui-btn-inner {
     </div>
 </div>
 <script id="settings-route-checkbox" type="text/x-jquery-tmpl">
-			<li class='settings-route'>
-				<label>
-					<input onclick="mapManager.toggleRoute(this, '${routeName}');" type="checkbox" name="${routeName}" class="route-checkbox"/>Route&nbsp;${routeName}
-				</label>
+			<li class='settings-route' onclick="mapManager.toggleRoute(this, '${routeName}');" >
+				<span class='settings-checkbox'>&nbsp;</span><span class='settings-label'>Route&nbsp;${routeName}</span>
 			</li>
 </script> 
 <script id="settings-route-refresh-toggle" type="text/x-jquery-tmpl">
-	 <li>
+	 <li id="result-refresh-toggle">
          <label for="auto-refresh-toggle">Live Bus Updates</label>
          <select onchange="teletracManager.toggleRefresh(this);" name="auto-refresh-toggle" id="auto-refresh-toggle" data-role="slider" data-mini="true">
             {{if refreshOn}}

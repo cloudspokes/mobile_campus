@@ -15,8 +15,9 @@
 
 <script id="feed-detail-template" type="text/x-jquery-tmpl">
 <div class="feed-title">${feedTitle}</div>
+<div class="feed-origin">${feedDate}</div>
 <div class="feed-origin">${feedOrigin}</div>
 <br/>
-<div class="feed-description">${feedDescription}</div>
+<div class="feed-description">${feedDescription}&nbsp;<a class="more-link" href="javascript:WebViewer.showWebView('${linkUrl}');">Read More</a></div>
 </script> 
 </apex:component>

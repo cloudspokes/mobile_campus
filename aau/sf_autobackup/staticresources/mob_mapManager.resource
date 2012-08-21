@@ -415,13 +415,13 @@ var MapManager = function() {
       // Adds bus stops markers to the map
       addStops: function(stops) {
         var stpRoutes = teletracManager.getStopNamesWithRoutes();
-        
+        var scale = 0.45;
         $(stops).each( function() {
         			var stopMarker = new google.maps.MarkerImage(imgStopMarker,
 												    	null, 
 												    	null, 
 												    	null, 
-												    	new google.maps.Size(25, 25) 											
+												    	new google.maps.Size(67 * scale, 67 * scale) 											
 					    								);
         			
 					var marker = new google.maps.Marker({
@@ -595,7 +595,8 @@ var MapManager = function() {
       //toggle route
       toggleRoute: function(inputField, routeName){
       	console.log(' input field ' + inputField);
-      	if($(inputField).is(':checked')){
+      	$(inputField).toggleClass('checked-on');
+      	if($(inputField).hasClass('checked-on')){
       		mapManager.setRouteToDraw(routeName);
       	} else {
       		mapManager.setRouteToClear(routeName);

@@ -20,7 +20,7 @@
       }
     </script>    
     <script type="text/javascript" src="{!$Resource.jquery1dot7}"></script>
-    <script type="text/javascript" src="{!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.js"></script>
+    <script type="text/javascript" src="{!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.min.js"></script>
     <script type="text/javascript" src="{!$Resource.jquerytmpl}"></script>  
     <script type="text/javascript" src="{!$Resource.appirioPlugins}"></script>
     <script type="text/javascript" src="{!$Resource.mob_forceJsToolkit}"></script>
@@ -169,12 +169,15 @@
       right: 5px;
       top: 10px;
     }
+.ui-body-c .ui-link, .ui-body-c .ui-link:hover, .ui-body-c .ui-link:visited {
+	color: #DC2221;
+}
  </style>
 
 <script type="text/javascript">
-/****************** Google Analytics ***********************/
+/******* Google Analytics ********/
   var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-33600674-1']);
+  _gaq.push(['_setAccount', 'UA-286432-5']);
   _gaq.push(['_trackPageview']);
 
   (function() {

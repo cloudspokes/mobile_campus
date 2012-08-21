@@ -92,8 +92,12 @@ var TeletracManager = function() {
     	$(results).each(function () {
     		routeNamesAndColors.push({"routeName": this.routeName, "routeColor": this.stops[0].color});
     		var routeCheckbox = $("#settings-route-checkbox").tmpl({routeName: this.routeName});
+    		$(routeCheckbox).find("input[type='checkbox']").checkboxradio({theme: 'a', mini: 'true'});
 			routeCheckbox.appendTo($('#result-list'));
     	});
+    	if(!aauMobile.isAndroid()){
+    		$('.result-scroll-container *').css('-webkit-transform', 'translate3d(0,0,0)');
+    	}
     	if($('#result-list').hasClass('ui-listview')){
     		$('#result-list').listview('refresh');
     	}

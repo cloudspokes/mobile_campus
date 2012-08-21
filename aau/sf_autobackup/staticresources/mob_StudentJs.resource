@@ -197,7 +197,6 @@ campusEvents: {
 		//console.log('Result: ' + JSON.stringify(result));
 		var currentDate = new Date();
 		$.each(result.channel.item, function(index, item){
-			//console.log('Campus Event Item: '+JSON.stringify(item));
 			//TODO: you may want to move where this is happening (before the conversion to JSON maybe...)
 			//item = aauMobile.campusEvents.processItem(item);
 			item.origin = result.channel.title;
@@ -207,7 +206,14 @@ campusEvents: {
 			
 				var eventItem = item.description.split(",");
 				item.raweventdate = new Date(eventItem[0].replace("eventdate:",""));
-				item.eventdate = item.raweventdate.toLocaleDateString();
+				//make sure its a real date entered into the field
+				if (item.raweventdate.toString() == "NaN" || item.raweventdate.toString() == "Invalid Date") {
+					console.log('Date Error in Feed: ' + item.description);
+					item.raweventdate = null;
+				} else {
+					item.eventdate = item.raweventdate.toLocaleDateString();
+					item.shortdate = (item.raweventdate.getMonth()+1)+'/'+item.raweventdate.getDate()+'/'+item.raweventdate.getFullYear();
+				}
 				item.eventdescription = '';
 				
 				for(count =1 ;count<eventItem.length-1;count++){
@@ -220,6 +226,7 @@ campusEvents: {
 				 
 				
 			}
+			console.log('Campus Event Item: '+JSON.stringify(item));
             //We should also not show any records that are in the past
             if(item.raweventdate >= currentDate){ 
 			  aauMobile.campusEvents.feedData.push(item);
@@ -266,7 +273,7 @@ campusEvents: {
 		$(feedContainer).empty();
 		$.each(aauMobile.campusEvents.feedData, function(index, item){
 			if(index < 20){
-				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin, feedId: item.guid}).appendTo(feedContainer);			
+				feedTemplate.tmpl({feedTitle: item.title, feedDate: item.shortdate, feedOrigin: item.origin, feedId: item.guid}).appendTo(feedContainer);			
 			}else{
 				return;
 			}
@@ -336,6 +343,11 @@ campusFeed: {
 		$.each(result.channel.item, function(index, item){
 
 			item.origin = result.channel.title;
+			//console.log('Campus News Item: '+JSON.stringify(item));
+
+			var raweventdate = new Date(item.pubDate);
+			item.eventdate = raweventdate.toLocaleDateString();
+
 			aauMobile.campusFeed.feedData.push(item);
 		});
 		
@@ -349,7 +361,7 @@ campusFeed: {
 		$.each(aauMobile.campusFeed.feedData, function(index, item){
 			//console.log('Feed Item: '+JSON.stringify(item));
 			if(index < 20){
-				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin, feedId: item.guid}).appendTo(feedContainer);			
+				feedTemplate.tmpl({feedTitle: item.title, feedDate: item.eventdate, feedId: item.guid}).appendTo(feedContainer);			
 			}else{
 				return;
 			}
@@ -370,7 +382,7 @@ campusFeed: {
 				//create instance of template for feed Details
 				var feedTemplate = $('#feed-detail-template');
 				
-				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin, feedDescription: item.description}).appendTo(feedContainer);
+				feedTemplate.tmpl({feedTitle: item.title, feedOrigin: item.origin, feedDate: item.eventdate, feedDescription: item.description, linkUrl: item.link}).appendTo(feedContainer);
 			}
 		});
 		if($(feedContainer).hasClass('ui-listview')){
@@ -496,8 +508,9 @@ slideMenu: {
 		//Android vClick bug solution.
 		if(timeDiff > 400){		
 			console.log('Tapped on the content. Closing Menu.');
-			$('#menu-page').css('position','absolute');
-			
+			if(aauMobile.isAndroid()){
+				$('#menu-page').css('position','absolute');
+			}
 			$('#menu-page').removeClass('slide-out');
 			
 			$('.page-container').removeClass('slide-out');
@@ -535,8 +548,9 @@ slideMenu: {
 
 				//TODO: Change this to be a native plugin instead of phonegap.resource call
 				$.mobile.changePage('#student-home', {changeHash: true});
-				
-				$('#menu-page').css('position','absolute');
+				if(aauMobile.isAndroid()){
+					$('#menu-page').css('position','absolute');
+				}
 				$('#menu-page').removeClass('slide-out');
 				$('.page-container').removeClass('slide-out');
 				
@@ -550,7 +564,9 @@ slideMenu: {
 				$.mobile.changePage(pageLink, {changeHash: true});
 				
 				//Remove the fixed so that Android 2.3 doesn't freak.
-				$('#menu-page').css('position','absolute');
+				if(aauMobile.isAndroid()){
+					$('#menu-page').css('position','absolute');
+				}
 				
 				//Slide the page and the menu back to starting position.
 				$('#menu-page').removeClass('slide-out');

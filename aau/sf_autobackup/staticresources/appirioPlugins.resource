@@ -326,7 +326,14 @@ var Utils = function() {
                     console.log(value);
                 }
             }
-        }
+        },
+
+		formatDate: function(myDate){
+			var dayList = new Array ('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday');
+			var monthList = new Array('January','February','March','April','May','June','July','August','September','October','November','December');
+
+			return dayList[myDate.getDay()]+', '+monthList[myDate.getMonth()]+' '+myDate.getDate();
+		}
     }
 };
 

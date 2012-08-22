@@ -12,7 +12,7 @@ Mauricio Created on 07/05/12
 // Object used to manage Google maps
 var MapManager = function() {
 	
-	// The info buble
+	// The info bubble
 	var infoBubble;
  	
 	// if should use geolocation to pin point user's position, if false, defaults users position to SF
@@ -60,6 +60,10 @@ var MapManager = function() {
     // Holder for current popup on screen
     var currentInfoBubble;
     
+    // Flag to keep track of running of simpleMarkerListener
+    var markerListenerIsRunning = false;
+    
+    
     
     // Function to parse vehicle name, returns a json object with name and route properties, if the vehicle
     // has no route associated with the name it route will be undefined. Route names must be in {}
@@ -90,70 +94,67 @@ var MapManager = function() {
     }
     
     // Simple popup listener that just shows content from the popupInfo of the associated object
-    function simpleMarkerListener() {
-      /*
-      if(infoWindow) {
-        infoWindow.close();
-      }
-    
-      infoWindow = new google.maps.InfoWindow({
-         content: "<div style='margin-top:10px'>" + this.popupInfo + "</div>"
-      });
-      infoWindow.open(map, this);
-      */
+    function simpleMarkerListener(marker) {
       
-      if(infoBubble && (this.stopName == currentInfoBubble)) {
+      if(infoBubble && (marker.stopName == currentInfoBubble)) {
         infoBubble.close();
-        currentInfoBubble = null;
       } else {
-        if(infoBubble) {
-          infoBubble.close();
-        }
-        currentInfoBubble = this.stopName;
-        var content = '<div class="infoBubbleContent">' + this.popupInfo;
-        if(this.stopName){
-        	content += '<span onclick="mapManager.getStopDetails(\'' + encodeURIComponent(this.stopName) + '\');" class="infoBubbleLink">&nbsp;</span></div>';
-        } else{
-          content += '</div>';
-        }
-        
-        var size = 150;
-        var s = content.split(/\<.*?\>/);
-        
-        if(s) {
-          size = 0;
-          $(s).each(function() {
-            if(size < this.length) {
-              size = this.length;
-            }
-          });
+        if(markerListenerIsRunning == false) {
+          markerListenerIsRunning = true;
+          currentInfoBubble = marker.stopName;
           
-          size = size * 11;
-        }
-        if(size < 150){
-        	size = 150;
-        }
-        
-        $("#popupMeasureDiv").html(content);
-       
-          infoBubble = new InfoBubble({
-            map: map,
-            content: content,
-            arrowStyle: 2,
-            arrowPosition: 30,
-            hideCloseButton: true,  
-            shadowStyle: 1,
-            padding: 0,
-            backgroundColor: 'rgba(0,0,0,0.55)',
-            borderRadius: 4,
-            arrowSize: 10,
-            borderWidth: 1,
-            borderColor: '#000',
-            minHeight: 45,
-            minWidth: size
-          });
+          if(infoBubble) {
+            infoBubble.close();
+          }
           
-          infoBubble.open(map, this);
+          var content = '<div class="infoBubbleContent">' + marker.popupInfo;
+          if(marker.stopName){
+          	content += '<span onclick="mapManager.getStopDetails(\'' + encodeURIComponent(marker.stopName) + '\');" class="infoBubbleLink">&nbsp;</span></div>';
+          } else{
+            content += '</div>';
+          }
+          
+          var size = 150;
+          var s = content.split(/\<.*?\>/);
+          
+          if(s) {
+            size = 0;
+            $(s).each(function() {
+              if(size < this.length) {
+                size = this.length;
+              }
+            });
+            
+            size = size * 11;
+          }
+          if(size < 150){
+          	size = 150;
+          }
+          
+          $("#popupMeasureDiv").html(content);
+         
+            infoBubble = new InfoBubble({
+              map: map,
+              content: content,
+              arrowStyle: 2,
+              arrowPosition: 30,
+              hideCloseButton: true,  
+              shadowStyle: 1,
+              padding: 0,
+              backgroundColor: 'rgba(0,0,0,0.55)',
+              borderRadius: 4,
+              arrowSize: 10,
+              borderWidth: 1,
+              borderColor: '#000',
+              minHeight: 45,
+              minWidth: size
+            });
+            
+            infoBubble.open(map, marker);
+            setTimeout(function() {
+                        markerListenerIsRunning = false;
+                        }, 2000);
+        }
       }
     } 
     
@@ -448,10 +449,12 @@ var MapManager = function() {
                       separator = ", ";
                     });
               
-                    google.maps.event.addListener(marker, 'click', simpleMarkerListener);
-					marker.setMap(map);
+                   google.maps.event.addListener(marker, 'click', function() { simpleMarkerListener(marker); });
+					         marker.setMap(map);
+					
+					busStopMarkers[this.stopName] = marker;
     	});
-    	
+    	console.log('Stop Markers ' + busStopMarkers);
       }, //addSTops
       
       // Requests schedule data from Salesforce. This is keyed by stop.

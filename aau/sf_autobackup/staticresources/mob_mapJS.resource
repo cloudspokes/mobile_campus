@@ -119,7 +119,6 @@ $(document).bind("pageshow", function(event) {
 	  mapInit();
     }
     
-  
   	var autoRefreshSetting = localStorage.getItem('autoRefreshSetting');
   	
   	if(autoRefreshSetting == 'on' || !autoRefreshSetting){
@@ -134,6 +133,8 @@ $(document).bind("pageshow", function(event) {
     
     // Update user position and center to it
     mapManager.updateUserPos(true);
+    
+    
     
   } else {
     // In this case map page is not being viewed, so if teletracManager exists, stop auto refresh 

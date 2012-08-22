@@ -53,10 +53,10 @@
     }
     
     /*Specify css for both active and inactive, so that we can set the position of a page to be displayed before displaying it.*/
-    .ui-page.slide-out > *{
+    .ui-page.standard-menu.slide-out > *{
         -webkit-transform: translate3d(180px,0,0);
     }
-    .ui-page-active.slide-out > *{
+    .ui-page-active.standard-menu.slide-out > *{
         -webkit-transform: translate3d(180px,0,0);
     }
     
@@ -131,7 +131,7 @@
     }
 
 </style>
- <div data-role="header" id="menu-header"/>
+ <div data-role="header" id="menu-header"><div class="mob-header-icon"><div class="mob-header-MenuIcon1"/></div><h1 id="menu-header-title"></h1></div>
  <ul data-role="listview"  data-theme="d" id="slide-menu" class="slide-menu">
     <li><a id="schedule-link" href="#student-home" data-transition="slide">
 		<span id="slide-menu-icon-schedule" class="slide-menu-icon">&nbsp;</span>

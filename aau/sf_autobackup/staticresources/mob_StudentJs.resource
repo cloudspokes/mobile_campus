@@ -54,8 +54,10 @@ classSchedule: {
 						(stDate.getDay()== 6 && classMeeting.isSaturday)){
 						
 						if(!hasClassMeetings){
-							var localeDate = stDate.toLocaleDateString();
-							localeDate = localeDate.substring(0,localeDate.length-6);
+							var localeDate = utils.formatDate(stDate);
+							//var localeDate = stDate.toLocaleDateString();
+							//localeDate = localeDate.substring(0,localeDate.length-6);
+
 							listItems.push({isDivider: true, MeetingDayAndDay: localeDate});
 							//var dBlock = blockDivider.tmpl({MeetingDayAndDay:localeDate});
 							//dBlock.appendTo(detailContent);
@@ -105,6 +107,10 @@ classSchedule: {
 		if(classContainer.hasClass('ui-listview')){
 			classContainer.listview('refresh');
 		}  
+		//Resize the container so the device can scroll.
+		if(aauMobile.isAndroid() && $($.mobile.activePage).attr('id') == 'student-home'){
+			$(window).trigger('orientationchange');
+		}
 		//console.timeEnd('scheduleAppend');
 		classContainer.css("margin","0px");
 		$.mobile.hidePageLoadingMsg();
@@ -155,7 +161,11 @@ classSchedule: {
 		detailBlock.appendTo(detailContent);  
 		if($('#ulDlId').hasClass('ui-listview')){
 			$("#ulDlId").listview('refresh');
-		}   
+		}
+		//Resize the container so the device can scroll.
+		if(aauMobile.isAndroid() && $($.mobile.activePage).attr('id') == 'student-detail'){
+			$(window).trigger('orientationchange');
+		}
 		$("#ulDlId").css("margin","0px");
     }
 },
@@ -207,11 +217,11 @@ campusEvents: {
 				var eventItem = item.description.split(",");
 				item.raweventdate = new Date(eventItem[0].replace("eventdate:",""));
 				//make sure its a real date entered into the field
-				if (item.raweventdate.toString() == "NaN" || item.raweventdate.toString() == "Invalid Date") {
+				if (item.raweventdate.toString() == "NaN" || item.raweventdate.toLocaleString() == "Invalid Date") {
 					console.log('Date Error in Feed: ' + item.description);
 					item.raweventdate = null;
 				} else {
-					item.eventdate = item.raweventdate.toLocaleDateString();
+					item.eventdate = item.raweventdate.toDateString();
 					item.shortdate = (item.raweventdate.getMonth()+1)+'/'+item.raweventdate.getDate()+'/'+item.raweventdate.getFullYear();
 				}
 				item.eventdescription = '';
@@ -226,7 +236,7 @@ campusEvents: {
 				 
 				
 			}
-			console.log('Campus Event Item: '+JSON.stringify(item));
+			//console.log('Campus Event Item: '+JSON.stringify(item));
             //We should also not show any records that are in the past
             if(item.raweventdate >= currentDate){ 
 			  aauMobile.campusEvents.feedData.push(item);
@@ -282,6 +292,10 @@ campusEvents: {
 		//If jQuery has initialized it, refresh.
 		if($(feedContainer).hasClass('ui-listview')){
 			$(feedContainer).listview('refresh');
+		}
+		//Resize the container so the device can scroll.
+		if(aauMobile.isAndroid() && $($.mobile.activePage).attr('id') == 'campus-event-list'){
+			$(window).trigger('orientationchange');
 		}
 		$(feedContainer).css('margin','0px');
 		//$.mobile.hidePageLoadingMsg;
@@ -369,6 +383,10 @@ campusFeed: {
 		if($(feedContainer).hasClass('ui-listview')){
 			$(feedContainer).listview('refresh');
 		}
+		//Resize the container so the device can scroll.
+		if(aauMobile.isAndroid() && $($.mobile.activePage).attr('id') == 'feed-list'){
+			$(window).trigger('orientationchange');
+		}
 	  $(feedContainer).css('margin', '0px');
 	},
 
@@ -430,6 +448,10 @@ rssEvent: {
 		if($(feedContainer).hasClass('ui-listview')){
 			$(feedContainer).listview('refresh');
 		}
+		//Resize the container so the device can scroll.
+		if(aauMobile.isAndroid() && $($.mobile.activePage).attr('id') == 'event-list'){
+			$(window).trigger('orientationchange');
+		}
 		$(feedContainer).css('margin','0px');
 	},
 
@@ -465,6 +487,10 @@ externalLinks: {
 		if($(linkContainer).hasClass('ui-listview')){
 			$(linkContainer).listview('refresh');
 		}
+		//Resize the container so the device can scroll.
+		if(aauMobile.isAndroid() && $($.mobile.activePage).attr('id') == 'student-home'){
+			$(window).trigger('orientationchange');
+		}
 		$(linkContainer).css('margin','0px');
 	},
 	initFailure: function(result) {
@@ -483,7 +509,7 @@ slideMenu: {
 		$('.mob-header').css('position','absolute');
 		aauMobile.slideMenu.lastSlide = new Date().getTime();
 		
-		$('#menu-header').html($($.mobile.activePage).find('.mob-header').html());
+		$('#menu-header-title').html($($.mobile.activePage).find('.mob-header h1').html());
 		$('#menu-header .menu-btn').removeClass('menu-btn');
 		$('#menu-page').removeClass('hidden');
 		
@@ -559,9 +585,10 @@ slideMenu: {
 			else{
 				utils.log("")
 			
-				$('#menu-header').html($(pageLink).find('.mob-header').html());
-				$('#menu-header .menu-btn').removeClass('menu-btn');
+				$('#menu-header-title').html($(pageLink).find('.mob-header h1').html());
 				$.mobile.changePage(pageLink, {changeHash: true});
+				$('#menu-page').css('height',$(window).height());
+				$('#slide-menu').css('height',$(window).height());
 				
 				//Remove the fixed so that Android 2.3 doesn't freak.
 				if(aauMobile.isAndroid()){
@@ -687,32 +714,10 @@ function studentDataInit() {
 
 function bindEvents() {
 	console.log('bindEvents method called');
+  $.mobile.pageContainer = $('#container');
   //Disable page transitions. With the way the menu works, we have to use our own.
   $.mobile.defaultPageTransition = 'none';	
-  //iOS loads before an event can be triggered. Have to check and see if we're initialized.
-  if($('#menu-page').hasClass('ui-page')){
-	console.log('iOS load slideMenu');
-  	aauMobile.slideMenu.init();
-  }else{
-	//DONT CHANGE BELOW CODE!  THIS ONLY FIRES FOR BROWSER WHEN USING 'LIVE'
-  	$('#menu-page').live('pagecreate', function(){
-		console.log('non iOS load slideMenu');
-		$.mobile.showPageLoadingMsg("b", "Loading...", false);
-		aauMobile.slideMenu.init();
-		//TransitUtil.init();
-	});
-  }
-  $('#result-list li.settings-route').live('click', function(){
-  							var checkbox = $(this).find(':checkbox'); 
-  							checkbox.prop('checked', !checkbox[0].checked).trigger('change');
-  					});
-  
-  //$(document).on('deviceready', mapInit);
-
-  //$('#transit-map').live('pagebeforeshow', TransitUtil.pageWillShow);
-  //$('#transit-map').live('pagebeforehide', TransitUtil.pageWillHide);	
   //Special changes to make the Android version function/appear correctly.
-  
   if(aauMobile.isAndroid()) {
   	//Don't display Back button on Android devices.
   	$('.mob-back-button').css('display','none');
@@ -730,7 +735,39 @@ function bindEvents() {
 			PhoneGap.exec(function (){}, function(){}, "com.appirio.mobile.closeactivity", "close", []);
 		}
   	});
+  	$('.page-container').live('pageshow', function(){
+  		if($(this).height() > $(window).height()){
+  			$('#container').css('height', ($(this).height() + 50) + "px");
+  		}else{
+  			$('#container').css('height', '100%');
+  		}
+  	});
+  	$(window).on('orientationchange', function(){
+  		var pageHeight = $($.mobile.activePage).height();
+  		if(pageHeight > $(window).height()){
+  			$('#container').css('height', (pageHeight + 50) + "px");
+  		}else{
+  			$('#container').css('height', '100%');
+  		}
+  	});
   }
+  
+  //iOS loads before an event can be triggered. Have to check and see if we're initialized.
+  if($('#menu-page').hasClass('ui-page')){
+	console.log('iOS load slideMenu');
+  	aauMobile.slideMenu.init();
+  }else{
+	//DONT CHANGE BELOW CODE!  THIS ONLY FIRES FOR BROWSER WHEN USING 'LIVE'
+  	$('#menu-page').live('pagecreate', function(){
+		console.log('non iOS load slideMenu');
+		$.mobile.showPageLoadingMsg("b", "Loading...", false);
+		aauMobile.slideMenu.init();
+	});
+  }
+  $('#result-list li.settings-route').live('click', function(){
+  							var checkbox = $(this).find(':checkbox'); 
+  							checkbox.prop('checked', !checkbox[0].checked).trigger('change');
+  					});
 }
 
 if(!navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {

@@ -16,7 +16,7 @@ var MapManager = function() {
 	var infoBubble;
  	
 	// if should use geolocation to pin point user's position, if false, defaults users position to SF
-    var useGeolocation = false;
+    var useGeolocation = true;
     
     // Stores the rendered map
     var map;
@@ -199,7 +199,7 @@ var MapManager = function() {
         });
         
         // Commented out, geo location not working in iOS
-        //myMarker.setMap(map);
+        myMarker.setMap(map);
     }
     
     // Private function to draw route on map
@@ -264,7 +264,7 @@ var MapManager = function() {
               }
         // finds location
         if(useGeolocation && navigator && navigator.geolocation) {
-            var options = { timeout: 5000, enableHighAccuracy: true };
+            var options = { timeout: 10000, enableHighAccuracy: false };
             navigator.geolocation.getCurrentPosition(function(position) {
                 currentLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                 
@@ -292,7 +292,7 @@ var MapManager = function() {
                 if(map)
                   map.panTo(currentLocation);
               }
-            }, options);
+            });
         } else {
             currentLocation = new google.maps.LatLng(37.786174, -122.400141);
             if(myMarker) {
@@ -316,13 +316,14 @@ var MapManager = function() {
       triggerResize: function() {
         if(map)
           google.maps.event.trigger(map, 'resize');
+          map.panTo(currentLocation);
       }, //triggerResize
     
       // Renders a map in a specific element on the page, centralizing the map
       // in the specified latitude and longitude
       renderMap: function(element) {
         console.log('*** element for map ' + element);
-        this.updateUserPos(false, doRenderMap, element);
+        this.updateUserPos(true, doRenderMap, element);
         
       }, //renderMap
       
@@ -422,7 +423,7 @@ var MapManager = function() {
 												    	null, 
 												    	null, 
 												    	null, 
-												    	new google.maps.Size(67 * scale, 67 * scale) 											
+												    	new google.maps.Size(38 * scale, 53 * scale) 											
 					    								);
         			
 					var marker = new google.maps.Marker({

@@ -186,9 +186,22 @@ div.ui-slider-switch.ui-slider-mini a.ui-slider-handle .ui-btn-inner {
 </style>
 
 <script type="text/javascript">
-    $("#transit-settings").live('click', function(){ 
-        $('#result-container').toggle(); 
-    }); 
+    
+    if(aauMobile && aauMobile.isAndroid()){
+	    $("#transit-settings").live('touchstart', function(){ 
+	        $('#result-container').toggle(); 
+	    }); 
+    	$('#result-list li.settings-route').live('touchstart', function(){
+    		mapManager.toggleRoute(this, $(this).attr('name'));
+    	}
+    } else{
+	    $("#transit-settings").live('click', function(){ 
+	        $('#result-container').toggle(); 
+	    }); 
+    	$('#result-list li.settings-route').live('click', function(){
+    		mapManager.toggleRoute(this, $(this).attr('name'));
+    	}
+    }
 </script>
 <div id="search-header-content">
     <div id="result-container" class="result-container">
@@ -205,7 +218,7 @@ div.ui-slider-switch.ui-slider-mini a.ui-slider-handle .ui-btn-inner {
     </div>
 </div>
 <script id="settings-route-checkbox" type="text/x-jquery-tmpl">
-			<li class='settings-route' onclick="mapManager.toggleRoute(this, '${routeName}');" >
+			<li class='settings-route' name="{$routeName}">
 				<span class='settings-checkbox'>&nbsp;</span><span class='settings-label'>Route&nbsp;${routeName}</span>
 			</li>
 </script> 

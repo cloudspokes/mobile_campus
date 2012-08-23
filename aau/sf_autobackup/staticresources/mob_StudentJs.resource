@@ -615,28 +615,37 @@ slideMenu: {
 		$.mobile.changePage('#student-home', {changeHash: true});
 		utils.log('aauMobile.slideMenu.init called');
 		console.log('aauMobile.slideMenu.init called');
-		$('#menu-page').on('click', aauMobile.slideMenu.hide);
-		
-		//The UL needs to stretch the entire length of the page, and not allow the 
-		//underlying part of the page to fire the close event.
-		$('#slide-menu').on('click', function(event){
-			event.stopPropagation();
-			console.log('Tapped on the menu.');
-		});
-		
-		$('#slide-menu li a').on('click', aauMobile.slideMenu.linkClicked);
-		
 	
 		//Android pre-3.0 devices aren't fully responsive to click.
 		if(aauMobile.isAndroid()) {
-			$('.menu-btn').on('vclick', aauMobile.slideMenu.show);
+			$('#menu-page').on('touchstart', aauMobile.slideMenu.hide);
+		
+			//The UL needs to stretch the entire length of the page, and not allow the 
+			//underlying part of the page to fire the close event.
+			$('#slide-menu').on('touchstart', function(event){
+				event.stopPropagation();
+				console.log('Tapped on the menu.');
+			});
+		
+			$('#slide-menu li a').on('touchstart', aauMobile.slideMenu.linkClicked);
+			$('.menu-btn').on('touchstart', aauMobile.slideMenu.show);
 			$('#menu-page').addClass('android-menu');
 			$('.page-container').addClass('android-menu');
 		}else{
+			$('#menu-page').on('click', aauMobile.slideMenu.hide);
+		
+			//The UL needs to stretch the entire length of the page, and not allow the 
+			//underlying part of the page to fire the close event.
+			$('#slide-menu').on('click', function(event){
+				event.stopPropagation();
+				console.log('Tapped on the menu.');
+			});
+		
+			$('#slide-menu li a').on('click', aauMobile.slideMenu.linkClicked);
 			$('.menu-btn').on('click', aauMobile.slideMenu.show);
 			$('#menu-page').addClass('standard-menu');
 			$('.page-container').addClass('standard-menu');
-		}
+			}
 	   	
 	   	//Occurs when the menu finishes sliding.
 	    $('#menu-page').on('webkitTransitionEnd', function(){

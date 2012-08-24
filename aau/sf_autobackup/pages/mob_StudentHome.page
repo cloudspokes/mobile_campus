@@ -53,7 +53,7 @@
 
     <script type="text/javascript" src="{!$Resource.mob_StudentJs_min}"></script>
     <script type="text/javascript" src="{!$Resource.mob_transitManager_min}"></script>
-    <script type="text/javascript" src="{!$Resource.mob_mapManager}"></script>
+    <script type="text/javascript" src="{!$Resource.mob_mapManager_min}"></script>
     <script type="text/javascript" src="{!$Resource.mob_mapJS_min}"></script>
 
 

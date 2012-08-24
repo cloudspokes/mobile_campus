@@ -66,6 +66,9 @@ var MapManager = function() {
     // Counter for info bubbles
     var infoBubbleCount = 0;
     
+    // Flag for first resize
+    var firstMapResize = false;
+    
     
     
     // Function to parse vehicle name, returns a json object with name and route properties, if the vehicle
@@ -326,6 +329,11 @@ var MapManager = function() {
             }
         }
         
+        if(pan) {
+          if(map)
+            map.panTo(currentLocation);
+        }
+        
       }, //updateUserPos
     
       // Centers the map on the student
@@ -335,8 +343,13 @@ var MapManager = function() {
       
       // Trigger a resize event on the map so it redraws on the full canvas
       triggerResize: function() {
-        if(map)
+        if(map) {
           google.maps.event.trigger(map, 'resize');
+          if(!firstMapResize) {
+            map.panTo(currentLocation);
+            firstMapResize = true;
+          }
+        }
       }, //triggerResize
     
       // Renders a map in a specific element on the page, centralizing the map

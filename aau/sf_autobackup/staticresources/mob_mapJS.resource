@@ -66,7 +66,7 @@ $(document).bind("pageshow", function(event) {
     //mapManager.updateUserPos(true);
     
     
-    setTimeout(mapManager.centerOnStudent(), 1000);
+    setTimeout(mapManager.centerOnStudent(), 2000);
     
   } else {
     // In this case map page is not being viewed, so if teletracManager exists, stop auto refresh 

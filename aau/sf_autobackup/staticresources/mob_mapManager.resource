@@ -16,7 +16,7 @@ var MapManager = function() {
 	var infoBubble;
  	
 	// if should use geolocation to pin point user's position, if false, defaults users position to SF
-    var useGeolocation = false;
+    var useGeolocation = true;
     
     // Stores the rendered map
     var map;
@@ -34,7 +34,7 @@ var MapManager = function() {
     var myMarker;
     
     // Current location of the user, defaults to the initial location if location tracking is not enabled in the browser
-    var currentLocation = new google.maps.LatLng(37.788008, -122.400682);
+    var currentLocation = new google.maps.LatLng(37.786174, -122.400141);
     
     // The info window
     var infoWindow;
@@ -157,22 +157,7 @@ var MapManager = function() {
               minHeight: 45,
               minWidth: size
             });
-
-           /*google.maps.event.addListenerOnce(infoBubble, 'domReady', function() {
-                        markerListenerIsRunning = false;
-                        if(aauMobile && aauMobile.isIOS()){
-				           $('span.infoBubbleLink').on('touchstart', function(e){
-				            	e.preventDefault();
-				            	e.stopPropagation();
-				            	mapManager.getStopDetails($(this).attr('name'));
-				            });
-			            } else{
-			            	google.maps.event.addDomListener(infoBubble.getContent(), 'click', function(){
-				            	console.log('BEANS');
-				            	mapManager.getStopDetails($(this).attr('name'));
-				            });
-			            }
-                     });*/
+            
             infoBubble.open(map, marker);
          	setTimeout(function() {
                         markerListenerIsRunning = false;
@@ -215,21 +200,20 @@ var MapManager = function() {
         
         var el = element[0] ? element[0] : element;
         map = new google.maps.Map(el, myOptions);        
-		
-        myMarker = new google.maps.Marker({
-                     position: currentLocation,
-                     title: "Student Marker",
-                     animation: google.maps.Animation.DROP,
-                     icon: studentMarkerImage,
-                     zindex: 1,
-                     clickable: false
-                  });
+		    if(useGeolocation) {
+          myMarker = new google.maps.Marker({
+                       position: currentLocation,
+                       title: "Student Marker",
+                       animation: google.maps.Animation.DROP,
+                       icon: studentMarkerImage,
+                       zindex: 1,
+                       clickable: false
+                    });
+          
+          // Commented out, geo location not working in iOS
+          myMarker.setMap(map);
+        }
         
-        //myMarker.popupInfo = "This is where you are!";
-                  
-        //google.maps.event.addListener(myMarker, 'click', simpleMarkerListener);
-        
-        /*******************************/
         google.maps.event.addListener(map, 'click', function(event) {
         
           if(infoBubble) {
@@ -238,8 +222,7 @@ var MapManager = function() {
           }
         });
         
-        // Commented out, geo location not working in iOS
-        myMarker.setMap(map);
+        
     }
     
     // Private function to draw route on map
@@ -265,9 +248,7 @@ var MapManager = function() {
       	var routeWayPoints = [];
       	for(var i = 1; i < route.stops.length; i++){
       		routeWayPoints.push({location: new google.maps.LatLng(route.stops[i].latitude, route.stops[i].longitude), stopover: true});
-      		console.log(route.stops[i].stopName);
       	}
-      	console.log(routeWayPoints);
       	
       	var directionRequest = {
       		origin: new google.maps.LatLng(route.stops[0].latitude, route.stops[0].longitude),
@@ -361,7 +342,6 @@ var MapManager = function() {
       // Renders a map in a specific element on the page, centralizing the map
       // in the specified latitude and longitude
       renderMap: function(element) {
-        console.log('*** element for map ' + element);
         this.updateUserPos(true, doRenderMap, element);
         
       }, //renderMap
@@ -494,7 +474,6 @@ var MapManager = function() {
 					
 					busStopMarkers[this.stopName] = marker;
     	});
-    	console.log('Stop Markers ' + busStopMarkers);
       }, //addSTops
       
       // Requests schedule data from Salesforce. This is keyed by stop.

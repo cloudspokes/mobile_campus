@@ -337,14 +337,13 @@ campusEvents: {
 
 //this is the real RSS Feed! TODO: change the names, so this loads under 'Campus News'
 campusFeed: {
-	feedData: [],
-	
+	feedData: 0,
+
 	init: function() {
 		aauMobile.campusFeed.feedData = [];
 
 		var rssUrl = 'https://www.academyart.edu/news.rss';
 		RestDataPlugin.getData(aauMobile.campusFeed.buildFeed, aauMobile.campusFeed.initFailure, rssUrl, false, "GET", "xml");
-
 	},
 	
 	buildFeed: function(result) {
@@ -439,7 +438,7 @@ rssEvent: {
 			if(index < 20){
 				feedTemplate.tmpl({eventTitle: item.title, eventOrigin: result.channel.title}).appendTo(feedContainer);			
 			}else{
-				return;
+				return false;
 			}
 
 		});
@@ -615,24 +614,30 @@ slideMenu: {
 		$.mobile.changePage('#student-home', {changeHash: true});
 		utils.log('aauMobile.slideMenu.init called');
 		console.log('aauMobile.slideMenu.init called');
+		
+		$('#menu-page').on('touchstart', aauMobile.slideMenu.hide);
+		
+		//The UL needs to stretch the entire length of the page, and not allow the 
+		//underlying part of the page to fire the close event.
+		$('#slide-menu').on('touchstart', function(event){
+			event.stopPropagation();
+			console.log('Tapped on the menu.');
+		});
+	
+		$('#slide-menu li a').on('touchstart', aauMobile.slideMenu.linkClicked);
+		$('.menu-btn').on('touchstart', aauMobile.slideMenu.show);
 	
 		//Android pre-3.0 devices aren't fully responsive to click.
 		if(aauMobile.isAndroid()) {
-			$('#menu-page').on('touchstart', aauMobile.slideMenu.hide);
-		
-			//The UL needs to stretch the entire length of the page, and not allow the 
-			//underlying part of the page to fire the close event.
-			$('#slide-menu').on('touchstart', function(event){
-				event.stopPropagation();
-				console.log('Tapped on the menu.');
-			});
-		
-			$('#slide-menu li a').on('touchstart', aauMobile.slideMenu.linkClicked);
-			$('.menu-btn').on('touchstart', aauMobile.slideMenu.show);
 			$('#menu-page').addClass('android-menu');
 			$('.page-container').addClass('android-menu');
 		}else{
-			$('#menu-page').on('click', aauMobile.slideMenu.hide);
+			$('#menu-page').addClass('standard-menu');
+			$('.page-container').addClass('standard-menu');
+			}
+	   	
+	   	if(!aauMobile.isAndroid() && !aauMobile.isIOS()){
+	   		$('#menu-page').on('click', aauMobile.slideMenu.hide);
 		
 			//The UL needs to stretch the entire length of the page, and not allow the 
 			//underlying part of the page to fire the close event.
@@ -643,9 +648,8 @@ slideMenu: {
 		
 			$('#slide-menu li a').on('click', aauMobile.slideMenu.linkClicked);
 			$('.menu-btn').on('click', aauMobile.slideMenu.show);
-			$('#menu-page').addClass('standard-menu');
-			$('.page-container').addClass('standard-menu');
-			}
+		}
+	   	
 	   	
 	   	//Occurs when the menu finishes sliding.
 	    $('#menu-page').on('webkitTransitionEnd', function(){
@@ -673,23 +677,27 @@ slideMenu: {
 	}
 },
 
+getAndroidVersion: function(){
+var ua = navigator.userAgent.toLowerCase();
+	if(ua && ua.indexOf("android") >-1){
+		var androidversion = ua.slice(ua.indexOf("android")+15);
+		 androidversion = androidversion.substr(0, androidversion.indexOf(" "));
+		 androidversion = parseFloat(androidversion);
+		 return androidversion;
+	}else{
+		return -1;
+	}
+},
+
 isAndroid: function(){
 	var ua = navigator.userAgent.toLowerCase();
 	if(ua && ua.indexOf("android") >-1){
-		/*var androidversion = ua.slice(ua.indexOf("android")+15);
-		 androidversion = androidversion.substr(0, androidversion.indexOf(" "));
-		 androidversion = parseFloat(androidversion);
-		if(androidversion < 3.0){
-			//This is a version of Android that we need to build around.*/
 			return true;
-		/*}
-		else{
-			return false;
-		}*/
 	}else{
 		return false;
 	}
 },
+
 
 isIOS: function(){
 	var ua = navigator.userAgent.toLowerCase();
@@ -712,8 +720,10 @@ init: {
 
 //Initializes Class Schedule and RSS Data
 function studentDataInit() {
-	$.mobile.showPageLoadingMsg("b", "Loading...", false);
-  	$('.ui-loader').css('display', 'block');
+	if(!$($.mobile.activePage).attr('id') == 'transit-map'){
+		$.mobile.showPageLoadingMsg("b", "Loading...", false);
+  		$('.ui-loader').css('display', 'block');
+  	}
 	aauMobile.classSchedule.init();
 	aauMobile.campusFeed.init();
 	aauMobile.campusEvents.init();
@@ -726,8 +736,17 @@ function bindEvents() {
   $.mobile.pageContainer = $('#container');
   //Disable page transitions. With the way the menu works, we have to use our own.
   $.mobile.defaultPageTransition = 'none';	
+  
+    $("#transit-settings").live('touchstart', function(){ 
+	        $('#result-container').toggle(); 
+	}); 
+	$('#result-list li.settings-route').live('touchstart', function(){
+		mapManager.toggleRoute(this, $(this).attr('name'));
+	});
+  
   //Special changes to make the Android version function/appear correctly.
   if(aauMobile.isAndroid()) {
+  	$("#container").css("position", "relative");
   	//Don't display Back button on Android devices.
   	$('.mob-back-button').css('display','none');
   	//Replace CSS for fixed and transformed items.
@@ -759,6 +778,16 @@ function bindEvents() {
   			$('#container').css('height', '100%');
   		}
   	});
+  
+  }
+  
+  if(!aauMobile.isAndroid() && !aauMobile.isIOS()){
+    $("#transit-settings").live('click', function(){ 
+        $('#result-container').toggle(); 
+    }); 
+	$('#result-list li.settings-route').live('click', function(){
+		mapManager.toggleRoute(this, $(this).attr('name'));
+	});
   }
   
   //iOS loads before an event can be triggered. Have to check and see if we're initialized.

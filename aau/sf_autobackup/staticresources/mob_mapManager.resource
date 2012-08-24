@@ -16,7 +16,7 @@ var MapManager = function() {
 	var infoBubble;
  	
 	// if should use geolocation to pin point user's position, if false, defaults users position to SF
-    var useGeolocation = true;
+    var useGeolocation = false;
     
     // Stores the rendered map
     var map;
@@ -63,6 +63,9 @@ var MapManager = function() {
     // Flag to keep track of running of simpleMarkerListener
     var markerListenerIsRunning = false;
     
+    // Counter for info bubbles
+    var infoBubbleCount = 0;
+    
     
     
     // Function to parse vehicle name, returns a json object with name and route properties, if the vehicle
@@ -95,21 +98,26 @@ var MapManager = function() {
     
     // Simple popup listener that just shows content from the popupInfo of the associated object
     function simpleMarkerListener(marker) {
-      
+      if(aauMobile.getAndroidVersion() < 3.0 && aauMobile.getAndroidVersion() > 0 && marker.stopName){
+      	mapManager.getStopDetails(encodeURIComponent(marker.stopName));
+      	return;
+      } 
       if(infoBubble && (marker.stopName == currentInfoBubble)) {
         infoBubble.close();
+        currentInfoBubble = null;
       } else {
         if(markerListenerIsRunning == false) {
           markerListenerIsRunning = true;
           currentInfoBubble = marker.stopName;
+          infoBubbleCount++;
           
           if(infoBubble) {
             infoBubble.close();
           }
           
-          var content = '<div class="infoBubbleContent">' + marker.popupInfo;
+          var content = '<div class="infoBubbleContent">';
           if(marker.stopName){
-          	content += '<span onclick="mapManager.getStopDetails(\'' + encodeURIComponent(marker.stopName) + '\');" class="infoBubbleLink">&nbsp;</span></div>';
+          		content += marker.popupInfo + '<span name="' + encodeURIComponent(marker.stopName) + '" class="infoBubbleLink" id="infoBubble' + infoBubbleCount + '">&nbsp;</span></div>';
           } else{
             content += '</div>';
           }
@@ -149,11 +157,40 @@ var MapManager = function() {
               minHeight: 45,
               minWidth: size
             });
-            
-            infoBubble.open(map, marker);
-            setTimeout(function() {
+
+           /*google.maps.event.addListenerOnce(infoBubble, 'domReady', function() {
                         markerListenerIsRunning = false;
-                        }, 2000);
+                        if(aauMobile && aauMobile.isIOS()){
+				           $('span.infoBubbleLink').on('touchstart', function(e){
+				            	e.preventDefault();
+				            	e.stopPropagation();
+				            	mapManager.getStopDetails($(this).attr('name'));
+				            });
+			            } else{
+			            	google.maps.event.addDomListener(infoBubble.getContent(), 'click', function(){
+				            	console.log('BEANS');
+				            	mapManager.getStopDetails($(this).attr('name'));
+				            });
+			            }
+                     });*/
+            infoBubble.open(map, marker);
+         	setTimeout(function() {
+                        markerListenerIsRunning = false;
+                        if(aauMobile && aauMobile.isIOS()){
+				           $('span.infoBubbleLink').on('touchstart', function(e){
+				            	e.preventDefault();
+				            	e.stopPropagation();
+				            	mapManager.getStopDetails($(this).attr('name'));
+				            });
+			            } else{
+				            document.getElementById('infoBubble' + infoBubbleCount).addEventListener('click', function() {
+																									alert('IM WORKING');
+																									mapManager.getStopDetails($(this).attr('name'));
+																									return false;
+																								 },false);
+											            																									 
+			            }
+                     }, 1300);
         }
       }
     } 
@@ -184,17 +221,20 @@ var MapManager = function() {
                      title: "Student Marker",
                      animation: google.maps.Animation.DROP,
                      icon: studentMarkerImage,
-                     zindex: 1
+                     zindex: 1,
+                     clickable: false
                   });
         
-        myMarker.popupInfo = "This is where you are!";
+        //myMarker.popupInfo = "This is where you are!";
                   
-        google.maps.event.addListener(myMarker, 'click', simpleMarkerListener);
+        //google.maps.event.addListener(myMarker, 'click', simpleMarkerListener);
         
+        /*******************************/
         google.maps.event.addListener(map, 'click', function(event) {
         
           if(infoBubble) {
             infoBubble.close();
+            currentInfoBubble = null;
           }
         });
         
@@ -316,7 +356,6 @@ var MapManager = function() {
       triggerResize: function() {
         if(map)
           google.maps.event.trigger(map, 'resize');
-          map.panTo(currentLocation);
       }, //triggerResize
     
       // Renders a map in a specific element on the page, centralizing the map
@@ -431,7 +470,7 @@ var MapManager = function() {
 						title: this.stopName,
 						animation: google.maps.Animation.DROP,
 						icon: stopMarker,
-						zindex: 5
+						zindex: 300
 					});
  					marker.stopName = this.stopName;
  					
@@ -461,7 +500,8 @@ var MapManager = function() {
       // Requests schedule data from Salesforce. This is keyed by stop.
       getStopDetails: function(busStopName){
       	var restPath = "/BusStopSchedule?busStopName=" + busStopName;
-		$.mobile.showPageLoadingMsg();
+		$.mobile.showPageLoadingMsg("b", "Loading...", false);
+  		$('.ui-loader').css('display', 'block');
 		RestDataPlugin.getData(mapManager.showStopDetails, mapManager.showStopError, restPath, true, "GET", "json");
       },
       
@@ -552,6 +592,7 @@ var MapManager = function() {
       	}
       	$.mobile.changePage("#bus-detail", {transition: 'slide', changeHash: true});
       	$.mobile.hidePageLoadingMsg();
+  		$('.ui-loader').css('display', 'none');
       },
       
       // Renders a data return failure.

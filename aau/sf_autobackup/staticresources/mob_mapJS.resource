@@ -15,28 +15,21 @@ function mapInit() {
       teletracManager = new TeletracManager();
 	  console.log('mapManager and teletracManager');
 	  
-	  setTimeout(function() {
-	     // render map
+	  // render map
       // send addStops function and param to render map, to be passed to updateUserPos
       // and then to doRenderMap to ensure that the stop are always added after the map is rendered
       mapManager.renderMap(document.getElementById('map_div'));
       console.log('rendering the map');
-    
-      //variable to add stops function
-      var addStopFunction = mapManager.addStops;
-      console.log('mapManager stops added');
-      
-      // Pass mapManager add stop function as callback to getRoutes,
-      // to then be passed to parseStops in teletracManager so stops get plotted
-      teletracManager.getRoutesFromSFDC(addStopFunction);
-      console.log('teletracManager getting routes from SFDC');
-    
-  	  // Set up user position tracking
-      mapManager.setTrackUserPos(true);
-      
-      // Update user position and center to it
-      mapManager.updateUserPos(true);
-      }, 10000); 
+	  
+	  //variable to add stops function
+	  var addStopFunction = mapManager.addStops;
+	  console.log('mapManager stops added');
+	  
+	  // Pass mapManager add stop function as callback to getRoutes,
+	  // to then be passed to parseStops in teletracManager so stops get plotted
+	  teletracManager.getRoutesFromSFDC(addStopFunction);
+	  console.log('teletracManager getting routes from SFDC');
+   
 }
 
 $(document).bind("pageshow", function(event) {
@@ -50,6 +43,12 @@ $(document).bind("pageshow", function(event) {
       console.log('mapManager does not exist!');
 	  mapInit();
     }
+    
+      // Set up user position tracking
+      mapManager.setTrackUserPos(true);
+      
+      // Update user position and center to it
+      mapManager.updateUserPos(true);
     
   	var autoRefreshSetting = localStorage.getItem('autoRefreshSetting');
   	
@@ -67,6 +66,7 @@ $(document).bind("pageshow", function(event) {
     //mapManager.updateUserPos(true);
     
     
+    setTimeout(mapManager.centerOnStudent(), 1000);
     
   } else {
     // In this case map page is not being viewed, so if teletracManager exists, stop auto refresh 

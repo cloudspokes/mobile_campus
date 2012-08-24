@@ -14,38 +14,49 @@
       // also there shouldn't be two scripts to begin with -- so much for cross-platform.
       var userAgent = navigator.userAgent.toLowerCase();
       if (userAgent.match(/android/)) {
-        document.write("<script type='text/javascript' src='{!$Resource.phonegap_android}'><\/script>");
+        document.write("<script type='text/javascript' src='{!$Resource.phonegap_android_min}'><\/script>");
       } else {
-        document.write("<script type='text/javascript' src='{!$Resource.phonegap}'><\/script>");
+        document.write("<script type='text/javascript' src='{!$Resource.phonegap_min}'><\/script>");
       }
     </script>    
     <script type="text/javascript" src="{!$Resource.jquery1dot7}"></script>
     <script type="text/javascript" src="{!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.min.js"></script>
-    <script type="text/javascript" src="{!$Resource.jquerytmpl}"></script>  
+    <script type="text/javascript" src="{!$Resource.jquerytmpl_min}"></script>  
+    <script type="text/javascript" src="{!$Resource.mob_forceJsToolkit_min}"></script>
+    <script type="text/javascript" src="{!$Resource.mob_XML2JSON_min}"></script>
+    <script type="text/javascript" src="{!$Resource.mob_infoBuble}"></script>
+	<!--
     <script type="text/javascript" src="{!$Resource.appirioPlugins}"></script>
-    <script type="text/javascript" src="{!$Resource.mob_forceJsToolkit}"></script>
-     <script>
-        /********* Initialize Variables from Salesforce Data ********************/
-            RestDataPlugin.accessToken = '{!$Api.Session_ID}';
-            RestDataPlugin.baseUrl = '{!$Setup.mob_Student__c.Base_Url__c}';
-            RestDataPlugin.restUrl = '{!$Setup.mob_Student__c.Rest_Url__c}';
-            RestDataPlugin.clientKey = '{!$Setup.mob_Student__c.Client_Key__c}';
-            var currentUserId = '{!$CurrentPage.parameters.Id}';
-            if(currentUserId == '' || currentUserId == null){
-                currentUserId = '{!$User.Id}';
-            }
-            
-     </script>
+	-->
+    <script type="text/javascript" src="{!$Resource.appirioPlugins_min}"></script>
+
+    <script>
+      /********* Initialize Variables from Salesforce Data ********************/
+        RestDataPlugin.accessToken = '{!$Api.Session_ID}';
+        RestDataPlugin.baseUrl = '{!$Setup.mob_Student__c.Base_Url__c}';
+        RestDataPlugin.restUrl = '{!$Setup.mob_Student__c.Rest_Url__c}';
+        RestDataPlugin.clientKey = '{!$Setup.mob_Student__c.Client_Key__c}';
+        var currentUserId = '{!$CurrentPage.parameters.Id}';
+        if(currentUserId == '' || currentUserId == null){
+            currentUserId = '{!$User.Id}';
+        }
+    </script>
 
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeo7wiR8G2REfIzQbeTLrVFuluE2jA9ao&sensor=true"></script>
+	<!-- 
+    <script type="text/javascript" src="{!$Resource.appirioPlugins}"></script>
+    <script type="text/javascript" src="{!$Resource.mob_StudentJs}"></script>
     <script type="text/javascript" src="{!$Resource.mob_transitManager}"></script>
     <script type="text/javascript" src="{!$Resource.mob_mapManager}"></script>
     <script type="text/javascript" src="{!$Resource.mob_mapJS}"></script>
+	-->
 
-    <script type="text/javascript" src="{!$Resource.mob_XML2JSON}"></script>
-    <script type="text/javascript" src="{!$Resource.mob_infoBuble}"></script>
+    <script type="text/javascript" src="{!$Resource.mob_StudentJs_min}"></script>
+    <script type="text/javascript" src="{!$Resource.mob_transitManager_min}"></script>
+    <script type="text/javascript" src="{!$Resource.mob_mapManager}"></script>
+    <script type="text/javascript" src="{!$Resource.mob_mapJS_min}"></script>
 
-    <script type="text/javascript" src="{!$Resource.mob_StudentJs}"></script>
+
 
     <c:mob_BackButton /> 
     <c:mob_ListArrow />

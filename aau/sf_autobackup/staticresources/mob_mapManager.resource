@@ -171,12 +171,11 @@ var MapManager = function() {
 				            	mapManager.getStopDetails($(this).attr('name'));
 				            });
 			            } else{
-				            document.getElementById('infoBubble' + infoBubbleCount).addEventListener('click', function() {
-																									alert('IM WORKING');
-																									mapManager.getStopDetails($(this).attr('name'));
-																									return false;
-																								 },false);
-											            																									 
+				           $('span.infoBubbleLink').on('click', function(e){
+				            	e.preventDefault();
+				            	e.stopPropagation();
+				            	mapManager.getStopDetails($(this).attr('name'));
+				            });				            																									 
 			            }
                      }, 1300);
         }

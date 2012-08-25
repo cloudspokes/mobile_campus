@@ -341,11 +341,12 @@ campusFeed: {
 
 	init: function() {
 		aauMobile.campusFeed.feedData = [];
-
 		var rssUrl = 'https://www.academyart.edu/news.rss';
 		RestDataPlugin.getData(aauMobile.campusFeed.buildFeed, aauMobile.campusFeed.initFailure, rssUrl, false, "GET", "xml");
 	},
-	
+	initFailure: function(result){
+		console.log('RSS Feed Failure. ' + result);
+	},
 	buildFeed: function(result) {
 		result = $.xml2json(result);
 		//aauMobile.campusFeed.feedData = result;
@@ -669,6 +670,7 @@ slideMenu: {
 			if($(this).attr('id') == "transit-map"){
 				mapManager.triggerResize();
 			}
+
 			if(!$(this).hasClass('slide-out')){
 				$('.mob-header').css('position','fixed');
 				$('#result-container').css('position','fixed');

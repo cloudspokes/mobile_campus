@@ -35,6 +35,7 @@ CACHE:
 {!$Resource.mob_Design}/mob_Design/images/Transit/marker_busstop.png
 {!$Resource.mob_Design}/mob_Design/images/settings-arrow-hack.png
 {!$Resource.mob_Design}/mob_Design/images/settings-list-hack.png
+{!$Resource.mob_Design}/mob_Design/images/ajax-loader.gif
 
 NETWORK:
 *

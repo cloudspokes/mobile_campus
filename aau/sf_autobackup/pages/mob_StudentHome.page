@@ -1,4 +1,4 @@
-<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false">
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="mob_DeviceDetection">
   <!-- controller="ContentController"> -->
   <!--   <apex:outputText escape="false" value="{!"<!DOCTYPE html>"}"/>-->
 <html manifest="{!IF($Setup.mob_Student__c.Cache_Pages__c,'/apex/mob_Manifest','')}">
@@ -9,7 +9,7 @@
     <link rel="Stylesheet" type="text/css" href="{!$Resource.mob_Design}/mob_Design/AAUjQueryTheme.min.css"></link>
 
 
-    <script type="text/javascript">
+    <!--  <script type="text/javascript">
       // Atrocious way of loading two diffent phonegap scripts, but other loading methods won't work.
       // also there shouldn't be two scripts to begin with -- so much for cross-platform.
       var userAgent = navigator.userAgent.toLowerCase();
@@ -18,7 +18,9 @@
       } else {
         document.write("<script type='text/javascript' src='{!$Resource.phonegap_min}'><\/script>");
       }
-    </script>    
+    </script>-->    
+    <apex:variable var="phonegapJS" value="{!phonegapJS}"/> 
+    <apex:includeScript value="{!URLFOR($Resource.phonegapJS, phonegapJS)}"/>
     <script type="text/javascript" src="{!$Resource.jquery1dot7}"></script>
     <script type="text/javascript" src="{!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.min.js"></script>
     <script type="text/javascript" src="{!$Resource.jquerytmpl_min}"></script>  
@@ -233,7 +235,7 @@
 </div>
 <div data-role="page" id="student-detail" class="page-container">
     <div data-role="header" data-position="fixed"  class="mob-header">
-        <a href="#student-home" data-role="button" data-inline="true" data-transition="slide" data-direction="reverse" class="back-root mob-back-button">Back</a>
+         <a data-rel="back" class="mob-back-button">Back</a>
         <h1>Class Info</h1>
     </div>
     <div data-role="content" id="dtlId" class="mob-content">
@@ -257,7 +259,7 @@
 
 <div data-role="page" id="feed-detail" class="page-container">
     <div data-role="header" data-position="fixed"  class="mob-header">
-        <a href="#feed-list" data-role="button" data-inline="true" data-transition="slide" data-direction="reverse" class="back-root mob-back-button">Back</a>
+         <a data-rel="back" class="mob-back-button">Back</a>
         <h1>Campus News</h1>
     </div>
     <div data-role="content" class="mob-content">
@@ -283,7 +285,7 @@
 <!-- Page for detail screen of Campus Event -->
 <div data-role="page" id="campus-event-detail" class="page-container">
     <div data-role="header" data-position="fixed"  class="mob-header">
-        <a href="#campus-event-list" data-role="button" data-inline="true" data-transition="slide" data-direction="reverse" class="back-root mob-back-button">Back</a>
+        <a data-rel="back" class="mob-back-button">Back</a>
         <h1>Campus Event</h1>
     </div>
     <div data-role="content" class="mob-content">
@@ -325,7 +327,7 @@
 
 <div data-role="page" id="bus-detail" class="page-container">
     <div data-role="header" data-position="fixed"  class="mob-header">
-         <a id="bus-detail-back" href="#transit-map" data-role="button" data-inline="true" data-transition="slide" data-direction="reverse" class="back-root mob-back-button">Back</a>
+         <a data-rel="back" class="mob-back-button">Back</a>
         <h1 id="bus-stop-name">Stop Schedule</h1>
     </div>
     <div data-role="content" class="mob-content">

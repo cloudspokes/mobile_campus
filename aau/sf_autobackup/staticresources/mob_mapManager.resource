@@ -304,7 +304,6 @@ var MapManager = function() {
             },
             function(error) {
               console.log('Navigator geolocation Error ' + error.message);
-              alert(error.message);
               
               currentLocation = new google.maps.LatLng(37.786174, -122.400141);
               if(myMarker) {
@@ -328,10 +327,10 @@ var MapManager = function() {
             }
         }
         
-        if(pan) {
+        /*if(pan) {
           if(map)
             map.panTo(currentLocation);
-        }
+        }*/
         
       }, //updateUserPos
     

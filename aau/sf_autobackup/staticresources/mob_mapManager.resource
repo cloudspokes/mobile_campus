@@ -101,26 +101,27 @@ var MapManager = function() {
     
     // Simple popup listener that just shows content from the popupInfo of the associated object
     function simpleMarkerListener(marker) {
-      if(aauMobile.getAndroidVersion() < 3.0 && aauMobile.getAndroidVersion() > 0 && marker.stopName){
-      	mapManager.getStopDetails(encodeURIComponent(marker.stopName));
+    	console.log(marker);
+      if(aauMobile.getAndroidVersion() < 3.0 && aauMobile.getAndroidVersion() > 0 && marker.name){
+      	mapManager.getStopDetails(encodeURIComponent(marker.name));
       	return;
       } 
-      if(infoBubble && (marker.stopName == currentInfoBubble)) {
+      if(infoBubble && (marker.name == currentInfoBubble)) {
         infoBubble.close();
         currentInfoBubble = null;
       } else {
         if(markerListenerIsRunning == false) {
           markerListenerIsRunning = true;
-          currentInfoBubble = marker.stopName;
+          currentInfoBubble = marker.name;
           infoBubbleCount++;
           
           if(infoBubble) {
             infoBubble.close();
           }
           
-          var content = '<div class="infoBubbleContent">';
-          if(marker.stopName){
-          		content += marker.popupInfo + '<span name="' + encodeURIComponent(marker.stopName) + '" class="infoBubbleLink" id="infoBubble' + infoBubbleCount + '">&nbsp;</span></div>';
+          var content = '<div class="infoBubbleContent">' + marker.popupInfo;
+          if(!marker.isBus){
+          		content += '<span name="' + encodeURIComponent(marker.name) + '" class="infoBubbleLink" id="infoBubble' + infoBubbleCount + '">&nbsp;</span></div>';
           } else{
             content += '</div>';
           }
@@ -385,9 +386,11 @@ var MapManager = function() {
 	                     		zindex: 2
 	                          });
 	              
+	              marker.name = nameResult.name;
+	              marker.isBus = true;
 	              marker.popupInfo = "Vehicle: " + nameResult.name + "<br />Route: " + nameResult.route;
 	              
-	              google.maps.event.addListener(marker, 'click', simpleMarkerListener);
+	              google.maps.event.addListener(marker, 'click', function(){simpleMarkerListener(marker)});
 	
 	              marker.setMap(map);
 	              vehicleMarkers[nameResult.name] = marker;
@@ -406,43 +409,6 @@ var MapManager = function() {
             }
        });
       }, //addVehicles
-      
-      //Sorts times so that latenight times are always at the end of the array.
-      scheduleSort: function(a,b){
-			//Turn the string into an array. t[0] hour, t[1] minutes, t[2] AM/PM
-			var temp = a.split(':');
-			var ta = temp[1].split(" ");
-			ta.unshift(temp[0]);
-			
-			temp = b.split(':');
-			var tb = temp[1].split(" ");
-			tb.unshift(temp[0]);
-			
-			//Convert to integers.
-			ta[0] = parseInt(ta[0]);
-			tb[0] = parseInt(tb[0]);
-			ta[1] = parseInt(ta[1]);
-			tb[1] = parseInt(tb[1]);
-			
-			//Add additional hours if PM.
-			ta[0] = (ta[2] == "PM" && ta[0] != 12)? ta[0] + 12 : ta[0];
-			tb[0] = (tb[2] == "PM" && tb[0] != 12)? tb[0] + 12 : tb[0];	
-			
-			//Midnight is the 0 hour.
-			if(ta[2] == "AM" && ta[0] == 12){
-				ta[0] = 24;
-			}
-			if(tb[2] == "AM" && tb[0] == 12){
-				tb[0] = 24;
-			}
-			
-			//Return sort value.
-			if(ta[0] == tb[0]){
-				return ta[1] - tb[1];
-			}else{
-				return ta[0] - tb[0];
-			}
-		}, //scheduleSort
       		
       // Adds bus stops markers to the map
       addStops: function(stops) {
@@ -463,8 +429,8 @@ var MapManager = function() {
 						icon: stopMarker,
 						zindex: 300
 					});
- 					marker.stopName = this.stopName;
- 					
+ 					marker.name = this.stopName;
+ 					marker.isBus = false;
                     marker.popupInfo = this.stopName + "<br />";
                     
                     if(stpRoutes[this.stopName].length > 1) {
@@ -509,7 +475,7 @@ var MapManager = function() {
       		var routeSchedule = route.schedule.join();
       		var routeColor = "#BF2200";
       		var routeArrival = "No More Stops Today";
-      		route.schedule.sort(mapManager.scheduleSort);
+      		route.schedule.sort(aauMobile.scheduleSort);
       		
       		$.each(teletracManager.getRouteNamesAndColors(), function(index, color){
       			if(color.routeName == routeName){

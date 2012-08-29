@@ -29,13 +29,21 @@ classSchedule: {
 		//var blockDivider = $("#student-scheduleDivider-template");
 		var classContainer = $("#ulId").empty();
 		var listItems = [];
+		
+		classData.classes = [];
+		$.each(classData.classMeetings, function(index, classMeeting){
+		    classData.classes.push(classMeeting);
+		});
+		classData.classes.sort(function(a,b){
+			return aauMobile.scheduleSort(a.startTime, b.startTime);
+		});
 		//console.time('scheduleAppend');
 		//alert('woot'); 
 		for(var dayCount = 0; stDate < enDate && dayCount < 7; stDate.setDate(stDate.getDate() + 1)){
 			//alert('::Date :: >>>>'+stDate.toLocaleDateString());
 
 			var hasClassMeetings = false;
-			$.each(classData.classMeetings, function(index, classMeeting) {
+			$.each(classData.classes, function(index, classMeeting) {
 				//console.log(JSON.stringify(classMeeting));
 
 				var meetingSTDate = new Date(classMeeting.startDate.replace(/-/g,'/'));
@@ -706,6 +714,43 @@ isIOS: function(){
 	return (ua.indexOf('iphone') > -1 || ua.indexOf('ipod') > -1 || ua.indexOf('ipad') > -1);
 },
 
+//Sorts time strings. Pushes late night times to be considered late day.
+scheduleSort: function(a,b){
+	//Turn the string into an array. t[0] hour, t[1] minutes, t[2] AM/PM
+	var temp = a.split(':');
+	var ta = temp[1].split(" ");
+	ta.unshift(temp[0]);
+	
+	temp = b.split(':');
+	var tb = temp[1].split(" ");
+	tb.unshift(temp[0]);
+	
+	//Convert to integers.
+	ta[0] = parseInt(ta[0]);
+	tb[0] = parseInt(tb[0]);
+	ta[1] = parseInt(ta[1]);
+	tb[1] = parseInt(tb[1]);
+	
+	//Add additional hours if PM.
+	ta[0] = (ta[2] == "PM" && ta[0] != 12)? ta[0] + 12 : ta[0];
+	tb[0] = (tb[2] == "PM" && tb[0] != 12)? tb[0] + 12 : tb[0];	
+	
+	//Midnight is the 0 hour.
+	if(ta[2] == "AM" && ta[0] == 12){
+		ta[0] = 24;
+	}
+	if(tb[2] == "AM" && tb[0] == 12){
+		tb[0] = 24;
+	}
+	
+	//Return sort value.
+	if(ta[0] == tb[0]){
+		return ta[1] - tb[1];
+	}else{
+		return ta[0] - tb[0];
+	}
+}, //scheduleSort
+
 init: {
 	appActivation: function(){
 		utils.log('aauMobile.init.appActivation has been called.');
@@ -804,10 +849,6 @@ function bindEvents() {
 		aauMobile.slideMenu.init();
 	});
   }
-  $('#result-list li.settings-route').live('click', function(){
-  							var checkbox = $(this).find(':checkbox'); 
-  							checkbox.prop('checked', !checkbox[0].checked).trigger('change');
-  					});
 }
 
 if(!navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {

@@ -1,6 +1,8 @@
 var aauMobile = aauMobile || {
 
 studentId: currentUserId,
+
+clickEvent: 'touchstart',
  
 classSchedule: {
 	data: {},
@@ -624,17 +626,17 @@ slideMenu: {
 		utils.log('aauMobile.slideMenu.init called');
 		console.log('aauMobile.slideMenu.init called');
 		
-		$('#menu-page').on('touchstart', aauMobile.slideMenu.hide);
+		$('#menu-page').on(aauMobile.clickEvent, aauMobile.slideMenu.hide);
 		
 		//The UL needs to stretch the entire length of the page, and not allow the 
 		//underlying part of the page to fire the close event.
-		$('#slide-menu').on('touchstart', function(event){
+		$('#slide-menu').on(aauMobile.clickEvent, function(event){
 			event.stopPropagation();
 			console.log('Tapped on the menu.');
 		});
 	
-		$('#slide-menu li a').on('touchstart', aauMobile.slideMenu.linkClicked);
-		$('.menu-btn').on('touchstart', aauMobile.slideMenu.show);
+		$('#slide-menu li a').on(aauMobile.clickEvent, aauMobile.slideMenu.linkClicked);
+		$('.menu-btn').on(aauMobile.clickEvent, aauMobile.slideMenu.show);
 	
 		//Android pre-3.0 devices aren't fully responsive to click.
 		if(aauMobile.isAndroid()) {
@@ -644,20 +646,6 @@ slideMenu: {
 			$('#menu-page').addClass('standard-menu');
 			$('.page-container').addClass('standard-menu');
 			}
-	   	
-	   	if(!aauMobile.isAndroid() && !aauMobile.isIOS()){
-	   		$('#menu-page').on('click', aauMobile.slideMenu.hide);
-		
-			//The UL needs to stretch the entire length of the page, and not allow the 
-			//underlying part of the page to fire the close event.
-			$('#slide-menu').on('click', function(event){
-				event.stopPropagation();
-				console.log('Tapped on the menu.');
-			});
-		
-			$('#slide-menu li a').on('click', aauMobile.slideMenu.linkClicked);
-			$('.menu-btn').on('click', aauMobile.slideMenu.show);
-		}
 	   	
 	   	
 	   	//Occurs when the menu finishes sliding.
@@ -716,6 +704,13 @@ isIOS: function(){
 
 //Sorts time strings. Pushes late night times to be considered late day.
 scheduleSort: function(a,b){
+	if(!a && !b){
+		return 0;
+	} else if(!a && b){
+		return -1;
+	} else if(a && !b){
+		return 1;
+	}
 	//Turn the string into an array. t[0] hour, t[1] minutes, t[2] AM/PM
 	var temp = a.split(':');
 	var ta = temp[1].split(" ");
@@ -784,10 +779,10 @@ function bindEvents() {
   //Disable page transitions. With the way the menu works, we have to use our own.
   $.mobile.defaultPageTransition = 'none';	
   
-    $("#transit-settings").live('touchstart', function(){ 
+    $("#transit-settings").live(aauMobile.clickEvent, function(){ 
 	        $('#result-container').toggle(); 
 	}); 
-	$('#result-list li.settings-route').live('touchstart', function(){
+	$('#result-list li.settings-route').live(aauMobile.clickEvent, function(){
 		mapManager.toggleRoute(this, $(this).attr('name'));
 	});
   
@@ -825,17 +820,22 @@ function bindEvents() {
   			$('#container').css('height', '100%');
   		}
   	});
-  
   }
   
-  if(!aauMobile.isAndroid() && !aauMobile.isIOS()){
-    $("#transit-settings").live('click', function(){ 
-        $('#result-container').toggle(); 
-    }); 
-	$('#result-list li.settings-route').live('click', function(){
-		mapManager.toggleRoute(this, $(this).attr('name'));
-	});
-  }
+  $('#bus-detail').live('pageshow', function(){
+  		console.log('BUS DETAIL IS SHOWING');
+  		if(!aauMobile.isAndroid()){
+	  		var element = $('<span class="mob-back-button">Back</span>');
+	  		$(this).find('.mob-back-button').remove();
+	  		console.log('BACK BUTTON HAS BEEN REMOVED');
+	  		$(element).prependTo($(this).find('.mob-header'));
+	  		$(element).on(aauMobile.clickEvent, function(e){
+	  			event.preventDefault()
+	  			$.mobile.changePage('#transit-map',{transition: 'slide', reverse: true});
+	  		});
+	  		console.log('BACK BUTTON HAS BEEN RE-ADDED');
+  		}
+  	});
   
   //iOS loads before an event can be triggered. Have to check and see if we're initialized.
   if($('#menu-page').hasClass('ui-page')){
@@ -853,6 +853,7 @@ function bindEvents() {
 
 if(!navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
   console.log('kicking off init');
+  aauMobile.clickEvent = 'click';
   studentDataInit();
   bindEvents();
 }else {

@@ -285,7 +285,6 @@
 <!-- Page for detail screen of Campus Event -->
 <div data-role="page" id="campus-event-detail" class="page-container">
     <div data-role="header" data-position="fixed"  class="mob-header">
-        <a data-rel="back" class="mob-back-button">Back</a>
         <h1>Campus Event</h1>
     </div>
     <div data-role="content" class="mob-content">

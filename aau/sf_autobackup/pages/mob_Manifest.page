@@ -2,24 +2,25 @@
 # NOTE: "CACHE MANIFEST" must be on the first line
 
 # change version to trigger a cache refresh
-# version 1.0183
+# version 1.0204
 
 CACHE:
 {!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.min.css
 {!$Resource.mob_Design}/mob_Design/AAUjQueryTheme.min.css
 {!$Resource.jquery1dot7}
+{!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.min.js
 {!$Resource.jquerytmpl_min} 
 {!$Resource.mob_forceJsToolkit_min}
 {!$Resource.mob_XML2JSON_min}
 {!$Resource.mob_infoBuble}
-{!$Resource.phonegap_android_min}
-{!$Resource.phonegap_min}
+{!$Resource.phonegapJS}/phonegap_min.js
+{!$Resource.phonegapJS}/phonegap_android_min.js
 
-{!IF($Setup.mob_Student__c.Cache_Pages__c,'','#')}{!$Resource.appirioPlugins_min}
-{!IF($Setup.mob_Student__c.Cache_Pages__c,'','#')}{!$Resource.mob_StudentJs_min}
-{!IF($Setup.mob_Student__c.Cache_Pages__c,'','#')}{!$Resource.mob_transitManager_min}
-{!IF($Setup.mob_Student__c.Cache_Pages__c,'','#')}{!$Resource.mob_mapManager_min}
-{!IF($Setup.mob_Student__c.Cache_Pages__c,'','#')}{!$Resource.mob_mapJs_min}
+{!$Resource.appirioPlugins_min}
+{!$Resource.mob_mapJs_min}
+{!$Resource.mob_StudentJs}
+{!$Resource.mob_transitManager}
+{!$Resource.mob_mapManager}
 
 {!$Resource.mob_busmap}
 {!$Resource.mob_Design}/mob_Design/iconsprite_white.png

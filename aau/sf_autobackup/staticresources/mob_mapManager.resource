@@ -167,12 +167,14 @@ var MapManager = function() {
                         markerListenerIsRunning = false;
                         if(aauMobile && aauMobile.isIOS()){
 				           $('span.infoBubbleLink').on('touchstart', function(e){
+				           		console.log('infoBubbleLink clicked');
 				            	e.preventDefault();
 				            	e.stopPropagation();
 				            	mapManager.getStopDetails($(this).attr('name'));
 				            });
 			            } else{
 				           $('span.infoBubbleLink').on('click', function(e){
+				            	console.log('infoBubbleLink clicked');
 				            	e.preventDefault();
 				            	e.stopPropagation();
 				            	mapManager.getStopDetails($(this).attr('name'));

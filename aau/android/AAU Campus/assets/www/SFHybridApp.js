@@ -103,6 +103,9 @@ buildAppUrl: function(server, page) {
 buildFrontDoorUrl: function(instanceServer, startPage, accessToken) {
     var baseUrl = SFHybridApp.buildAppUrl(instanceServer, "/secur/frontdoor.jsp");
     var fullUrl = baseUrl + "?sid=" + encodeURIComponent(accessToken) + "&retURL=" + encodeURIComponent(startPage);
+    
+    console.log("this is the full url: " + fullUrl);
+    
     return fullUrl;
 },
 

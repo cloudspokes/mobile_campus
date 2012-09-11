@@ -12,13 +12,27 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 
 import com.appirio.aau.R;
+import com.phonegap.DroidGap.GapClient;
+import com.phonegap.DroidGap.GapViewClient;
 import com.salesforce.androidsdk.ui.LoginActivity;
 import com.salesforce.androidsdk.ui.SalesforceDroidGapActivity;
 
 public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity {
 	
+	@Override
+	protected GapClient createWebChromeClient() {
+		GapClient cr = super.createWebChromeClient();
+		
+		
+		
+		
+		return cr;
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		//super.setIntegerProperty("splashscreen", R.drawable.aau_load);

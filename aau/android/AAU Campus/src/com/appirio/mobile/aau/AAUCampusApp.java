@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.appirio.aau.R;
+import com.appirio.mobile.AMLoginActivity;
 import com.appirio.mobile.AMSalesforceDroidGapActivity;
 import com.salesforce.androidsdk.app.ForceApp;
 import com.salesforce.androidsdk.ui.LoginActivity;
@@ -12,6 +13,11 @@ import com.salesforce.androidsdk.ui.SalesforceR;
 import com.salesforce.samples.vfconnector.SalesforceRImpl;
 
 public class AAUCampusApp extends ForceApp {
+
+	@Override
+	public Class<? extends Activity> getLoginActivityClass() {
+		return AMLoginActivity.class;
+	}
 
 	@Override
 	public void onCreate() {

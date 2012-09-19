@@ -1,6 +1,8 @@
 var aauMobile = aauMobile || {
 
 studentId: currentUserId,
+
+clickEvent: 'touchstart',
  
 classSchedule: {
 	data: {},
@@ -29,13 +31,21 @@ classSchedule: {
 		//var blockDivider = $("#student-scheduleDivider-template");
 		var classContainer = $("#ulId").empty();
 		var listItems = [];
+		
+		classData.classes = [];
+		$.each(classData.classMeetings, function(index, classMeeting){
+		    classData.classes.push(classMeeting);
+		});
+		classData.classes.sort(function(a,b){
+			return aauMobile.scheduleSort(a.startTime, b.startTime);
+		});
 		//console.time('scheduleAppend');
 		//alert('woot'); 
 		for(var dayCount = 0; stDate < enDate && dayCount < 7; stDate.setDate(stDate.getDate() + 1)){
 			//alert('::Date :: >>>>'+stDate.toLocaleDateString());
 
 			var hasClassMeetings = false;
-			$.each(classData.classMeetings, function(index, classMeeting) {
+			$.each(classData.classes, function(index, classMeeting) {
 				//console.log(JSON.stringify(classMeeting));
 
 				var meetingSTDate = new Date(classMeeting.startDate.replace(/-/g,'/'));
@@ -341,11 +351,12 @@ campusFeed: {
 
 	init: function() {
 		aauMobile.campusFeed.feedData = [];
-
 		var rssUrl = 'https://www.academyart.edu/news.rss';
 		RestDataPlugin.getData(aauMobile.campusFeed.buildFeed, aauMobile.campusFeed.initFailure, rssUrl, false, "GET", "xml");
 	},
-	
+	initFailure: function(result){
+		console.log('RSS Feed Failure. ' + result);
+	},
 	buildFeed: function(result) {
 		result = $.xml2json(result);
 		//aauMobile.campusFeed.feedData = result;
@@ -615,17 +626,17 @@ slideMenu: {
 		utils.log('aauMobile.slideMenu.init called');
 		console.log('aauMobile.slideMenu.init called');
 		
-		$('#menu-page').on('touchstart', aauMobile.slideMenu.hide);
+		$('#menu-page').on(aauMobile.clickEvent, aauMobile.slideMenu.hide);
 		
 		//The UL needs to stretch the entire length of the page, and not allow the 
 		//underlying part of the page to fire the close event.
-		$('#slide-menu').on('touchstart', function(event){
+		$('#slide-menu').on(aauMobile.clickEvent, function(event){
 			event.stopPropagation();
 			console.log('Tapped on the menu.');
 		});
 	
-		$('#slide-menu li a').on('touchstart', aauMobile.slideMenu.linkClicked);
-		$('.menu-btn').on('touchstart', aauMobile.slideMenu.show);
+		$('#slide-menu li a').on(aauMobile.clickEvent, aauMobile.slideMenu.linkClicked);
+		$('.menu-btn').on(aauMobile.clickEvent, aauMobile.slideMenu.show);
 	
 		//Android pre-3.0 devices aren't fully responsive to click.
 		if(aauMobile.isAndroid()) {
@@ -635,20 +646,6 @@ slideMenu: {
 			$('#menu-page').addClass('standard-menu');
 			$('.page-container').addClass('standard-menu');
 			}
-	   	
-	   	if(!aauMobile.isAndroid() && !aauMobile.isIOS()){
-	   		$('#menu-page').on('click', aauMobile.slideMenu.hide);
-		
-			//The UL needs to stretch the entire length of the page, and not allow the 
-			//underlying part of the page to fire the close event.
-			$('#slide-menu').on('click', function(event){
-				event.stopPropagation();
-				console.log('Tapped on the menu.');
-			});
-		
-			$('#slide-menu li a').on('click', aauMobile.slideMenu.linkClicked);
-			$('.menu-btn').on('click', aauMobile.slideMenu.show);
-		}
 	   	
 	   	
 	   	//Occurs when the menu finishes sliding.
@@ -669,6 +666,7 @@ slideMenu: {
 			if($(this).attr('id') == "transit-map"){
 				mapManager.triggerResize();
 			}
+
 			if(!$(this).hasClass('slide-out')){
 				$('.mob-header').css('position','fixed');
 				$('#result-container').css('position','fixed');
@@ -704,6 +702,50 @@ isIOS: function(){
 	return (ua.indexOf('iphone') > -1 || ua.indexOf('ipod') > -1 || ua.indexOf('ipad') > -1);
 },
 
+//Sorts time strings. Pushes late night times to be considered late day.
+scheduleSort: function(a,b){
+	if(!a && !b){
+		return 0;
+	} else if(!a && b){
+		return -1;
+	} else if(a && !b){
+		return 1;
+	}
+	//Turn the string into an array. t[0] hour, t[1] minutes, t[2] AM/PM
+	var temp = a.split(':');
+	var ta = temp[1].split(" ");
+	ta.unshift(temp[0]);
+	
+	temp = b.split(':');
+	var tb = temp[1].split(" ");
+	tb.unshift(temp[0]);
+	
+	//Convert to integers.
+	ta[0] = parseInt(ta[0]);
+	tb[0] = parseInt(tb[0]);
+	ta[1] = parseInt(ta[1]);
+	tb[1] = parseInt(tb[1]);
+	
+	//Add additional hours if PM.
+	ta[0] = (ta[2] == "PM" && ta[0] != 12)? ta[0] + 12 : ta[0];
+	tb[0] = (tb[2] == "PM" && tb[0] != 12)? tb[0] + 12 : tb[0];	
+	
+	//Midnight is the 0 hour.
+	if(ta[2] == "AM" && ta[0] == 12){
+		ta[0] = 24;
+	}
+	if(tb[2] == "AM" && tb[0] == 12){
+		tb[0] = 24;
+	}
+	
+	//Return sort value.
+	if(ta[0] == tb[0]){
+		return ta[1] - tb[1];
+	}else{
+		return ta[0] - tb[0];
+	}
+}, //scheduleSort
+
 init: {
 	appActivation: function(){
 		utils.log('aauMobile.init.appActivation has been called.');
@@ -737,10 +779,10 @@ function bindEvents() {
   //Disable page transitions. With the way the menu works, we have to use our own.
   $.mobile.defaultPageTransition = 'none';	
   
-    $("#transit-settings").live('touchstart', function(){ 
+    $("#transit-settings").live(aauMobile.clickEvent, function(){ 
 	        $('#result-container').toggle(); 
 	}); 
-	$('#result-list li.settings-route').live('touchstart', function(){
+	$('#result-list li.settings-route').live(aauMobile.clickEvent, function(){
 		mapManager.toggleRoute(this, $(this).attr('name'));
 	});
   
@@ -778,17 +820,22 @@ function bindEvents() {
   			$('#container').css('height', '100%');
   		}
   	});
-  
   }
   
-  if(!aauMobile.isAndroid() && !aauMobile.isIOS()){
-    $("#transit-settings").live('click', function(){ 
-        $('#result-container').toggle(); 
-    }); 
-	$('#result-list li.settings-route').live('click', function(){
-		mapManager.toggleRoute(this, $(this).attr('name'));
-	});
-  }
+  $('#bus-detail').live('pageshow', function(){
+  		console.log('BUS DETAIL IS SHOWING');
+  		if(!aauMobile.isAndroid()){
+	  		var element = $('<span class="mob-back-button">Back</span>');
+	  		$(this).find('.mob-back-button').remove();
+	  		console.log('BACK BUTTON HAS BEEN REMOVED');
+	  		$(element).prependTo($(this).find('.mob-header'));
+	  		$(element).on(aauMobile.clickEvent, function(e){
+	  			event.preventDefault()
+	  			$.mobile.changePage('#transit-map',{transition: 'slide', reverse: true});
+	  		});
+	  		console.log('BACK BUTTON HAS BEEN RE-ADDED');
+  		}
+  	});
   
   //iOS loads before an event can be triggered. Have to check and see if we're initialized.
   if($('#menu-page').hasClass('ui-page')){
@@ -802,14 +849,11 @@ function bindEvents() {
 		aauMobile.slideMenu.init();
 	});
   }
-  $('#result-list li.settings-route').live('click', function(){
-  							var checkbox = $(this).find(':checkbox'); 
-  							checkbox.prop('checked', !checkbox[0].checked).trigger('change');
-  					});
 }
 
 if(!navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
   console.log('kicking off init');
+  aauMobile.clickEvent = 'click';
   studentDataInit();
   bindEvents();
 }else {

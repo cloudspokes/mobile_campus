@@ -16,7 +16,7 @@ var MapManager = function() {
 	var infoBubble;
  	
 	// if should use geolocation to pin point user's position, if false, defaults users position to SF
-    var useGeolocation = false;
+    var useGeolocation = true;
     
     // Stores the rendered map
     var map;
@@ -34,7 +34,7 @@ var MapManager = function() {
     var myMarker;
     
     // Current location of the user, defaults to the initial location if location tracking is not enabled in the browser
-    var currentLocation = new google.maps.LatLng(37.788008, -122.400682);
+    var currentLocation = new google.maps.LatLng(37.786174, -122.400141);
     
     // The info window
     var infoWindow;
@@ -65,6 +65,9 @@ var MapManager = function() {
     
     // Counter for info bubbles
     var infoBubbleCount = 0;
+    
+    // Flag for first resize
+    var firstMapResize = false;
     
     
     
@@ -98,26 +101,27 @@ var MapManager = function() {
     
     // Simple popup listener that just shows content from the popupInfo of the associated object
     function simpleMarkerListener(marker) {
-      if(aauMobile.getAndroidVersion() < 3.0 && aauMobile.getAndroidVersion() > 0 && marker.stopName){
-      	mapManager.getStopDetails(encodeURIComponent(marker.stopName));
+    	console.log(marker);
+      if(aauMobile.getAndroidVersion() < 3.0 && aauMobile.getAndroidVersion() > 0 && marker.name){
+      	mapManager.getStopDetails(encodeURIComponent(marker.name));
       	return;
       } 
-      if(infoBubble && (marker.stopName == currentInfoBubble)) {
+      if(infoBubble && (marker.name == currentInfoBubble)) {
         infoBubble.close();
         currentInfoBubble = null;
       } else {
         if(markerListenerIsRunning == false) {
           markerListenerIsRunning = true;
-          currentInfoBubble = marker.stopName;
+          currentInfoBubble = marker.name;
           infoBubbleCount++;
           
           if(infoBubble) {
             infoBubble.close();
           }
           
-          var content = '<div class="infoBubbleContent">';
-          if(marker.stopName){
-          		content += marker.popupInfo + '<span name="' + encodeURIComponent(marker.stopName) + '" class="infoBubbleLink" id="infoBubble' + infoBubbleCount + '">&nbsp;</span></div>';
+          var content = '<div class="infoBubbleContent">' + marker.popupInfo;
+          if(!marker.isBus){
+          		content += '<span name="' + encodeURIComponent(marker.name) + '" class="infoBubbleLink" id="infoBubble' + infoBubbleCount + '">&nbsp;</span></div>';
           } else{
             content += '</div>';
           }
@@ -157,38 +161,24 @@ var MapManager = function() {
               minHeight: 45,
               minWidth: size
             });
-
-           /*google.maps.event.addListenerOnce(infoBubble, 'domReady', function() {
-                        markerListenerIsRunning = false;
-                        if(aauMobile && aauMobile.isIOS()){
-				           $('span.infoBubbleLink').on('touchstart', function(e){
-				            	e.preventDefault();
-				            	e.stopPropagation();
-				            	mapManager.getStopDetails($(this).attr('name'));
-				            });
-			            } else{
-			            	google.maps.event.addDomListener(infoBubble.getContent(), 'click', function(){
-				            	console.log('BEANS');
-				            	mapManager.getStopDetails($(this).attr('name'));
-				            });
-			            }
-                     });*/
+            
             infoBubble.open(map, marker);
          	setTimeout(function() {
                         markerListenerIsRunning = false;
                         if(aauMobile && aauMobile.isIOS()){
 				           $('span.infoBubbleLink').on('touchstart', function(e){
+				           		console.log('infoBubbleLink clicked');
 				            	e.preventDefault();
 				            	e.stopPropagation();
 				            	mapManager.getStopDetails($(this).attr('name'));
 				            });
 			            } else{
-				            document.getElementById('infoBubble' + infoBubbleCount).addEventListener('click', function() {
-																									alert('IM WORKING');
-																									mapManager.getStopDetails($(this).attr('name'));
-																									return false;
-																								 },false);
-											            																									 
+				           $('span.infoBubbleLink').on('click', function(e){
+				            	console.log('infoBubbleLink clicked');
+				            	e.preventDefault();
+				            	e.stopPropagation();
+				            	mapManager.getStopDetails($(this).attr('name'));
+				            });				            																									 
 			            }
                      }, 1300);
         }
@@ -215,21 +205,20 @@ var MapManager = function() {
         
         var el = element[0] ? element[0] : element;
         map = new google.maps.Map(el, myOptions);        
-		
-        myMarker = new google.maps.Marker({
-                     position: currentLocation,
-                     title: "Student Marker",
-                     animation: google.maps.Animation.DROP,
-                     icon: studentMarkerImage,
-                     zindex: 1,
-                     clickable: false
-                  });
+		    if(useGeolocation) {
+          myMarker = new google.maps.Marker({
+                       position: currentLocation,
+                       title: "Student Marker",
+                       animation: google.maps.Animation.DROP,
+                       icon: studentMarkerImage,
+                       zindex: 1,
+                       clickable: false
+                    });
+          
+          // Commented out, geo location not working in iOS
+          myMarker.setMap(map);
+        }
         
-        //myMarker.popupInfo = "This is where you are!";
-                  
-        //google.maps.event.addListener(myMarker, 'click', simpleMarkerListener);
-        
-        /*******************************/
         google.maps.event.addListener(map, 'click', function(event) {
         
           if(infoBubble) {
@@ -238,8 +227,7 @@ var MapManager = function() {
           }
         });
         
-        // Commented out, geo location not working in iOS
-        myMarker.setMap(map);
+        
     }
     
     // Private function to draw route on map
@@ -265,9 +253,7 @@ var MapManager = function() {
       	var routeWayPoints = [];
       	for(var i = 1; i < route.stops.length; i++){
       		routeWayPoints.push({location: new google.maps.LatLng(route.stops[i].latitude, route.stops[i].longitude), stopover: true});
-      		console.log(route.stops[i].stopName);
       	}
-      	console.log(routeWayPoints);
       	
       	var directionRequest = {
       		origin: new google.maps.LatLng(route.stops[0].latitude, route.stops[0].longitude),
@@ -321,7 +307,6 @@ var MapManager = function() {
             },
             function(error) {
               console.log('Navigator geolocation Error ' + error.message);
-              alert(error.message);
               
               currentLocation = new google.maps.LatLng(37.786174, -122.400141);
               if(myMarker) {
@@ -345,6 +330,11 @@ var MapManager = function() {
             }
         }
         
+        /*if(pan) {
+          if(map)
+            map.panTo(currentLocation);
+        }*/
+        
       }, //updateUserPos
     
       // Centers the map on the student
@@ -354,14 +344,18 @@ var MapManager = function() {
       
       // Trigger a resize event on the map so it redraws on the full canvas
       triggerResize: function() {
-        if(map)
+        if(map) {
           google.maps.event.trigger(map, 'resize');
+          if(!firstMapResize) {
+            map.panTo(currentLocation);
+            firstMapResize = true;
+          }
+        }
       }, //triggerResize
     
       // Renders a map in a specific element on the page, centralizing the map
       // in the specified latitude and longitude
       renderMap: function(element) {
-        console.log('*** element for map ' + element);
         this.updateUserPos(true, doRenderMap, element);
         
       }, //renderMap
@@ -394,9 +388,11 @@ var MapManager = function() {
 	                     		zindex: 2
 	                          });
 	              
+	              marker.name = nameResult.name;
+	              marker.isBus = true;
 	              marker.popupInfo = "Vehicle: " + nameResult.name + "<br />Route: " + nameResult.route;
 	              
-	              google.maps.event.addListener(marker, 'click', simpleMarkerListener);
+	              google.maps.event.addListener(marker, 'click', function(){simpleMarkerListener(marker)});
 	
 	              marker.setMap(map);
 	              vehicleMarkers[nameResult.name] = marker;
@@ -415,43 +411,6 @@ var MapManager = function() {
             }
        });
       }, //addVehicles
-      
-      //Sorts times so that latenight times are always at the end of the array.
-      scheduleSort: function(a,b){
-			//Turn the string into an array. t[0] hour, t[1] minutes, t[2] AM/PM
-			var temp = a.split(':');
-			var ta = temp[1].split(" ");
-			ta.unshift(temp[0]);
-			
-			temp = b.split(':');
-			var tb = temp[1].split(" ");
-			tb.unshift(temp[0]);
-			
-			//Convert to integers.
-			ta[0] = parseInt(ta[0]);
-			tb[0] = parseInt(tb[0]);
-			ta[1] = parseInt(ta[1]);
-			tb[1] = parseInt(tb[1]);
-			
-			//Add additional hours if PM.
-			ta[0] = (ta[2] == "PM" && ta[0] != 12)? ta[0] + 12 : ta[0];
-			tb[0] = (tb[2] == "PM" && tb[0] != 12)? tb[0] + 12 : tb[0];	
-			
-			//Midnight is the 0 hour.
-			if(ta[2] == "AM" && ta[0] == 12){
-				ta[0] = 24;
-			}
-			if(tb[2] == "AM" && tb[0] == 12){
-				tb[0] = 24;
-			}
-			
-			//Return sort value.
-			if(ta[0] == tb[0]){
-				return ta[1] - tb[1];
-			}else{
-				return ta[0] - tb[0];
-			}
-		}, //scheduleSort
       		
       // Adds bus stops markers to the map
       addStops: function(stops) {
@@ -472,8 +431,8 @@ var MapManager = function() {
 						icon: stopMarker,
 						zindex: 300
 					});
- 					marker.stopName = this.stopName;
- 					
+ 					marker.name = this.stopName;
+ 					marker.isBus = false;
                     marker.popupInfo = this.stopName + "<br />";
                     
                     if(stpRoutes[this.stopName].length > 1) {
@@ -494,7 +453,6 @@ var MapManager = function() {
 					
 					busStopMarkers[this.stopName] = marker;
     	});
-    	console.log('Stop Markers ' + busStopMarkers);
       }, //addSTops
       
       // Requests schedule data from Salesforce. This is keyed by stop.
@@ -519,7 +477,7 @@ var MapManager = function() {
       		var routeSchedule = route.schedule.join();
       		var routeColor = "#BF2200";
       		var routeArrival = "No More Stops Today";
-      		route.schedule.sort(mapManager.scheduleSort);
+      		route.schedule.sort(aauMobile.scheduleSort);
       		
       		$.each(teletracManager.getRouteNamesAndColors(), function(index, color){
       			if(color.routeName == routeName){

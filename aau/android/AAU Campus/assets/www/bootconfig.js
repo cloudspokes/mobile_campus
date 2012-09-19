@@ -8,8 +8,8 @@ var debugMode = false;
 
 // The client ID value specified for your remote access object that defines
 // your application in Salesforce.
-//var remoteAccessConsumerKey = "3MVG9CVKiXR7Ri5ref1HmPTy8XeK_IF39U4xjE4BD2X9a.wuLMiKebAKEWXoIPih1v9EFDFvDJdib_UwRhY7.";
-var remoteAccessConsumerKey = "3MVG9Oe7T3Ol0ea4rCgfMtZo3n_mXSltHtoXuUmTdm2z8ejIRdnI0YcJzQsnNJhBykE346daTM7FRrh6wCitY";
+var remoteAccessConsumerKey = "3MVG9CVKiXR7Ri5ref1HmPTy8XeK_IF39U4xjE4BD2X9a.wuLMiKebAKEWXoIPih1v9EFDFvDJdib_UwRhY7.";
+//var remoteAccessConsumerKey = "3MVG9Oe7T3Ol0ea4rCgfMtZo3n_mXSltHtoXuUmTdm2z8ejIRdnI0YcJzQsnNJhBykE346daTM7FRrh6wCitY";
 
 
 // The redirect URI value specified for your remote access object that defines

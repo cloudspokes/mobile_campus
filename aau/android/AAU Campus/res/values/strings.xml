@@ -3,7 +3,7 @@
 
     <string name="hello">Hello World, VFConnectorActivity!</string>
     <string name="app_name">AAU Campus</string>
-    <string name="sf_default_url">https://aau--dev6.cs12.my.salesforce.com</string>
+    <string name="sf_default_url">https://aau--sb1.cs1.my.salesforce.com</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_web_view">WebViewActivity</string>

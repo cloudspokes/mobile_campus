@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content='width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;' name='viewport' />
+        <title>Salesforce Hybrid Application Bootstrap Page</title>
+    
+        
+        <!-- log window styling -->
+        <style>
+            #underlay{
+                /*background-image: url(AAU_load_portrait.png);*/
+                background-repeat: no-repeat;
+                background-size: contain contain;
+                display: block;
+                position: absolute;
+                top:0;
+                left:0;
+                z-index: -1;
+            }
+            @media only screen
+            and (min-device-width : 768px)
+            and (max-device-width : 1024px)
+            and (orientation : landscape)  {
+                /* rules for iPad in landscape orientation */
+                #underlay{
+                    background-image: url(ipad_landscape_nonretina.png);
+                    width: 1024px;
+                    height: 748px;
+                }
+            }
+            @media only screen
+            and (min-device-width : 768px)
+            and (max-device-width : 1024px)
+            and (orientation : portrait)  {
+                /* rules for iPad in portrait orientation */
+                #underlay{
+                    background-image: url(ipad_portrait_nonretina.png);
+                    width: 768px;
+                    height: 1004px;
+                }
+            }
+            @media only screen
+            and (min-device-width : 1536px)
+            and (max-device-width : 2048px)
+            and (orientation : landscape) {
+                /* rules for iPad retina in landscape orientation */
+                #underlay{
+                    background-image: url(ipad_landscape_retina.png);
+                    width: 1536px;
+                    height: 2008px;
+                }
+            }
+            @media only screen
+            and (min-device-width : 1536px)
+            and (max-device-width : 2048px)
+            and (orientation : portrait)  {
+                /* rules for iPad retina in portrait orientation */
+                #underlay{
+                    background-image: url(ipad_portrait_retina.png);
+                    width: 2048px;
+                    height: 1496px;
+                }
+            }
+            @media only screen and (device-aspect-ratio: 2/3) and (-webkit-min-device-pixel-ratio: 1) {
+                /* iPhone non-retina here */
+                #underlay{
+                    background-image: url(iphone_nonretina.png);
+                    width: 320px;
+                    height: 480px;
+                    top: -20px;
+                }
+            }
+            @media only screen and (device-aspect-ratio: 2/3) and (-webkit-min-device-pixel-ratio: 2) {
+                /* iPhone retina here */
+                #underlay{
+                    background-image: url(iphone_retina.png);
+                    background-size: 100% 100%;
+                    width: 320px;
+                    height: 480px;
+                    top: -20px;
+                }
+            }
+            @media only screen and (device-aspect-ratio: 40/71) and (-webkit-min-device-pixel-ratio: 2) {
+                /* iPhone retina here */
+                #underlay{
+                    background-image: url(iphone5_retina.png);
+                    background-size: 100% 100%;
+                    width: 320px;
+                    height: 568px;
+                    top: -20px;
+                }
+            }
+                        #main{display: none;}
+          .logWindow {display:none; width:700px;}
+          .logWindow > p {padding:0px; margin:0px; word-wrap:break-word;}
+            #spinner{
+                display: block;
+                position: fixed;
+                width: 36px;
+                height: 39px;
+                top: 70%;
+                left: 50%;
+                margin-left: -18px;
+                margin-top: -20px;
+            }
+        </style>
+        
+            </head>
+
+    <body style="background-color: #000000; text-align:center; vertical-align:middle;">
+        
+        <!--<img src="AAU_load_portrait.png">-->
+        <div id="underlay">&nbsp;</div>
+        <img id="spinner" src="spinner.gif">
+        <div id="main">
+            <fieldset id="errors" class="logWindow">
+                <legend>Errors</legend>
+            </fieldset>
+            <fieldset id="console" class="logWindow">
+                <legend>Debug Console</legend>
+            </fieldset>
+        </div>
+            <script src="cordova-1.8.1.js"></script>
+            <script src="SFHybridApp.js"></script>
+            <script src="SalesforceOAuthPlugin.js"></script>
+            <script src="bootconfig.js"></script>
+            <script>
+                document.addEventListener("deviceready", cordova.require("salesforce/util/bootstrap").onDeviceReady);
+                </script>
+
+    </body>
+</html>

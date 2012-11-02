@@ -1,0 +1,7 @@
+Building the application with the new SDK:
+
+- Set the environment variables defined in set_vars_build.sh, note you will need ant, the android sdk, and the salesforce mobile sdk downloaded and set up
+- From within the AAUCampus_SFSDK1.3 invoke: ant clean
+- From within the AAUCampus_SFSDK1.3 invoke: ant debug
+
+After this your project should be able to be imported to Eclipse without any issues 

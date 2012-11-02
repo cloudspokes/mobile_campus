@@ -18,7 +18,7 @@ public class AMWebViewer extends Plugin {
 			Intent i = new Intent(this.ctx.getContext(), WebViewActivity.class);
 			i.putExtra("url", params.getString(0));
 			
-			ctx.startActivity(i);
+			ctx.getContext().startActivity(i);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

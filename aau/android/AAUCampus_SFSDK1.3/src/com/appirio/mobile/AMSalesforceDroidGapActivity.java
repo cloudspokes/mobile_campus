@@ -21,9 +21,12 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		//super.setIntegerProperty("splashscreen", R.drawable.aau_load);
-
 		super.onCreate(savedInstanceState);
+
+		super.setIntegerProperty("splashscreen", R.drawable.aau_load);
+
+		super.loadUrl("file:///android_asset/www/bootstrap.html",10000); 
+		
 	}
 
 	private static final String FEEDBACK_PREFS = "feedback_prefs";

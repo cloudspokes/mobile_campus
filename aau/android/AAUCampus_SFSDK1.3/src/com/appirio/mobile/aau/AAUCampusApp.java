@@ -30,6 +30,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.appirio.mobile.AMSalesforceDroidGapActivity;
 import com.salesforce.androidsdk.app.ForceApp;
 import com.salesforce.androidsdk.ui.LoginActivity;
 import com.salesforce.androidsdk.ui.SalesforceDroidGapActivity;
@@ -47,7 +48,7 @@ public class AAUCampusApp extends ForceApp {
 	
 	@Override
 	public Class<? extends Activity> getMainActivityClass() {
-		return SalesforceDroidGapActivity.class;
+		return AMSalesforceDroidGapActivity.class;
 	}
 	
 	@Override

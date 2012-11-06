@@ -1,27 +1,45 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta content='width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;' name='viewport' />
         <title>Salesforce Hybrid Application Bootstrap Page</title>
-        
-        <script src="cordova-1.8.1.js"></script>
-        <script src="SFHybridApp.js"></script>
-        <script src="SalesforceOAuthPlugin.js"></script>
-        <script src="bootconfig.js"></script>
+    
         
         <!-- log window styling -->
         <style>
+            #underlay{
+                background-image: url(aau_load.png);
+                background-repeat: no-repeat;
+                background-size: contain contain;
+                display: block;
+                position: absolute;
+                top:0;
+                left:0;
+                z-index: -1;
+            }
+           #main{display: none;}
           .logWindow {display:none; width:700px;}
           .logWindow > p {padding:0px; margin:0px; word-wrap:break-word;}
+            #spinner{
+                display: block;
+                position: fixed;
+                width: 36px;
+                height: 39px;
+                top: 70%;
+                left: 50%;
+                margin-left: -18px;
+                margin-top: -20px;
+            }
         </style>
+        
+            </head>
 
-        <script>
-        document.addEventListener("deviceready", cordova.require("salesforce/util/bootstrap").onDeviceReady);
-        </script>
-    </head>
-
-    <body>
+    <body style="background-color: #000000; text-align:center; vertical-align:middle;">
+        
+        <!--<img src="AAU_load_portrait.png">-->
+        <div id="underlay">&nbsp;</div>
+        <img id="spinner" src="spinner.gif">
         <div id="main">
-            <h1>Loading...</h1>
             <fieldset id="errors" class="logWindow">
                 <legend>Errors</legend>
             </fieldset>
@@ -29,5 +47,13 @@
                 <legend>Debug Console</legend>
             </fieldset>
         </div>
+            <script src="cordova-1.8.1.js"></script>
+            <script src="SFHybridApp.js"></script>
+            <script src="SalesforceOAuthPlugin.js"></script>
+            <script src="bootconfig.js"></script>
+            <script>
+                document.addEventListener("deviceready", cordova.require("salesforce/util/bootstrap").onDeviceReady);
+                </script>
+
     </body>
 </html>

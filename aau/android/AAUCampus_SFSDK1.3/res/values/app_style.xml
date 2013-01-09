@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>    
+    <!-- 
+    	Configuration for sliding menu width. 
+    	If set higher than device width, would cause original screen to go out of the window.
+    	If use_fixed_width is set as 'false' (Recommended), then menu width will be auto-calculated to be of optimal
+    	size for each device width.
+     -->
+    <bool name="use_fixed_width">false</bool>
+    <dimen name="slider_width_value">150dp</dimen>
+    
+    
+    <!-- App other dimension values -->
+    <dimen name="top_bar_height">60dp</dimen>
+    <dimen name="menu_item_height">50dp</dimen>
+    <dimen name="menu_item_icon_width_height">30dp</dimen>    
+    <dimen name="normal_padding">10dp</dimen>
+    
+</resources>

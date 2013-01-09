@@ -1,6 +1,9 @@
 package com.appirio.mobile;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+
+import org.apache.cordova.CordovaWebViewClient;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -12,18 +15,78 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 
-import com.salesforce.androidsdk.R;
+import com.appirio.mobile.aau.R;
+import com.appirio.mobile.aau.slidingmenu.SlidingMenuAdapter;
+import com.appirio.mobile.aau.slidingmenu.SlidingMenuItem;
+import com.appirio.mobile.aau.slidingmenu.SlidingMenuLayout;
 import com.salesforce.androidsdk.ui.LoginActivity;
 import com.salesforce.androidsdk.ui.SalesforceDroidGapActivity;
 
-public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity {
+public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity implements OnClickListener, OnItemClickListener {
 	
+	public SlidingMenuLayout rootLayout;
+	ListView slidingMenuListView;
+	View menuLayout, mainLayout;
+	Button showSlidingMenuButton;
+	WebView webView;
+	SlidingMenuAdapter menuAdapter;
+	ArrayList<SlidingMenuItem> slidingMenuList;
+	
+	@Override
+	protected CordovaWebViewClient createWebViewClient() {
+		return new AAUMobileWebViewClient(this);
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		super.setIntegerProperty("splashscreen", R.drawable.aau_load);
+
+		/* Create a new SlidingMenuLayout and set Layout parameters. */
+		rootLayout = new SlidingMenuLayout(this);
+		rootLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.0F));
+		
+		/* Inflate and add the main view layout and menu layout to root sliding menu layout. Menu layout should be added first.. */
+		menuLayout = getLayoutInflater().inflate(R.layout.sliding_menu_layout, null);
+		mainLayout = getLayoutInflater().inflate(R.layout.main_layout, null);		
+		rootLayout.addView(menuLayout);
+		//rootLayout.addView(mainLayout);
+		
+		this.root.removeView(this.appView);
+		
+		rootLayout.addView((View)this.appView);
+		
+		/* Set activity content as sliding menu layout. */
+		this.root.addView(rootLayout);
+		
+		/* Initialize list view and buttons to handle showing of menu. */
+		slidingMenuListView = (ListView) menuLayout.findViewById(R.id.sliding_menu_list_view);
+		showSlidingMenuButton = (Button) mainLayout.findViewById(R.id.show_menu_button);
+		
+		/* Initialize the main web view for displaying of web content. */
+		//webView = (WebView) mainLayout.findViewById(R.id.content_web_view);
+		webView = this.appView;
+		
+		/* Initialize the menu adapter and set to list view to load menu from the XML file. */
+		menuAdapter = new SlidingMenuAdapter(getLayoutInflater(), this);
+		slidingMenuListView.setAdapter(menuAdapter);
+		
+		/* Handle button and list item clicks. */
+		showSlidingMenuButton.setOnClickListener(this);
+		slidingMenuListView.setOnItemClickListener(this);
+		
+
+		super.setIntegerProperty("splashscreen", com.appirio.mobile.aau.R.drawable.aau_load);
 
 		super.loadUrl("file:///android_asset/www/bootstrap.html",10000); 
 		
@@ -77,7 +140,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity {
 					Context.MODE_PRIVATE);
 			SharedPreferences.Editor editor = settings.edit();
 			editor.putString(LoginActivity.SERVER_URL_CURRENT_SELECTION,
-			  getString(R.string.sf_default_url));
+			  getString(com.appirio.mobile.aau.R.string.sf_default_url));
 			
 			long askFeedbackOn = settings.getLong(ASK_FEEDBACK_ON_PREF, 0);
 			Calendar calendar = Calendar.getInstance();
@@ -137,6 +200,32 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity {
 		}
 		
 	}
+	
+	@Override
+	public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
+	{
+		rootLayout.closeMenu();
+		String url = (String) menuAdapter.getItem(position);
+		webView.loadUrl(url);
+	}
 
-
+	@Override
+	public void onClick(View view) 
+	{
+		if (view == showSlidingMenuButton)
+		{
+			if (rootLayout.isOpen())
+			{
+				rootLayout.closeMenu();
+			}
+			else 
+			{
+				rootLayout.openMenu();
+			}			
+		}		
+	}
+	
+	public void showMenu() {
+		menuLayout.requestLayout();
+	}
 }

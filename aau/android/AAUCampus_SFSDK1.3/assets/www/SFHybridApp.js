@@ -320,7 +320,7 @@ cordova.define("salesforce/util/bootstrap", function(require, exports, module) {
             }
         }
         
-        fullAppUrl = fullAppUrl.replace("mob_StudentHome", "mob_StudentHome%3fappVersion=1_2");
+        fullAppUrl = fullAppUrl.replace("mob_StudentHome", "mob_StudentHome%3fappVersion=1_3");
         
         logger.logToConsole("fullAppUrl: " + logger.sanitizeUrlParamsForLogging(fullAppUrl, [ "sid" ]));
         loadUrl(fullAppUrl);

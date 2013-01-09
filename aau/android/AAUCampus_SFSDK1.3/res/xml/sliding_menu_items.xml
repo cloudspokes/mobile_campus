@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<slidingmenu>
+    <!-- 
+    	Add a item set for each menu item. Include strings for title, and URL. 
+    	Icon's file name should be included. Order can be different. 
+   		But tag names should match the example.
+   	-->
+    <item>
+        <title>Class Schedule</title>
+        <icon>class_schedule_icon</icon>        
+        <url>http://gradstudents.academyart.edu/</url>
+    </item>
+    <item>
+        <title>Transit Map</title>
+        <icon>transit_map_icon</icon>        
+        <url>http://www.sfmta.com/cms/mmaps/official.htm</url>
+    </item>
+    <item>
+        <title>Message Center</title>
+        <icon>message_center_icon</icon>        
+        <url>http://my.academyart.edu/</url>
+    </item>
+    <item>
+        <title>Campus News</title>
+        <icon>campus_news_icon</icon>        
+        <url>http://online.academyart.edu/</url>
+    </item>
+    <item>
+        <title>Campus Events</title>
+        <icon>campus_events_icon</icon>        
+        <url>http://my.academyart.edu/campus-life/</url>
+    </item>
+    <item>
+        <title>Sports</title>
+        <icon>sports_icon</icon>        
+        <url>http://my.academyart.edu/campus-life/academy_sports_day.html</url>
+    </item>
+    <item>
+        <title>Helpful Links</title>
+        <icon>helpful_links_icon</icon>        
+        <url>http://online.academyart.edu/help-desk</url>
+    </item>
+    <item>
+        <title>Logout</title>
+        <icon>logout_icon</icon>        
+        <url>http://www.google.com</url>
+    </item>   
+</slidingmenu>

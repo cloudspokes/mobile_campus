@@ -11,16 +11,17 @@ public class AMMenu extends Plugin {
 
 	@Override
 	public PluginResult execute(String action, JSONArray params, String arg2) {
-		SlidingMenuLayout rootLayout = ((AMSalesforceDroidGapActivity)this.ctx).rootLayout; 
-		
-		if (rootLayout.isOpen())
-		{
-			rootLayout.closeMenu();
+		if (action.equalsIgnoreCase("populateMenu")) {
+			((AMSalesforceDroidGapActivity) this.ctx).loadMenuItems(params);
+		} else {
+			SlidingMenuLayout rootLayout = ((AMSalesforceDroidGapActivity) this.ctx).rootLayout;
+
+			if (rootLayout.isOpen()) {
+				rootLayout.closeMenu();
+			} else {
+				rootLayout.openMenu();
+			}
 		}
-		else 
-		{
-			rootLayout.openMenu();
-		}			
 
 		return new PluginResult(PluginResult.Status.NO_RESULT);
 	}

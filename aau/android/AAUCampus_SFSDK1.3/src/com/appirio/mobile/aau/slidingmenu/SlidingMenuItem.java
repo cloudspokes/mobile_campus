@@ -5,6 +5,7 @@ public class SlidingMenuItem
 	String menuTitle;
 	int menuIcon;
 	String menuURL;
+	String action;
 
 	public String getMenuTitle() 
 	{
@@ -35,4 +36,13 @@ public class SlidingMenuItem
 	{
 		this.menuURL = menuURL;
 	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+	
+	public String getAction() {
+		return action;
+	}
+
 }

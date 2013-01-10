@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import org.apache.cordova.CordovaWebViewClient;
+import org.json.JSONArray;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -205,8 +206,8 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
 	{
 		rootLayout.closeMenu();
-		String url = (String) menuAdapter.getItem(position);
-		webView.loadUrl(url);
+		SlidingMenuItem menuItem = (SlidingMenuItem) menuAdapter.getItem(position);
+		webView.loadUrl("javascript:" + menuItem.getAction());
 	}
 
 	@Override
@@ -224,8 +225,17 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 			}			
 		}		
 	}
-	
-	public void showMenu() {
-		menuLayout.requestLayout();
+
+	public void loadMenuItems(final JSONArray jsonMenu) {
+		this.runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				menuAdapter.loadMenuItems(jsonMenu);
+				menuAdapter.notifyDataSetChanged();
+				slidingMenuListView.invalidateViews();		
+			}
+		});
 	}
+	
 }

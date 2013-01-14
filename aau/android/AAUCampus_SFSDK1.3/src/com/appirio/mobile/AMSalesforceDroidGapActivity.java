@@ -227,11 +227,13 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	}
 
 	public void loadMenuItems(final JSONArray jsonMenu) {
+		final Context ctx = this;
+		
 		this.runOnUiThread(new Runnable() {
 			
 			@Override
 			public void run() {
-				menuAdapter.loadMenuItems(jsonMenu);
+				menuAdapter.loadMenuItems(jsonMenu, ctx);
 				menuAdapter.notifyDataSetChanged();
 				slidingMenuListView.invalidateViews();		
 			}

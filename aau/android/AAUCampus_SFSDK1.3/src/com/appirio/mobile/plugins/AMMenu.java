@@ -11,7 +11,7 @@ public class AMMenu extends Plugin {
 
 	@Override
 	public PluginResult execute(String action, JSONArray params, String arg2) {
-		if (action.equalsIgnoreCase("populateMenu")) {
+		if (action.equalsIgnoreCase("populateMenu")) { 
 			((AMSalesforceDroidGapActivity) this.ctx).loadMenuItems(params);
 		} else {
 			SlidingMenuLayout rootLayout = ((AMSalesforceDroidGapActivity) this.ctx).rootLayout;

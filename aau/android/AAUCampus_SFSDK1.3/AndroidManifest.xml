@@ -37,7 +37,7 @@
 
     <application
         android:name=".AAUCampusApp"
-        android:label="@string/app_name" >
+        android:label="@string/app_name" android:icon="@drawable/app_logo">
 
         <!-- Service required for authentication -->
         <service

@@ -101,7 +101,7 @@ public class SlidingMenuAdapter extends BaseAdapter implements ListAdapter {
 		}
 	}
 
-	public void loadMenuItems(JSONArray jsonMenu) {
+	public void loadMenuItems(JSONArray jsonMenu, Context ctx) {
 		try {
 
 			slidingMenuItems.clear();
@@ -117,6 +117,13 @@ public class SlidingMenuAdapter extends BaseAdapter implements ListAdapter {
 										context.getPackageName()));
 				menuItem.setMenuURL("www.google.com");
 				menuItem.setAction(menu.get("action").toString());
+				if(menu.has("nonsprite")) {
+					String iconName = menu.get("nonsprite").toString();
+					
+					iconName = iconName.substring(0, iconName.indexOf("."));
+					
+					menuItem.setMenuIcon(ctx.getResources().getIdentifier(iconName, "drawable", ctx.getPackageName()));
+				}
 				slidingMenuItems.add(menuItem);
 			}
 		} catch (Exception ex) {

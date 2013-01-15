@@ -5,11 +5,12 @@ import java.io.IOException;
 import org.apache.cordova.CordovaWebViewClient;
 import org.apache.cordova.DroidGap;
 
-import android.webkit.WebResourceResponse;
+//import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 
 public class AAUMobileWebViewClient extends CordovaWebViewClient {
 
+	/*
 	@Override
 	public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
 		if(url.startsWith("aaumobile://")) {
@@ -36,7 +37,7 @@ public class AAUMobileWebViewClient extends CordovaWebViewClient {
 		} else {
 			return super.shouldInterceptRequest(view, url);
 		}
-	}
+	}*/
 
 	public AAUMobileWebViewClient(DroidGap ctx) {
 		super(ctx);

@@ -24,4 +24,5 @@
     <plugin name="com.appirio.mobile.webviewer" value="com.appirio.mobile.plugins.AMWebViewer"/>
 
     <plugin name="com.appirio.mobile.menu" value="com.appirio.mobile.plugins.AMMenu"/>
+    <plugin name="DatePickerPlugin" value="com.appirio.mobile.plugins.AMTimePicker"/>
 </plugins>

@@ -12,9 +12,12 @@ var debugMode = false;
 // your application in Salesforce.
 //var remoteAccessConsumerKey = "3MVG9CVKiXR7Ri5ref1HmPTy8XeK_IF39U4xjE4BD2X9a.wuLMiKebAKEWXoIPih1v9EFDFvDJdib_UwRhY7.";
 //var remoteAccessConsumerKey = "3MVG9Oe7T3Ol0ea4rCgfMtZo3n_mXSltHtoXuUmTdm2z8ejIRdnI0YcJzQsnNJhBykE346daTM7FRrh6wCitY";
-//var remoteAccessConsumerKey = "3MVG98dostKihXN5.FFmqH4daeflGQOEDPQNxulfC7mn5oPhzooVtCo0RDjeLsVNwgM.AHLv3C69GF4gnLs5F";    
+
+// Connected app in prod
+var remoteAccessConsumerKey = "3MVG9CVKiXR7Ri5ref1HmPTy8XRtTBkz6clmB3hwT0Zr64wH0mezVlNQxHMtMPnOa6fb5bxpFjF4t8mF2hdtn";
+
 // Dev 7 test key
-var remoteAccessConsumerKey = "3MVG98dostKihXN6UJFri4fKjPBBzKsNkI_fIy3wnvP5_NSj0HxOTJD9ZE1bKRL7ZXbPuLkzBAPvj4eTB.HI6";
+//var remoteAccessConsumerKey = "3MVG98dostKihXN6UJFri4fKjPBBzKsNkI_fIy3wnvP5_NSj0HxOTJD9ZE1bKRL7ZXbPuLkzBAPvj4eTB.HI6";
 
 // The redirect URI value specified for your remote access object that defines
 // your application in Salesforce.
@@ -30,6 +33,7 @@ var oauthScopes = ["web", "api"];
 //classes in SFHybridApp.js to see how you can further customize your options.
 //var startData = new SFHybridApp.LocalAppStartData();  // Used for local REST-based "index.html" PhoneGap apps.
 var startData = new SFHybridApp.RemoteAppStartData("apex/mob_StudentHome"); // Used for Visualforce-based apps.
+//var startData = new SFHybridApp.RemoteAppStartData("apex/TestMD"); // Used for Visualforce-based apps.
 
 
 // Whether the container app should automatically refresh our oauth session on app foreground:

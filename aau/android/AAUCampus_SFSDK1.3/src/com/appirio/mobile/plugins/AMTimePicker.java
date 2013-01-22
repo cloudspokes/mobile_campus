@@ -89,7 +89,7 @@ public class AMTimePicker extends Plugin {
 				public void run() {
 					final TimeSetListener timeSetListener = new TimeSetListener(datePickerPlugin, callBackId);
 					final TimePickerDialog timeDialog = new TimePickerDialog(currentCtx, timeSetListener, mHour,
-							mMinutes, true);
+							mMinutes, false);
 					timeDialog.show();
 				}
 			};

@@ -6,14 +6,17 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
+import org.apache.cordova.DroidGap;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
 import com.salesforce.androidsdk.app.ForceApp;
+import com.salesforce.androidsdk.phonegap.SalesforceOAuthPlugin;
 import com.salesforce.androidsdk.rest.ClientManager;
 import com.salesforce.androidsdk.rest.RestClient;
+import com.salesforce.androidsdk.ui.SalesforceDroidGapActivity;
 
 public class AMWebService extends Plugin {
 	
@@ -43,10 +46,12 @@ public class AMWebService extends Plugin {
 	@Override
 	public PluginResult execute(String arg0, JSONArray arg1, String arg2) {
 		try {
+
+			SalesforceOAuthPlugin.autoRefresh(this.webView, (DroidGap)this.ctx);
 			
 			ClientManager mgr = new ClientManager(this.ctx.getContext(), ForceApp.APP.getAccountType(), null);
 			RestClient cli = mgr.peekRestClient();
-			
+
 			String uri = arg1.get(0).toString();
 
 			if(uri.equals("https://xmlgateway.teletrac.net/AsciiService.asmx/GetVehicles")) {

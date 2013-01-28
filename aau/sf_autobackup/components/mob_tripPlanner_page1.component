@@ -1,0 +1,135 @@
+<apex:component >
+<style>
+.div-parent-page1{
+	/*width:100%;*/
+	padding:15px;
+	padding-top:10px;
+	left:-8px;
+	position:relative;
+	margin-left:15px;
+	padding-left:15px;
+}
+.div-header{
+	height:22px;	
+}
+.hr-separator{
+	-webkit-margin-after: 0.0em;
+}
+
+.td-tableCell-left{
+	padding-right:15px;	
+}
+.div-Time{
+	width:100%;
+	padding-left:0px;
+}
+.div-Day{
+	width:100%;
+	padding-right:0px;
+}
+.td-tableCell-right{
+	padding-left:15px;
+	padding-right:0px;
+}
+.div-weekdaySelect{
+	padding-bottom:13px;
+	padding-top:13px;
+}
+#plantime, .nativedatepicker {
+	padding-left:0px;
+	margin-left:0px;
+}
+
+</style>
+
+<div class="div-parent-page1" >
+	   		<h3 class="aau-heading">
+	   		<div  class="aau-header-div  aau-corner-top div-header ">
+	   			<span align="center" class="aau-inner aau-corner-top aau-corner-bottom aau-text" >Begin
+	   				</span>
+	   			<!-- Current Location button 
+	   				<div class="mob-location-icon header-right" id="currentLocBtn"><div class="mob-header-locationIcon" onclick="JavaScript:aauMobile.tripPlanner.setClosestStartBusStop_fireEvent();"></div></div>	
+ 				-->
+ 			</div>
+  				</h3>
+ 			<div class="ui-collapsible-content ui-body-f1 aau-corner-bottom" >
+			   <select data-mini="true" name="startStop-select" id="startStop-select" onChange="showStartStop(this.options[this.selectedIndex].value);">
+					   		<option value="0">Select Pickup point</option>
+					   </select>
+				   
+				    
+			   <hr class = "hr-separator"/> 
+			   
+			   <div align="left" id="start-detail" >
+		       	 <br/>
+		       </div>
+	       </div>
+		</div> 
+		
+		
+		
+		<div class="div-parent-page1" >
+	   		<h3 class="aau-heading">
+	   		<div class="aau-header-div  aau-corner-top div-header">
+	   			<span align="center" class="aau-inner aau-corner-top aau-corner-bottom aau-text" >End
+	   				</span>
+	   			<!-- Current Location button 
+	   				<div class="mob-location-icon header-right" id="currentLocBtn"><div class="mob-header-locationIcon" onclick="JavaScript:aauMobile.tripPlanner.setClosestEndBusStop_fireEvent();"></div></div>	
+ 				 -->
+	   		</div>
+  				</h3>
+ 			<div class="ui-collapsible-content ui-body-f1 aau-corner-bottom" >
+		   <select data-mini="true" name="endStop-select" id="endStop-select" onChange="showFinishStop(this.options[this.selectedIndex].value);">
+		   		<option value="0">Select drop off point</option>
+		   		
+		   </select> 
+		   <hr class = "hr-separator" />
+		   <div align="left" id="finish-detail">
+	       	<br/>
+	       </div>
+	       </div>
+		</div> 
+		
+		
+			<div class="div-parent-page1" >
+			<table data-mini="true" width="100%" padding="5px" border="0px" align="center">
+				<tr>
+					<td width="50%" class="td-tableCell-left">
+						<div  class="div-Time">
+					   		<h3 class="aau-heading">
+						   		<div  class="aau-header-div  aau-corner-top ">
+						   			<span align="center" class="aau-inner aau-corner-top aau-corner-bottom aau-text" >Time
+						   				</span>
+						   		</div>
+				 			</h3>
+						   <div class="ui-collapsible-content ui-body-f1 aau-corner-bottom" >
+						   		<input type="time" data-theme="c" name="plantime" id="plantime" value="" data-mini="true" class="nativedatepicker"></input>
+						   	</div>	
+					   </div>	
+				   </td> 
+				   <td width="50%" class="td-tableCell-right">
+					  <div  class="div-Day">
+					   		<h3 class="aau-heading">
+						   		<div  class="aau-header-div  aau-corner-top ">
+						   			<span align="center" class="aau-inner aau-corner-top aau-corner-bottom aau-text" >Day
+						   				</span>
+						   		</div>
+				 			</h3>
+						   <div class="ui-collapsible-content ui-body-f1 aau-corner-bottom div-weekdaySelect"  >
+						   		<select data-mini="true" name="day-select" id="day-select" >
+							   		<option value="weekday">Weekday</option>
+							   		<!-- <option value="weekend">Weekend</option> -->
+							   		
+							   </select> 
+						   </div>
+					   </div>
+				   </td>
+			   </tr>
+		   </table>	 
+		  
+		</div>
+		<div id="travelPlanButton" style="width:95%;" data-content-theme="b">
+			<a id="btnTravelPlan" href="javascript:searchTripOptions();" data-role="button" data-theme="f1" data-inline="false" >View Routes</a>
+			 
+		</div> 
+</apex:component>

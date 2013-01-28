@@ -83,6 +83,15 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Online_Class__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( CONTAINS( Class_Section__c , &apos;OL&apos;), &apos;Yes&apos;, &apos;No&apos;)</formula>
+        <label>Online Class?</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Psft_Ext_Id__c</fullName>
         <caseSensitive>false</caseSensitive>
         <description>Pipe delimited Concatenation of STRM and CLASS_NBR</description>

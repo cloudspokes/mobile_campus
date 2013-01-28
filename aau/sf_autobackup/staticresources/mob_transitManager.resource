@@ -137,49 +137,95 @@ var TeletracManager = function() {
         // into json format and passes it to the callback function provided
         getVehicles: function(callback) {
             var restPath = "https://xmlgateway.teletrac.net/AsciiService.asmx/GetVehicles";
-            utils.log("made it here");
-            RestDataPlugin.getData(function(result){
-            							utils.log('Success with REST call: ' + result);
-            							jsonResponse = $.xml2json(result);
-            							utils.log(JSON.stringify(jsonResponse));
-            							
-            							if(callback){
-            							    utils.log("callback is defined: " + callback);
-            								callback(jsonResponse);
-            							} else {
-            							  utils.log("callback is undefined");
-            							}
-            						}, 
-            						function(result){
-            							utils.log('Failure in Teletrac REST call: ' + JSON.stringify(result));
-            						}, 
-            						restPath, 
-            						false, 
-            						"GET", 
-            						"xml");
+            appirioUtils.log("made it here");
+            
+           // RestDataPlugin.getData(function(result){
+           RestDataPlugin.getData_ignoreTimeout(function(result){
+					appirioUtils.log('Success with REST call: ' + result);
+					jsonResponse = $.xml2json(result);
+					appirioUtils.log(JSON.stringify(jsonResponse));
+					
+					if(callback){
+						//appirioUtils.log("callback is defined: " + callback);
+						callback(jsonResponse);
+					} else {
+					  appirioUtils.log("callback is undefined");
+					}
+				}, 
+				function(result){
+					appirioUtils.log('Failure in Teletrac REST call: ' + JSON.stringify(result));
+				}, 
+				restPath, 
+				false, 
+				"GET", 
+				"xml");
             
             console.log('refreshed vehicles from server');
             
      }, //getVehicles
-    
+
     getRoutesFromSFDC: function(callback) {
-      	var restPath = "/BusStops/"; 
-		RestDataPlugin.getData(function(result){
-								utils.log('Success REST service bus routes:');
+    	//alert('getRoutesFromSFDC');
+		var myRoutes = localStorage.getItem('routeData'); 
+		//PARTH: Check Last refresh date 
+		// If time elapsed since last update is more than the time out then refresh the data
+		var str_lastRefreshDate = localStorage.getItem('lastRefreshDate');
+		
+		if(str_lastRefreshDate == null || str_lastRefreshDate == 'null' || str_lastRefreshDate == '' || myRoutes == null || myRoutes == 'null' || myRoutes == ''){
+			myRoutes = null;
+			localStorage.setItem('routeData', null);
+		}else{
+			var LastRefresh_milis = Number(str_lastRefreshDate);
+			var now_milis = Date.now().valueOf();
+			if( (now_milis - LastRefresh_milis) > (str_cacheTimeoutDays * 86400000)){
+				//clear local storage
+				//alert('ClearData');
+				myRoutes = null;
+				localStorage.setItem('routeData', null);
+				
+			}
+		}
+		
+		//console.log('WOOOOOT: '+myRoutes);
+		//routes = JSON.parse(myRoutes);
+		try{
+		  	routes = JSON.parse(routes);
+		}
+		catch(err){ 
+		  routes = null;
+		  console.log('Error while parsing data for : routeData' );
+	  	}
+		
+		//alert(routes[0].routeName);
+		if(myRoutes == null || myRoutes == 'null'  || routes == null || routes.length < 1 || routes[0].routeName == null || routes[0].routeName == 'null'  || routes[0].routeName == ''){
+			var restPath = "/BusStops/"; 
+			RestDataPlugin.getData(function(result){
+								//appirioUtils.log('Success REST service bus routes:'+JSON.stringify(result));
+								//alert('Success REST service bus routes:'+JSON.stringify(result));
 								parseStops(result, callback);
 								parseRouteNamesAndColors(result);
 								routes = result;
-								return routes;
+								localStorage.setItem('routeData', JSON.stringify(result));
+								//PARTH: Set last refresh date 
+								localStorage.setItem('lastRefreshDate', Date.now().valueOf());
+								return result;
 							   },
 							   function(){
-							   	utils.log('Failure REST service bus routes:');
+							   	appirioUtils.log('Failure REST service bus routes:');
 							   }, 
 							   restPath, 
 							   true, 
 							   "GET", 
 							   "json");
+		}else{
+			//console.log('WOOT localStorage: '+routes);
+			parseStops(routes, callback);
+			parseRouteNamesAndColors(routes);
+		}
 	},
 	
+	
+    
 	//helper function for toggling auto bus refresh
 	toggleRefresh: function(inputField) {
 		if(($(inputField).val()) == "on"){

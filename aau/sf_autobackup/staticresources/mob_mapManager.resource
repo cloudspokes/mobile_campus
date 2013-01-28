@@ -12,6 +12,8 @@ Mauricio Created on 07/05/12
 // Object used to manage Google maps
 var MapManager = function() {
 	
+	
+	
 	// The info bubble
 	var infoBubble;
  	
@@ -69,7 +71,9 @@ var MapManager = function() {
     // Flag for first resize
     var firstMapResize = false;
     
-    
+    /* PARTH: fix issue I-35353 : Map hangs if stops are clicked in quick succession*/
+    //Added this var for callback function
+    var fireEventCallback = function(){};
     
     // Function to parse vehicle name, returns a json object with name and route properties, if the vehicle
     // has no route associated with the name it route will be undefined. Route names must be in {}
@@ -99,11 +103,21 @@ var MapManager = function() {
       }
     }
     
+    function fireEvent_simpleMarkerListener(marker){
+    	appirioUtils.fireEvent(simpleMarkerListener, marker, null);
+    }
+    
     // Simple popup listener that just shows content from the popupInfo of the associated object
-    function simpleMarkerListener(marker) {
+    function simpleMarkerListener(callback,marker) {
+    	//alert('simpleMarkerListener-' + marker);
     	console.log(marker);
-      if(aauMobile.getAndroidVersion() < 3.0 && aauMobile.getAndroidVersion() > 0 && marker.name){
+    	
+    	/* PARTH: fix issue I-35353 : Map hangs if stops are clicked in quick succession*/
+    	mapManager.fireEventCallback = callback;
+    	
+      if(aauMobile.getAndroidVersion() < 3.0 && aauMobile.getAndroidVersion() > 0 && marker.name && !marker.isBus){
       	mapManager.getStopDetails(encodeURIComponent(marker.name));
+      	//callback();  
       	return;
       } 
       if(infoBubble && (marker.name == currentInfoBubble)) {
@@ -170,23 +184,27 @@ var MapManager = function() {
 				           		console.log('infoBubbleLink clicked');
 				            	e.preventDefault();
 				            	e.stopPropagation();
-				            	mapManager.getStopDetails($(this).attr('name'));
+				            	mapManager.fireEvent_getStopDetails($(this).attr('name'));
 				            });
 			            } else{
 				           $('span.infoBubbleLink').on('click', function(e){
 				            	console.log('infoBubbleLink clicked');
 				            	e.preventDefault();
 				            	e.stopPropagation();
-				            	mapManager.getStopDetails($(this).attr('name'));
+								mapManager.fireEvent_getStopDetails($(this).attr('name'));
 				            });				            																									 
 			            }
                      }, 1300);
+          /* PARTH: fire callback */
+          //callback();          
         }
       }
+      /* PARTH: fix issue I-35353 : Map hangs if stops are clicked in quick succession*/
+      mapManager.fireEventCallback();
     } 
     
     function doRenderMap(element) {
-        utils.log("rendering the map");
+        appirioUtils.log("rendering the map");
         // Icon associated with the student marker
         var studentMarkerImage = new google.maps.MarkerImage(imgStudentMarker,
 				    	null, 
@@ -205,14 +223,14 @@ var MapManager = function() {
         
         var el = element[0] ? element[0] : element;
         map = new google.maps.Map(el, myOptions);        
-		    if(useGeolocation) {
+		  if(useGeolocation) {
           myMarker = new google.maps.Marker({
                        position: currentLocation,
                        title: "Student Marker",
                        animation: google.maps.Animation.DROP,
                        icon: studentMarkerImage,
                        zindex: 1,
-                       clickable: false
+                       clickable: true
                     });
           
           // Commented out, geo location not working in iOS
@@ -220,14 +238,13 @@ var MapManager = function() {
         }
         
         google.maps.event.addListener(map, 'click', function(event) {
-        
+                    console.log(event);
+          console.log(event.latLng);
           if(infoBubble) {
             infoBubble.close();
             currentInfoBubble = null;
           }
         });
-        
-        
     }
     
     // Private function to draw route on map
@@ -279,6 +296,60 @@ var MapManager = function() {
     }
     
     return {
+   		nearestStop: '',
+   		getClosestStop_Callback: function(){},
+   		
+   		getClosestStop: function(callback){
+   			
+   			mapManager.getClosestStop_Callback = callback;
+   			if(useGeolocation && navigator && navigator.geolocation) {
+	            var options = { timeout: 10000, enableHighAccuracy: false };
+	            navigator.geolocation.getCurrentPosition(function(position) {
+	                var posLat = position.coords.latitude;
+	            	var posLong = position.coords.longitude;
+	            			
+	            	console.log("Current Position: " + posLat + " , " + posLong);
+	            	
+	            	var R = 6371; // Radius of the earth in km
+	            	var M = 0.621371192; //Kilometer per mile
+	            	var RAD = Math.PI / 180;
+	            	
+	            	var dMin = 9999999;
+	            	var closestStopId = '0'; 
+	            	$(mapManager.busStopDetails).each( function() {
+	            	//alert(this.lat);
+	            		var dLat = (posLat-this.lat) * RAD;  
+						var dLon = (posLong-this.lng) * RAD; 
+						var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+						        Math.cos(this.lat * RAD) * Math.cos(posLat * RAD) * 
+						        Math.sin(dLon/2) * Math.sin(dLon/2); 
+						var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+						var d = R * c * M; // Distance in miles
+						
+						if(d <= dMin){ 
+							dMin = d;
+							//alert(this.Id)
+							closestStopId = this.stopId;
+						}
+	            	});
+					
+					//alert("closest Stop " + closestStopId );
+					console.log("closest Stop " + closestStopId );
+					mapManager.nearestStop = closestStopId;
+					mapManager.getClosestStop_Callback(closestStopId);
+	            	//return closestStopId;
+	            },
+	            function(error) {
+	              console.log('Navigator geolocation Error ' + error.message);
+	              
+	             mapManager.nearestStop = '0';
+	             mapManager.getClosestStop_Callback('');
+	            });
+           }else{ 
+           		mapManager.nearestStop = '0';
+           		 mapManager.getClosestStop_Callback('');
+           	}
+   		},	
       // Update user's position and optionally pan to that position
       updateUserPos: function(pan, callback, param) {
               if(callback) {
@@ -292,7 +363,31 @@ var MapManager = function() {
         if(useGeolocation && navigator && navigator.geolocation) {
             var options = { timeout: 10000, enableHighAccuracy: false };
             navigator.geolocation.getCurrentPosition(function(position) {
-                currentLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                var defaultLat = 37.789238;
+            	var defaultLong = -122.401407;
+            	var posLat = position.coords.latitude;
+            	var posLong = position.coords.longitude;
+            	
+            	console.log("Current Position: " + posLat + " , " + posLong);
+            	
+            	var R = 6371; // Radius of the earth in km
+            	var M = 0.621371192; //Kilometer per mile
+            	var RAD = Math.PI / 180;
+				var dLat = (posLat-defaultLat) * RAD;  
+				var dLon = (posLong-defaultLong) * RAD; 
+				var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+				        Math.cos(defaultLat * RAD) * Math.cos(posLat * RAD) * 
+				        Math.sin(dLon/2) * Math.sin(dLon/2); 
+				var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+				var d = R * c * M; // Distance in miles
+				
+				console.log("Distance from New Montgomery: " + d + " miles");
+            	
+            	if(d < 6.0){
+                	currentLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                } else{
+                	currentLocation = new google.maps.LatLng(defaultLat, defaultLong);
+                }
                 
                 if(myMarker) {
                   myMarker.setMap(null);
@@ -308,7 +403,7 @@ var MapManager = function() {
             function(error) {
               console.log('Navigator geolocation Error ' + error.message);
               
-              currentLocation = new google.maps.LatLng(37.786174, -122.400141);
+              currentLocation = new google.maps.LatLng(37.78628600, -122.39931900);
               if(myMarker) {
                 myMarker.setPosition(currentLocation);
               }
@@ -319,7 +414,7 @@ var MapManager = function() {
               }
             });
         } else {
-            currentLocation = new google.maps.LatLng(37.786174, -122.400141);
+            currentLocation = new google.maps.LatLng(37.78628600, -122.39931900);
             if(myMarker) {
               myMarker.setPosition(currentLocation);
             }
@@ -364,6 +459,7 @@ var MapManager = function() {
       // vehicles to the map. If a marker for a vehicle with the same name already exists,
       // this updates the vehicle position rather than adding another vehicle marker.
       addVehicles: function(vehicles) {
+		//console.log('Test Vehicles! '+JSON.stringify(vehicles));
       	var nameResult;
       	vehicleCache = vehicles;		    								
         $(vehicles.Vehicle).each(function() {
@@ -390,9 +486,12 @@ var MapManager = function() {
 	              
 	              marker.name = nameResult.name;
 	              marker.isBus = true;
-	              marker.popupInfo = "Vehicle: " + nameResult.name + "<br />Route: " + nameResult.route;
+	              //PARTH:Fix I-35493 - remove vehicle name from popup 
+	              //marker.popupInfo = "Vehicle: " + nameResult.name + "<br />Route: " + nameResult.route;
+	              marker.popupInfo = "Route: " + nameResult.route;
 	              
-	              google.maps.event.addListener(marker, 'click', function(){simpleMarkerListener(marker)});
+	              //google.maps.event.addListener(marker, 'click', function(){simpleMarkerListener(marker)});
+	              google.maps.event.addListener(marker, 'click', function(){fireEvent_simpleMarkerListener(marker)});
 	
 	              marker.setMap(map);
 	              vehicleMarkers[nameResult.name] = marker;
@@ -411,11 +510,26 @@ var MapManager = function() {
             }
        });
       }, //addVehicles
-      		
-      // Adds bus stops markers to the map
+     
+     busStopDetails: [],
+     
+     
+	  // Adds bus stops markers to the map
       addStops: function(stops) {
+      	//alert('addStops');
         var stpRoutes = teletracManager.getStopNamesWithRoutes();
         var scale = 0.45;
+        var listContainer = $('#bus-stop-ul');
+        var listTemplate = $("#bus-stop-template");
+      //PARTH: Travel Planner items
+      	var startSelectContainer = $('#startStop-select');
+      	var finishSelectContainer = $('#endStop-select');
+        var optionsTemplate = $("#bus-stop-options-template");
+        var startDetailContainer = $('#stopdetails');
+        var optionsDetailTemplate = $("#bus-stop-detail-template");
+        
+        var index = 0;
+        var jsonList =[];
         $(stops).each( function() {
         			var stopMarker = new google.maps.MarkerImage(imgStopMarker,
 												    	null, 
@@ -434,26 +548,116 @@ var MapManager = function() {
  					marker.name = this.stopName;
  					marker.isBus = false;
                     marker.popupInfo = this.stopName + "<br />";
-                    
+                    var stopRoutes = "";
                     if(stpRoutes[this.stopName].length > 1) {
                       marker.popupInfo += "Routes: "; 
+                      stopRoutes = "Routes: ";
                     } else if(stpRoutes[this.stopName].length == 1) {
                       marker.popupInfo += "Route: "; 
+                      stopRoutes = "Route: ";
                     }
                     
-                    var separator = "";
+                    var separator = ""; 
                     
                     $(stpRoutes[this.stopName]).each(function() {
                       marker.popupInfo += separator + this;
+                      stopRoutes += separator + this;
                       separator = ", ";
                     });
               
-                   google.maps.event.addListener(marker, 'click', function() { simpleMarkerListener(marker); });
+                   //google.maps.event.addListener(marker, 'click', function() { simpleMarkerListener(marker); });
+                   google.maps.event.addListener(marker, 'click', function() { fireEvent_simpleMarkerListener(marker); });
 					         marker.setMap(map);
 					
 					busStopMarkers[this.stopName] = marker;
+					//PARTH: add to json List
+					//alert(JSON.stringify(this));
+					//jsonList.push({busStopTitle: this.stopName, busStopRoutes: stopRoutes,stopId: this.stopName.replace(/ /g,"-")});
+					jsonList.push({busStopTitle: this.stopName, busStopRoutes: stopRoutes,stopId: this.id,stopName: encodeURIComponent(this.stopName)});
+					mapManager.busStopDetails.push({busStopTitle: this.stopName,lat:this.latitude, lng:this.longitude, busStopRoutes: stopRoutes,stopId: this.id,stopName: encodeURIComponent(this.stopName)});
+					index++;
+				    //listTemplate.tmpl({busStopTitle: this.stopName, busStopRoutes: stopRoutes}).appendTo(listContainer);
+				    
     	});
+    	//PARTH: run template for json list
+    	listTemplate.tmpl(jsonList).appendTo(listContainer);
+    	optionsTemplate.tmpl(jsonList).appendTo(startSelectContainer);
+    	 /*if($(startSelectContainer).hasClass('ui-listview')){
+			$(startSelectContainer).listview('refresh');
+		}*/
+    	
+    	optionsTemplate.tmpl(jsonList).appendTo(finishSelectContainer);
+    	/*if($(finishSelectContainer).hasClass('ui-listview')){
+			$(finishSelectContainer).listview('refresh');
+		}*/
+    	optionsDetailTemplate.tmpl(jsonList).appendTo(startDetailContainer);
+    	
+		
+   	    if($(listContainer).hasClass('ui-listview')){
+			$(listContainer).listview('refresh');
+		}
       }, //addSTops
+      
+       addBusStops: function(stops) {
+      	//alert('addBusStops');
+        var stpRoutes = aauMobile.tripPlanner.stopNamesWithRoutes;
+        
+        //var scale = 0.45;
+        //var listContainer = $('#bus-stop-ul');
+        //var listTemplate = $("#bus-stop-template");
+      //PARTH: Travel Planner items
+      	var startSelectContainer = $('#startStop-select');
+      	var finishSelectContainer = $('#endStop-select');
+        var optionsTemplate = $("#bus-stop-options-template");
+        var startDetailContainer = $('#stopdetails');
+        var optionsDetailTemplate = $("#bus-stop-detail-template");
+        
+        var index = 0;
+        var jsonList =[];
+        $(stops).each( function() {
+        			
+                    var stopRoutes = "";
+                    if(stpRoutes[this.stopName].length > 1) {
+                      stopRoutes = "Routes: ";
+                    } else if(stpRoutes[this.stopName].length == 1) {
+                      stopRoutes = "Route: ";
+                    }
+                    
+                    var separator = ""; 
+                    
+                    $(stpRoutes[this.stopName]).each(function() {
+                      stopRoutes += separator + this;
+                      separator = ", ";
+                    });
+              
+                    //PARTH: add to json List
+					//alert(JSON.stringify(this));
+					//jsonList.push({busStopTitle: this.stopName, busStopRoutes: stopRoutes,stopId: this.stopName.replace(/ /g,"-")});
+					jsonList.push({busStopTitle: this.stopName, busStopRoutes: stopRoutes,stopId: this.id,stopName: encodeURIComponent(this.stopName)});
+					mapManager.busStopDetails.push({busStopTitle: this.stopName,lat:this.latitude, lng:this.longitude, busStopRoutes: stopRoutes,stopId: this.id,stopName: encodeURIComponent(this.stopName)});
+					index++;
+				    //listTemplate.tmpl({busStopTitle: this.stopName, busStopRoutes: stopRoutes}).appendTo(listContainer);
+				    
+    	});
+    	//PARTH: run template for json list
+    	//listTemplate.tmpl(jsonList).appendTo(listContainer);
+    	
+    	optionsTemplate.tmpl(jsonList).appendTo(startSelectContainer);
+    	
+    	optionsTemplate.tmpl(jsonList).appendTo(finishSelectContainer);
+    	
+    	optionsDetailTemplate.tmpl(jsonList).appendTo(startDetailContainer);
+    	
+      }, //addBusSTops
+      
+      fireEvent_getStopDetails: function(busStopName){
+      	appirioUtils.fireEvent(mapManager.getStopDetails_Event, busStopName, null);
+      },
+      
+      getStopDetails_Event : function(callback,busStopName){
+      		mapManager.fireEventCallback = callback;
+      		mapManager.getStopDetails(busStopName);
+      },
       
       // Requests schedule data from Salesforce. This is keyed by stop.
       getStopDetails: function(busStopName){
@@ -472,6 +676,8 @@ var MapManager = function() {
       		$('#bus-stop-name').html('Stop Schedule');
       	}
       	$('#bus-stop-list').empty();
+      	
+      	var jsonList = [];
       	$.each(data.routes, function(index, route){
       		var routeName = route.name;
       		var routeSchedule = route.schedule.join();
@@ -479,11 +685,19 @@ var MapManager = function() {
       		var routeArrival = "No More Stops Today";
       		route.schedule.sort(aauMobile.scheduleSort);
       		
-      		$.each(teletracManager.getRouteNamesAndColors(), function(index, color){
+      		var routeNameAndColor ;
+      		if(!hasNativeMap){
+      			routeNameAndColor = teletracManager.getRouteNamesAndColors();
+      		}else{
+      			routeNameAndColor = aauMobile.tripPlanner.routeNamesAndColors;
+      		}
+      		
+      		$.each(routeNameAndColor, function(index, color){
       			if(color.routeName == routeName){
       				routeColor = color.routeColor;
       			}
       		});
+      		
       		
       		var nextTime;
       		var nextSchedule;
@@ -513,13 +727,18 @@ var MapManager = function() {
       			
       			var stopTime = new Date();
       			stopTime.setHours(t[0], t[1], 0);
-      			
+      			console.log('stopTime = ' +stopTime);
+      			console.log('currentTime = ' +currentTime);
+      			console.log('stopTime - currentTime = ' + (stopTime - currentTime));
       			if((!nextTime || nextTime - stopTime > 0) && stopTime - currentTime > 0){
       				nextTime = stopTime;
       				nextSchedule = schedule;
       				nextIndex = index;
       			}
       		});
+      		
+      		console.log('nextTime = ' +nextTime);
+      		console.log('nextSchedule = ' +nextSchedule);
       		if(nextTime){
       			var minutesUntil = Math.ceil((nextTime - currentTime) / 1000 / 60);
       			if(minutesUntil == 1){
@@ -530,6 +749,7 @@ var MapManager = function() {
       				routeArrival = "Next Bus at: <span class='bus-stop-arrival-time'>" + nextSchedule + "</span>";
       			}
       		}
+      		console.log('nextIndex = ' +nextIndex);
       		var routeSchedule = "No Upcoming Stops.";
       		if(nextIndex){
       			var upcoming = route.schedule.slice(nextIndex);
@@ -538,13 +758,33 @@ var MapManager = function() {
       			}
       			routeSchedule = "Upcoming Stops: " + upcoming.join(", ");
       		}
+      		console.log('routeName = ' +routeName);
+      		console.log('routeArrival = ' +routeArrival);
+      		console.log('routeColor = ' +routeColor);
+      		console.log('routeSchedule = ' +routeSchedule);
       		
-      		$("#bus-stop-list").append($("#bus-stop-schedule-template").tmpl({routeName: routeName, 
+      		//PARTH: add to json
+      		jsonList.push({routeName: routeName, 
+						  routeArrival: routeArrival,
+						  routeColor: routeColor, 
+						  routeSchedule: routeSchedule});
+      		/*$("#bus-stop-list").append($("#bus-stop-schedule-template").tmpl({routeName: routeName, 
       																		  routeArrival: routeArrival,
       																		  routeColor: routeColor, 
-      																		  routeSchedule: routeSchedule}));
+      																		  routeSchedule: routeSchedule}));*/
       		
       	});
+      	//PARTH: run template for json list
+      	$("#bus-stop-list").append($("#bus-stop-schedule-template").tmpl(jsonList));
+      	
+      /* PARTH: fix issue I-35353 : Map hangs if stops are clicked in quick succession*/
+      	if(mapManager.fireEventCallback){
+      		mapManager.fireEventCallback()
+      	}else{
+      		$.mobile.hidePageLoadingMsg();
+  			$('.ui-loader').css('display', 'none');
+      	}
+      	
       	if($("#bus-stop-list").hasClass("ui-listview")){
       		$("#bus-stop-list").listview("refresh");
       	}
@@ -556,6 +796,17 @@ var MapManager = function() {
       // Renders a data return failure.
       showStopError: function(data){
       	console.log(data);
+      	alert(JSON.stringify(data));
+      	$.mobile.hidePageLoadingMsg();
+      	$('.ui-loader').css('display', 'none');
+      	
+      	/* PARTH: fix issue I-35353 : Map hangs if stops are clicked in quick succession*/
+      	if(mapManager.fireEventCallback){
+      		mapManager.fireEventCallback()
+      	}else{
+      		$.mobile.hidePageLoadingMsg();
+  			$('.ui-loader').css('display', 'none');
+      	}
       },
       
       // Configures tracking of user position

@@ -1,0 +1,61 @@
+<apex:component >
+<style>
+.div-parent-page2{
+	padding-top:10px; 
+	
+	overflow:hidden;
+}
+.div-header-routes{
+	width:10%;
+	float: left; 
+}
+.text-routes{
+	color: #333;
+	font-weight:bold;
+	text-shadow: 0 0px 0 black;
+}
+.div-selection{
+	width: 75%;
+	float: left;
+	margin-left: 0px;
+	position: relative;
+	left: 35px;
+}
+.ul-selection{
+	list-style-type: none;
+	padding: 0px;
+}
+.div-tripOptions{
+	position:relative;
+	top:8px;
+	/*height:100%;*/
+	overflow-x:hidden;
+	/*overflow-y:auto;*/
+	border-top:solid 1px black;
+}
+</style>
+
+	<div class="div-parent-page2"  >
+	   		<div class="div-header-routes">
+		   		<table><tr><td><span class="bus-icon"></span></td> </tr>
+		   		<tr><td><span  class="text-routes">Routes</span></td> </tr>
+		   		</table>
+	   		</div>
+	   		<div class="div-selection">
+				<table width="100%"><tr><td>
+					<ul id="ul-trip-planner-selection" class="ul-selection">
+						<!-- trip-selection-template -->
+					</ul></td></tr></table>
+			</div>
+	   		<div class="mob-header-icon header-right" id="refreshBtn"><div class="mob-header-RefreshIcon" onClick="JavaScript:RefreshDataJS(7);" /></div>
+	   		
+	   		
+	   	</div>
+	   	
+	   	<div class="mob-content ui-content div-tripOptions" data-role="content"  role="main">
+        	<ul data-role="listview" data-theme="d" id="trip-options-list" class="ui-listview">
+        		<!-- trip-options-template -->
+					 
+			 </ul>
+    	</div>
+</apex:component>

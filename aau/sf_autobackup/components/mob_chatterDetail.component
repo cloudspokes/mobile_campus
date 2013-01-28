@@ -1,0 +1,120 @@
+<apex:component >
+<apex:attribute name="hasNativeResources" description="True or false for whether or not the device can load from native." type="boolean" required="true"/> 
+<style>
+.blankSpan{
+	width: 35px;
+    height: 31px;
+    margin: auto;
+    margin-left: 10px;
+}
+.chatterDetail-icon1 {
+    background:url({!IF(hasNativeResources,"aaumobile://iconsprite_grey.png", URLFOR($Resource.mob_Design, "/mob_Design/iconsprite_grey.png"))}) no-repeat 0px 0px;
+    float:left;
+    background-position-y: -165px;
+    background-size: 100%;
+    width: 35px;
+    height: 32px;
+    margin: auto;
+    margin-left: 10px;
+    margin-top: 5px;
+}
+.chatterDetail-icon2 {
+    background:url({!IF(hasNativeResources,"aaumobile://iconsprite_grey.png", URLFOR($Resource.mob_Design, "/mob_Design/iconsprite_grey.png"))}) no-repeat 0px 0px;
+    float:left;
+    background-position-y: -28px;
+    background-size:100%;
+    width:35px;
+    height:29px;
+    margin-left: 10px;
+    margin-top: 5px;
+}
+.chatterDetail-icon3{
+    background:url({!IF(hasNativeResources,"aaumobile://iconsprite_grey.png", URLFOR($Resource.mob_Design, "/mob_Design/iconsprite_grey.png"))}) no-repeat 0px 0px;
+    float:left;
+    background-position-y: -197px;
+    background-size: 100%;
+    width:35px;
+    height:32px;
+    margin-left: 10px;
+    margin-top: 5px;
+}  
+.chatterDetail-icon4 {
+    background:url({!IF(hasNativeResources,"aaumobile://iconsprite_grey.png", URLFOR($Resource.mob_Design, "/mob_Design/iconsprite_grey.png"))}) no-repeat 0px 0px;
+    float:left;
+    background-position-y: -149px;
+    background-size: 110%;
+    width: 35px;
+    height: 29px;
+    margin: auto;
+    margin-left: 10px;
+    margin-top: 5px;
+}  
+.chatterLi{
+   margin: 0px;
+   border-bottom: solid 1px #626262;
+}    
+.chatterDetail-detail{
+    /*height:28px;*/
+    font-weight:bold;
+    line-height: 0.9;
+}
+.chatterDetail-label{
+    font-size:10pt;
+    color: #808080;
+}
+#chatter-DescrDv { 
+    padding-left:10px;
+    margin-right:10px;
+}
+#chatter-DescrDv h3 {
+    font-weight: normal;
+}
+
+.chatter-Detail h2{
+    font-size:14pt;
+	margin-top: 2px;
+}
+.chatterLi div.ui-btn-inner span.ui-icon{
+    display: none;
+}
+.detail-value {
+	white-space: normal;
+}
+.section-details {
+	color:#000;
+	font-size:12px;
+	margin-bottom:0px;
+	padding: 5px 5px 0px 2px;
+}
+</style>
+
+<script id="chatterDetail-template" type="text/x-jquery-tmpl">
+			{{if parent!=""}}                              
+              <li class="chatterLi" style="padding-top: 2px;padding-bottom: 1px;">
+                   <span class="chatterDetail-icon4" /><a href="#" class="chatterDetail-detail" style="padding-top:0.4em">
+                       <span class="detail-value">${parent}</span>
+                       <br/><span class="chatterDetail-label">Chatter Group</span>
+                    </a>  
+                </li>
+			{{/if}}
+                
+				 <li id="chatterTime" class="chatterLi" style="padding-top: 2px;padding-bottom: 2px;">
+                    <span class="chatterDetail-icon1" /> <a href="#" class="chatterDetail-detail">
+                       <span class="detail-value">${CreatedDayAndDay}</span>
+						<br/><span class="chatterDetail-label">Posted On</span>
+                    </a> 
+                </li>  
+                <li class="chatterLi" style="padding-top: 2px;padding-bottom: 1px;">
+                   <span class="chatterDetail-icon3" /><a href="#" class="chatterDetail-detail" style="padding-top:0.4em">
+                       <span class="detail-value">${actor}</span>
+                       <br/><span class="chatterDetail-label">Posted by</span>
+                    </a>  
+                </li>
+				<!--<li class="chatterLi" style="padding-top: 2px;padding-bottom: 1px;">
+                   <span class="blankSpan" />
+                       <span class="detail-value chatterDetail-detail">${body}</span>
+                      <br/>
+                </li>-->
+				
+</script> 
+</apex:component>

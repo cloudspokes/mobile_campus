@@ -2,12 +2,12 @@
 private class  mob_BusStops_Routes_Test {
 	
 	static testmethod void testStudentRest() {
-		User aaUStudent = TestUtil.makeUser('AAU Student - Platform');
+		User aaUStudent = mob_TestUtil.makeUser('AAU Student - Platform');
 		System.runAs(aaUStudent) {
-			    Bus_Route__c busRoute = TestUtil.createBusRoute('new Test');
+			    Bus_Route__c busRoute = mob_TestUtil.createBusRoute('new Test');
 			    Double lat =  37.788008;
 			    Double longitute = -122.400682;
-			    Bus_Stop__c busStop = TestUtil.createBusStop('First', lat, longitute);
+			    Bus_Stop__c busStop = mob_TestUtil.createBusStop('First', lat, longitute);
 			    Bus_Stops_Routes__c busStopRoutes = new Bus_Stops_Routes__c();
 			    busStopRoutes.Bus_Route__c = busRoute.Id;
 			    busStopRoutes.Bus_Stop__c = busStop.Id;

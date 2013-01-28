@@ -39,6 +39,16 @@
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
     <fields>
+        <fullName>External_Id__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>true</externalId>
+        <label>External Id</label>
+        <length>100</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
         <fullName>Route_Color__c</fullName>
         <description>The color of the route</description>
         <externalId>false</externalId>
@@ -48,11 +58,35 @@
         <type>Text</type>
         <unique>false</unique>
     </fields>
+    <fields>
+        <fullName>Route_Marker__c</fullName>
+        <description>The file name of the image marker for this route.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The file name of the image marker for this route.</inlineHelpText>
+        <label>Route Marker</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Teletrac_Name__c</fullName>
+        <description>The unabbreviated name of the Bus Route as returned by Teletrac.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The unabbreviated name of the Bus Route as returned by Teletrac.</inlineHelpText>
+        <label>Teletrac Name</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
     <label>Bus Route</label>
     <listViews>
         <fullName>All</fullName>
         <columns>NAME</columns>
+        <columns>Teletrac_Name__c</columns>
         <columns>Route_Color__c</columns>
+        <columns>Route_Marker__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
         <language>en_US</language>

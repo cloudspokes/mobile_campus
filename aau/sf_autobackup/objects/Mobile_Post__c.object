@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <fields>
+        <fullName>Bus_Stop__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Location Linked to a Building on the AAU Transit System</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Location Linked to a Building on the AAU Transit System</inlineHelpText>
+        <label>Location Stop</label>
+        <referenceTo>Bus_Stop__c</referenceTo>
+        <relationshipLabel>Mobile Posts</relationshipLabel>
+        <relationshipName>Mobile_Posts</relationshipName>
+        <required>false</required>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Category__c</fullName>
+        <description>Category of the Post/Event</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Category of the Post/Event</inlineHelpText>
+        <label>Category</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Campus Recreation</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Student Activities</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Academic Events</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Description__c</fullName>
+        <description>Description of the Post/Event</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Description of the Post/Event</inlineHelpText>
+        <label>Description</label>
+        <length>32768</length>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Event_End__c</fullName>
+        <description>End Time of the Post/Event</description>
+        <externalId>false</externalId>
+        <inlineHelpText>End Time of the Post/Event</inlineHelpText>
+        <label>Event End</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Event_Start__c</fullName>
+        <description>Start Time of the Post/Event</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Start Time of the Post/Event</inlineHelpText>
+        <label>Event Start</label>
+        <required>true</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Link_Text__c</fullName>
+        <defaultValue>&apos;More Info&apos;</defaultValue>
+        <description>The text that will be displayed in the hyperlink for the field &quot;Link__c&quot; in the event detail</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The text that will be displayed in the hyperlink for the field &quot;Link__c&quot; in the event detail</inlineHelpText>
+        <label>Link Text</label>
+        <length>250</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Link__c</fullName>
+        <description>Link to site with more information</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Link to site with more information</inlineHelpText>
+        <label>Link</label>
+        <required>false</required>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>Location__c</fullName>
+        <externalId>false</externalId>
+        <label>Location</label>
+        <length>250</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Subcategory__c</fullName>
+        <externalId>false</externalId>
+        <label>Subcategory</label>
+        <picklist>
+            <controllingField>Category__c</controllingField>
+            <picklistValues>
+                <fullName>Event</fullName>
+                <controllingFieldValues>Campus Recreation</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Fitness Class</fullName>
+                <controllingFieldValues>Campus Recreation</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Wellness Series</fullName>
+                <controllingFieldValues>Campus Recreation</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Title__c</fullName>
+        <description>Title of the Post/Event</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Title of the Post/Event</inlineHelpText>
+        <label>Title</label>
+        <length>250</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Mobile Post</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Title__c</columns>
+        <columns>Category__c</columns>
+        <columns>Event_Start__c</columns>
+        <columns>Event_End__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>Location__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_Future</fullName>
+        <columns>NAME</columns>
+        <columns>Title__c</columns>
+        <columns>Category__c</columns>
+        <columns>Event_Start__c</columns>
+        <columns>Event_End__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>Location__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Event_Start__c</field>
+            <operation>greaterOrEqual</operation>
+            <value>TODAY</value>
+        </filters>
+        <label>All Future</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <displayFormat>MP-{0000}</displayFormat>
+        <label>Mobile Post Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Mobile Posts</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>

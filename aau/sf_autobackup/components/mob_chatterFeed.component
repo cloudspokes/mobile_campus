@@ -1,0 +1,75 @@
+<apex:component >
+<style>
+ #chatter-feed-ul li a{
+    padding:0 !important;
+    padding-right:30px !important;
+ }
+ .feed-title{
+    padding: 5px;
+    color: #dc2221;
+    font-size: 14pt;
+    white-space: pre-line;
+ }
+ .feed-origin{
+    color: #808080;
+    font-weight: lighter;
+    font-size: 11pt;
+    padding-left: 5px;
+ }
+ 
+ /*Override jQuery Mobile Defaults*/
+ #chatter-feed-ul li div.ui-li{
+	padding:5px;
+    border: none;
+    border-bottom: solid 1px #626262;
+ }
+ #chatter-feed-container{
+	 width: 100%;
+ }
+ .date-divider{
+    color: #FFFFFF;
+    text-shadow: 0 1px 1px #000000;
+    background-image: -webkit-linear-gradient( top, #303030 0%, #565656 20%, #565656 80%, #303030 100% );
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#303030), color-stop(0.2, #565656), color-stop(0.8, #565656), to(#303030));
+    background-color: #565656;
+    font-size: 11pt;
+    padding: 5px;
+    border: none;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5); 
+    z-index:0;
+ }
+ 
+</style>
+
+<div id="chatter-feed-container" >
+	<ul data-role="listview" data-theme="d" id="chatter-feed-ul">
+	</ul>
+</div>
+
+
+<script id="chatter-feed-template" type="text/x-jquery-tmpl">
+{{if isDivider}}
+		 <li data-role="list-divider" class="date-divider">${CreatedDayAndDay}</li>
+	{{else}}
+		<li class="chatter-feed-li"><a href="javascript:aauMobile.chatterFeed.showChatterDetails('${feedId}');">
+		<div class="feed-title">${title}</div>
+		
+		{{if parentType == "CollaborationGroup"}}
+			<div class="feed-origin">${parent}</div>
+		{{else}}	
+			<div class="feed-origin">${actor} </div>
+		{{/if}}
+		</a></li>
+	{{/if}}
+</script> 
+
+<script id="no-chatter-feed-template" type="text/x-jquery-tmpl">
+<li class="chatter-feed-li">
+	<a href="javascript:JavaScript:RefreshDataJS(6);">
+		<div class="feed-title" style="text-align:center">No Messages Retrieved.</div>
+		<div class="feed-origin" style="text-align:center">Tap here to retry.</div>
+	</a>
+</li>
+</script>
+	<!-- <a href="javascript:$.mobile.showPageLoadingMsg('b', 'Loading...', false);$('.ui-loader').css('display', 'block');aauMobile.chatterFeed.init();"> -->
+</apex:component>

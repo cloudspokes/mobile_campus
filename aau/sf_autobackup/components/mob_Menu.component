@@ -1,4 +1,5 @@
 <apex:component >
+<div data-role="page" id="menu-page" class="page-map hidden">
 <style>
     #menu-page{
         background: transparent;
@@ -26,9 +27,12 @@
         width:100%;
         z-index: 1001;
     }
+    #menu-header * {
+    	pointer-events: none !important;
+    }
     #menu-header h1{
         font-size: 16pt; 
-        margin: 0.65em 0 .35em 0;
+        margin: 0.50em 0 .35em 0;
         text-overflow: clip;
         position: absolute;
         width: 100%;
@@ -70,15 +74,23 @@
     #menu-page.hidden .slide-menu{
         z-index: -999;
     }
-    #menu-page.ui-page.standard-menu.slide-out{
+       #menu-page.ui-page.standard-menu.slide-out{
         /*margin-left: 0;*/
         -webkit-transform: translate3d(0,0,0);
         z-index: 1000;
+    }
+     #menu-page.ui-page.standard-menu.slide-out > *{
+        /*margin-left: 0;*/
+        -webkit-transform: translate3d(0,0,0);
     }
     #menu-page.ui-page.android-menu.slide-out{
         /*margin-left: 0;*/
         -webkit-transform: translateX(0);
         z-index: 1000;
+    }
+    #menu-page.ui-page.android-menu.slide-out > *{
+        /*margin-left: 0;*/
+        -webkit-transform: translateX(0);
     }
     .slide-menu span.ui-icon-arrow-r{
         display:none;
@@ -137,10 +149,23 @@
 		<span id="slide-menu-icon-schedule" class="slide-menu-icon">&nbsp;</span>
 		<h3>Class Schedule</h3>
 	</a></li>
+    <li><a id="history-link" href="#class-history" data-transition="slide">
+		<span id="slide-menu-icon-schedule" class="slide-menu-icon">&nbsp;</span>
+		<h3>Class History</h3>
+	</a></li>
+	<li><a id="trip-planner-link" href="#trip-planner" data-transition="slide">
+		<span id="slide-menu-icon-planner" class="slide-menu-icon">&nbsp;</span>
+		<h3>Trip Planner</h3>
+	</a></li> 
+ 
     <li><a id="transit-map-link" href="#transit-map" data-transition="slide">
 		<span id="slide-menu-icon-map" class="slide-menu-icon">&nbsp;</span>
 		<h3>Transit Map</h3>
 	</a></li>
+	<li><a id="chatter-link" href="#chatter-list" data-transition="slide">
+		<span id="slide-menu-icon-links" class="slide-menu-icon">&nbsp;</span>
+		<h3>Message Center</h3>
+	</a></li> 
     <li><a id="feed-list-link" href="#feed-list" data-transition="slide">
 		<span id="slide-menu-icon-news" class="slide-menu-icon">&nbsp;</span>
 		<h3>Campus News</h3>
@@ -157,10 +182,11 @@
 		<span id="slide-menu-icon-links" class="slide-menu-icon">&nbsp;</span>
 		<h3>Helpful Links</h3>
 	</a></li> 
+	 
     <li id="logout-item"><a href="#" id="logout-link">
 		<span id="slide-menu-icon-logout" class="slide-menu-icon">&nbsp;</span>
 		<h3>Logout</h3>
 	</a></li>
  </ul>
-
+</div>
 </apex:component>

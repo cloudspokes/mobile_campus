@@ -1,0 +1,548 @@
+<apex:component > 
+<apex:attribute name="hasNativeResources" description="True or false for whether or not the device can load from native." type="boolean" required="true"/>
+<apex:attribute name="isAndroid" description="True or false for whether or not the device is running Android" type="boolean" required="true"/> 
+<style>
+/* custom style roller for travel planner
+-----------------------------------------------------------------------------------------------------------*/
+#btnTravelPlan{
+  	background : #CC0018;
+  }
+.ui-bar-f1 {
+	border: 1px solid #CC0018 /*{f-bar-border}*/;
+	background: #CC0018 /*{f-bar-background-color}*/;
+	color: #ffffff /*{f-bar-color}*/;
+	font-weight: bold;
+	text-shadow: 0 ;
+	background-image: -webkit-gradient(linear, left top, left bottom, from( #FF1e27 /*{f-bar-background-start}*/), to( #d51920 /*{f-bar-background-end}*/)); /* Saf4+, Chrome */
+	background-image: -webkit-linear-gradient( #FF1e27 /*{f-bar-background-start}*/, #d51920 /*{f-bar-background-end}*/); /* Chrome 10+, Saf5.1+ */
+	background-image:    -moz-linear-gradient( #FF1e27 /*{f-bar-background-start}*/, #d51920 /*{f-bar-background-end}*/); /* FF3.6 */
+	background-image:     -ms-linear-gradient( #FF1e27 /*{f-bar-background-start}*/, #d51920 /*{f-bar-background-end}*/); /* IE10 */
+	background-image:      -o-linear-gradient( #FF1e27 /*{f-bar-background-start}*/, #d51920 /*{f-bar-background-end}*/); /* Opera 11.10+ */
+	background-image:         linear-gradient( #FF1e27 /*{f-bar-background-start}*/, #d51920 /*{f-bar-background-end}*/);
+}
+.ui-bar-f1 .ui-link-inherit {
+	color: #ffffff /*{f-bar-color}*/;
+}
+
+.ui-bar-f1 a.ui-link {
+	color: #7cc4e7 /*{f-bar-link-color}*/;
+	font-weight: bold;
+}
+
+.ui-bar-f1 a.ui-link:visited {
+    color: #2489ce /*{f-bar-link-visited}*/;
+}
+
+.ui-bar-f1 a.ui-link:hover {
+	color: #2489ce /*{f-bar-link-hover}*/;
+}
+
+.ui-bar-f1 a.ui-link:active {
+	color: #2489ce /*{f-bar-link-active}*/;
+}
+
+.ui-bar-f1,
+.ui-bar-f1 input,
+.ui-bar-f1 select,
+.ui-bar-f1 textarea,
+.ui-bar-f1 button {
+	 font-family: Helvetica, Arial, sans-serif /*{global-font-family}*/;
+}
+.ui-body-f1,
+.ui-overlay-f1 {
+	border: 1px solid #CC0018 /*{f-body-border}*/;
+	color: #333333 /*{f-body-color}*/;
+	text-shadow: 0 ;
+	background: #f9f9f9 /*{f-body-background-color}*/;
+	background-image: -webkit-gradient(linear, left top, left bottom, from( #FFFCFC /*{f-body-background-start}*/), to( #FFFCFC /*{f-body-background-end}*/)); /* Saf4+, Chrome */
+	background-image: -webkit-linear-gradient( #FFFCFC /*{f-body-background-start}*/, #FFFCFC /*{f-body-background-end}*/); /* Chrome 10+, Saf5.1+ */
+	background-image:    -moz-linear-gradient( #FFFCFC /*{f-body-background-start}*/, #FFFCFC /*{f-body-background-end}*/); /* FF3.6 */
+	background-image:     -ms-linear-gradient( #FFFCFC /*{f-body-background-start}*/, #FFFCFC /*{f-body-background-end}*/); /* IE10 */
+	background-image:      -o-linear-gradient( #FFFCFC /*{f-body-background-start}*/, #FFFCFC /*{f-body-background-end}*/); /* Opera 11.10+ */
+	background-image:         linear-gradient( #FFFCFC /*{f-body-background-start}*/, #FFFCFC /*{f-body-background-end}*/);
+}
+.ui-overlay-f1 {
+	background-image: none;
+	border-width: 0;
+}
+.ui-body-f1,
+.ui-body-f1 input,
+.ui-body-f1 select,
+.ui-body-f1 textarea,
+.ui-body-f1 button {
+	 font-family: Helvetica, Arial, sans-serif /*{global-font-family}*/;
+}
+.ui-body-f1 .ui-link-inherit {
+	color: #333333 /*{f-body-color}*/;
+}
+
+.ui-body-f1 .ui-link {
+	color: #2489ce /*{f-body-link-color}*/;
+	font-weight: bold;
+}
+
+.ui-body-f1 .ui-link:visited {
+    color: #2489ce /*{f-body-link-visited}*/;
+}
+
+.ui-body-f1 .ui-link:hover {
+	color: #2489ce /*{f-body-link-hover}*/;
+}
+
+.ui-body-f1 .ui-link:active {
+	color: #2489ce /*{f-body-link-active}*/;
+}
+
+.ui-btn-up-f1 {
+	border: 1px solid #CC0018 /*{f-bup-border}*/;
+	background: #eeeeee /*{f-bup-background-color}*/;
+	font-weight: bold;
+	color: #EBEFF1 /*{f-bup-color}*/;
+	text-shadow: 0 ;
+	background-image: -webkit-gradient(linear, left top, left bottom, from( #CC0018 /*{f-bup-background-start}*/), to( #CC0018/*{f-bup-background-end}*/)); /* Saf4+, Chrome */
+	background-image: -webkit-linear-gradient( #CC0018 /*{f-bup-background-start}*/, #CC0018 /*{f-bup-background-end}*/); /* Chrome 10+, Saf5.1+ */
+	background-image:    -moz-linear-gradient( #CC0018 /*{f-bup-background-start}*/, #CC0018 /*{f-bup-background-end}*/); /* FF3.6 */
+	background-image:     -ms-linear-gradient( #CC0018 /*{f-bup-background-start}*/, #CC0018 /*{f-bup-background-end}*/); /* IE10 */
+	background-image:      -o-linear-gradient( #CC0018 /*{f-bup-background-start}*/, #CC0018 /*{f-bup-background-end}*/); /* Opera 11.10+ */
+	background-image:         linear-gradient( #CC0018 /*{f-bup-background-start}*/, #CC0018 /*{f-bup-background-end}*/);
+}
+.ui-btn-up-f1:visited,
+.ui-btn-up-f1 a.ui-link-inherit {
+	color: #CC0018 /*{f-bup-color}*/;
+}
+.ui-btn-hover-f1 {
+	border: 1px solid #bbbbbb /*{f-bhover-border}*/;
+	background: #dfdfdf /*{f-bhover-background-color}*/;
+	font-weight: bold;
+	color: #EBEFF1 /*{f-bhover-color}*/;
+	text-shadow: 0 ;
+	background-image: -webkit-gradient(linear, left top, left bottom, from( #CC0018 /*{f-bhover-background-start}*/), to( #CC0018 /*{f-bhover-background-end}*/)); /* Saf4+, Chrome */
+	background-image: -webkit-linear-gradient( #CC0018 /*{f-bhover-background-start}*/, #CC0018 /*{f-bhover-background-end}*/); /* Chrome 10+, Saf5.1+ */
+	background-image:    -moz-linear-gradient( #CC0018 /*{f-bhover-background-start}*/, #CC0018 /*{f-bhover-background-end}*/); /* FF3.6 */
+	background-image:     -ms-linear-gradient( #CC0018 /*{f-bhover-background-start}*/, #CC0018 /*{f-bhover-background-end}*/); /* IE10 */
+	background-image:      -o-linear-gradient( #CC0018 /*{f-bhover-background-start}*/, #CC0018 /*{f-bhover-background-end}*/); /* Opera 11.10+ */
+	background-image:         linear-gradient( #CC0018 /*{f-bhover-background-start}*/, #CC0018 /*{f-bhover-background-end}*/);
+}
+.ui-btn-hover-f1:visited,
+.ui-btn-hover-f1:hover,
+.ui-btn-hover-f1 a.ui-link-inherit {
+	color: #EBEFF1 /*{f-bhover-color}*/;
+}
+.ui-btn-down-f1 {
+	border: 1px solid #bbbbbb /*{f-bdown-border}*/;
+	background: #d6d6d6 /*{f-bdown-background-color}*/;
+	font-weight: bold;
+	color: #EBEFF1 /*{f-bdown-color}*/;
+	text-shadow: 0 ;
+	background-image: -webkit-gradient(linear, left top, left bottom, from( #d0d0d0 /*{f-bdown-background-start}*/), to( #dfdfdf /*{f-bdown-background-end}*/)); /* Saf4+, Chrome */
+	background-image: -webkit-linear-gradient( #d0d0d0 /*{f-bdown-background-start}*/, #dfdfdf /*{f-bdown-background-end}*/); /* Chrome 10+, Saf5.1+ */
+	background-image:    -moz-linear-gradient( #d0d0d0 /*{f-bdown-background-start}*/, #dfdfdf /*{f-bdown-background-end}*/); /* FF3.6 */
+	background-image:     -ms-linear-gradient( #d0d0d0 /*{f-bdown-background-start}*/, #dfdfdf /*{f-bdown-background-end}*/); /* IE10 */
+	background-image:      -o-linear-gradient( #d0d0d0 /*{f-bdown-background-start}*/, #dfdfdf /*{f-bdown-background-end}*/); /* Opera 11.10+ */
+	background-image:         linear-gradient( #d0d0d0 /*{f-bdown-background-start}*/, #dfdfdf /*{f-bdown-background-end}*/);
+}
+.ui-btn-down-f1:visited,
+.ui-btn-down-f1:hover,
+.ui-btn-down-f1 a.ui-link-inherit {
+	color: #EBEFF1 /*{f-bdown-color}*/;
+}
+.ui-btn-up-f1,
+.ui-btn-hover-f1,
+.ui-btn-down-f1 {
+	 font-family: Helvetica, Arial, sans-serif /*{global-font-family}*/;
+	text-decoration: none;
+}
+
+/****TRIP Planner Style******/
+.aau-heading {
+			font-size: 16px;
+			display: block;
+			margin: 0 -8px;
+			padding: 0;
+			border-width: 0 0 1px 0;
+			position: relative;
+		}
+		.ui-body-c, .ui-overlay-c {
+			color: #333;
+			text-shadow: 0 1px 0 white;
+	}
+
+
+		.aau-header-div {
+				font-family: Helvetica, Arial, sans-serif /*{global-font-family}*/;
+					text-decoration: none;
+				border: 1px solid #CC0018 /*{f-bup-border}*/;
+				background: #EEE /*{f-bup-background-color}*/;
+				font-weight: bold;
+				color: #EBEFF1 /*{f-bup-color}*/;
+				background-image: -webkit-linear-gradient(#CC0018 /*{f-bup-background-start}*/,#CC0018 /*{f-bup-background-end}*/);
+				background-image: -moz-linear-gradient( #CC0018 /*{f-bup-background-start}*/,#CC0018 /*{f-bup-background-end}*/);
+				background-image: -ms-linear-gradient( #CC0018 /*{f-bup-background-start}*/,#CC0018 /*{f-bup-background-end}*/);
+				background-image: -o-linear-gradient( #CC0018 /*{f-bup-background-start}*/,#CC0018 /*{f-bup-background-end}*/);
+				background-image: linear-gradient( #CC0018 /*{f-bup-background-start}*/,#CC0018 /*{f-bup-background-end}*/);
+				display: block;
+				text-align: center;
+				position: relative;
+				margin: 0;
+				padding: 0;
+		}
+		
+		
+		.aau-corner-top {
+			border-top-left-radius: 0.5em;
+			/*-webkit-background-clip: padding-box;*/
+			-moz-background-clip: padding
+			-moz-border-radius-topleft: 0.5em;
+			-webkit-border-top-left-radius: 0.5em;
+		
+			-moz-border-radius-topright: 0.5em;
+			-webkit-border-top-right-radius: 0.5em;
+			border-top-right-radius: 0.5em;
+			/*background-clip: padding-box;*/
+			
+			
+		}
+		.aau-corner-bottom {
+			-moz-border-radius-bottomleft: 0.5em;
+			-webkit-border-bottom-left-radius: 0.5em;
+			border-bottom-left-radius: 0.5em;
+			-moz-border-radius-bottomright: 0.5em;
+			-webkit-border-bottom-right-radius: 0.5em;
+			border-bottom-right-radius: 0.5em;
+			-webkit-background-clip: padding-box;
+		-moz-background-clip: padding;
+		background-clip: padding-box;
+		
+		}
+		
+		}
+		.aau-inner {
+		padding-left: 40px;
+		font-size: 13px;
+		padding: .55em 1.5em .5em;
+		
+		border-top: 1px solid white;
+		border-color: rgba(255, 255, 255, .3);
+		
+		display: block;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		white-space: nowrap;
+		position: relative;
+		zoom: 1;
+		
+		}	
+		.aau-text {
+		position: relative;
+		z-index: 1;
+		}
+/*********/
+ /* Trip Optins Css (screen 2)*/
+ .bus-icon {
+
+    background:url({!IF(hasNativeResources,"aaumobile://marker_A.png", URLFOR($Resource.mob_Design, "/mob_Design/images/Transit/marker_A.png"))})  no-repeat 0px 0px;
+    float:left;
+    background-position-y: 0px;
+    background-size: 100%;
+    width: 35px;
+    height: 31px;
+    margin: auto;
+    margin-left: 10px;
+}
+.stopName{color: #333;
+			text-shadow: 0 0px 0 black;
+			font-weight:bold;}
+			
+	.circle-div {
+				    width: 3em; height: 3em; 
+				    -webkit-border-radius: 1.5em; -moz-border-radius: 1.5em;
+				    position: relative;
+					position: relative;
+					
+				  }
+			 .circle-content {
+				    text-align: center; 
+				    position: relative;
+				    top: 0.4em;
+				    padding: 5px;
+					color: white;
+					font-size: 13pt;
+					white-space: pre-line;
+				  }
+			.next-bus{font-size: 10pt;white-space: pre-line;word-wrap:normal;}	
+			.clock-icon {
+
+			    background:url({!IF(hasNativeResources,"aaumobile://iconsprite_grey.png", URLFOR($Resource.mob_Design, "/mob_Design/iconsprite_grey.png"))})  no-repeat 0px 0px;
+			   	float: left;
+				background-position-y: -104px;
+				background-size: 95%;
+				width: 24px;
+				height: 20px;
+
+			}
+			.arrivalTime{margin-left: 5px;}	  
+			.bigdigit{font-size:1.5em;}
+			.nextIcon{
+				background-image: url(/resource/1351575749000/mob_Design/mob_Design/images/icons-18-white.png);
+				width: 20px;
+				background-position: -107px 1px;
+				background-color: #60A0E0;
+				border-radius: 12px;
+				display: inline-block;
+				border: solid 2px white;
+				position: absolute;
+				right: 5px;
+				top: 10px;
+				text-shadow: none;
+				color: white;
+				font-weight: bold;
+				font-size: 13pt;
+				position: relative;
+				top: -0px;
+				left: 10px;
+
+			}
+			
+ /* TRIP Details CSS (screen 3)*/
+ .circle-div-small {
+				    width: 2em; height: 2em; 
+				    -webkit-border-radius: 1em; -moz-border-radius: 1em;
+				    position: relative;
+					position: relative;
+					
+				  }
+			 .circle-content-small {
+				    text-align: center; 
+				     text-shadow:0 0 0;
+				    position: relative;
+				    top: 0.6em;
+				    padding: 5px;
+					color: white;
+					font-size: 6pt;
+					white-space: pre-line;
+				  }
+				  
+				  .circle-div-xfer {
+				    width: 1.5em; height: 1.5em; 
+				    -webkit-border-radius: 1.25em; -moz-border-radius: 1.25em;
+				    position: relative;
+					border-width:3px;
+					border-style:solid;
+					
+				  }
+			 .circle-content-xfer {
+				    text-align: center; 
+				    text-shadow:0 0 0;
+				    position: relative;
+				    top: 0.6em;
+				    padding-top: 3px;
+					color: white;
+					font-size: 5pt;
+					white-space: pre-line;
+				  }
+				  
+				  .circle-div-mini {
+				    width: 1.25em; height: 1.25em; 
+				    -webkit-border-radius: 0.625em; -moz-border-radius: 0.625em;
+				    position: relative;
+					position: relative;
+					
+				  }
+			 .circle-content-mini {
+				    text-align: center; 
+				    text-shadow:0 0 0;
+				    position: relative;
+				    top: 0.2em;
+				    padding: 2px;
+					color: white;
+					font-size: 5pt;
+					font-weight: bold;
+					white-space: pre-line;
+				  }
+			.stop-connector-line{
+				height: 50px;
+				width:1px;
+				margin-left: {!IF(isAndroid,"15px","25px")};
+				position: relative;
+			
+			}
+/* end trip Details css*/		
+
+.bus-stop-routes{
+	color: gray;
+	font-weight: lighter;
+	font-size: 9pt;
+	padding-left: 5px;
+}		  
+
+ .no-results{
+	font-weight: bold;
+	color: #DC2221;
+	background: rgba(187, 187, 187, 0); /*rgba(128, 128, 128, 0.58);*/
+	text-shadow: 0 0px 0 #DC2221;
+	border-bottom-color:rgba(187, 187, 187, 0);
+	padding: 10px;
+ }
+ .text-routeDetails{
+ 	font-size:11px;
+ 	font-weight:bold;
+ 	color:black;
+ }
+ </style>
+ 
+ 
+ <script id="bus-stop-options-template" type="text/x-jquery-tmpl">
+			<option value="${stopId}">${busStopTitle}</option>
+    	</script> 
+    	<script id="bus-stop-detail-template" type="text/x-jquery-tmpl">
+		
+			<a class="ui-link-inherit" id="${stopId}" name="${stopId}"  href="javascript:mapManager.fireEvent_getStopDetails(encodeURIComponent('${busStopTitle}'));">
+    			<!--<div class="bus-stop-title">${busStopTitle}</div>-->
+    			<div class="bus-stop-routes">${busStopRoutes}</div></a>
+	
+		</script>
+		<script>
+		function showStartStop(id){
+			//alert(id);
+			$("#stopdetails").append($("#start-detail").html());
+			//$("#start-detail").hide().html("").fadeIn('fast');
+			$("#start-detail").html("");
+			$("#start-detail").append($("#"+ id));//.fadeIn('fast');
+		}
+		function showFinishStop(id){
+			$("#stopdetails").append($("#finish-detail").html());
+			$("#finish-detail").html("");
+			$("#finish-detail").append($("#" + id));
+		}
+		</script>
+		
+		<div id="stopdetails" style="display:none;" ></div>
+		
+		<!-- TRIP OPTIONS -->
+		<script id="trip-selection-template" type="text/x-jquery-tmpl">
+						<li><div align="left" class="stopName"> ${startTrip}</div></li>
+						<li><div align="left" style="font-weight:bold;color:#DC2221;text-shadow: 0 0px 0 #DC2221;"> to</div></li>
+						<li><div align="left" class="stopName"> ${endTrip}</div></li>
+						
+		</script>				
+		<script id="trip-no-options-template" type="text/x-jquery-tmpl">
+				<li class="ui-li ui-body-d no-results"> 
+					There are no routes available between the selected stops close to that time. Please adjust your search.
+				</li>
+		</script>
+		<script id="trip-options-template" type="text/x-jquery-tmpl">
+				<li class="bus-stop ui-li ui-li-static ui-body-d"> 
+				{{if isClickable }}     	            
+					<a href="javascript:appirioUtils.fireEvent(aauMobile.tripPlanner.showTripDetails,'${tripId}',null);">
+				{{/if}}
+     	                <table border="0" cellpadding="0" cellspacing="0" class="bus-stop-table" style="padding-left:5px;">     
+     	                        <tr> 
+     	                        	<td width="1%"><div class="circle-div" style="background-color: ${routecolor}"><div class="circle-content" >${routename}</div></div></td>
+									
+									<td   style="width: 1px;padding-left: 10px;" >
+										<table>
+											<tr >
+												<td ><table ><tr><td style="padding-left:8px;"><span class="clock-icon"></span></td> </tr>
+										   		<tr><td width="1%"><span class="next-bus" style="color: ${routecolor};">NEXT BUS:</span></td> </tr>
+										   		</table></td>
+											</tr>
+										</table>
+									</td>
+									<td style="padding-left: 1px; width:45px;">
+										<table>
+											<tr>
+												<td>
+													<div align="center" ><span class="arrivaltime bigdigit" style="color: #DC2221;">${nextBusIn}</span><br/> <span class="arrivaltime bigdigit" style="color: #DC2221;">MIN</span>
+								   				</div>
+												</td>
+											</tr>
+										</table>	
+							   		</td>
+							   		<td style="padding-left: 0px; width:130px;">
+							   			<table>
+							   				<tr><td class="text-routeDetails">Departure: ${arrivalTime}</td></tr>
+							   				<tr><td class="text-routeDetails">Arrival: ${destTime}</td></tr>
+											<tr><td class="text-routeDetails">Travel Time: ${travelTime}</td></tr>
+											<tr><td class="text-routeDetails">Transfers: ${transfers}</td></tr>
+							   			</table>
+							   			
+								   		
+								   	</td> 
+									{{if showNextIcon }}
+				                	<td style="width:1px;"><a href="javascript:appirioUtils.fireEvent(aauMobile.tripPlanner.showTripDetails,'${tripId}',null);"><span  class="nextIcon" id="infoBubble1">&nbsp;</span></a></td>	
+					               {{/if}}
+		                     </tr>  </table>
+							{{if isClickable  }}  
+								</a>
+							{{/if}}
+					 </li>
+		</script>
+		<script id="trip-chart-template" type="text/x-jquery-tmpl">
+				{{if stoptype == "START" }}
+				<div style="position: relative;left: 0px;padding-left: 5px;float: left;top: 10px;clear: left;" >
+        			<div class="circle-div-small" style="background-color: ${routecolor}"><div class=" circle-content-small" >Begin</div></div>
+        			<div class="stop-connector-line" style="border-left:solid 2px ${routecolor};"></div>
+       			</div>
+				{{/if}}
+        		
+				{{if stoptype == "TRANS" }}
+	        	<div style="position: relative;left: 0px;padding-left: 5px;top: 11px;float: left;clear: left;" >
+	        		<div class="circle-div-xfer" style="background-color: ${routecolor};border-color:${nextroutecolor}"><div class=" circle-content-xfer" >XFER</div></div>
+	        		<div class="stop-connector-line" style="border-left:solid 2px ${nextroutecolor};"></div>
+	        	</div>
+				{{/if}}
+	        	
+	        	
+	        	{{if stoptype == "END" }}
+	        	<div style="position: relative;left: 0px;padding-left: 5px;top: 11px;float: left;clear: left;" >
+	        		<div class="circle-div-small" style="background-color: ${routecolor}"><div class=" circle-content-small" >End</div></div>
+	        		
+	        	</div>
+				{{/if}}
+		</script>
+		
+		<script id="trip-plan-template" type="text/x-jquery-tmpl">
+			{{if stoptype == "TRANS" }}
+			 <div style="float: left;font-size: 12px;position: relative;clear: left; width:135px;height:80px;top:0px;"> 
+		<!-- <div style="float: left;font-size: 12px;position: relative; width:134px;height:80px;width:300px;clear:both;"> -->
+
+	        		<table padding="0" cellpadding="0" cellspacing="0" style="padding-left:5px">
+							<tr><td   style="width: 100%;padding-left: 10px;font-weight:bold;" >${stopname}</td></tr>
+							<tr><td  style="width: 100%;padding-left: 10px;"><div>
+										<div style=" padding-right:3px;float:left;font-weight:bold;color: ${nextroutecolor};">Transfer to Route </div> 
+										<div style="float:right;"><div class="circle-div-mini" style="background-color: ${nextroutecolor}"><div class=" circle-content-mini" >${transferto}</div></div></div>
+									</div>
+							</td></tr>
+			   				<tr><td style="width: 100%;padding-left: 10px;"><span style="font-weight:bold">Arrival:</span> ${arrivalTime}</td></tr>
+			   				<tr><td style="width: 100%;padding-left: 10px;"><span style="font-weight:bold">Departure:</span> ${deptTime}</td></tr>
+			   			</table>
+	        	</div>
+			{{else}}
+				<div style="float: left;font-size: 12px;position: relative; width:100%;height:70px;padding-top:10px;width:300px;clear:both;">
+	        		 <table border="0" cellpadding="0" cellspacing="0" style="padding-left:5px;width:100%">     
+	     	                        <tr> 
+	     	                        	<td   style="width: 1px;padding-left: 10px;font-weight:bold;" >${stopname}
+											<!-- <hr style="-webkit-margin-after: 0.0em;" / > -->
+											
+										</td>
+									</tr>
+									<tr> 
+	     	                        	<td   style="width: 1px;padding-left: 10px;" ><div >${routecrosses}</div>
+										</td>
+									</tr>
+								{{if stoptype == "START"}}
+									<tr><td   style="width: 1px;padding-left: 10px;" ><span style="font-weight:bold">Departure:</span> ${deptTime}</tr>
+								{{/if}}	
+								{{if stoptype == "END"}}
+									<tr><td   style="width: 1px;padding-left: 10px;" ><span style="font-weight:bold">Arrival:</span> ${arrivalTime}</tr>
+								{{/if}}	
+					 </table>
+	        	</div>		
+			{{/if}}
+				
+		
+		</script>
+		
+		
+				
+</apex:component>

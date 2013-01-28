@@ -26,7 +26,8 @@
     border-bottom: solid 1px #626262;
  }
  #feed-container{
-	 width: 100%;
+	width: 100%;
+	overflow:auto;
  }
 </style>
 
@@ -41,5 +42,13 @@
 	<div class="feed-title">${feedTitle}</div>
 	<div class="feed-origin">${feedDate}</div>
 </a></li>
+</script>
+<script id="no-rss-feed-template" type="text/x-jquery-tmpl">
+<li class="event-li">
+	<a href="javascript:RefreshDataJS(2);">
+		<div class="event-title" style="text-align:center">No News Retrieved.</div>
+		<div class="event-origin" style="text-align:center">Tap here to retry.</div>
+	</a>
+</li>
 </script> 
 </apex:component>

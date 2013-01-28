@@ -1,5 +1,6 @@
 <apex:component >
-    <style type="text/css">
+    <apex:attribute name="hasNativeResources" description="True or false for whether or not the device can load from native." type="boolean" required="true"/>  
+   <style type="text/css">
       html { height: 100% }
       body { height: 100%; margin: 0; padding: 0 }
       #map_div { 
@@ -12,19 +13,27 @@
 
     <script>
     var busMarkers = {};
-      var imgStudentMarker = "{!$Resource.mob_Design}/mob_Design/images/Transit/marker_person.png";
-      busMarkers['A'] = "{!$Resource.mob_Design}/mob_Design/images/Transit/marker_A.png";
-      busMarkers['D'] = "{!$Resource.mob_Design}/mob_Design/images/Transit/marker_D.png";
-      busMarkers['E'] = "{!$Resource.mob_Design}/mob_Design/images/Transit/marker_E.png";
-      busMarkers['G'] = "{!$Resource.mob_Design}/mob_Design/images/Transit/marker_G.png";
-      busMarkers['H'] = "{!$Resource.mob_Design}/mob_Design/images/Transit/marker_H.png";
-      busMarkers['I'] = "{!$Resource.mob_Design}/mob_Design/images/Transit/marker_I.png";
-      busMarkers['M'] = "{!$Resource.mob_Design}/mob_Design/images/Transit/marker_M.png";
-      var imgStopMarker = "{!$Resource.mob_Design}/mob_Design/images/Transit/marker_busstop.png";
-      var busRefreshRate = "{!$Setup.mob_Student__c.Bus_Refresh_Rate__c}";
-    </script>
+       var imgStudentMarker = "{!IF(hasNativeResources,"aaumobile://marker_person.png", URLFOR($Resource.mob_Design, "/mob_Design/images/Transit/marker_person.png"))}";
+      busMarkers['A'] = "{!IF(hasNativeResources,"aaumobile://marker_A.png", URLFOR($Resource.mob_Design, "/mob_Design/images/Transit/marker_A.png"))}";
+      busMarkers['D'] = "{!IF(hasNativeResources,"aaumobile://marker_D.png", URLFOR($Resource.mob_Design, "/mob_Design/images/Transit/marker_D.png"))}";
+      busMarkers['E'] = "{!IF(hasNativeResources,"aaumobile://marker_E.png", URLFOR($Resource.mob_Design, "/mob_Design/images/Transit/marker_E.png"))}";
+      busMarkers['G'] = "{!IF(hasNativeResources,"aaumobile://marker_G.png", URLFOR($Resource.mob_Design, "/mob_Design/images/Transit/marker_G.png"))}";
+      busMarkers['H'] = "{!IF(hasNativeResources,"aaumobile://marker_H.png", URLFOR($Resource.mob_Design, "/mob_Design/images/Transit/marker_H.png"))}";
+      busMarkers['I'] = "{!IF(hasNativeResources,"aaumobile://marker_I.png", URLFOR($Resource.mob_Design, "/mob_Design/images/Transit/marker_I.png"))}";
+      busMarkers['M'] = "{!IF(hasNativeResources,"aaumobile://marker_M.png", URLFOR($Resource.mob_Design, "/mob_Design/images/Transit/marker_M.png"))}";
+      busMarkers['Hayes'] = "{!IF(hasNativeResources,"aaumobile://marker_bus_dkgreen.png", URLFOR($Resource.mob_Design, "/mob_Design/images/Transit/extraBuses/marker_bus_dkgreen.png"))}";
+      busMarkers['Jerrold'] = "{!IF(hasNativeResources,"aaumobile://marker_bus_brightblue.png", URLFOR($Resource.mob_Design, "/mob_Design/images/Transit/extraBuses/marker_bus_brightblue.png"))}";
+      
+      //PARTH: Added new routes
+      busMarkers['PolkWarehouse'] = "{!IF(hasNativeResources,"aaumobile://marker_bus_pink.png", URLFOR($Resource.mob_Design, "/mob_Design/images/Transit/extraBuses/marker_bus_pink.png"))}";
+      busMarkers['PolkNorthpoint'] = "{!IF(hasNativeResources,"aaumobile://marker_bus_darkred.png", URLFOR($Resource.mob_Design, "/mob_Design/images/Transit/extraBuses/marker_bus_darkred.png"))}";
+      busMarkers['Federal'] = "{!IF(hasNativeResources,"aaumobile://marker_bus_goldenrod.png", URLFOR($Resource.mob_Design, "/mob_Design/images/Transit/extraBuses/marker_bus_goldenrod.png"))}";
+      busMarkers['Northpoint'] = "{!IF(hasNativeResources,"aaumobile://marker_bus_slate.png", URLFOR($Resource.mob_Design, "/mob_Design/images/Transit/extraBuses/marker_bus_slate.png"))}";
+      
+      var imgStopMarker = "{!IF(hasNativeResources,"aaumobile://marker_busstop.png", URLFOR($Resource.mob_Design, "/mob_Design/images/Transit/marker_busstop.png"))}";
+      var busRefreshRate = "{!$Setup.mob_Student__c.Bus_Refresh_Rate__c}";    </script>
     
-    <div data-role="content" id="map-content" class="mob-content" style="width:100%; height:90%; padding:0; position:fixed; top:50px;"> 
+    <div data-role="content" id="map-content" class="mob-content" style="width:100%; height:90%; padding:0; position:fixed; top:44px;"> 
       <div id="map_div" style="width: 100%; height: 94%"></div>
     </div>
 

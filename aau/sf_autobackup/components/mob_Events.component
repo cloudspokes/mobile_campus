@@ -38,5 +38,13 @@
     <div class="event-origin">${eventOrigin}</div>
 </li>
 </script> 
+<script id="no-event-template" type="text/x-jquery-tmpl">
+<li class="event-li">
+	<a href="javascript:RefreshDataJS(4);">
+		<div class="event-title" style="text-align:center">No Sport Events Retrieved.</div>
+		<div class="event-origin" style="text-align:center">Tap here to retry.</div>
+	</a>
+</li>
+</script>
 
 </apex:component>

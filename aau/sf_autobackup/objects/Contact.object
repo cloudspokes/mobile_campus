@@ -1389,6 +1389,15 @@
         <type>TextArea</type>
     </fields>
     <fields>
+        <fullName>Other_Email_Address__c</fullName>
+        <externalId>false</externalId>
+        <label>Other Email Address</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>TextArea</type>
+    </fields>
+    <fields>
         <fullName>PeopleSoft_Person_ID__c</fullName>
         <caseSensitive>false</caseSensitive>
         <externalId>true</externalId>

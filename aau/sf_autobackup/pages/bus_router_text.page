@@ -1,0 +1,7 @@
+<apex:page controller="BusRouterController">
+
+<apex:repeat var="line" value="{!BestPathwayLines}">
+    {!line}<br />
+</apex:repeat>
+
+</apex:page>

@@ -37,6 +37,18 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Cache_Timeout__c</fullName>
+        <defaultValue>&quot;7&quot;</defaultValue>
+        <description>This is the number of days that the localStorage cache will hold data.  First implemented for Transit data.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the number of days that the localStorage cache will hold data.  First implemented for Transit data.</inlineHelpText>
+        <label>Cache Timeout (Days)</label>
+        <length>100</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Client_Key__c</fullName>
         <defaultValue>&quot;3MVG9Oe7T3Ol0ea4rCgfMtZo3n40wB4t890nElRZIKn5z2cjSuFdf13Yrw6bgcwA5vlotolfrrrHGqaimsfyM&quot;</defaultValue>
         <description>Key used for &quot;Remote Access&quot; when doing REST calls</description>

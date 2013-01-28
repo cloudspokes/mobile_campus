@@ -1,0 +1,80 @@
+<apex:component >
+<div data-role="page" id="bus-detail" class="page-container">
+    <div data-role="header"   class="mob-header aau-fixed-header" data-tap-toggle="false">
+         <a data-rel="back" class="mob-back-button">Back</a>
+        <h1 id="bus-stop-name">Stop Schedule</h1>
+    </div>
+    <div data-role="content" class="mob-content"  style="position:fixed;top:50px;height:90%;overflow:auto;">
+        <ul id="bus-stop-list" data-theme="d" data-role="listview"></ul>
+<style>
+ .bus-stop{
+    padding:0;
+    border: none;
+ } 
+ li.bus-stop{
+    padding:0 !important;
+    padding-right:30px !important;
+ }
+ .bus-stop-table{
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+ }
+ .bus-stop-route{
+    background-color: #BF2200;
+    width: 26%;
+    text-align: center;
+    color: #FFFFFF;
+    font-weight: normal;
+    text-shadow: 0 1px 1px #808080;
+    font-size: 16pt;
+    padding: 10px 3px;
+    height:35px;
+ }
+ .bus-stop-bus-details{
+    padding: 5px;
+    color: #808080;
+    font-size: 13pt;
+    white-space: pre-line;
+ }
+ .bus-stop-arrival-time{
+ 	margin-left: 5px;
+ 	color: #dc2221;
+ }
+ .bus-stop-schedule{
+    color: #808080;
+    font-weight: lighter;
+    font-size: 10pt;
+ }
+ #bus-stop-list{
+ 	margin: 0px;
+ }
+ #bus-stop-name{
+  font-size: 15pt;
+  width: 84.3%;
+  margin-left:40px;
+ }
+ /*Override jQuery Mobile Defaults*/
+ li.bus-stop{
+    border: none;
+    border-bottom: solid 1px #626262;
+ }
+
+</style>
+
+<script id="bus-stop-schedule-template" type="text/x-jquery-tmpl">
+            <li class="bus-stop">
+                 <table border="0" cellpadding="0" cellspacing="0" class="bus-stop-table">
+                      <tr> 
+                           <td class="bus-stop-route" style="background-color: ${routeColor}">${routeName}</td>
+                           <td class="bus-stop-bus-details">{{html routeArrival}}<br/>
+												   <span class="bus-stop-schedule">${routeSchedule}</span>
+						   </td> 
+                      </tr>    
+                 </table>
+            </li>
+</script>
+    </div>
+</div>
+</apex:component>

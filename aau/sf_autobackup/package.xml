@@ -1,18 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
-        <members>TestUtil</members>
+        <members>BatchUpdateStudentUsers</members>
+        <members>BusRouterController</members>
+        <members>BusRouterController_Test</members>
+        <members>mob_BusStop_Schedule</members>
+        <members>mob_BusStop_Schedule_Test</members>
         <members>mob_BusStops_Routes</members>
         <members>mob_BusStops_Routes_Test</members>
-        <members>mob_ContactSharingRecord_Test</members>
+        <members>mob_ClassHistoryRest</members>
+        <members>mob_DeviceDetection</members>
+        <members>mob_DeviceDetection_Test</members>
+        <members>mob_EventsREST</members>
+        <members>mob_EventsREST_Test</members>
+        <members>mob_LinksREST</members>
+        <members>mob_LinksREST_Test</members>
+        <members>mob_NextStopLocator</members>
+        <members>mob_NextStopLocator_Test</members>
         <members>mob_StudentRest</members>
         <members>mob_StudentRest_Test</members>
         <members>mob_TeletracInfoRest_Test</members>
+        <members>mob_TestUtil</members>
+        <members>mob_TripPlanner</members>
+        <members>mob_studentSubscriptionHelper</members>
         <members>mob_teletracInfoRest</members>
+        <members>mob_testClasses</members>
         <name>ApexClass</name>
     </types>
     <types>
         <members>mob_BackButton</members>
+        <members>mob_BusDetail</members>
+        <members>mob_BusStopList</members>
+        <members>mob_CampusEvents</members>
         <members>mob_ClassDetail</members>
         <members>mob_ClassSchedule</members>
         <members>mob_Events</members>
@@ -23,20 +42,26 @@
         <members>mob_Map</members>
         <members>mob_MapSettings</members>
         <members>mob_Menu</members>
+        <members>mob_TripPlanner</members>
+        <members>mob_chatterDetail</members>
+        <members>mob_chatterFeed</members>
+        <members>mob_tripPlanner_page1</members>
+        <members>mob_tripPlanner_page2</members>
+        <members>mob_tripPlanner_page3</members>
         <name>ApexComponent</name>
     </types>
     <types>
+        <members>bus_router_debug</members>
+        <members>bus_router_json</members>
+        <members>bus_router_text</members>
         <members>mob_Manifest</members>
         <members>mob_StudentHome</members>
         <name>ApexPage</name>
     </types>
     <types>
-        <members>mob_ContactSharingRecord</members>
+        <members>SubscribeToStudentServices</members>
+        <members>generateCrosses</members>
         <name>ApexTrigger</name>
-    </types>
-    <types>
-        <members>My_Day_Admin</members>
-        <name>CustomApplication</name>
     </types>
     <types>
         <members>Contact.Academic_Action_Date__c</members>
@@ -78,6 +103,7 @@
         <members>Contact.Mailing_Postal__c</members>
         <members>Contact.Mailing_State__c</members>
         <members>Contact.Other_Address__c</members>
+        <members>Contact.Other_Email_Address__c</members>
         <members>Contact.PeopleSoft_Person_ID__c</members>
         <members>Contact.Permanent_Address__c</members>
         <members>Contact.Permanent_City__c</members>
@@ -99,8 +125,14 @@
     </types>
     <types>
         <members>Bus_Route__c</members>
+        <members>Bus_Stop_Schedule__c</members>
         <members>Bus_Stop__c</members>
         <members>Bus_Stops_Routes__c</members>
+        <members>Direction_Leg__c</members>
+        <members>Direction__c</members>
+        <members>Key_Val__c</members>
+        <members>Mobile_Links__c</members>
+        <members>Mobile_Post__c</members>
         <members>mob_Student__c</members>
         <members>ps_Class_Meeting__c</members>
         <members>ps_Class__c</members>
@@ -111,6 +143,9 @@
     <types>
         <members>Bus_Route__c</members>
         <members>Bus_Stop__c</members>
+        <members>Bus_Stops_Routes__c</members>
+        <members>Mobile_Links__c</members>
+        <members>Mobile_Post__c</members>
         <members>ps_Class_Meeting__c</members>
         <members>ps_Class__c</members>
         <members>ps_Enrollment__c</members>
@@ -118,32 +153,22 @@
         <name>CustomTab</name>
     </types>
     <types>
-        <members>Bus_Route__c-Bus Route Layout</members>
-        <members>Bus_Stop__c-Bus Stop Layout</members>
-        <members>Bus_Stops_Routes__c-Bus Stops Routes Layout</members>
-        <members>Contact-AAU Student Layout</members>
-        <members>ps_Class_Meeting__c-Class Meeting Layout</members>
-        <members>ps_Class__c-Class Section Layout</members>
-        <members>ps_Enrollment__c-Enrollment Layout</members>
-        <members>ps_Term__c-Session Term Layout</members>
-        <name>Layout</name>
-    </types>
-    <types>
         <members>appirioPlugins</members>
         <members>jquery1dot7</members>
         <members>jquerymobile1dot1</members>
-        <members>jquerytmpl</members>
+        <members>jquerytmpl_min</members>
+        <members>mob_CombinedJs_min</members>
+        <members>mob_CombinedLibs_min</members>
         <members>mob_Design</members>
         <members>mob_StudentJs</members>
-        <members>mob_XML2JSON</members>
-        <members>mob_forceJsToolkit</members>
+        <members>mob_XML2JSON_min</members>
+        <members>mob_busmap</members>
+        <members>mob_forceJsToolkit_min</members>
         <members>mob_infoBuble</members>
-        <members>mob_jquerymobile1dot1</members>
         <members>mob_mapJS</members>
         <members>mob_mapManager</members>
         <members>mob_transitManager</members>
-        <members>phonegap</members>
-        <members>phonegap_android</members>
+        <members>phonegapJS</members>
         <name>StaticResource</name>
     </types>
     <version>25.0</version>

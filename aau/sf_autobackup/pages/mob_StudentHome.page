@@ -4,9 +4,19 @@
 <html manifest="{!IF($Setup.mob_Student__c.Cache_Pages__c,'/apex/mob_Manifest','')}">
 <head> 
     <apex:pageMessages />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-    <link rel="Stylesheet" type="text/css" href="{!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.min.css"></link>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/> 
+    
+   
+  
+    <!-- <link rel="Stylesheet" type="text/css" href="{!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.min.css"></link> -->
+    <!-- <link rel="Stylesheet" type="text/css" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.css"></link>
+     <link rel="Stylesheet" type="text/css" href="{!$Resource.jquery_mobile_core_css}"></link>
+    
     <link rel="Stylesheet" type="text/css" href="{!$Resource.mob_Design}/mob_Design/AAUjQueryTheme.min.css"></link>
+======= -->
+     <link rel="Stylesheet" type="text/css" href="{!IF(hasNativeResources,"aaumobile://jquery_mobile.css", URLFOR($Resource.jquerymobile1dot1, "jquery.mobile-1.1.0-rc.1.min.css"))}"></link>
+    <link rel="Stylesheet" type="text/css" href="{!IF(hasNativeResources,"aaumobile://AAUjQueryTheme_min.css", URLFOR($Resource.mob_Design, "/mob_Design/AAUjQueryTheme.min.css"))}"></link>
+
 
 
     <!--  <script type="text/javascript">
@@ -19,60 +29,151 @@
         document.write("<script type='text/javascript' src='{!$Resource.phonegap_min}'><\/script>");
       }
     </script>-->    
-    <apex:variable var="phonegapJS" value="{!phonegapJS}"/> 
-    <apex:includeScript value="{!URLFOR($Resource.phonegapJS, phonegapJS)}"/>
-    <script type="text/javascript" src="{!$Resource.jquery1dot7}"></script>
-    <script type="text/javascript" src="{!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.min.js"></script>
+    
+<!--
+    <script> 
+		    //$.extend($.mobile.zoom, {locked:true,enabled:false});   
+    </script>
+-->
+     <apex:variable var="phonegapJS" value="{!phonegapJS}"/> 
+     <apex:includeScript value="{!IF(hasNativeResources, "aaumobile://cordova.js", URLFOR($Resource.phonegapJS, phonegapJS))}"/>
+
+    
+   <!--   mob_CombinedLibs_min.js includes jQuery 1.7, jQuery Mobile 1.1.0rc1, jquerytmpl, forceJsToolkit, XML2JSON, and infoBubble-->
+   <!--  <script type="text/javascript" src="{!$Resource.jquery1dot7}"></script>
+    
+    <script type="text/javascript" src="{!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.min.js"></script> 
+   
     <script type="text/javascript" src="{!$Resource.jquerytmpl_min}"></script>  
     <script type="text/javascript" src="{!$Resource.mob_forceJsToolkit_min}"></script>
-    <script type="text/javascript" src="{!$Resource.mob_XML2JSON_min}"></script>
+    <script type="text/javascript" src="{!$Resource.mob_XML2JSON_min}"></script> 
     <script type="text/javascript" src="{!$Resource.mob_infoBuble}"></script>
-	<!--
-    <script type="text/javascript" src="{!$Resource.appirioPlugins}"></script>
-	-->
-    <script type="text/javascript" src="{!$Resource.appirioPlugins_min}"></script>
+ -->
 
+    <!-- Needs to be updated to include jQuery Mobile 1.2 resources. -->
+   <script type="text/javascript" src="{!IF(hasNativeResources, "aaumobile://mob_CombinedLibs_min.js", $Resource.mob_CombinedLibs_min)} "></script>
+    
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeo7wiR8G2REfIzQbeTLrVFuluE2jA9ao&sensor=true"></script> 
+	
     <script>
       /********* Initialize Variables from Salesforce Data ********************/
-        RestDataPlugin.accessToken = '{!$Api.Session_ID}';
+        /* PARTH: Commented this code */
+        /*RestDataPlugin.accessToken = '{!$Api.Session_ID}';
         RestDataPlugin.baseUrl = '{!$Setup.mob_Student__c.Base_Url__c}';
         RestDataPlugin.restUrl = '{!$Setup.mob_Student__c.Rest_Url__c}';
         RestDataPlugin.clientKey = '{!$Setup.mob_Student__c.Client_Key__c}';
+        */
+        
+        /* PARTH: we will use these variables to set values in appirioPlugins */
+         var str_accessToken = '{!$Api.Session_ID}';
+        var str_baseUrl = '{!$Setup.mob_Student__c.Base_Url__c}';
+        var str_restUrl = '{!$Setup.mob_Student__c.Rest_Url__c}';
+        var str_clientKey = '{!$Setup.mob_Student__c.Client_Key__c}';
+        var str_cacheTimeoutDays = '{!$Setup.mob_Student__c.Cache_Timeout__c}';
+        
         var currentUserId = '{!$CurrentPage.parameters.Id}';
         if(currentUserId == '' || currentUserId == null){
             currentUserId = '{!$User.Id}';
         }
+       
+	var hasNativeResources = {!hasNativeResources}; 
+	var hasNativeMenu = {!hasNativeMenu}; 
+	var hasNativeMap = {!hasNativeMap};
+		//alert('hasNativeResource: '+hasNativeResources+'. hasNativeMenu: '+hasNativeMenu);
+        
+        /* PARTH : This method is called from Refresh button click */
+        function RefreshDataJS(page){
+           console.log('-----------------------Page -----------------------'+page);
+        	switch(page){
+        		case 1: RefreshStudentDataJS();break;
+        		case 2: RefreshCampusFeedJS();break;
+        		case 3: RefreshCampusEventsJS();break;
+        		case 4: RefreshRSSEventsJS();break;
+        		case 5: RefreshExtLinksJS();break;
+        		case 6: RefreshChatterFeedJS();break;
+        		case 7: RefreshTripOptionsFeedJS();break;
+        		case 8: RefreshClassHistory();break;
+        	
+        	}
+        }
+        
+        /******* Google Analytics ********/
+		  var _gaq = _gaq || [];
+		  //_gaq.push(['_setAccount', 'UA-286432-5']);
+		  _gaq.push(['_setAccount', 'UA-35004128-1']);
+		  _gaq.push(['_trackPageview']);
+		
+		  (function() {
+		    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+		
+		function trackEvent(pageName){
+			if (_gaq) _gaq.push(['_trackEvent', 'AAU Campus DEV6', 'View Page', pageName, null]);    
+		}
+		if (_gaq) _gaq.push(['_OsVersion', 'AAU Campus DEV6', '{!osVersion}', null, null]); 
+		
+		function showStaticMap(){
+        	console.log("Showing static map");
+        	WebViewer.showWebView('{!$Setup.mob_Student__c.Base_Url__c}{!URLFOR($Resource.mob_busmap)}');
+        } 
+		
+		
     </script>
-
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeo7wiR8G2REfIzQbeTLrVFuluE2jA9ao&sensor=true"></script>
-	 
-     <!-- <script type="text/javascript" src="{!$Resource.appirioPlugins}"></script> 
-    --><script type="text/javascript" src="{!$Resource.mob_StudentJs}"></script>
-    <script type="text/javascript" src="{!$Resource.mob_transitManager}"></script>
-    <script type="text/javascript" src="{!$Resource.mob_mapManager}"></script>
-   <!--  <script type="text/javascript" src="{!$Resource.mob_mapJS}"></script> -->
+     
 	
-
-   <!--  <script type="text/javascript" src="{!$Resource.mob_StudentJs_min}"></script>
-    <script type="text/javascript" src="{!$Resource.mob_transitManager_min}"></script>
-    <!-- <script type="text/javascript" src="{!$Resource.mob_mapManager_min}"></script> -->
-    <script type="text/javascript" src="{!$Resource.mob_mapJS_min}"></script>
-
-
-
+    <script type="text/javascript" src="{!$Resource.appirioPlugins}"></script>
+    <script type="text/javascript" src="{!$Resource.mob_mapManager}"></script>
+    <script type="text/javascript" src="{!$Resource.mob_StudentJs}"></script>
+    <script type="text/javascript" src="{!$Resource.mob_mapJS}"></script>
+    <script type="text/javascript" src="{!$Resource.mob_transitManager}"></script>
+   <!--
+    <script type="text/javascript" src="{!$Resource.mob_CombinedJs_min}"></script>  
+    -->
+	
+        
     <c:mob_BackButton /> 
     <c:mob_ListArrow />
 
  <style>
+ 	
    .page-map, .ui-content, #map-div { width: 100%; height: 100%; padding: 0; }
    .classDetail {
        font-family: sans-serif  !important;
        margin-left: 10px;
        color: #DC2221;
     }
+	.mob-content {
+		position:absolute;
+		top:44px;
+		left:0;
+		right:0;
+		height:90%;
+		overflow:auto;
+	}
+    .mob-location-icon{
+        float: left;
+        margin: 0px;
+        width: 20px;
+        height: 20px;
+        /*margin:-5px 5px 0 5px;*/
+        border-radius: 5px;
+        border-bottom: solid 1px #999;
+        border-right: solid 1px #555;
+        display: inline-block;
+        background-color: #DC2221;
+        background-image: -webkit-gradient(linear,left top,left bottom,from( #cb1f1e ),to( #aa1816 ));
+        background-image: -webkit-linear-gradient( #cb1f1e , #aa1816 );
+        background-image: -mox-linear-gradient( #cb1f1e , #aa1816 );
+        background-image: -ms-linear-gradient( #cb1f1e , #aa1816 );
+        background-image: -o-linear-gradient( #cb1f1e , #aa1816 );
+        background-image: -linear-gradient( #cb1f1e , #aa1816 );
+        z-index: 9000;
+   }
    .mob-header-icon{
         float: left;
-        margin: 5px;
+        margin: 3px;
         width: 37px;
         height: 37px;
         /*margin:-5px 5px 0 5px;*/
@@ -87,12 +188,13 @@
         background-image: -ms-linear-gradient( #cb1f1e , #aa1816 );
         background-image: -o-linear-gradient( #cb1f1e , #aa1816 );
         background-image: -linear-gradient( #cb1f1e , #aa1816 );
+        z-index: 9000;
    }
     .header-right{
         float:right;
     }
    .mob-header-MenuIcon1 {
-        background:url({!$Resource.mob_Design}/mob_Design/iconsprite_white.png) no-repeat 0px 0px;
+	background:url({!IF(hasNativeResources,"aaumobile://iconsprite_white.png", URLFOR($Resource.mob_Design, "/mob_Design/iconsprite_white.png"))}) no-repeat 0px 0px;
         float:left;
         background-position-y: 0px;
         background-size: 100%;
@@ -101,9 +203,10 @@
         display:inline;
         margin-left:6px;
         margin-top:9px;
+        z-index: 9000;
     }
     .mob-header-MenuIcon2 {
-        background:url({!$Resource.mob_Design}/mob_Design/iconsprite_white.png) no-repeat 0px -0px;
+        background:url({!IF(hasNativeResources,"aaumobile://iconsprite_white.png", URLFOR($Resource.mob_Design, "/mob_Design/iconsprite_white.png"))}) no-repeat 0px 0px;       
         float:right;
         background-position-y: -20px;
         background-size: 100%;
@@ -114,7 +217,7 @@
         display:inline;
     }    
     .mob-header-MenuIcon3 {
-        background:url({!$Resource.mob_Design}/mob_Design/iconsprite_white.png) no-repeat 0px -0px;
+	background:url({!IF(hasNativeResources,"aaumobile://iconsprite_white.png", URLFOR($Resource.mob_Design, "/mob_Design/iconsprite_white.png"))}) no-repeat 0px 0px;
         float:right;
         background-position-y: -166px;
         background-size: 100%;
@@ -123,9 +226,35 @@
         margin-right:2px;
         margin-top: 7px;
         display:inline;
-    }    
+    }  
+    /* PARTH: refresh icon*/
+    .mob-header-RefreshIcon {
+        background:url({!IF(hasNativeResources,"aaumobile://icons-36-white.png", URLFOR($Resource.mob_Design, "/mob_Design/images/icons-36-white.png"))}) no-repeat 0px 0px;
+        float:left;
+        background-position-y: -4px;
+        background-position-x: -630px;
+        background-size: 100%;
+        width: 1500px;
+        height: 100px;
+        display:inline;
+        margin-left:6px;
+        margin-top:5px;
+    }  
+    .mob-header-locationIcon {
+        background:url({!IF(hasNativeResources,"aaumobile://icons-36-white.png", URLFOR($Resource.mob_Design, "/mob_Design/images/icons-36-white.png"))}) no-repeat 0px 0px;
+        float:left;
+        background-position-y: -1px;
+        background-position-x: -3px;
+        background-size: 44%;
+        width: 1500px;
+        height: 100px;
+        display:inline;
+        margin-left:5px;
+        margin-top:4px;
+    }  
     div.ui-header {
         border: none;
+        z-index: 9000;
     }
     .ui-body-c, .ui-overlay-c {
         background: #ffffff;
@@ -138,8 +267,8 @@
     }    
     .mob-header{
         width:100%;
-        z-index:9;
-        height:50px;
+        z-index:9000;
+        height:44px;
         top:0;
         left: 0;
         right: 0;
@@ -149,7 +278,7 @@
     }
     .mob-header h1.ui-title{
         font-size: 16pt;
-        margin: 0.65em 0 .35em 0;
+        margin: 0.50em 0 .35em 0;
         text-overflow: clip;
         width: 100%;
         text-align: center;
@@ -171,8 +300,7 @@
       background-color: transparent;     
     }
     .infoBubbleLink{
-      background-image: url(/resource/1343330448000/mob_Design/mob_Design/images/icons-18-white.png);
-      width: 20px;
+      background-image: url({!IF(hasNativeResources,"aaumobile://icons-18-white.png", URLFOR($Resource.mob_Design, "/mob_Design/images/icons-18-white.png"))});      width: 20px;
       background-position: -107px 1px;
       background-color: #60a0e0;
       border-radius: 12px;
@@ -187,24 +315,138 @@
 }
 	#container{
 	 position: absolute;
+	 top: 0;
+	 left: 0;
      width: 100%;
      height: 100%;
-	}
- </style>
+     overflow-x: hidden;
+    }
+    #transit-map-navbar{
+        margin-top: 3px;
+        display: block;
+        overflow: hidden;
+        padding: 0 15px;
+    }
+    #transit-map-navbar div{
+        display:block;
+        width: 50%;
+        max-width:50%;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        float: left;
+        height: 27px;
+        background-color: #CC0018;
+        border: 2px;
+        text-align: center;
+        padding-top: 10px;
+        font-weight: bold;
+        color: #FFF;
+        text-shadow: 0 1px 0 #000;
+    }
+    #transit-map-navbar-list{
+        margin-top: 5px;
+        display: block;
+        overflow: hidden;
+        padding: 0 15px;
+    }
+    #transit-map-navbar-list div{
+        display:block;
+        width: 50%;
+        max-width:50%;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        float: left;
+        height: 27px;
+        background-color: #CC0018;
+        border: 2px;
+        text-align: center;
+        padding-top: 10px;
+        font-weight: bold;
+        color: #FFF;
+        text-shadow: 0 1px 0 #000;
+    }
+    .transit-map-navbar-map{
+        border-top-left-radius: 0.2em;
+        border-bottom-left-radius: 0.2em;
+    }
+    .transit-map-navbar-list{
+        border-top-right-radius: 0.2em;
+        border-bottom-right-radius: 0.2em;
+    }
+    #transit-map-navbar div.navbar-active{
+        background-color: #FFF;
+        font-weight: bold;
+        color: #000;
+        cursor: pointer;
+        text-shadow: 0 1px 1px #FFF;
+        box-shadow: inset 0 0 10px #7A7A7A
+    }
+    #transit-map-navbar-list div.navbar-active{
+        background-color: #FFF;
+        font-weight: bold;
+        color: #000;
+        cursor: pointer;
+        text-shadow: 0 1px 1px #FFF;
+        box-shadow: inset 0 0 10px #7A7A7A
+    }
+    .navbar-inner{
+        font-size: 13px;
+        padding: .2em 1.5em .9em;
+        display: block;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        position: relative;
+        zoom: 1;
+        max-width: 100%;
+		text-decoration: none;
+    }
+    
+    
+   .aau-fixed-header{
+        position: absolute !important;
+        left: 0px !important;
+        right: 0px !important;
+        bottom: 0px !important;
+        z-index: 999 !important;
+    }
+  #btnTravelPlan{
+    background : #CC0018;
+  }
+   .event-title{
+    padding: 5px;
+    color: #dc2221;
+    font-size: 14pt;
+    white-space: pre-line;
+ }
+ .event-origin{
+    color: #808080;
+    font-weight: lighter;
+    font-size: 11pt;
+    padding-left: 5px;
+ }
+ 
+ .trip-planner-content{
+    /*height:80%;
+    overflow-y:auto;*/
+    padding-left:0px;
+    padding-right:0px;
+    padding-bottom:5px;
+    overflow-x: hidden;
+    background:rgba(128, 128, 128, 0.58);
+    height:100%;
+    
+    
+ }
+ 
 
-<script type="text/javascript">
-/******* Google Analytics ********/
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-286432-5']);
-  _gaq.push(['_trackPageview']);
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
+</style>
+ 
 
-</script>
+
 </head>
 
 
@@ -214,27 +456,35 @@
     <div id="tt-content">
     </div>
     <!--  STORY DETAIL PAGE - LIST OF STORY FIELDS-->
-<div data-role="page" id="menu-page" class="page-map hidden">
-    <c:mob_Menu />
-</div>
-<div data-role="page" id="student-home" class="page-container" data-fullscreen="true">
-    <div data-role="header" data-position="fixed" class="mob-header">
-        <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
-        <!-- <div class="mob-header-icon header-right"><div class="mob-header-MenuIcon2" /></div>-->
+<c:mob_Menu rendered="{!NOT(hasNativeMenu)}" />
+
+
+
+    
+<div data-role="page" id="student-home" class="page-container" >
+    
+       <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false" >
+        <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div  class="mob-header-MenuIcon1"/></div>
+        <!-- PARTH : Refresh Icon-->
+        <div class="mob-header-icon header-right" id="refreshBtn"><div class="mob-header-RefreshIcon" onClick="JavaScript:RefreshDataJS(1);" /></div>
         <h1>Class Schedule</h1>
     </div>
     
-    <div data-role="content" id="conId" class="mob-content">
-       <div>
-         <ul data-role="listview"  data-theme="d" id="ulId">
-         </ul>
-       </div>
-       <c:mob_ClassSchedule />  
+    <div data-role="content"  class="mob-content">
+        <div id="class-schedule-container1" >
+           <ul data-role="listview"  data-theme="d" id="onlineulId" >
+            </ul> 
+         </div>
+          <div  id="class-schedule-container2" >
+           <ul data-role="listview"  data-theme="d" id="ulId" >
+           </ul>
+         </div> 
     </div>
-    
 </div>
-<div data-role="page" id="student-detail" class="page-container">
-    <div data-role="header" data-position="fixed"  class="mob-header">
+<c:mob_ClassSchedule />  
+
+<div data-role="page" id="student-detail" class="page-container" style="min-height:100%;">
+    <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false">
          <a data-rel="back" class="mob-back-button">Back</a>
         <h1>Class Info</h1>
     </div>
@@ -242,14 +492,46 @@
       <div id="classNameDv" class="classDetail"/>
        <ul data-role="listview"  data-theme="g" id="ulDlId">
        </ul>
-      <c:mob_ClassDetail />  
-      <div id="classDescrDv"/>
+     <c:mob_ClassDetail hasNativeResources="{!hasNativeResources}" />  
+      <div id="classDescrDv" style="min-height:100%;"/>
      </div>
 </div>
 
+<div data-role="page" id="class-history" class="page-container" >
+    
+       <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false" >
+        <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div  class="mob-header-MenuIcon1"/></div>
+        <div class="mob-header-icon header-right" id="refreshBtn"><div class="mob-header-RefreshIcon" onClick="JavaScript:RefreshDataJS(8);" /></div>
+        <h1>Class History</h1>
+    </div>
+    
+    <div data-role="content"  class="mob-content">
+          <div  id="class-history-container2" >
+           <ul data-role="listview"  data-theme="d" id="history-list" >
+           </ul>
+         </div> 
+    </div>
+</div>
+
+<div data-role="page" id="history-detail" class="page-container" style="min-height:100%;">
+    <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false">
+         <a data-rel="back" class="mob-back-button">Back</a>
+        <h1>Class Info</h1>
+    </div>
+    <div data-role="content" id="dtlId" class="mob-content">
+      <div id="history-name" class="classDetail"/>
+       <ul data-role="listview"  data-theme="g" id="history-detail-list">
+       </ul>
+      <div id="history-desc" style="min-height:100%;"/>
+     </div>
+</div>
+
+
 <div data-role="page" id="feed-list" class="page-container">
-    <div data-role="header" data-position="fixed"  class="mob-header">
+    <div data-role="header"   class="mob-header aau-fixed-header" data-tap-toggle="false">
         <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
+        <!-- PARTH : Refresh Icon-->
+        <div class="mob-header-icon header-right" id="refreshBtn"><div class="mob-header-RefreshIcon" onClick="JavaScript:RefreshDataJS(2);" /></div>
         <h1>Campus News</h1>
     </div>
     <div data-role="content" class="mob-content">
@@ -258,7 +540,7 @@
 </div>
 
 <div data-role="page" id="feed-detail" class="page-container">
-    <div data-role="header" data-position="fixed"  class="mob-header">
+    <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false">
          <a data-rel="back" class="mob-back-button">Back</a>
         <h1>Campus News</h1>
     </div>
@@ -270,32 +552,37 @@
 <c:mob_CampusEvents />  
 <!-- Page for list of Campus Events -->
 <div data-role="page" id="campus-event-list" class="page-container">
-    <div data-role="header" data-position="fixed" class="mob-header">
+    <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false">
         <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
+        <!-- PARTH : Refresh Icon-->
+        <div class="mob-header-icon header-right" id="refreshBtn"><div class="mob-header-RefreshIcon" onClick="JavaScript:RefreshDataJS(3);" /></div>
         <h1>Campus Events</h1>
     </div>
     <div data-role="content" class="mob-content">
-		<div id="campus-event-container" >
-			<ul data-role="listview" data-theme="d" id="campus-event-ul">
-			</ul>
-		</div>
+        <div id="campus-event-container" >
+            <ul data-role="listview" data-theme="d" id="campus-event-ul">
+            </ul>
+        </div>
     </div>
 </div>
 
 <!-- Page for detail screen of Campus Event -->
-<div data-role="page" id="campus-event-detail" class="page-container">
-    <div data-role="header" data-position="fixed"  class="mob-header">
+<div data-role="page" id="campus-event-detail" class="page-container"> 
+    <div data-role="header"   class="mob-header aau-fixed-header">
+        <a data-rel="back" class="mob-back-button">Back</a>
         <h1>Campus Event</h1>
     </div>
     <div data-role="content" class="mob-content">
-		<div id="campus-detail-container"></div>
+        <div id="campus-detail-container"></div>
     </div>
 </div>
 
 
 <div data-role="page" id="event-list" class="page-container">
-    <div data-role="header" data-position="fixed" class="mob-header">
+    <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false">
         <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
+        <!-- PARTH : Refresh Icon-->
+        <div class="mob-header-icon header-right" id="refreshBtn"><div class="mob-header-RefreshIcon" onClick="JavaScript:RefreshDataJS(4);" /></div>
         <h1>Sports</h1>
     </div>
     <div data-role="content" class="mob-content">
@@ -304,28 +591,124 @@
 </div>
 
 <div data-role="page" id="link-list" class="page-container">
-    <div data-role="header" data-position="fixed" class="mob-header">
+    <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false">
         <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
+        <!-- PARTH : Refresh Icon-->
+        <div class="mob-header-icon header-right" id="refreshBtn"><div class="mob-header-RefreshIcon" onClick="JavaScript:RefreshDataJS(5);" /></div>
         <h1>Helpful Links</h1>
     </div>
     <div data-role="content" class="mob-content">
-        <c:mob_Links />  
+        <c:mob_Links />   
     </div>
 </div>
 
-
-<div data-role="page" id="transit-map" class="page-container">
-    <div data-role="header" data-position="fixed"  class="mob-header">
+<div data-role="page" id="chatter-list" class="page-container">
+    <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false">
         <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
-         <div class="mob-header-icon header-right" id="transit-settings"><div class="mob-header-MenuIcon3" /></div>
-         <h1>My Transit</h1>
+        <!-- PARTH : Refresh Icon-->
+        <div class="mob-header-icon header-right" id="refreshBtn"><div class="mob-header-RefreshIcon" onClick="JavaScript:RefreshDataJS(6);" /></div>
+        <h1>Message Center</h1>
+    </div>
+    <div data-role="content" class="mob-content">
+        <c:mob_chatterFeed />   
     </div> 
-    <c:mob_MapSettings />
-    <c:mob_Map />
+</div>
+
+<div data-role="page" id="chatter-detail" class="page-container">
+    <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false">
+         <a data-rel="back" class="mob-back-button">Back</a>
+        <h1>Message</h1>
+    </div>
+    <div data-role="content" id="chatter-dtlId" class="mob-content">
+      <!-- <div id="chatter-NameDv" class="chatterDetail"/> -->
+       <ul data-role="listview"  data-theme="g" id="chatter-ulDlId">
+       </ul>
+     <c:mob_chatterDetail hasNativeResources="{!hasNativeResources}" />  
+       <div id="chatter-DescrDv"/>
+     </div> 
+</div>
+
+
+<!-- PARTH: TRIP PLANNER PAGE -->
+
+		<c:mob_TripPlanner hasNativeResources="{!hasNativeResources}" isAndroid="{!isAndroid}"/>
+<div    data-role="page" id="trip-planner" class="page-container" align="center"> 
+    <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false">
+        <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div> 
+          <h1>Trip Planner</h1>
+    </div> 
+     <div data-role="content" id="planner-dtlId" class="mob-content trip-planner-content" align="center"  >
+	    <c:mob_tripPlanner_page1 />
+	</div>
+</div>
+
+<!-- END TRIP PLANNER -->
+
+<!-- TRIP OPTIONS -->
+<div data-role="page" id="trip-options" class="page-container" align="center" > 
+    <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false">
+        <a data-rel="back" class="mob-back-button">Back</a>
+       
+          <h1>Bus Trip Planner</h1>
+    </div> 
+     <div data-role="content" id="planner-options-dtlId" class="mob-content trip-planner-content" align="center" >
+	   	<c:mob_tripPlanner_page2 />
+	</div>
+</div>
+ 
+<!-- END TRIP OPTIONS -->
+
+<!-- TRIP DETAILS -->
+ <div  align="center"  data-role="page" id="trip-details" class="page-container"> 
+    <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false">
+        <a data-rel="back" class="mob-back-button">Back</a>
+         
+          <h1>Bus Trip Planner</h1>
+    </div> 
+     <div align="center" data-role="content" id="planner-options-dtlId" class="mob-content trip-planner-content" style="background:white;">
+	   	<c:mob_tripPlanner_page3 />
+	   
+	</div>
+</div>
+
+<!-- END TRIP DETAILS -->
+
+<!-- PARTH=======================  -->
+<div data-role="page" id="transit-map" class="page-container"> 
+    <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false">
+        <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div> 
+         <div class="mob-header-icon header-right transit-settings" id="transit-settings"><div class="mob-header-MenuIcon3" /></div>
+         <div id="transit-map-navbar">
+         	<div class="transit-map-navbar-map navbar-active" id="mapBtn"><span class="navbar-inner">Map</span></div>
+         	<a href="#transit-map-list"><div class="transit-map-navbar-list" id="stopListBtn"><span class="navbar-inner" >Stop List</span></div></a>
+         </div>
+    </div> 
+<!-- Change back to these when fix is in place for Native Route data on Trip Planner-->
+    <c:mob_MapSettings rendered="{!NOT(hasNativeMap)}" hasNativeResources="{!hasNativeResources}"  isAndroid="{!isAndroid}"/>
+    <c:mob_Map rendered="{!NOT(hasNativeMap)}" hasNativeResources="{!hasNativeResources}" />
+
+</div>
+
+
+<div data-role="page" id="transit-map-list" class="page-container"> 
+    <div data-role="header"  class="mob-header aau-header-fixed" data-tap-toggle="false">
+        <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div> 
+         <div id="transit-map-navbar-list">
+         	<a href="#transit-map"><div class="transit-map-navbar-map" id="mapBtn1"><span class="navbar-inner">Map</span></div></a>
+         	<div class="transit-map-navbar-list navbar-active" id="stopListBtn1"><span class="navbar-inner" >Stop List</span></div>
+         </div>
+    </div> 
+    
+    <div id="bus-stop-container" class="mob-content"> 
+        <ul data-role="listview" data-theme="d" id="bus-stop-ul"> 
+        </ul>
+    </div>
+      <c:mob_BusStopList rendered="{!NOT(hasNativeMap)}" />   
+     
 </div>
 
 <div data-role="page" id="bus-detail" class="page-container">
-    <div data-role="header" data-position="fixed"  class="mob-header">
+    <div data-role="header"   class="mob-header aau-fixed-header" data-tap-toggle="false">
          <a data-rel="back" class="mob-back-button">Back</a>
         <h1 id="bus-stop-name">Stop Schedule</h1>
     </div>
@@ -340,7 +723,7 @@
         <a href="#" id="external-page-back" data-role="button" data-inline="true" data-direction="reverse" class="back-root mob-back-button">Back</a>
         <h1 id="external-page-title">External Page</h1>
     </div>
-    <div data-role="content" id="external-page-content" class="mob-content">
+    <div data-role="content" id="external-page-content" class="mob-content"  style="position:absolute">
         <iframe id="external-page-frame" src="http://newsfeed.academyart.edu/"></iframe>
      </div>
 </div> -->

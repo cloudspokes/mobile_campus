@@ -4,11 +4,12 @@ global with sharing class mob_StudentRest {
     @HttpGet
     global static PsEnrollments getEnrollments(RestRequest req, RestResponse res) {
         String contactId = null;
+        String userId = UserInfo.getUserId();
         System.debug('::req::'+req);
         System.debug(':::Paramter ::'+req.params.get('id'));
-        if(req.params != null ){
+        /*if(req.params != null ){
             contactId = req.params.get('id');
-        }
+        }*/
         
         PsEnrollments psEnrlMents = new PsEnrollments();
         psEnrlMents.startDate = date.today();
@@ -17,14 +18,18 @@ global with sharing class mob_StudentRest {
         psEnrlMents.mobStudentsEnrolled = new Map<String,mobStudentEnrolled>();
         psEnrlMents.classMeetings = new Map<String,ClassMeeting>();
         
-        System.debug('::Contact Id ::'+contactId); 
+        System.debug('::UserGroup Id For contact Search ::'+contactId); 
         Set<Id> enrolledClasses = new Set<Id>();
-        if(contactId != null && contactId.startsWith('005')){
-            for(ContactShare conShare :[Select contactid from ContactShare where UserOrGroupId =:contactId and rowcause='Manual']){
+        //if(contactId != null && contactId.startsWith('005')){
+            /*for(ContactShare conShare :[Select contactid from ContactShare where UserOrGroupId =:contactId and rowcause='Manual']){
                 contactId = conShare.ContactId;
+            }*/
+            for(Contact con :[Select Id from Contact where Student_User__c =:userId]){
+                contactId = con.Id;
             }
-        }
+        //}
       
+       system.debug(':::contactId ::: '+contactId);
         for(ps_Enrollment__c ps_Enrolmnt:[SELECT Id,
 												Class_Section__c,
 												Student__r.Id,
@@ -35,7 +40,9 @@ global with sharing class mob_StudentRest {
 												Class_Section__r.Term__c,
 												Class_Section__r.Term__r.End_Date__c, 
 												Class_Section__r.Class_Section__c, 
-												Class_Section__r.Subject__c
+												Class_Section__r.Online_Class__c, 
+												Class_Section__r.Subject__c,
+												Class_Section__r.Course_Title__c
 											From ps_Enrollment__c 
 											Where Student__c =: contactId 
 											AND Enrollment_Status__c = 'E' 
@@ -50,7 +57,9 @@ global with sharing class mob_StudentRest {
             mobStdEnrolled.classSectionId = ps_Enrolmnt.Class_Section__c;
             mobStdEnrolled.classDescription = ps_Enrolmnt.Class_Section__r.Course_Description__c;
             mobStdEnrolled.classSection = ps_Enrolmnt.Class_Section__r.Class_Section__c;
+            mobStdEnrolled.onlineClass = ps_Enrolmnt.Class_Section__r.Online_Class__c;
             mobStdEnrolled.classSubject = ps_Enrolmnt.Class_Section__r.Subject__c;
+            mobStdEnrolled.courseTitle = ps_Enrolmnt.Class_Section__r.Course_Title__c;
 
             enrolledClasses.add(ps_Enrolmnt.Class_Section__c);
             psEnrlMents.mobStudentsEnrolled.put(ps_Enrolmnt.Class_Section__c,mobStdEnrolled);
@@ -78,7 +87,7 @@ global with sharing class mob_StudentRest {
 														Instructor_Name__c 
 													From ps_Class_Meeting__c 
 													where Class_Section__c in :enrolledClasses 
-													order by Start_Date__c
+													order by Start_Date__c 
                                                     ]){
 
                 ClassMeeting clsMeeting = new ClassMeeting();
@@ -101,13 +110,15 @@ global with sharing class mob_StudentRest {
 
                 //clsMeeting.location = psClassMeeting.Location__c;
 				//Don't use Location Field.  Combine the Building and Room fields!
+				System.debug('::psClassMeeting.building__c ::'+psClassMeeting.building__c);
+				System.debug('::psClassMeeting.Room__c ::'+psClassMeeting.Room__c);
 				if(psClassMeeting.building__c != null && psClassMeeting.building__c != ''){
 					clsMeeting.location = psClassMeeting.building__c;
 					if(psClassMeeting.Room__c != null && psClassMeeting.Room__c != ''){
 						clsMeeting.location += ', Rm: ' + psClassMeeting.Room__c;
 					}
 				}
-
+                System.debug('NEW Meeting %% ::psClassMeeting.Id::'+psClassMeeting.Id+'::clsMeeting::'+clsMeeting);
                 psEnrlMents.classMeetings.put(psClassMeeting.Id,clsMeeting);    
                 
                 //Determine what the very last day of the term is.
@@ -135,7 +146,9 @@ global with sharing class mob_StudentRest {
         String classSectionId {get;set;}
         String classDescription{get;set;}
         String classSection{get;set;}
+        String onlineClass{get;set;}
         String classSubject{get;set;}
+        String courseTitle{get;set;}
     } 
     
     public class ClassMeeting{

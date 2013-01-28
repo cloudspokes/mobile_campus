@@ -1,0 +1,13 @@
+<apex:page controller="BusRouterController">
+<h4>Best Pathway</h4>
+<pre>{!BestPathwayJSON}</pre>
+<hr />
+<h4>Top 3 Pathways</h4>
+<pre>{!BestPathwaysJSON}</pre>
+<hr />
+<h4>Arrival times for all pathways</h4> 
+<pre>{!ArrivalsJSON}</pre>
+<hr />
+<h4>All pathways</h4>
+<pre>{!PathwaysJSON}</pre>
+</apex:page>

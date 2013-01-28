@@ -1,0 +1,70 @@
+<apex:component >
+<style>
+ #campus-event-ul li a{
+    padding:0 !important;
+    padding-right:30px !important;
+ }
+ #campus-event-ul li{
+ 	border: none;
+ }
+ .campus-event-title{
+    padding: 5px;
+    padding-bottom: 0px;
+    color: #dc2221;
+    font-size: 14pt;
+    white-space: pre-line;
+ }
+ .feed-origin{
+    color: #808080;
+    font-weight: lighter;
+    font-size: 11pt;
+    padding-left: 5px;
+ }
+.feed-description{
+    padding-left: 5px;
+}
+ 
+ /*Override jQuery Mobile Defaults*/
+ #campus-event-ul li div.ui-li{
+    border: none;
+    border-bottom: solid 1px #626262;
+ }
+ #campus-event-container{
+	 width: 100%;
+ }
+
+#feed-detail-container div {
+	padding:2px 5px;
+}
+</style>
+
+
+
+
+<script id="campus-events-template" type="text/x-jquery-tmpl">
+<li class="feed-li"><a href="javascript:aauMobile.campusEvents.showFeedDetails('${feedId}');">
+	<div class="campus-event-title">${feedTitle}</div>
+	<div class="feed-origin">${feedOrigin}</div>
+	<div class="feed-origin">${feedDate}</div>
+</a></li>
+</script> 
+<script id="no-campus-events-template" type="text/x-jquery-tmpl">
+<li class="feed-li">
+	<a href="javascript:RefreshDataJS(3);">
+		<div class="feed-title" style="text-align:center">No Campus Events Retrieved.</div>
+		<div class="feed-origin" style="text-align:center">Tap here to retry.</div>
+	</a>
+</li>
+</script>
+
+<script id="campus-detail-template" type="text/x-jquery-tmpl">
+<div class="feed-title">${feedTitle}</div>
+<div class="feed-origin">${feedOrigin} - ${feedSuborigin}</div>
+<div class="feed-origin">Date: ${feedEventDate}</div>
+<div class="feed-origin">Location: ${feedEventLocation}</div>
+<br/>
+<div class="feed-description">${feedDescription}</div>
+<br/>
+<div class="feed-origin"><a href="javascript:openWebpage('${feedLink}');">${feedLinkText}</div>
+</script> 
+</apex:component>

@@ -2,9 +2,11 @@
 # NOTE: "CACHE MANIFEST" must be on the first line
 
 # change version to trigger a cache refresh
-# version 1.0204
+# version 1.0225
 
 CACHE:
+
+
 {!$Resource.jquerymobile1dot1}/jquery.mobile-1.1.0-rc.1.min.css
 {!$Resource.mob_Design}/mob_Design/AAUjQueryTheme.min.css
 {!$Resource.jquery1dot7}
@@ -16,15 +18,27 @@ CACHE:
 {!$Resource.phonegapJS}/phonegap_min.js
 {!$Resource.phonegapJS}/phonegap_android_min.js
 
+<!--
 {!$Resource.appirioPlugins_min}
 {!$Resource.mob_mapJs_min}
+{!$Resource.mob_StudentJs_min}
+{!$Resource.mob_transitManager_min}
+{!$Resource.mob_mapManager_min}
+-->
+
+{!$Resource.appirioPlugins}
+{!$Resource.mob_mapJS}
 {!$Resource.mob_StudentJs}
 {!$Resource.mob_transitManager}
 {!$Resource.mob_mapManager}
 
+{!$Resource.mob_CombinedLibs_min}
+{!$Resource.mob_CombinedJs_min}
+
 {!$Resource.mob_busmap}
 {!$Resource.mob_Design}/mob_Design/iconsprite_white.png
 {!$Resource.mob_Design}/mob_Design/iconsprite_grey.png
+{!$Resource.jquerymobile1dot1}/images/icons-18-white.png
 {!$Resource.mob_Design}/mob_Design/images/Transit/marker_person.png
 {!$Resource.mob_Design}/mob_Design/images/Transit/marker_A.png
 {!$Resource.mob_Design}/mob_Design/images/Transit/marker_D.png
@@ -33,10 +47,18 @@ CACHE:
 {!$Resource.mob_Design}/mob_Design/images/Transit/marker_H.png
 {!$Resource.mob_Design}/mob_Design/images/Transit/marker_I.png
 {!$Resource.mob_Design}/mob_Design/images/Transit/marker_M.png
+{!$Resource.mob_Design}/mob_Design/images/Transit/extraBuses/marker_bus_red.png
+{!$Resource.mob_Design}/mob_Design/images/Transit/extraBuses/marker_bus_dkgreen.png
+{!$Resource.mob_Design}/mob_Design/images/Transit/extraBuses/marker_bus_brightblue.png
 {!$Resource.mob_Design}/mob_Design/images/Transit/marker_busstop.png
 {!$Resource.mob_Design}/mob_Design/images/settings-arrow-hack.png
 {!$Resource.mob_Design}/mob_Design/images/settings-list-hack.png
 {!$Resource.mob_Design}/mob_Design/images/ajax-loader.gif
+
+https://aau--dev7--c.cs1.visual.force.com/jslibrary/1345063354000/sfdc/JiffyStubs.js
+
+https://maps.gstatic.com/intl/en_us/mapfiles/api-3/9/14/main.js
+https://maps.gstatic.com/cat_js/intl/en_us/mapfiles/api-3/9/14/%7Bcommon,util,stats%7D.js
 
 NETWORK:
 *

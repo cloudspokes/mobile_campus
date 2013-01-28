@@ -1,7 +1,8 @@
 <apex:component >
+<apex:attribute name="hasNativeResources" description="True or false for whether or not the device can load from native." type="boolean" required="true"/> 
 <style>
 .classDetail-icon1 {
-    background:url({!$Resource.mob_Design}/mob_Design/iconsprite_grey.png) no-repeat 0px 0px;
+    background:url({!IF(hasNativeResources,"aaumobile://iconsprite_grey.png", URLFOR($Resource.mob_Design, "/mob_Design/iconsprite_grey.png"))}) no-repeat 0px 0px;
     float:left;
     background-position-y: -165px;
     background-size: 100%;
@@ -11,7 +12,7 @@
     margin-left: 10px;
 }
 .classDetail-icon2 {
-    background:url({!$Resource.mob_Design}/mob_Design/iconsprite_grey.png) no-repeat 0px -0px;
+    background:url({!IF(hasNativeResources,"aaumobile://iconsprite_grey.png", URLFOR($Resource.mob_Design, "/mob_Design/iconsprite_grey.png"))}) no-repeat 0px 0px;
     float:left;
     background-position-y: -28px;
     background-size:100%;
@@ -21,7 +22,7 @@
     margin-top: 5px;
 }
 .classDetail-icon3{
-    background:url({!$Resource.mob_Design}/mob_Design/iconsprite_grey.png) no-repeat 0px -0px;
+    background:url({!IF(hasNativeResources,"aaumobile://iconsprite_grey.png", URLFOR($Resource.mob_Design, "/mob_Design/iconsprite_grey.png"))}) no-repeat 0px 0px;
     float:left;
     background-position-y: -197px;
     background-size: 100%;
@@ -29,6 +30,16 @@
     height:32px;
     margin-left: 10px;
     margin-top: 5px;
+}    
+.classDetail-icon4{
+    background:url({!IF(hasNativeResources,"aaumobile://iconsprite_grey.png", URLFOR($Resource.mob_Design, "/mob_Design/iconsprite_grey.png"))}) no-repeat 0px 0px;
+    float:left;
+    background-position-y: -57px;
+    background-size: 100%;
+    width:35px;
+    height:21px;
+    margin-left: 10px;
+    margin-top: 10px;
 }    
 .classLi{
    margin: 0px;
@@ -70,23 +81,31 @@
 </style>
 
 <script id="student-classDetail-template" type="text/x-jquery-tmpl">
-               <hr/>                
-               <li id="classTime" class="classLi" style="padding-top: 2px;padding-bottom: 2px;">
-                    <span class="classDetail-icon1" /> <a href="#" class="classDetail-detail">
-                       <span class="detail-value">${meetingTime}</span>
-                    </a>  
-                </li>  
-                <li class="classLi" style="padding-top: 2px;padding-bottom: 1px;">
-                   <span class="classDetail-icon2" /> <a href="#" class="classDetail-detail" style="padding-top:0.4em">
-                       <span class="detail-value">${mLocation}</span>
-                       <br/><span class="classDetail-label">LOCATION</span>
-                    </a>  
-                </li>
-                <li class="classLi" style="padding-top: 2px;padding-bottom: 1px;">
-                   <span class="classDetail-icon3" /><a href="#" class="classDetail-detail" style="padding-top:0.4em">
-                       <span class="detail-value">${meetingInstruction}</span>
-                       <br/><span class="classDetail-label">INSTRUCTOR</span>
-                    </a>  
-                </li>
+<hr/>                
+<li id="classTime" class="classLi" style="padding-top: 2px;padding-bottom: 2px;">
+	<span class="classDetail-icon1" /> <a href="#" class="classDetail-detail">
+	   <span class="detail-value">${meetingTime}</span>
+	</a>  
+</li>  
+<li class="classLi" style="padding-top: 2px;padding-bottom: 1px;">
+   <span class="classDetail-icon2" /> <a href="#" class="classDetail-detail" style="padding-top:0.4em">
+	   <span class="detail-value">${mLocation}</span>
+	   <br/><span class="classDetail-label">LOCATION</span>
+	</a>  
+</li>
+<li class="classLi" style="padding-top: 2px;padding-bottom: 1px;">
+   <span class="classDetail-icon3" /><a href="#" class="classDetail-detail" style="padding-top:0.4em">
+	   <span class="detail-value">${meetingInstruction}</span>
+	   <br/><span class="classDetail-label">INSTRUCTOR</span>
+	</a>  
+</li>
+{{if hasGrade}}
+<li class="classLi" style="padding-top: 2px;padding-bottom: 1px;">
+   <span class="classDetail-icon4" /><a href="#" class="classDetail-detail" style="padding-top:0.4em">
+	   <span class="detail-value">${grade}</span>
+	   <br/><span class="classDetail-label">GRADE</span>
+	</a>  
+</li>
+{{/if}}		
 </script> 
 </apex:component>

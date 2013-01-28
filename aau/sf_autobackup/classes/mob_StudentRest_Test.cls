@@ -1,14 +1,24 @@
 @isTest
 private class mob_StudentRest_Test {
-	
+
+	public static Contact leadContact;
+	public static  User sysAdmin;
+	public static  User aaUStudent;
+	public static User aaUStudentUser;
+	public static User aaUStudentUser1;
+	static{
+		 sysAdmin = mob_TestUtil.makeUser('System Administrator');
+    	 aaUStudent = mob_TestUtil.makeUser('AAU Student - Platform');
+    	 aaUStudentUser = mob_TestUtil.makeUser('AAU Student - Platform');
+    	 aaUStudentUser1 = mob_TestUtil.makeUser('AAU Student - Platform');
+   		//leadContact = new Contact(LastName = 'lName', FirstName = 'fName', Recruiting_Status__c = 'Applicant',student_user__c=sysAdmin.Id);
+   		leadContact = new Contact(LastName = 'lName', FirstName = 'fName',student_user__c=sysAdmin.Id);
+		insert leadContact;
+	}
 	static testmethod void testStudentRest() {
-		User sysAdmin = TestUtil.makeUser('System Administrator');
-    User aaUStudent = TestUtil.makeUser('AAU Student - Platform');
-    User aaUStudentUser = TestUtil.makeUser('AAU Student - Platform');
-    User aaUStudentUser1 = TestUtil.makeUser('AAU Student - Platform');
-    System.runAs(sysAdmin) {
+	 System.runAs(sysAdmin) {
 			
-				Contact lead = TestUtil.makeLead('Test', 'ContactShare');
+				Contact lead = mob_TestUtil.makeLead('Test', 'ContactShare');
 				lead.student_user__c = aaUStudentUser.Id;
 				update lead;
 				
@@ -22,14 +32,15 @@ private class mob_StudentRest_Test {
 				conShare = [Select id,ContactId,UserorGroupId from ContactShare where contactId=:lead.Id and UserorGroupId =:aaUStudentUser1.Id  and  rowCause='Manual' limit 1];
 				System.assertEquals(aaUStudentUser1.Id,conShare.UserorGroupId);
 				
-				Contact contact = new Contact(LastName = 'lName', FirstName = 'fName', Recruiting_Status__c = 'Applicant',student_user__c=aaUStudentUser1.Id);
-				insert contact;
 				
 				
-				ps_Term__c pTerm = TestUtil.createNewTerm('T01', 'Test Term1');
-				ps_Class__c pClass= TestUtil.createClass(pTerm.Id, 'SFDC 401','Work', 'A11','A12', 'Workles', 'Field', 'ext11');
-				ps_Class_Meeting__c  pClassMeeting= TestUtil.createClassMeeting(pClass.Id, 'First Meeting', 1,'M21');
-				ps_Enrollment__c pEnrollment = TestUtil.createEnrollment(pClass.Id, 'EName', lead.Id);
+				ps_Term__c pTerm = mob_TestUtil.createNewTerm('T01', 'Test Term1');
+			
+				ps_Class__c pClass= mob_TestUtil.createClass(pTerm.Id, 'SFDC 401','Work', 'A11','A12', 'Workles', 'Field', 'ext11');
+				ps_Class_Meeting__c  pClassMeeting= mob_TestUtil.createClassMeeting(pClass.Id, 'First Meeting', 1,'M21');
+				ps_Enrollment__c pEnrollment = mob_TestUtil.createEnrollment(pClass.Id, 'EName', leadContact.Id);
+				system.debug('::Student User on Contact :: '+aaUStudentUser1.Id);
+				
 				
 				RestRequest req = new RestRequest(); 
     			RestResponse res = new RestResponse();

@@ -1,4 +1,6 @@
 <apex:component >
+<apex:attribute name="hasNativeResources" description="True or false for whether or not the device can load from native." type="boolean" required="true"/>
+<apex:attribute name="isAndroid" description="True or false for whether device is android or ios" type="boolean" required="true"/> 
 
 <style>
 
@@ -9,11 +11,17 @@
     opacity: 1.0;
 }
 .result-container {
+	position:absolute;
+/*
     position:fixed;
+*/
     top: 51px;
     left:1.2%;
-    min-height:100px;
-    max-height:380px;
+    /*min-height:100px;
+    max-height:380px;*/
+    
+    min-height:{!IF(isAndroid,'80%','100px')};
+    max-height:{!IF(isAndroid,'80%','380px')};
     width:97%;
     z-index:900;
     display: none;
@@ -21,11 +29,16 @@
     /*padding:8px;*/
 }
 .result-overlay {
+	position:relative;
+/*
     position:absolute;
+*/
     top:12px;
     left:0px;
-    min-height:100px;
-    max-height:380px;
+     /*min-height:100px;
+    max-height:380px;*/
+    min-height:{!IF(isAndroid,'100%','100px')};
+    max-height:{!IF(isAndroid,'100%','380px')};
     /*max-height:500px;*/
     width:97%;
     padding:10px 7px 7px 7px;
@@ -36,13 +49,18 @@
     box-shadow: 0px -1px 0px 0px #a22b2a;
 }
 .result-scroll-container {
-    position:relative;
+	position:relative;
+/*
+    position:absolute;
+*/
     top:0px;
     left:0px;
     margin:0px;
     width:100%;
-    min-height:100px;
-    max-height:380px;
+     /*min-height:100px;
+    max-height:380px;*/
+     min-height:{!IF(isAndroid,'69%','100px')};
+    max-height:{!IF(isAndroid,'90%','380px')};
     overflow:auto;
     -webkit-overflow-scrolling: touch;
 }
@@ -79,7 +97,7 @@
 	height: 19px;
 	display: inline;
 	background-color: transparent;
-	background-image: url('{!$Resource.mob_Design}/mob_Design/images/settings-arrow-hack.png');
+	background-image: url('{!IF(hasNativeResources,"aaumobile://settings-arrow-hack.png", URLFOR($Resource.mob_Design, "/mob_Design/images/settings-arrow-hack.png"))}');
 	position: absolute;
 	top: -7px;
 	right: 4px;	
@@ -113,15 +131,15 @@
 }
 .result-ul-android li.ui-li span.ui-icon-arrow-r{
     z-index: 900;
-    background: url('{!$Resource.mob_Design}/mob_Design/images/settings-list-hack.png');
-	margin-top: -8px;
-	opacity: 1.0;
-	width: 10px;
-	height: 12px;
-	display: inline-block;
-	-webkit-transform: none;
-	border: none;
-	float: right;
+    background: url('{!IF(hasNativeResources,"aaumobile://settings-list-hack.png", URLFOR($Resource.mob_Design, "/mob_Design/images/settings-list-hack.png"))}');
+margin-top: -8px;
+    opacity: 1.0;
+    width: 10px;
+    height: 12px;
+    display: inline-block;
+    -webkit-transform: none;
+    border: none;
+    float: right;
 }
 div.ui-slider-switch.ui-slider-mini{
     position: absolute;
@@ -146,7 +164,7 @@ div.ui-slider-switch.ui-slider-mini a.ui-slider-handle .ui-btn-inner {
     border: none;
 }
 .callIcon{
-    background:url({!$Resource.mob_Design}/mob_Design/iconsprite_white.png) no-repeat 0px -0px;
+    background:url({!IF(hasNativeResources,"aaumobile://iconsprite_white.png", URLFOR($Resource.mob_Design, "/mob_Design/iconsprite_white.png"))}) no-repeat 0px -0px;
     float:left;
     background-position-y: -205px;
     width:28px;
@@ -157,16 +175,24 @@ div.ui-slider-switch.ui-slider-mini a.ui-slider-handle .ui-btn-inner {
 #result-static-map{
 	padding: .7em 0px .7em 0px
 }
+.result-ul .settings-route.ui-li, .result-ul-android .settings-route.ui-li{
+	display: inline-block;
+	width: 50%;
+	float: left;
+	padding-left: 0;
+	padding-right: 0;
+}
 .settings-route.checked-on span.settings-checkbox{
 	margin-right: 20px;
-	background: url({!$Resource.jquerymobile1dot1}/images/icons-18-white.png);
-	background-repeat: no-repeat;
+        background: url({!IF(hasNativeResources,"aaumobile://icons-18-white.png", URLFOR($Resource.mob_Design, "/mob_Design/images/icons-18-white.png"))});
+		background-repeat: no-repeat;
 	background-position-x: -253px;
 	background-color: #CC0018;
 }
 .settings-route span.settings-checkbox{
 	width: 16px;
 	height: 16px;
+	margin-left: 15px;
 	margin-right: 20px;
 	background-color: #FFF;
 	display: inline-block;
@@ -182,6 +208,13 @@ div.ui-slider-switch.ui-slider-mini a.ui-slider-handle .ui-btn-inner {
 }
 #result-static-map a{
 	padding: .5em 15px .5em 15px;
+}
+#active-routes-header{
+	text-align: center;
+	font-weight: bold;
+	padding: 1.0em 15px .1em 15px;
+	border-width: 1px;
+	text-shadow: 0 1px 0 black;
 }
 </style>
 
@@ -201,7 +234,7 @@ div.ui-slider-switch.ui-slider-mini a.ui-slider-handle .ui-btn-inner {
 </div>
 <script id="settings-route-checkbox" type="text/x-jquery-tmpl">
 			<li class='settings-route' name='${routeName}'>
-				<span class='settings-checkbox'>&nbsp;</span><span class='settings-label'>Route&nbsp;${routeName}</span>
+				<span class='settings-checkbox'>&nbsp;</span><span class='settings-label'>${routeName}</span>
 			</li>
 </script> 
 <script id="settings-route-refresh-toggle" type="text/x-jquery-tmpl">
@@ -217,5 +250,8 @@ div.ui-slider-switch.ui-slider-mini a.ui-slider-handle .ui-btn-inner {
 			{{/if}}
          </select>
      </li>
+	<li id="active-routes-header">
+		Active Routes
+	</li>
 </script>
 </apex:component>

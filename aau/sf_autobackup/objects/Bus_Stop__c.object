@@ -46,6 +46,25 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>External_Id__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>true</externalId>
+        <label>External Id</label>
+        <length>100</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>High_Fidelity_Waypoint__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>If true, this is a preprocessed waypoint only meant for accurately drawing the route on the screen.  If false, it is an actual location that a bus will stop at.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If true, this is a preprocessed waypoint only meant for accurately drawing the route on the screen.  If false, it is an actual location that a bus will stop at.</inlineHelpText>
+        <label>High Fidelity Waypoint</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Lat__c</fullName>
         <description>Latitude of the Bus Stop</description>
         <externalId>false</externalId>
@@ -67,6 +86,26 @@
         <type>Number</type>
         <unique>false</unique>
     </fields>
+    <fields>
+        <fullName>Order__c</fullName>
+        <defaultValue>0</defaultValue>
+        <description>What order should this stop show in the stop list.</description>
+        <externalId>false</externalId>
+        <label>Order</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Routes_Count__c</fullName>
+        <externalId>false</externalId>
+        <label>Routes Count</label>
+        <summaryForeignKey>Bus_Stops_Routes__c.Bus_Stop__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <type>Summary</type>
+    </fields>
     <label>Bus Stop</label>
     <listViews>
         <fullName>All</fullName>
@@ -74,8 +113,12 @@
         <columns>Active__c</columns>
         <columns>Lat__c</columns>
         <columns>Long__c</columns>
+        <columns>Order__c</columns>
+        <columns>Routes_Count__c</columns>
+        <columns>High_Fidelity_Waypoint__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
+        <language>en_US</language>
     </listViews>
     <nameField>
         <label>Bus Stop Name</label>

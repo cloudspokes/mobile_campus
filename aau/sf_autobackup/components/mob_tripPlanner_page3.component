@@ -1,0 +1,57 @@
+<apex:component >
+<style>
+.div-tripplanner-page3{
+	padding-top:10px; 
+	overflow:hidden;
+	padding-bottom:10px;
+	background:rgba(128, 128, 128, 0.58);
+}
+.div-tripDetails-content{
+	position:relative;
+	top:0px;
+	height:90%;
+	width:100%;
+	overflow-x:hidden;
+	overflow-y:auto;
+	border-top:solid 1px black;
+}
+#div-route-chart{
+	float:left;
+}
+#div-trip-plan{
+	float: left;
+	width: 80%;
+	padding-left: 10px;
+}
+</style>
+	<div class="div-tripplanner-page3"   >
+	   		<div class="div-header-routes">
+		   		<table><tr><td><span class="bus-icon"></span></td> </tr>
+		   		<tr><td><span  class="text-routes">Routes</span></td> </tr>
+		   		</table>
+	   		</div>
+	   		<div class="div-selection">
+				<table width="100%"><tr><td>
+					<ul id="ul-trip-details-selection" class="ul-selection">
+						<!-- trip-selection-template -->
+					</ul></td></tr></table>
+			</div>
+	   		
+	   		
+	   	</div>
+	   	
+	   	<div class="mob-content ui-content div-tripDetails-content" data-role="content" role="main">
+        	<ul data-role="listview" data-theme="d" id="trip-detail-option-list" class="ui-listview">
+        		<!-- trip-options-template -->
+        	</ul>
+        	
+        	<div id="div-route-chart" >
+        		<!-- trip-chart-template -->
+	        	
+        	</div>
+        	<div id="div-trip-plan" >
+	        	
+	        	<!-- trip-plan-template  -->
+        	</div>
+    	</div>
+</apex:component>

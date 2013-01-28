@@ -1,5 +1,33 @@
 <apex:component >
 <style>
+#onlineulId li a{
+    padding:0 !important;
+    padding-right:30px !important;
+ }
+ #onlineulId li{
+ 	border: none;
+ }
+ 
+ /*Override jQuery Mobile Defaults*/
+ #onlineulId li div.ui-li{
+    border: none;
+    border-bottom: solid 1px #626262;
+ }
+ #ulId li a{
+    padding:0 !important;
+    padding-right:30px !important;
+ }
+ #ulId li{
+ 	border: none;
+ }
+ 
+ /*Override jQuery Mobile Defaults*/
+ #ulId li div.ui-li{
+    border: none;
+    border-bottom: solid 1px #626262;
+ }
+ 
+ 
  .date-divider{
     color: #FFFFFF;
     text-shadow: 0 1px 1px #000000;
@@ -10,20 +38,28 @@
     padding: 5px;
     border: none;
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
+    z-index:0;
  }
- .course{
+ /*.course{
     padding:0;
     border: none;
+    
  } 
  li.course a.course-link{
-    padding:0 !important;
+   padding:0 !important;
     padding-right:30px !important;
- }
+ }*/
  .course-table{
     height: 100%;
     width: 100%;
     margin: 0;
-    padding: 0;
+    padding: 0px;
+    z-index:0;
+    float:left;
+    background-color: #808080;
+ }
+ .course-campus {
+	margin-left:86px;
  }
  .course-time{
     background-color: #808080;
@@ -34,54 +70,99 @@
     text-shadow: 0 1px 1px #808080;
     font-size: 11pt;
     padding: 10px 3px;
-    height:60px;
+    height:36px;
+    z-index:0;
+    float:left;
  }
+ 
  .course-name{
+    background-color: #FFFFFF;
     padding: 5px;
     color: #dc2221;
     font-size: 14pt;
     white-space: pre-line;
+    min-height:46px;
+    /*z-index:0;*/
  }
+ 
  .course-location{
     color: #808080;
     font-weight: lighter;
     font-size: 11pt;
+     padding-left: 5px;
  }
  
+ 
+ 
+ #class-schedule-container1{
+	 width: 100%;
+ }
+ #class-schedule-container2{
+	 width: 100%;
+ }
+
+#history-list li a {
+	padding:0px;
+}
+
  /*Override jQuery Mobile Defaults*/
- li.course div.ui-li{
+ /*li.course div.ui-li{
     border: none;
     border-bottom: solid 1px #626262;
- }
+    
+ }*/
+ 
 </style>
 
-<script id="student-schedule-template" type="text/x-jquery-tmpl">
-            <li class="course" onclick="aauMobile.classSchedule.showClassDetails('${meetingId}');"><a class="course-link" href="#">
-                 <table border="0" cellpadding="0" cellspacing="0" class="course-table">
-                      <tr> 
-                           <td class="course-time">${stTime}<br/>${edTime}</td>
-                           <td class="course-name">${topic}  ${className} <br/> <span class="course-location">${meetingLocation}</span></td> 
-                      </tr>    
-                 </table>
-                </a>
-            </li>
-</script> 
+
+ 
 <script id="student-schedule-each-template" type="text/x-jquery-tmpl">
 	{{if isDivider}}
 		 <li data-role="list-divider" class="date-divider">${MeetingDayAndDay}</li>
 	{{else}}
-		 <li class="course" onclick="aauMobile.classSchedule.showClassDetails('${meetingId}');"><a class="course-link" href="#">
-                 <table border="0" cellpadding="0" cellspacing="0" class="course-table">
-                      <tr> 
-                           <td class="course-time">${stTime}<br/>${edTime}</td>
-                           <td class="course-name">${topic}  ${className} <br/> <span class="course-location">${meetingLocation}</span></td> 
-                      </tr>    
-                 </table>
+		 <li  >
+			<a id="${meetingId}" href="javascript:aauMobile.classSchedule.showClassDetails('${meetingId}');">
+                 <div border="0" cellpadding="0" cellspacing="0" class="course-table">
+                     <div class="course-time">${stTime}<br/>${edTime}</div>
+                     <div class="course-name course-campus">${className} <br/> <span class="course-location">${meetingLocation}</span></div> 
+                 </div>    
                 </a>
             </li>
 	{{/if}}
 </script>
-<script id="student-scheduleDivider-template" type="text/x-jquery-tmpl">
-            <li data-role="list-divider" class="date-divider">${MeetingDayAndDay}</li>
-</script> 
+
+<script id="student-onLineschedule-each-template" type="text/x-jquery-tmpl">
+   {{if isDivider}}
+     <li data-role="list-divider" class="date-divider">Online Classes</li>
+   {{/if}}
+	<li><a id="${classSectionId}" href="javascript:aauMobile.classSchedule.showOnlineClassDetails('${classSectionId}');">
+    <div border="0" cellpadding="0" cellspacing="0" class="course-table">
+      <div class="course-name">${className} <br/></div> 
+    </div>
+    </a>
+    </li>
+</script>
+
+<script id="class-history-each-template" type="text/x-jquery-tmpl">
+   {{if isDivider}}
+     <li data-role="list-divider" class="date-divider">${termName}</li>
+   {{/if}}
+	<li><a id="${meetingId}" href="javascript:aauMobile.classHistory.showClassDetails('${meetingId}');">
+    <div border="0" cellpadding="0" cellspacing="0" class="course-table">
+	  <div class="course-name">${className}</div> 
+    </div>
+    </a>
+    </li>
+  
+</script>
+
+<script id="student-schedule-none-found" type="text/x-jquery-tmpl">
+<li >
+	<div border="0" cellpadding="0" cellspacing="0" class="course-table ${noneFound}">
+        <div class="course-name">No Classes Found<br/>
+			<span class="course-location">There appears to be no On-Campus or Online Classes associated with your account</span>
+        </div>    
+    </div>
+</li>
+</script>
 </apex:component>

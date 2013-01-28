@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Link between bus route and stop with scheduled time</description>
+    <enableActivities>false</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <fields>
+        <fullName>Bus_Route__c</fullName>
+        <externalId>false</externalId>
+        <label>Bus Route</label>
+        <referenceTo>Bus_Route__c</referenceTo>
+        <relationshipLabel>Bus Stop Schedules</relationshipLabel>
+        <relationshipName>Bus_Stop_Schedules</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Bus_Stop__c</fullName>
+        <externalId>false</externalId>
+        <label>Bus Stop</label>
+        <referenceTo>Bus_Stop__c</referenceTo>
+        <relationshipLabel>Bus Stop Schedules</relationshipLabel>
+        <relationshipName>Bus_Stop_Schedules</relationshipName>
+        <relationshipOrder>1</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>External_Id__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>true</externalId>
+        <label>External Id</label>
+        <length>100</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Order__c</fullName>
+        <externalId>false</externalId>
+        <label>Order</label>
+        <precision>3</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sub_Route__c</fullName>
+        <description>This is the instance of the Route.  There could be two buses on the route at the same time, but at different places in the route.  This reflect which bus is which</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the instance of the Route.  There could be two buses on the route at the same time, but at different places in the route.  This reflect which bus is which</inlineHelpText>
+        <label>Sub Route</label>
+        <picklist>
+            <picklistValues>
+                <fullName>1</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>4</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>5</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>6</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>7</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>8</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>9</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Time_Value__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+	RIGHT(Time__c, 2) == &apos;PM&apos;,
+	IF(
+		VALUE(SUBSTITUTE(SUBSTITUTE(Time__c, &apos;:&apos;, &apos;.&apos;), &apos; PM&apos;, &apos;&apos;)) &gt;= 12,
+		IF(
+			VALUE(SUBSTITUTE(SUBSTITUTE(Time__c, &apos;:&apos;, &apos;.&apos;), &apos; PM&apos;, &apos;&apos;)) &lt; 13,
+			VALUE(SUBSTITUTE(SUBSTITUTE(Time__c, &apos;:&apos;, &apos;.&apos;), &apos; PM&apos;, &apos;&apos;)),
+			null
+		),
+		VALUE(SUBSTITUTE(SUBSTITUTE(Time__c, &apos;:&apos;, &apos;.&apos;), &apos; PM&apos;, &apos;&apos;)) + 12
+	),
+	IF(
+		RIGHT(Time__c, 2) == &apos;AM&apos;,
+		IF(
+			VALUE(SUBSTITUTE(SUBSTITUTE(Time__c, &apos;:&apos;, &apos;.&apos;), &apos; AM&apos;, &apos;&apos;)) &gt;= 12,
+			IF(
+				VALUE(SUBSTITUTE(SUBSTITUTE(Time__c, &apos;:&apos;, &apos;.&apos;), &apos; AM&apos;, &apos;&apos;)) &lt; 13,
+				VALUE(SUBSTITUTE(SUBSTITUTE(Time__c, &apos;:&apos;, &apos;.&apos;), &apos; AM&apos;, &apos;&apos;)) - 12,
+				null
+			),
+			VALUE(SUBSTITUTE(SUBSTITUTE(Time__c, &apos;:&apos;, &apos;.&apos;), &apos; AM&apos;, &apos;&apos;))
+		),
+		null
+	)
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Time Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Time__c</fullName>
+        <externalId>false</externalId>
+        <label>Time</label>
+        <length>10</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Bus Stop Schedule</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Order__c</columns>
+        <columns>Bus_Stop__c</columns>
+        <columns>Bus_Route__c</columns>
+        <columns>Sub_Route__c</columns>
+        <columns>Time__c</columns>
+        <columns>Time_Value__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_Route_E</fullName>
+        <columns>NAME</columns>
+        <columns>Order__c</columns>
+        <columns>Bus_Stop__c</columns>
+        <columns>Bus_Route__c</columns>
+        <columns>Sub_Route__c</columns>
+        <columns>Time__c</columns>
+        <columns>Time_Value__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Bus_Route__c</field>
+            <operation>startsWith</operation>
+            <value>E</value>
+        </filters>
+        <label>All Route E</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Route_I</fullName>
+        <columns>NAME</columns>
+        <columns>Order__c</columns>
+        <columns>Bus_Stop__c</columns>
+        <columns>Bus_Route__c</columns>
+        <columns>Sub_Route__c</columns>
+        <columns>Time__c</columns>
+        <columns>Time_Value__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Bus_Route__c</field>
+            <operation>startsWith</operation>
+            <value>I</value>
+        </filters>
+        <label>Route I</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Route_Polk_Nrpnt</fullName>
+        <columns>NAME</columns>
+        <columns>Order__c</columns>
+        <columns>Bus_Stop__c</columns>
+        <columns>Bus_Route__c</columns>
+        <columns>Sub_Route__c</columns>
+        <columns>Time__c</columns>
+        <columns>Time_Value__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Bus_Route__c</field>
+            <operation>startsWith</operation>
+            <value>Polk Nrpnt</value>
+        </filters>
+        <label>Route Polk Nrpnt</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <label>Bus Schedule Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Bus Stop Schedules</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+</CustomObject>

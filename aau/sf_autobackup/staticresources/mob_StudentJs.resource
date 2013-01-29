@@ -284,7 +284,7 @@ classSchedule: {
 		if(result==""){ return;}
 		if(result.indexOf("Unable to resolve host")>=0){
 			//commented this because it might have been erroring on initial load
-			alert("Due to slow or no connection, this action has been canceled. Please try again later.");
+			//alert("Due to slow or no connection, this action has been canceled. Please try again later.");
 		}else{
 			alert('We have encountered an error.  Please try again later.');
 		}
@@ -2754,8 +2754,8 @@ function bindEvents() {
     $("#transit-settings").live(aauMobile.clickEvent, function(){ 
 	        $('#result-container').toggle(); 
 	}); 
-	$('#result-list li.settings-route').live(aauMobile.clickEvent, function(){
-		mapManager.toggleRoute(this, $(this).attr('name'));
+	$('#result-list span.settings-checkbox').live(aauMobile.clickEvent, function(){
+		mapManager.toggleRoute($(this).parent(), $(this).parent().attr('name'));
 	});
 	
    /* PARTH===========
@@ -2948,7 +2948,7 @@ function initApp(){
 		});*/
 		aauMobile.campusFeed.init(function(){$.mobile.hidePageLoadingMsg();});
 		mapInit();
-		TripPlannerInit() ;
+		//TripPlannerInit() ; //now called from mapInit
 	}
 }
 
@@ -3096,7 +3096,7 @@ function initApp(){
 	}
 		
 
-$(document).bind('pageshow', function(event, data) {
+$(document).bind('pageinit', function(event, data) {
 		$.mobile.zoom.disable(true);
 		$.extend($.mobile.zoom, {locked:true,enabled:false});
 		
@@ -3137,7 +3137,9 @@ $(document).bind('pageshow', function(event, data) {
 	if(currPage == 'student-home' && aauMobile.classSchedule.data.length === 0){
 		//console.log('Go Spinny Go!');
 		/* Parth: Load Student Data */
+		//setTimeout(function(){
 		appirioUtils.fireEvent(aauMobile.classSchedule.init, null, null);
+		//},2000);
 	}
 	if(currPage == 'class-history' && aauMobile.classHistory.data.length === 0){
 		console.log('Go Spinny Go Class History :::');

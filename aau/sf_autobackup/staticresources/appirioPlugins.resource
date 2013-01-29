@@ -232,45 +232,39 @@ var RestDataPlugin = {
 		if(RestDataPlugin.isPhonegap()){
 			console.log('Rest call via Phonegap...');
 			//RestDataPlugin.getPhonegapData(successCallback, failureCallback, restPath, isSFDC, restType, dataType);
-			/*setTimeout(function(){
+			 setTimeout(function(){
 			 					
-				if( !isSuccess){
-					isTimeout = true;
-					//alert("We cannot complete the request at this time. Try again when you are connected to the internet.");
-					//alert("Timeout! Due to slow or no connection, this action has been canceled. Please try again later.");
-					alert("Due to slow or no connection, this action is taking longer than expected.");
-					//commented this out so that the load on startup continues...
-					//failureCallback("");
-				}else{
-					isTimeout = false;
-				}
-			},2000);
-			*/
-
+								if( !isSuccess){
+									isTimeout = true;
+									//alert("We cannot complete the request at this time. Try again when you are connected to the internet.");
+									alert("Due to slow or no connection, this action has been canceled. Please try again later.");
+									failureCallback("");
+								}else{
+									isTimeout = false;
+								}
+									},15000);
 			RestDataPlugin.getPhonegapData(function (rawResult) {
 			  							
-				isSuccess = true;
-				/*if(isTimeout){
-					return ;//failureCallback("");
-				}*/
-
-				isTimeout = false;
-				appirioUtils.log("This is the rawResult from PhoneGap: " + rawResult);
-				try {
-					var json = JSON.parse(rawResult);
-					successCallback(json);
-				} catch (e) {
-					successCallback(rawResult);		 	  
-				} 
+										  isSuccess = true;
+										  if(isTimeout){
+										  	return ;//failureCallback("");
+										  }
+										  isTimeout = false;
+										  appirioUtils.log("This is the rawResult from PhoneGap: " + rawResult);
+										  try {
+										    var json = JSON.parse(rawResult);
+										    successCallback(json);
+										  } catch (e) {
+							                successCallback(rawResult);		 	  
+										  } 
 			}, function (rawResult){
-				isSuccess = true;
-				/*if(isTimeout){
-					return ;//failureCallback("");
-				}*/
-
-				isTimeout = false;
-				failureCallback(rawResult);
-			}, restPath);
+					isSuccess = true;
+					 if(isTimeout){
+					  	return ;//failureCallback("");
+					  }
+					  isTimeout = false;
+					failureCallback(rawResult);
+					}, restPath);
 		}else{
 			console.log('Rest call via AJAX Toolkit...');
 			RestDataPlugin.getAjaxDataByForceTK(successCallback, failureCallback, restPath, isSFDC, restType, dataType);

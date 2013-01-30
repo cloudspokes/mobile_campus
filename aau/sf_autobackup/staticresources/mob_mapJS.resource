@@ -34,18 +34,17 @@ function mapInit() {
 	  teletracManager.getRoutesFromSFDC(addStopFunction);
 	  console.log('teletracManager getting routes from SFDC');
 
-		TripPlannerInit();
    }
 }
 
 function TripPlannerInit() {
 	//alert('TripPlannerInit');
-	//if(hasNativeMap){
+	if(hasNativeMap){
 	
       // Initialize objects
-     //  if(!mapManager) {
-      //	mapManager = new MapManager();
-      //}
+      if(!mapManager) {
+      	mapManager = new MapManager();
+      }
      
 	  //variable to add stops function
 	  var addStopFunction = mapManager.addBusStops;
@@ -53,7 +52,7 @@ function TripPlannerInit() {
 	  // Pass mapManager add stop function as callback to getRoutes,
 	  // to then be passed to parseStops in teletracManager so stops get plotted
 	  aauMobile.tripPlanner.getBusStopsFromSFDC(addStopFunction);
-	 //}
+	}
 }
 
 function mapLoad(callback, data){

@@ -2948,7 +2948,8 @@ function initApp(){
 		});*/
 		aauMobile.campusFeed.init(function(){$.mobile.hidePageLoadingMsg();});
 		mapInit();
-		//TripPlannerInit() ; //now called from mapInit
+		loadPage();  //call method to load data for whatever page is active
+		TripPlannerInit();
 	}
 }
 
@@ -3096,7 +3097,14 @@ function initApp(){
 	}
 		
 
-$(document).bind('pageinit', function(event, data) {
+$(document).bind('pageshow', function(event, data) {
+	if(deviceReady == true){
+		loadPage();
+	}
+});
+
+function loadPage(){
+		console.log('DEBUG: Load Page');
 		$.mobile.zoom.disable(true);
 		$.extend($.mobile.zoom, {locked:true,enabled:false});
 		
@@ -3118,93 +3126,92 @@ $(document).bind('pageinit', function(event, data) {
         	aauMobile.chatterFeed.data = [];
         }
         
-	//$.mobile.hidePageLoadingMsg();
-	var currPage = $.mobile.activePage.attr('id');
-	$.mobile.loadingMessage = 'Loading...';
+		//$.mobile.hidePageLoadingMsg();
+		var currPage = $($.mobile.activePage).attr('id');
+		$.mobile.loadingMessage = 'Loading...';
 
-	/*****  START: Standardize the Spinner for all page loads  ****/
-	console.log('Class Schedule: ' + aauMobile.classSchedule.data);
-	console.log('Campus Feed: ' + aauMobile.campusFeed.feedData);
-	console.log('Campus Events: ' + aauMobile.campusEvents.feedCount);
-	console.log('Athletic Events: ' + aauMobile.rssEvent.feedData);
-	console.log('External Links: ' + aauMobile.externalLinks.linkData);
-	
-	//Parth: Track Event	
-	console.log('Current Page ::'+currPage);
-	
-	trackEvent(currPage);
-	
-	if(currPage == 'student-home' && aauMobile.classSchedule.data.length === 0){
-		//console.log('Go Spinny Go!');
-		/* Parth: Load Student Data */
-		//setTimeout(function(){
-		appirioUtils.fireEvent(aauMobile.classSchedule.init, null, null);
-		//},2000);
-	}
-	if(currPage == 'class-history' && aauMobile.classHistory.data.length === 0){
-		console.log('Go Spinny Go Class History :::');
-		/* Parth: Load Student Data */
-		appirioUtils.fireEvent(aauMobile.classHistory.init, null, null);
-	}
-	if(currPage == 'feed-list' && aauMobile.campusFeed.feedData.length === 0){
-		//console.log('Go Spinny Go!');
-		/* Parth: Load Campus Feed Data */ 
-		appirioUtils.fireEvent(aauMobile.campusFeed.init, null, null);
-	}
-	if(currPage == 'campus-event-list' && aauMobile.campusEvents.feedCount < 3){
-		console.log('Go Spinny Go!');
-		/* Parth: Load Campus Events Data */
-		 appirioUtils.fireEvent(aauMobile.campusEvents.init, null, null);
-	}
-	if(currPage == 'event-list' && aauMobile.rssEvent.feedData.length === 0){
-		console.log('Go Spinny Go!');
-		/* Parth: Load Events List Data */
-		appirioUtils.fireEvent(aauMobile.rssEvent.init, null, null);
-	}
-	if(currPage == 'link-list' && aauMobile.externalLinks.linkData.length === 0){
-		console.log('Go Spinny Go!');
-		/* Parth: Load External links Data */
-		appirioUtils.fireEvent(aauMobile.externalLinks.init, null, null);
-	}
-	if(currPage == 'chatter-list' && aauMobile.chatterFeed.data.length === 0){
-		console.log('Go Spinny Go!');
-		/* Parth: Load External links Data */
-		appirioUtils.fireEvent(aauMobile.chatterFeed.init, null, null);
-	}
-	if(currPage == 'trip-options' ){
-		console.log('Go Spinny Go!');
+		/*****  START: Standardize the Spinner for all page loads  ****/
+		console.log('Class Schedule: ' + aauMobile.classSchedule.data);
+		console.log('Campus Feed: ' + aauMobile.campusFeed.feedData);
+		console.log('Campus Events: ' + aauMobile.campusEvents.feedCount);
+		console.log('Athletic Events: ' + aauMobile.rssEvent.feedData);
+		console.log('External Links: ' + aauMobile.externalLinks.linkData);
 		
-		if((aauMobile.tripPlanner.tripStartId != $('#startStop-select :selected').val()) 
-			|| (aauMobile.tripPlanner.tripEndId != $('#endStop-select :selected').val()) 
-			|| (aauMobile.tripPlanner.tripTime != $('#plantime').val()) 
-			|| (aauMobile.tripPlanner.weekdayOption != $('#day-select :selected').val() )){
-				
-				if($('#startStop-select :selected').val() == '0' || $('#endStop-select :selected').val()=='0' || $('#plantime').val() == ''){
-					$.mobile.changePage('#trip-planner',{transition: 'slide', reverse: true});
-					alert('Please select a pickup/drop off point and time');
-					return false;
-				}
-				$("#trip-options-list").empty();
-				
-				/* Parth: Load Trip plans*/
-				aauMobile.tripPlanner.tripStart = $('#startStop-select :selected').text();
-				aauMobile.tripPlanner.tripEnd = $('#endStop-select :selected').text();
-				aauMobile.tripPlanner.tripStartId = $('#startStop-select :selected').val();
-				aauMobile.tripPlanner.tripEndId = $('#endStop-select :selected').val();
-				aauMobile.tripPlanner.tripTime = $('#plantime').val();
-				aauMobile.tripPlanner.weekdayOption = $('#day-select :selected').val() ;
-				appirioUtils.fireEvent(aauMobile.tripPlanner.init, null, null);
+		//Parth: Track Event	
+		console.log('Current Page ::'+currPage);
+		
+		trackEvent(currPage);
+		
+		if(currPage == 'student-home' && aauMobile.classSchedule.data.length === 0){
+			//console.log('Go Spinny Go!');
+			/* Parth: Load Student Data */
+			//setTimeout(function(){
+			appirioUtils.fireEvent(aauMobile.classSchedule.init, null, null);
+			//},2000);
 		}
-	}
-	
-	/*if(currPage == 'transit-map'){
-		//console.log('Go Spinny Go!');
-		//$.mobile.showPageLoadingMsg("a", "Loading...", false);
-		//fireEvent(mapLoad, 
-	}*/
+		if(currPage == 'class-history' && aauMobile.classHistory.data.length === 0){
+			console.log('Go Spinny Go Class History :::');
+			/* Parth: Load Student Data */
+			appirioUtils.fireEvent(aauMobile.classHistory.init, null, null);
+		}
+		if(currPage == 'feed-list' && aauMobile.campusFeed.feedData.length === 0){
+			//console.log('Go Spinny Go!');
+			/* Parth: Load Campus Feed Data */ 
+			appirioUtils.fireEvent(aauMobile.campusFeed.init, null, null);
+		}
+		if(currPage == 'campus-event-list' && aauMobile.campusEvents.feedCount < 3){
+			console.log('Go Spinny Go!');
+			/* Parth: Load Campus Events Data */
+			 appirioUtils.fireEvent(aauMobile.campusEvents.init, null, null);
+		}
+		if(currPage == 'event-list' && aauMobile.rssEvent.feedData.length === 0){
+			console.log('Go Spinny Go!');
+			/* Parth: Load Events List Data */
+			appirioUtils.fireEvent(aauMobile.rssEvent.init, null, null);
+		}
+		if(currPage == 'link-list' && aauMobile.externalLinks.linkData.length === 0){
+			console.log('Go Spinny Go!');
+			/* Parth: Load External links Data */
+			appirioUtils.fireEvent(aauMobile.externalLinks.init, null, null);
+		}
+		if(currPage == 'chatter-list' && aauMobile.chatterFeed.data.length === 0){
+			console.log('Go Spinny Go!');
+			/* Parth: Load External links Data */
+			appirioUtils.fireEvent(aauMobile.chatterFeed.init, null, null);
+		}
+		if(currPage == 'trip-options' ){
+			console.log('Go Spinny Go!');
+			
+			if((aauMobile.tripPlanner.tripStartId != $('#startStop-select :selected').val()) 
+				|| (aauMobile.tripPlanner.tripEndId != $('#endStop-select :selected').val()) 
+				|| (aauMobile.tripPlanner.tripTime != $('#plantime').val()) 
+				|| (aauMobile.tripPlanner.weekdayOption != $('#day-select :selected').val() )){
+					
+					if($('#startStop-select :selected').val() == '0' || $('#endStop-select :selected').val()=='0' || $('#plantime').val() == ''){
+						$.mobile.changePage('#trip-planner',{transition: 'slide', reverse: true});
+						alert('Please select a pickup/drop off point and time');
+						return false;
+					}
+					$("#trip-options-list").empty();
+					
+					/* Parth: Load Trip plans*/
+					aauMobile.tripPlanner.tripStart = $('#startStop-select :selected').text();
+					aauMobile.tripPlanner.tripEnd = $('#endStop-select :selected').text();
+					aauMobile.tripPlanner.tripStartId = $('#startStop-select :selected').val();
+					aauMobile.tripPlanner.tripEndId = $('#endStop-select :selected').val();
+					aauMobile.tripPlanner.tripTime = $('#plantime').val();
+					aauMobile.tripPlanner.weekdayOption = $('#day-select :selected').val() ;
+					appirioUtils.fireEvent(aauMobile.tripPlanner.init, null, null);
+			}
+		}
 		
+		/*if(currPage == 'transit-map'){
+			//console.log('Go Spinny Go!');
+			//$.mobile.showPageLoadingMsg("a", "Loading...", false);
+			//fireEvent(mapLoad, 
+		}*/
 	/*****  END: Standardize the Spinner for all page loads  ****/
-});
+}
 
 function searchTripOptions(){
 	if($('#startStop-select :selected').val() == '0' || $('#endStop-select :selected').val()=='0' || $('#plantime').val() == ''){

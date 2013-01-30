@@ -5,6 +5,7 @@ import java.util.Calendar;
 
 import org.apache.cordova.CordovaWebViewClient;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -27,17 +28,29 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.appirio.mobile.aau.R;
-import com.appirio.mobile.aau.nativemap.NativeMapAcivity;
+import com.appirio.mobile.aau.nativemap.AMException;
+import com.appirio.mobile.aau.nativemap.MapAPIProxy;
 import com.appirio.mobile.aau.slidingmenu.SlidingMenuAdapter;
 import com.appirio.mobile.aau.slidingmenu.SlidingMenuItem;
 import com.appirio.mobile.aau.slidingmenu.SlidingMenuLayout;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.LatLng;
 import com.salesforce.androidsdk.ui.LoginActivity;
 import com.salesforce.androidsdk.ui.SalesforceDroidGapActivity;
 
 public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity implements OnClickListener, OnItemClickListener {
 	
+	@Override
+	public void onPause() {
+		super.onPause();
+		
+		mapView.onPause();
+	}
+
 	public SlidingMenuLayout rootLayout;
 	ListView slidingMenuListView;
 	View menuLayout, mainLayout;
@@ -45,20 +58,67 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	WebView webView;
 	SlidingMenuAdapter menuAdapter;
 	ArrayList<SlidingMenuItem> slidingMenuList;
-	View mapView;
+	View mapLayout;
+	
 	Button nativeMenuButton;
+	MapView mapView;
 	boolean mapon = false;
+	GoogleMap map;
+	LatLng initialPos = new LatLng(37.789238, -122.401407);
+	MapAPIProxy mapProxy;
+	JSONArray busRoutes;
+	JSONArray busStops;
 	
 	@Override
 	protected CordovaWebViewClient createWebViewClient() {
 		return new AAUMobileWebViewClient(this);
 	}
 
+	private void mapInit(Bundle savedInstanceState) throws AMException {
+		// Initialize varibles
+		mapLayout = getLayoutInflater().inflate(R.layout.activity_native_map_acivity, null);
+		mapView = (MapView) mapLayout.findViewById(R.id.map);
+		
+		mapView.onCreate(savedInstanceState);
+		map = mapView.getMap();
+		
+		mapProxy = new MapAPIProxy(this);
+		
+		// Center and zoom map on initial position
+		try {
+			MapsInitializer.initialize(this);
+
+			map.animateCamera(CameraUpdateFactory.newLatLngZoom(initialPos, 14.0f));
+		} catch (GooglePlayServicesNotAvailableException e) {
+			// TODO handle map is not available situation
+			e.printStackTrace();
+		}
+		
+		// Load bus stop data from Salesforce
+		busRoutes = mapProxy.getBusStops();
+		
+		busStops = new JSONArray();
+		
+		for(int i = 0; i < busRoutes.length(); i++) {
+			JSONObject route = (JSONObject) busRoutes.get(i);
+			JSONArray routeStops = (JSONArray) route.get("stops");
+			
+		}
+		for(JSONObject stop : busRoutes) {
+			
+		}
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		mapView = getLayoutInflater().inflate(R.layout.activity_native_map_acivity, null);
+		try {
+			mapInit(savedInstanceState);
+		} catch (AMException e) {
+			// TODO Handle map initialization errors
+			e.printStackTrace();
+		} 
 		
 		/* Create a new SlidingMenuLayout and set Layout parameters. */
 		rootLayout = new SlidingMenuLayout(this);
@@ -93,7 +153,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		showSlidingMenuButton.setOnClickListener(this);
 		slidingMenuListView.setOnItemClickListener(this);
 		
-		nativeMenuButton = (Button) mapView.findViewById(R.id.menu);
+		nativeMenuButton = (Button) mapLayout.findViewById(R.id.menu);
 		
 		nativeMenuButton.setOnClickListener(this);
 		
@@ -127,6 +187,8 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	@Override
 	public void onResume() {
 		this.appView.loadUrl("javascript:aauMobile.init.appActivation();");
+		
+		mapView.onResume();
 		
 		if(!isConnected()) {
 		  	AlertDialog.Builder adb = new AlertDialog.Builder(this);
@@ -218,7 +280,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		if(position == 3) {
 			if(!mapon) {
 				rootLayout.removeView(this.appView);
-				rootLayout.addView(this.mapView);
+				rootLayout.addView(this.mapLayout);
 				
 				mapon = true;
 			}
@@ -228,7 +290,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 			
 			if(mapon) {
 				rootLayout.addView(this.appView);
-				rootLayout.removeView(this.mapView);
+				rootLayout.removeView(this.mapLayout);
 				mapon = false;
 			}
 

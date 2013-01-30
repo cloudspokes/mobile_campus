@@ -27,9 +27,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.appirio.mobile.aau.R;
+import com.appirio.mobile.aau.nativemap.NativeMapAcivity;
 import com.appirio.mobile.aau.slidingmenu.SlidingMenuAdapter;
 import com.appirio.mobile.aau.slidingmenu.SlidingMenuItem;
 import com.appirio.mobile.aau.slidingmenu.SlidingMenuLayout;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.salesforce.androidsdk.ui.LoginActivity;
 import com.salesforce.androidsdk.ui.SalesforceDroidGapActivity;
 
@@ -42,6 +45,9 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	WebView webView;
 	SlidingMenuAdapter menuAdapter;
 	ArrayList<SlidingMenuItem> slidingMenuList;
+	View mapView;
+	Button nativeMenuButton;
+	boolean mapon = false;
 	
 	@Override
 	protected CordovaWebViewClient createWebViewClient() {
@@ -52,14 +58,15 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-
+		mapView = getLayoutInflater().inflate(R.layout.activity_native_map_acivity, null);
+		
 		/* Create a new SlidingMenuLayout and set Layout parameters. */
 		rootLayout = new SlidingMenuLayout(this);
 		rootLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.0F));
 		
 		/* Inflate and add the main view layout and menu layout to root sliding menu layout. Menu layout should be added first.. */
 		menuLayout = getLayoutInflater().inflate(R.layout.sliding_menu_layout, null);
-		mainLayout = getLayoutInflater().inflate(R.layout.main_layout, null);		
+		mainLayout = getLayoutInflater().inflate(R.layout.main_layout, null);
 		rootLayout.addView(menuLayout);
 		//rootLayout.addView(mainLayout);
 		
@@ -86,7 +93,10 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		showSlidingMenuButton.setOnClickListener(this);
 		slidingMenuListView.setOnItemClickListener(this);
 		
-
+		nativeMenuButton = (Button) mapView.findViewById(R.id.menu);
+		
+		nativeMenuButton.setOnClickListener(this);
+		
 		super.setIntegerProperty("splashscreen", com.appirio.mobile.aau.R.drawable.aau_load);
 
 		super.loadUrl("file:///android_asset/www/bootstrap.html",10000); 
@@ -205,15 +215,34 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	@Override
 	public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
 	{
-		rootLayout.closeMenu();
-		SlidingMenuItem menuItem = (SlidingMenuItem) menuAdapter.getItem(position);
-		webView.loadUrl("javascript:" + menuItem.getAction());
+		if(position == 3) {
+			if(!mapon) {
+				rootLayout.removeView(this.appView);
+				rootLayout.addView(this.mapView);
+				
+				mapon = true;
+			}
+
+			rootLayout.closeMenu();
+		} else {
+			
+			if(mapon) {
+				rootLayout.addView(this.appView);
+				rootLayout.removeView(this.mapView);
+				mapon = false;
+			}
+
+			SlidingMenuItem menuItem = (SlidingMenuItem) menuAdapter.getItem(position);
+			webView.loadUrl("javascript:" + menuItem.getAction());
+
+			rootLayout.closeMenu();
+		}
 	}
 
 	@Override
 	public void onClick(View view) 
 	{
-		if (view == showSlidingMenuButton)
+		if (view == showSlidingMenuButton || view == nativeMenuButton)
 		{
 			if (rootLayout.isOpen())
 			{

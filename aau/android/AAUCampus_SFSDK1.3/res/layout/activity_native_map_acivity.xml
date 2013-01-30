@@ -1,0 +1,31 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".NativeMapAcivity" >
+
+    <LinearLayout
+        android:id="@+id/NativeMapMenuBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#000" >
+
+        <Button
+            android:id="@+id/menu"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/menuButton" />
+
+    </LinearLayout>
+
+    <fragment
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/map"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/NativeMapMenuBar"
+        class="com.google.android.gms.maps.MapFragment" />
+
+</RelativeLayout>

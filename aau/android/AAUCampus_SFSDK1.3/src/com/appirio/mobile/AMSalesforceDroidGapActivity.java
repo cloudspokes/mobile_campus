@@ -2,9 +2,12 @@ package com.appirio.mobile;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.cordova.CordovaWebViewClient;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
@@ -39,6 +42,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.salesforce.androidsdk.ui.LoginActivity;
 import com.salesforce.androidsdk.ui.SalesforceDroidGapActivity;
 
@@ -68,7 +72,8 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	MapAPIProxy mapProxy;
 	JSONArray busRoutes;
 	JSONArray busStops;
-	
+	Map<String, JSONObject> stopsMap = new HashMap<String, JSONObject>();
+		
 	@Override
 	protected CordovaWebViewClient createWebViewClient() {
 		return new AAUMobileWebViewClient(this);
@@ -99,14 +104,36 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		
 		busStops = new JSONArray();
 		
-		for(int i = 0; i < busRoutes.length(); i++) {
-			JSONObject route = (JSONObject) busRoutes.get(i);
-			JSONArray routeStops = (JSONArray) route.get("stops");
+		try {
+			for(int i = 0; i < busRoutes.length(); i++) {
+				JSONObject route = (JSONObject) busRoutes.get(i);
+				JSONArray routeStops = (JSONArray) route.get("stops");
+				
+				for(int j = 0; j < routeStops.length(); j++) {
+					JSONObject stop = (JSONObject) routeStops.get(j);
+					
+					stopsMap.put(stop.get("id").toString(), stop);
+				}
+			}
+
+			for(String id : stopsMap.keySet()) {
+				JSONObject stop = stopsMap.get(id);
+				
+				MarkerOptions mo = new MarkerOptions();
+				LatLng pos = new LatLng(stop.getDouble("latitude"), stop.getDouble("longitude"));
+				
+				mo.position(pos);
+				
+				map.addMarker(mo);
+			}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
 			
+			throw new AMException(e);
 		}
-		for(JSONObject stop : busRoutes) {
-			
-		}
+		
+		
 	}
 	
 	@Override

@@ -16,7 +16,6 @@ import com.salesforce.androidsdk.app.ForceApp;
 import com.salesforce.androidsdk.phonegap.SalesforceOAuthPlugin;
 import com.salesforce.androidsdk.rest.ClientManager;
 import com.salesforce.androidsdk.rest.RestClient;
-import com.salesforce.androidsdk.ui.SalesforceDroidGapActivity;
 
 public class AMWebService extends Plugin {
 	

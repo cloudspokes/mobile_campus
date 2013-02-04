@@ -92,18 +92,27 @@
 		
 		
 			<div class="div-parent-page1" >
-			<table data-mini="true" width="100%" padding="5px" border="0px" align="center">
-				<tr>
-					<td width="50%" class="td-tableCell-left">
-						<div  class="div-Time">
-					   		<h3 class="aau-heading">
+						<h3 class="aau-heading">
 						   		<div  class="aau-header-div  aau-corner-top ">
-						   			<span align="center" class="aau-inner aau-corner-top aau-corner-bottom aau-text" >Time
+						   			<span align="center" class="aau-inner aau-corner-top aau-corner-bottom aau-text" >Departure Time
 						   				</span>
 						   		</div>
 				 			</h3>
 						   <div class="ui-collapsible-content ui-body-f1 aau-corner-bottom" >
 						   		<input type="time" data-theme="c" name="plantime" id="plantime" value="" data-mini="true" class="nativedatepicker"></input>
+						   	</div>	
+			<!-- <table data-mini="true" width="100%" padding="5px" border="0px" align="center">
+				<tr>
+					<td width="50%" class="td-tableCell-left">
+						<div  class="div-Time">
+					   		<h3 class="aau-heading">
+						   		<div  class="aau-header-div  aau-corner-top ">
+						   			<span align="center" class="aau-inner aau-corner-top aau-corner-bottom aau-text" >Departure Time
+						   				</span>
+						   		</div>
+				 			</h3>
+						   <div class="ui-collapsible-content ui-body-f1 aau-corner-bottom" >
+						   		Place holder for Time Input  
 						   	</div>	
 					   </div>	
 				   </td> 
@@ -118,14 +127,14 @@
 						   <div class="ui-collapsible-content ui-body-f1 aau-corner-bottom div-weekdaySelect"  >
 						   		<select data-mini="true" name="day-select" id="day-select" >
 							   		<option value="weekday">Weekday</option>
-							   		<!-- <option value="weekend">Weekend</option> -->
+							   		<option value="weekend">Weekend</option> 
 							   		
 							   </select> 
 						   </div>
 					   </div>
-				   </td>
+				   </td> 
 			   </tr>
-		   </table>	 
+		   </table>	 -->
 		  
 		</div>
 		<div id="travelPlanButton" style="width:95%;" data-content-theme="b">

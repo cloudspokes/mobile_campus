@@ -6,7 +6,7 @@ import android.view.Menu;
 import android.view.Window;
 import android.webkit.WebView;
 
-import com.appirio.mobile.aau.R;
+import com.appirio.aau.R;
 import com.appirio.mobile.plugins.AppirioWebViewClient;
 
 public class WebViewActivity extends Activity {

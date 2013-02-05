@@ -26,6 +26,7 @@
  */
 package com.appirio.mobile.aau;
 
+import com.appirio.aau.R;
 import com.salesforce.androidsdk.ui.SalesforceR;
 
 

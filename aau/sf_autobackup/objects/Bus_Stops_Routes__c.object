@@ -37,7 +37,7 @@
     <enableActivities>false</enableActivities>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
-    <enableReports>false</enableReports>
+    <enableReports>true</enableReports>
     <fields>
         <fullName>Bus_Route__c</fullName>
         <externalId>false</externalId>

@@ -4,7 +4,7 @@ package com.appirio.mobile.aau.slidingmenu;
 
 import java.util.ArrayList;
 
-import com.appirio.mobile.aau.R;
+import com.appirio.aau.R;
 
 import android.app.Activity;
 import android.os.Bundle;

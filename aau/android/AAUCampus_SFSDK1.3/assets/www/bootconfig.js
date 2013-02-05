@@ -17,7 +17,10 @@ var debugMode = false;
 //var remoteAccessConsumerKey = "3MVG9CVKiXR7Ri5ref1HmPTy8XRtTBkz6clmB3hwT0Zr64wH0mezVlNQxHMtMPnOa6fb5bxpFjF4t8mF2hdtn";
 
 // Tony's key
-var remoteAccessConsumerKey = "3MVG9pHRjzOBdkd8MfCJMc4eJbUj2nHpFn12HxgRsndl_JULCmgZIVObYhdz28GDfyIfPQNbXgorAjVYZ_aNZ";
+//var remoteAccessConsumerKey = "3MVG9pHRjzOBdkd8MfCJMc4eJbUj2nHpFn12HxgRsndl_JULCmgZIVObYhdz28GDfyIfPQNbXgorAjVYZ_aNZ";
+
+// Production connected app key
+var remoteAccessConsumerKey = "3MVG9CVKiXR7Ri5ref1HmPTy8XRtTBkz6clmB3hwT0Zr64wH0mezVlNQxHMtMPnOa6fb5bxpFjF4t8mF2hdtn";
 
 // Dev 7 test key
 //var remoteAccessConsumerKey = "3MVG98dostKihXN6UJFri4fKjPBBzKsNkI_fIy3wnvP5_NSj0HxOTJD9ZE1bKRL7ZXbPuLkzBAPvj4eTB.HI6";

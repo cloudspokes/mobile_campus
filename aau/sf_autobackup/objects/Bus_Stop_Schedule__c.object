@@ -37,7 +37,7 @@
     <enableActivities>false</enableActivities>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
-    <enableReports>false</enableReports>
+    <enableReports>true</enableReports>
     <fields>
         <fullName>Bus_Route__c</fullName>
         <externalId>false</externalId>
@@ -76,7 +76,7 @@
         <fullName>Order__c</fullName>
         <externalId>false</externalId>
         <label>Order</label>
-        <precision>3</precision>
+        <precision>4</precision>
         <required>true</required>
         <scale>0</scale>
         <type>Number</type>
@@ -222,6 +222,24 @@
             <value>I</value>
         </filters>
         <label>Route I</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Route_M</fullName>
+        <columns>NAME</columns>
+        <columns>Order__c</columns>
+        <columns>Bus_Stop__c</columns>
+        <columns>Bus_Route__c</columns>
+        <columns>Sub_Route__c</columns>
+        <columns>Time__c</columns>
+        <columns>Time_Value__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Bus_Route__c</field>
+            <operation>startsWith</operation>
+            <value>M</value>
+        </filters>
+        <label>Route M</label>
         <language>en_US</language>
     </listViews>
     <listViews>

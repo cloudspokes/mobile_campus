@@ -234,7 +234,7 @@ var MapManager = function() {
                     });
           
           // Commented out, geo location not working in iOS
-          myMarker.setMap(map);
+          //myMarker.setMap(map);
         }
         
         google.maps.event.addListener(map, 'click', function(event) {
@@ -389,11 +389,11 @@ var MapManager = function() {
                 	currentLocation = new google.maps.LatLng(defaultLat, defaultLong);
                 }
                 
-                if(myMarker) {
+              /*  if(myMarker) {
                   myMarker.setMap(null);
                   myMarker.setPosition(currentLocation);
                   myMarker.setMap(map);
-                }
+                }*/
                 
                 if(pan) {
                   if(map)

@@ -30,9 +30,10 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.appirio.mobile.aau.R;
 import com.appirio.mobile.aau.nativemap.AMException;
 import com.appirio.mobile.aau.nativemap.MapAPIProxy;
+import com.appirio.aau.R;
+
 import com.appirio.mobile.aau.slidingmenu.SlidingMenuAdapter;
 import com.appirio.mobile.aau.slidingmenu.SlidingMenuItem;
 import com.appirio.mobile.aau.slidingmenu.SlidingMenuLayout;
@@ -184,7 +185,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		
 		nativeMenuButton.setOnClickListener(this);
 		
-		super.setIntegerProperty("splashscreen", com.appirio.mobile.aau.R.drawable.aau_load);
+		super.setIntegerProperty("splashscreen", com.appirio.aau.R.drawable.aau_load);
 
 		super.loadUrl("file:///android_asset/www/bootstrap.html",10000); 
 		
@@ -240,7 +241,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 					Context.MODE_PRIVATE);
 			SharedPreferences.Editor editor = settings.edit();
 			editor.putString(LoginActivity.SERVER_URL_CURRENT_SELECTION,
-			  getString(com.appirio.mobile.aau.R.string.sf_default_url));
+			  getString(com.appirio.aau.R.string.sf_default_url));
 			
 			long askFeedbackOn = settings.getLong(ASK_FEEDBACK_ON_PREF, 0);
 			Calendar calendar = Calendar.getInstance();

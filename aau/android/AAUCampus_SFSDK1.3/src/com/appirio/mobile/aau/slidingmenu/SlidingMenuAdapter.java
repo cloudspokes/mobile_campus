@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
-import com.appirio.mobile.aau.R;
+import com.appirio.aau.R;
 
 public class SlidingMenuAdapter extends BaseAdapter implements ListAdapter {
 	LayoutInflater inflater;

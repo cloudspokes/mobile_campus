@@ -15,9 +15,8 @@ private class  mob_BusStop_Schedule_Test {
           busStopRoutes.Bus_Stop__c = busStop.Id;
           busStopRoutes.Stop_Order__c = 1;
           
-          Bus_Stop_Schedule__c schedule = mob_TestUtil.createBusSchedule(busStop.Id, busRoute.Id);
+          Bus_Stop_Schedule__c schedule = mob_TestUtil.createBusSchedule(busStop.Id, busRoute.Id,2,'10:30PM');
           
-        
           RestRequest req = new RestRequest(); 
           RestResponse res = new RestResponse();
           

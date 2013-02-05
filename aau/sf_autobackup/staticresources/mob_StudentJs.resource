@@ -1780,7 +1780,7 @@ tripPlanner: {
 				var endTime ;
 				var trans =0;
 				for( i=0; hasMore == true ;i++){
-					if(route[i] == null){
+					if(route == null || route[i] == null){
 						hasMore = false;
 						break;
 					}
@@ -1809,11 +1809,16 @@ tripPlanner: {
 					else if(route[i].type == 'END'){
 						routeData.rawDestTime = route[i].toTime;	//use this to sort later
 						routeData.destTime = aauMobile.tripPlanner.get12HrTime(route[i].toTime);
-						endTime = route[i].toTime;
-						var endT = new Date(0,0,0,parseInt(endTime.split('.')[0]),parseInt(endTime.split('.')[1]),0,0);
-						var startT =  new Date(0,0,0,parseInt(startTime.split('.')[0]),parseInt(startTime.split('.')[1]),0,0);
-						
+						endTime = route[i].toTime.split('.');
+						//alert('startTime: '+startTime+', endMins: '+endTime[1]);
+						var endT = new Date(0,0,0,endTime[0],endTime[1],0,0);
+						var startT =  new Date(0,0,0,startTime.split('.')[0],startTime.split('.')[1],0,0);
+						//alert('startT: '+startT+', endT: '+endT);
+						if(endT < startT){
+							endT.setDate(startT.getDate()+1);
+						}
 						var diff = Math.floor((endT-startT)/1000/60);
+						//alert('diff: '+diff);
 						
 						routeData.travelTime = diff +' mins';
 						
@@ -1826,6 +1831,9 @@ tripPlanner: {
 						var nowT = new Date(0,0,0,nowTime[0],nowTime[1],0);
 						//console.log('TIME: '+nowT);
 						//var nowT = aauMobile.tripPlanner.tripTime;
+						if(startT < nowT){
+							startT.setDate(nowT.getDate()+1);
+						}
 						routeData.nextBusIn = Math.floor((startT - nowT)/1000/60) ;
 						//console.log('TIME: '+routeData.nextBusIn);
 
@@ -1834,6 +1842,7 @@ tripPlanner: {
 						}*/
 						//alert('startT = ' + startT + ' nowT = ' + nowT + ' diff = ' + (nowT - startT)/1000/60);
 					}
+					//alert('routeData: '+JSON.stringify(routeData));
 				}
 			
 				var routesAndColors ;
@@ -1849,9 +1858,13 @@ tripPlanner: {
 						return false;
 					}
 				});
-				
-				routeData.transfers = trans;
-				listItems.push(routeData);
+			
+				console.log('routeData: '+JSON.stringify(routeData));	
+				console.log('routeData: '+routeData.routename);	
+				if(routeData && routeData.routename){
+					routeData.transfers = trans;
+					listItems.push(routeData);
+				}
 
 			});
 
@@ -1887,29 +1900,35 @@ tripPlanner: {
 		
 	},
 	get12HrTime : function(tim){
-		var hr = parseInt(tim.split('.')[0]);
-		var min = parseInt(tim.split('.')[1]);
+		var hr = tim.split('.')[0];
+		var min = tim.split('.')[1];
+	
 		var strMin =''+ min;
 		var strHr='';
 		var ampm=' AM';
-		if(min<10){
+		if(min<10 && min.substring(0,1) != '0'){
 			strMin = '0' + min;
 		}
-		
+
 		if(hr>12){
 			hr = hr-12;
 			strHr = '' + hr;
 			ampm = ' PM';
-			if(hr<10){
+			/*if(hr<10){
 				strHr = '0' +  hr ;
-			}
-			
+			}*/
+		}else if(hr == 12){		
+			strHr = '' + hr;
+			ampm = ' PM';
 		}else{
+			if(hr == 0){
+				hr = 12;
+			}
 			strHr = '' + hr;
 			ampm = ' AM';
-			if(hr<10){
+			/*if(hr<10){
 				strHr = '0' +  hr ;
-			}
+			}*/
 			
 		}
 		return strHr + ':' + strMin + ampm ;
@@ -2003,9 +2022,11 @@ tripPlanner: {
 					else if(route[i].type == 'END'){
 						routeData.destTime = aauMobile.tripPlanner.get12HrTime(route[i].toTime);
 						endTime = route[i].toTime;
-						var endT = new Date(0,0,0,parseInt(endTime.split('.')[0]),parseInt(endTime.split('.')[1]),0,0);
-						var startT =  new Date(0,0,0,parseInt(startTime.split('.')[0]),parseInt(startTime.split('.')[1]),0,0);
-						
+						var endT = new Date(0,0,0,endTime.split('.')[0],endTime.split('.')[1],0,0);
+						var startT =  new Date(0,0,0,startTime.split('.')[0],startTime.split('.')[1],0,0);
+						if(endT < startT){
+							endT.setDate(startT.getDate()+1);
+						}
 						var diff = Math.floor((endT-startT)/1000/60);
     					
 						routeData.travelTime = diff +' mins';
@@ -2014,6 +2035,9 @@ tripPlanner: {
 						//var nowDt = new Date();
 						//var nowT = new Date(0,0,0,nowDt.getHours(),nowDt.getMinutes(),0);
 						var nowT = new Date(0,0,0,nowTime[0],nowTime[1],0);
+						if(startT < nowT){
+							startT.setDate(nowT.getDate()+1);
+						}
 						routeData.nextBusIn = Math.floor((startT - nowT)/1000/60) ;
 						
 					}
@@ -2751,6 +2775,7 @@ function bindEvents() {
   //Disable page transitions. With the way the menu works, we have to use our own.
   $.mobile.defaultPageTransition = 'none';	
   
+  
     $("#transit-settings").live(aauMobile.clickEvent, function(){ 
 	        $('#result-container').toggle(); 
 	}); 
@@ -2787,12 +2812,12 @@ function bindEvents() {
 	        var currentField = $(this);
 	        var time = currentField.val();
 	        var myNewTime = new Date();
-	        
+
 	        console.log(time);
-	
+
 	        myNewTime.setHours(time.substr(0, 2));
 	        myNewTime.setMinutes(time.substr(3, 2));
-	
+
 	        // Same handling for iPhone and Android
 	        plugins.datePicker.show({
 	            date : myNewTime,
@@ -2806,6 +2831,7 @@ function bindEvents() {
 	            currentField.blur();
 	        });
 	    });
+
 	 }
   
   
@@ -2948,7 +2974,8 @@ function initApp(){
 		});*/
 		aauMobile.campusFeed.init(function(){$.mobile.hidePageLoadingMsg();});
 		mapInit();
-		//TripPlannerInit() ; //now called from mapInit
+		loadPage();  //call method to load data for whatever page is active
+		TripPlannerInit();
 	}
 }
 
@@ -3096,7 +3123,14 @@ function initApp(){
 	}
 		
 
-$(document).bind('pageinit', function(event, data) {
+$(document).bind('pageshow', function(event, data) {
+	if(deviceReady == true){
+		loadPage();
+	}
+});
+
+function loadPage(){
+		console.log('DEBUG: Load Page');
 		$.mobile.zoom.disable(true);
 		$.extend($.mobile.zoom, {locked:true,enabled:false});
 		
@@ -3118,93 +3152,92 @@ $(document).bind('pageinit', function(event, data) {
         	aauMobile.chatterFeed.data = [];
         }
         
-	//$.mobile.hidePageLoadingMsg();
-	var currPage = $.mobile.activePage.attr('id');
-	$.mobile.loadingMessage = 'Loading...';
+		//$.mobile.hidePageLoadingMsg();
+		var currPage = $($.mobile.activePage).attr('id');
+		$.mobile.loadingMessage = 'Loading...';
 
-	/*****  START: Standardize the Spinner for all page loads  ****/
-	console.log('Class Schedule: ' + aauMobile.classSchedule.data);
-	console.log('Campus Feed: ' + aauMobile.campusFeed.feedData);
-	console.log('Campus Events: ' + aauMobile.campusEvents.feedCount);
-	console.log('Athletic Events: ' + aauMobile.rssEvent.feedData);
-	console.log('External Links: ' + aauMobile.externalLinks.linkData);
-	
-	//Parth: Track Event	
-	console.log('Current Page ::'+currPage);
-	
-	trackEvent(currPage);
-	
-	if(currPage == 'student-home' && aauMobile.classSchedule.data.length === 0){
-		//console.log('Go Spinny Go!');
-		/* Parth: Load Student Data */
-		//setTimeout(function(){
-		appirioUtils.fireEvent(aauMobile.classSchedule.init, null, null);
-		//},2000);
-	}
-	if(currPage == 'class-history' && aauMobile.classHistory.data.length === 0){
-		console.log('Go Spinny Go Class History :::');
-		/* Parth: Load Student Data */
-		appirioUtils.fireEvent(aauMobile.classHistory.init, null, null);
-	}
-	if(currPage == 'feed-list' && aauMobile.campusFeed.feedData.length === 0){
-		//console.log('Go Spinny Go!');
-		/* Parth: Load Campus Feed Data */ 
-		appirioUtils.fireEvent(aauMobile.campusFeed.init, null, null);
-	}
-	if(currPage == 'campus-event-list' && aauMobile.campusEvents.feedCount < 3){
-		console.log('Go Spinny Go!');
-		/* Parth: Load Campus Events Data */
-		 appirioUtils.fireEvent(aauMobile.campusEvents.init, null, null);
-	}
-	if(currPage == 'event-list' && aauMobile.rssEvent.feedData.length === 0){
-		console.log('Go Spinny Go!');
-		/* Parth: Load Events List Data */
-		appirioUtils.fireEvent(aauMobile.rssEvent.init, null, null);
-	}
-	if(currPage == 'link-list' && aauMobile.externalLinks.linkData.length === 0){
-		console.log('Go Spinny Go!');
-		/* Parth: Load External links Data */
-		appirioUtils.fireEvent(aauMobile.externalLinks.init, null, null);
-	}
-	if(currPage == 'chatter-list' && aauMobile.chatterFeed.data.length === 0){
-		console.log('Go Spinny Go!');
-		/* Parth: Load External links Data */
-		appirioUtils.fireEvent(aauMobile.chatterFeed.init, null, null);
-	}
-	if(currPage == 'trip-options' ){
-		console.log('Go Spinny Go!');
+		/*****  START: Standardize the Spinner for all page loads  ****/
+		console.log('Class Schedule: ' + aauMobile.classSchedule.data);
+		console.log('Campus Feed: ' + aauMobile.campusFeed.feedData);
+		console.log('Campus Events: ' + aauMobile.campusEvents.feedCount);
+		console.log('Athletic Events: ' + aauMobile.rssEvent.feedData);
+		console.log('External Links: ' + aauMobile.externalLinks.linkData);
 		
-		if((aauMobile.tripPlanner.tripStartId != $('#startStop-select :selected').val()) 
-			|| (aauMobile.tripPlanner.tripEndId != $('#endStop-select :selected').val()) 
-			|| (aauMobile.tripPlanner.tripTime != $('#plantime').val()) 
-			|| (aauMobile.tripPlanner.weekdayOption != $('#day-select :selected').val() )){
-				
-				if($('#startStop-select :selected').val() == '0' || $('#endStop-select :selected').val()=='0' || $('#plantime').val() == ''){
-					$.mobile.changePage('#trip-planner',{transition: 'slide', reverse: true});
-					alert('Please select a pickup/drop off point and time');
-					return false;
-				}
-				$("#trip-options-list").empty();
-				
-				/* Parth: Load Trip plans*/
-				aauMobile.tripPlanner.tripStart = $('#startStop-select :selected').text();
-				aauMobile.tripPlanner.tripEnd = $('#endStop-select :selected').text();
-				aauMobile.tripPlanner.tripStartId = $('#startStop-select :selected').val();
-				aauMobile.tripPlanner.tripEndId = $('#endStop-select :selected').val();
-				aauMobile.tripPlanner.tripTime = $('#plantime').val();
-				aauMobile.tripPlanner.weekdayOption = $('#day-select :selected').val() ;
-				appirioUtils.fireEvent(aauMobile.tripPlanner.init, null, null);
+		//Parth: Track Event	
+		console.log('Current Page ::'+currPage);
+		
+		trackEvent(currPage);
+		
+		if(currPage == 'student-home' && aauMobile.classSchedule.data.length === 0){
+			//console.log('Go Spinny Go!');
+			/* Parth: Load Student Data */
+			//setTimeout(function(){
+			appirioUtils.fireEvent(aauMobile.classSchedule.init, null, null);
+			//},2000);
 		}
-	}
-	
-	/*if(currPage == 'transit-map'){
-		//console.log('Go Spinny Go!');
-		//$.mobile.showPageLoadingMsg("a", "Loading...", false);
-		//fireEvent(mapLoad, 
-	}*/
+		if(currPage == 'class-history' && aauMobile.classHistory.data.length === 0){
+			console.log('Go Spinny Go Class History :::');
+			/* Parth: Load Student Data */
+			appirioUtils.fireEvent(aauMobile.classHistory.init, null, null);
+		}
+		if(currPage == 'feed-list' && aauMobile.campusFeed.feedData.length === 0){
+			//console.log('Go Spinny Go!');
+			/* Parth: Load Campus Feed Data */ 
+			appirioUtils.fireEvent(aauMobile.campusFeed.init, null, null);
+		}
+		if(currPage == 'campus-event-list' && aauMobile.campusEvents.feedCount < 3){
+			console.log('Go Spinny Go!');
+			/* Parth: Load Campus Events Data */
+			 appirioUtils.fireEvent(aauMobile.campusEvents.init, null, null);
+		}
+		if(currPage == 'event-list' && aauMobile.rssEvent.feedData.length === 0){
+			console.log('Go Spinny Go!');
+			/* Parth: Load Events List Data */
+			appirioUtils.fireEvent(aauMobile.rssEvent.init, null, null);
+		}
+		if(currPage == 'link-list' && aauMobile.externalLinks.linkData.length === 0){
+			console.log('Go Spinny Go!');
+			/* Parth: Load External links Data */
+			appirioUtils.fireEvent(aauMobile.externalLinks.init, null, null);
+		}
+		if(currPage == 'chatter-list' && aauMobile.chatterFeed.data.length === 0){
+			console.log('Go Spinny Go!');
+			/* Parth: Load External links Data */
+			appirioUtils.fireEvent(aauMobile.chatterFeed.init, null, null);
+		}
+		if(currPage == 'trip-options' ){
+			console.log('Go Spinny Go!');
+			
+			if((aauMobile.tripPlanner.tripStartId != $('#startStop-select :selected').val()) 
+				|| (aauMobile.tripPlanner.tripEndId != $('#endStop-select :selected').val()) 
+				|| (aauMobile.tripPlanner.tripTime != $('#plantime').val()) 
+				|| (aauMobile.tripPlanner.weekdayOption != $('#day-select :selected').val() )){
+					
+					if($('#startStop-select :selected').val() == '0' || $('#endStop-select :selected').val()=='0' || $('#plantime').val() == ''){
+						$.mobile.changePage('#trip-planner',{transition: 'slide', reverse: true});
+						alert('Please select a pickup/drop off point and time');
+						return false;
+					}
+					$("#trip-options-list").empty();
+					
+					/* Parth: Load Trip plans*/
+					aauMobile.tripPlanner.tripStart = $('#startStop-select :selected').text();
+					aauMobile.tripPlanner.tripEnd = $('#endStop-select :selected').text();
+					aauMobile.tripPlanner.tripStartId = $('#startStop-select :selected').val();
+					aauMobile.tripPlanner.tripEndId = $('#endStop-select :selected').val();
+					aauMobile.tripPlanner.tripTime = $('#plantime').val();
+					aauMobile.tripPlanner.weekdayOption = $('#day-select :selected').val() ;
+					appirioUtils.fireEvent(aauMobile.tripPlanner.init, null, null);
+			}
+		}
 		
+		/*if(currPage == 'transit-map'){
+			//console.log('Go Spinny Go!');
+			//$.mobile.showPageLoadingMsg("a", "Loading...", false);
+			//fireEvent(mapLoad, 
+		}*/
 	/*****  END: Standardize the Spinner for all page loads  ****/
-});
+}
 
 function searchTripOptions(){
 	if($('#startStop-select :selected').val() == '0' || $('#endStop-select :selected').val()=='0' || $('#plantime').val() == ''){

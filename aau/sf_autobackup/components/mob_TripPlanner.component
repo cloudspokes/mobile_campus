@@ -172,7 +172,7 @@
 				font-family: Helvetica, Arial, sans-serif /*{global-font-family}*/;
 					text-decoration: none;
 				border: 1px solid #CC0018 /*{f-bup-border}*/;
-				background: #EEE /*{f-bup-background-color}*/;
+				background: #CC0018 /*{f-bup-background-color}*/;
 				font-weight: bold;
 				color: #EBEFF1 /*{f-bup-color}*/;
 				background-image: -webkit-linear-gradient(#CC0018 /*{f-bup-background-start}*/,#CC0018 /*{f-bup-background-end}*/);
@@ -269,7 +269,12 @@
 					font-size: 13pt;
 					white-space: pre-line;
 				  }
-			.next-bus{font-size: 10pt;white-space: pre-line;word-wrap:normal;}	
+			.next-bus{
+					font-size: 10pt;
+					white-space: pre-line;
+					word-wrap:normal;
+					color: #94908F; 
+					}	
 			.clock-icon {
 
 			    background:url({!IF(hasNativeResources,"aaumobile://iconsprite_grey.png", URLFOR($Resource.mob_Design, "/mob_Design/iconsprite_grey.png"))})  no-repeat 0px 0px;
@@ -440,16 +445,23 @@
      	                        	<td width="1%"><div class="circle-div" style="background-color: ${routecolor}"><div class="circle-content" >${routename}</div></div></td>
 									
 									<td   style="width: 1px;padding-left: 10px;" >
-										<table>
+										<!--<table>
 											<tr >
-												<td ><table ><tr><td style="padding-left:8px;"><span class="clock-icon"></span></td> </tr>
-										   		<tr><td width="1%"><span class="next-bus" style="color: ${routecolor};">NEXT BUS:</span></td> </tr>
-										   		</table></td>
+												<td > -->
+										<table width="1px">
+											<tr>
+												<td style="padding-left:8px;"><span class="clock-icon"></span></td>
 											</tr>
-										</table>
+										   	<tr>
+												<td width="1%"><span class="next-bus" >NEXT BUS:</span></td>
+											</tr>
+										  </table>
+												<!--</td>
+											</tr>
+										</table>-->
 									</td>
-									<td style="padding-left: 1px; width:45px;">
-										<table>
+									<td style="padding-left: 1px; width:1px;">
+										<table width="1px">
 											<tr>
 												<td>
 													<div align="center" ><span class="arrivaltime bigdigit" style="color: #DC2221;">${nextBusIn}</span><br/> <span class="arrivaltime bigdigit" style="color: #DC2221;">MIN</span>
@@ -458,8 +470,8 @@
 											</tr>
 										</table>	
 							   		</td>
-							   		<td style="padding-left: 0px; width:130px;">
-							   			<table>
+							   		<td style="padding-left: 10px; ">
+							   			<table style=" white-space: nowrap;">
 							   				<tr><td class="text-routeDetails">Departure: ${arrivalTime}</td></tr>
 							   				<tr><td class="text-routeDetails">Arrival: ${destTime}</td></tr>
 											<tr><td class="text-routeDetails">Travel Time: ${travelTime}</td></tr>
@@ -509,8 +521,8 @@
 	        		<table padding="0" cellpadding="0" cellspacing="0" style="padding-left:5px">
 							<tr><td   style="width: 100%;padding-left: 10px;font-weight:bold;" >${stopname}</td></tr>
 							<tr><td  style="width: 100%;padding-left: 10px;"><div>
-										<div style=" padding-right:3px;float:left;font-weight:bold;color: ${nextroutecolor};">Transfer to Route </div> 
-										<div style="float:right;"><div class="circle-div-mini" style="background-color: ${nextroutecolor}"><div class=" circle-content-mini" >${transferto}</div></div></div>
+										<div style=" padding-right:3px;float:left;font-weight:bold;color: ${nextroutecolor};">Transfer to Route ${transferto} </div> 
+										<!--<div style="float:right;"><div class="circle-div-mini" style="background-color: ${nextroutecolor}"><div class=" circle-content-mini" >${transferto}</div></div></div>-->
 									</div>
 							</td></tr>
 			   				<tr><td style="width: 100%;padding-left: 10px;"><span style="font-weight:bold">Arrival:</span> ${arrivalTime}</td></tr>

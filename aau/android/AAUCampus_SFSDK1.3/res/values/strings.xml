@@ -3,7 +3,7 @@
 
     <string name="hello">Hello World, AAUCampusActivity!</string>
     <string name="app_name">AAUCampus</string>
-    <string name="sf_default_url">https://aau--sb1.cs3.my.salesforce.com</string>
+    <string name="sf_default_url">https://aau.my.salesforce.com</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_web_view">WebViewActivity</string>
     <string name="show_menu_button_name">Menu</string>

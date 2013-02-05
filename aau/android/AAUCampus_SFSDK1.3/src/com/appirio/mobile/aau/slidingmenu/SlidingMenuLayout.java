@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.appirio.mobile.aau.R;
+import com.appirio.aau.R;
 
 
 public class SlidingMenuLayout extends ViewGroup 

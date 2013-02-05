@@ -30,6 +30,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.appirio.aau.R;
 import com.appirio.mobile.AMSalesforceDroidGapActivity;
 import com.salesforce.androidsdk.app.ForceApp;
 import com.salesforce.androidsdk.ui.LoginActivity;

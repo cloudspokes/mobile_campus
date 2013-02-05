@@ -1,4 +1,6 @@
 *.class
 aau_github/aau/android/AAUCampus_SFSDK1.3/bin/*
 aau_github/aau/android/SalesforceSDK/bin/*
+aau/android/AAUCampus_SFSDK1.3/gen/*
+aau/android/google-play-services_lib/bin/*
 !.gitignore

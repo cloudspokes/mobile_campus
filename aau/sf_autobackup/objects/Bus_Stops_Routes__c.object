@@ -94,6 +94,215 @@
         <label>All</label>
         <language>en_US</language>
     </listViews>
+    <listViews>
+        <fullName>All_D</fullName>
+        <columns>NAME</columns>
+        <columns>Bus_Route__c</columns>
+        <columns>Bus_Stop__c</columns>
+        <columns>Stop_Order__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Bus_Route__c</field>
+            <operation>equals</operation>
+            <value>D</value>
+        </filters>
+        <filters>
+            <field>NAME</field>
+            <operation>notContain</operation>
+            <value>Route</value>
+        </filters>
+        <label>All D</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_E</fullName>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Bus_Route__c</columns>
+        <columns>Bus_Stop__c</columns>
+        <columns>Stop_Order__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Bus_Route__c</field>
+            <operation>equals</operation>
+            <value>E</value>
+        </filters>
+        <filters>
+            <field>NAME</field>
+            <operation>notContain</operation>
+            <value>Route</value>
+        </filters>
+        <label>All E</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_Federal</fullName>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Bus_Route__c</columns>
+        <columns>Bus_Stop__c</columns>
+        <columns>Stop_Order__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Bus_Route__c</field>
+            <operation>contains</operation>
+            <value>Fedrl</value>
+        </filters>
+        <filters>
+            <field>NAME</field>
+            <operation>notContain</operation>
+            <value>Route</value>
+        </filters>
+        <label>All Federal</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_G</fullName>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Bus_Route__c</columns>
+        <columns>Bus_Stop__c</columns>
+        <columns>Stop_Order__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Bus_Route__c</field>
+            <operation>equals</operation>
+            <value>G</value>
+        </filters>
+        <filters>
+            <field>NAME</field>
+            <operation>notContain</operation>
+            <value>Route</value>
+        </filters>
+        <label>All G</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_H</fullName>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Bus_Route__c</columns>
+        <columns>Bus_Stop__c</columns>
+        <columns>Stop_Order__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Bus_Route__c</field>
+            <operation>equals</operation>
+            <value>H</value>
+        </filters>
+        <filters>
+            <field>NAME</field>
+            <operation>notContain</operation>
+            <value>Route</value>
+        </filters>
+        <label>All H</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_I</fullName>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Bus_Route__c</columns>
+        <columns>Bus_Stop__c</columns>
+        <columns>Stop_Order__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Bus_Route__c</field>
+            <operation>equals</operation>
+            <value>I</value>
+        </filters>
+        <filters>
+            <field>NAME</field>
+            <operation>notContain</operation>
+            <value>Route</value>
+        </filters>
+        <label>All I</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_Jerrold</fullName>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Bus_Route__c</columns>
+        <columns>Bus_Stop__c</columns>
+        <columns>Stop_Order__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Bus_Route__c</field>
+            <operation>contains</operation>
+            <value>Jerrold</value>
+        </filters>
+        <filters>
+            <field>NAME</field>
+            <operation>notContain</operation>
+            <value>Route</value>
+        </filters>
+        <label>All Jerrold</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_M</fullName>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Bus_Route__c</columns>
+        <columns>Bus_Stop__c</columns>
+        <columns>Stop_Order__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Bus_Route__c</field>
+            <operation>equals</operation>
+            <value>M</value>
+        </filters>
+        <filters>
+            <field>NAME</field>
+            <operation>notContain</operation>
+            <value>Route</value>
+        </filters>
+        <label>All M</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_Northpoint</fullName>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Bus_Route__c</columns>
+        <columns>Bus_Stop__c</columns>
+        <columns>Stop_Order__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Bus_Route__c</field>
+            <operation>contains</operation>
+            <value>Nrpnt</value>
+        </filters>
+        <filters>
+            <field>NAME</field>
+            <operation>notContain</operation>
+            <value>Route</value>
+        </filters>
+        <label>All Northpoint</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_Warehouse</fullName>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Bus_Route__c</columns>
+        <columns>Bus_Stop__c</columns>
+        <columns>Stop_Order__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Bus_Route__c</field>
+            <operation>contains</operation>
+            <value>Wrhse</value>
+        </filters>
+        <filters>
+            <field>NAME</field>
+            <operation>notContain</operation>
+            <value>Route</value>
+        </filters>
+        <label>All Warehouse</label>
+        <language>en_US</language>
+    </listViews>
     <nameField>
         <label>Bus Stops Routes Name</label>
         <type>Text</type>

@@ -210,9 +210,9 @@ global with sharing class  mob_TripPlanner {
     public static Map<String, Map<String, List<String>>> getCrosses() {
         Map<String, Map<String, List<String>>> crosses_local = new Map<String, Map<String, List<String>>>();
         
-        List<Bus_Stop__c> bus_stops = [select Id, Name, (select Id, Name, Bus_Route__r.Name from Bus_Stops_Routes__r) from Bus_Stop__c where Routes_Count__c > 1];
+        List<Bus_Stop__c> bus_stops = [select Id, Name, (select Id, Name, Bus_Route__r.Name from Bus_Stops_Routes__r where Bus_Route__r.Active__c=true) from Bus_Stop__c where Active__c = true and Routes_Count__c > 1];
         
-        for(Bus_Route__c route: [select Id, Name from Bus_Route__c]) {
+        for(Bus_Route__c route: [select Id, Name from Bus_Route__c where Active__c=true]) {
             crosses_local.put(route.Name,  new Map<String, List<String>>());
         }
         

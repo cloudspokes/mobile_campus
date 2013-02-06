@@ -39,6 +39,13 @@
     <enableHistory>false</enableHistory>
     <enableReports>true</enableReports>
     <fields>
+        <fullName>Active__c</fullName>
+        <defaultValue>true</defaultValue>
+        <externalId>false</externalId>
+        <label>Active</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>External_Id__c</fullName>
         <caseSensitive>false</caseSensitive>
         <externalId>true</externalId>
@@ -70,6 +77,22 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Schedules__c</fullName>
+        <externalId>false</externalId>
+        <label>Schedules</label>
+        <summaryForeignKey>Bus_Stop_Schedule__c.Bus_Route__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Stops__c</fullName>
+        <externalId>false</externalId>
+        <label>Stops</label>
+        <summaryForeignKey>Bus_Stops_Routes__c.Bus_Route__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <type>Summary</type>
+    </fields>
+    <fields>
         <fullName>Teletrac_Name__c</fullName>
         <description>The unabbreviated name of the Bus Route as returned by Teletrac.</description>
         <externalId>false</externalId>
@@ -87,6 +110,7 @@
         <columns>Teletrac_Name__c</columns>
         <columns>Route_Color__c</columns>
         <columns>Route_Marker__c</columns>
+        <columns>Active__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
         <language>en_US</language>

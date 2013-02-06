@@ -184,6 +184,8 @@
         <columns>Sub_Route__c</columns>
         <columns>Time__c</columns>
         <columns>Time_Value__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>UPDATEDBY_USER</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
         <language>en_US</language>
@@ -207,6 +209,42 @@
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>Route_D</fullName>
+        <columns>NAME</columns>
+        <columns>Order__c</columns>
+        <columns>Bus_Stop__c</columns>
+        <columns>Bus_Route__c</columns>
+        <columns>Sub_Route__c</columns>
+        <columns>Time__c</columns>
+        <columns>Time_Value__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Bus_Route__c</field>
+            <operation>startsWith</operation>
+            <value>D</value>
+        </filters>
+        <label>Route D</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Route_G</fullName>
+        <columns>NAME</columns>
+        <columns>Order__c</columns>
+        <columns>Bus_Stop__c</columns>
+        <columns>Bus_Route__c</columns>
+        <columns>Sub_Route__c</columns>
+        <columns>Time__c</columns>
+        <columns>Time_Value__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Bus_Route__c</field>
+            <operation>startsWith</operation>
+            <value>G</value>
+        </filters>
+        <label>Route G</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>Route_I</fullName>
         <columns>NAME</columns>
         <columns>Order__c</columns>
@@ -222,6 +260,24 @@
             <value>I</value>
         </filters>
         <label>Route I</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Route_Jerrold</fullName>
+        <columns>NAME</columns>
+        <columns>Order__c</columns>
+        <columns>Bus_Stop__c</columns>
+        <columns>Bus_Route__c</columns>
+        <columns>Sub_Route__c</columns>
+        <columns>Time__c</columns>
+        <columns>Time_Value__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Bus_Route__c</field>
+            <operation>contains</operation>
+            <value>Jerrold</value>
+        </filters>
+        <label>Route Jerrold</label>
         <language>en_US</language>
     </listViews>
     <listViews>

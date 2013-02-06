@@ -123,14 +123,14 @@
     </script>
      
 	
-   <!--
+   
     <script type="text/javascript" src="{!$Resource.appirioPlugins}"></script>
     <script type="text/javascript" src="{!$Resource.mob_mapManager}"></script>
     <script type="text/javascript" src="{!$Resource.mob_StudentJs}"></script>
     <script type="text/javascript" src="{!$Resource.mob_mapJS}"></script>
     <script type="text/javascript" src="{!$Resource.mob_transitManager}"></script>
-    -->
-    <script type="text/javascript" src="{!$Resource.mob_CombinedJs_min}"></script>  
+    
+    <!--  <script type="text/javascript" src="{!$Resource.mob_CombinedJs_min}"></script>  -->
 	
         
     <c:mob_BackButton /> 

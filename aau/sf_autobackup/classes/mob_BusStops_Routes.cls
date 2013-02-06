@@ -11,7 +11,7 @@ global with sharing class  mob_BusStops_Routes {
                                                Bus_Stop__r.Name, Bus_Stop__r.Active__c, Bus_Stop__r.Id, Bus_Stop__r.Order__c,
                                                Bus_Route__r.Name, Bus_Route__r.Route_Color__c, Bus_Route__r.Teletrac_Name__c,
                                                Bus_Route__r.Route_Marker__c, Bus_Route__r.Id
-                                               From Bus_Stops_Routes__c order by Stop_Order__c ]){
+                                               From Bus_Stops_Routes__c where Bus_Route__r.Active__c = true and Bus_Stop__r.Active__c = true order by Stop_Order__c ]){
             BusStop  stop = new BusStop();
             stop.id = busStopRoutes.Bus_Stop__r.Id;
             stop.stopName =  busStopRoutes.Bus_Stop__r.Name;

@@ -2848,9 +2848,22 @@ function bindEvents() {
   	$('#result-arrow').removeClass('result-arrow').addClass('result-arrow-android');
   	//alert($('#result-list.result-ul').length);
   	$(document).on('backbutton', function(){
+  		var lowIndex;
+  	    if(hasNativeMenu){
+  	    	lowIndex = 0;
+  	    } else{
+  	    	lowIndex = 1;
+  	    }
   		var index = $.mobile.urlHistory.activeIndex - 1;
-		if(index >= 1){
-			$.mobile.changePage("#" + $.mobile.urlHistory.getPrev().pageUrl);
+		if(index >= lowIndex){
+		    var prevPageUrl;
+		    if(index == 0){
+		    	prevPageUrl = "#student-home";
+		    }
+		    else{
+		    	prevPageUrl = "#" + $.mobile.urlHistory.getPrev().pageUrl
+		    }
+			$.mobile.changePage(prevPageUrl);
 			$.mobile.urlHistory.activeIndex = index;
 			$.mobile.urlHistory.clearForward();
 			event.preventDefault();
@@ -2961,6 +2974,9 @@ function initApp(){
 		} else if(typeof PhoneGap != 'undefined'){
 			aauMobile.nativeAdapter = PhoneGap;
 		}
+		
+		aauMobile.nativeAdapter.exec(null, null, "com.appirio.mobile.credentials","setCacheTime",[str_cacheTimeoutDays]);
+		
 		bindEvents();
 		/* PARTH: Commented this out for Lazy loading
 		 * The data is filled on demand when the user clicks on the Links inside the menu

@@ -3,6 +3,7 @@ package com.appirio.mobile;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.cordova.CordovaWebViewClient;
@@ -32,6 +33,9 @@ import android.widget.ListView;
 
 import com.appirio.mobile.aau.nativemap.AMException;
 import com.appirio.mobile.aau.nativemap.MapAPIProxy;
+import com.appirio.mobile.aau.nativemap.MapManager;
+import com.appirio.mobile.aau.nativemap.TeletracInfoParser;
+import com.appirio.mobile.aau.nativemap.Vehicle;
 import com.appirio.aau.R;
 
 import com.appirio.mobile.aau.slidingmenu.SlidingMenuAdapter;
@@ -42,6 +46,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.salesforce.androidsdk.ui.LoginActivity;
@@ -57,24 +63,20 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	}
 
 	public SlidingMenuLayout rootLayout;
-	ListView slidingMenuListView;
-	View menuLayout, mainLayout;
-	Button showSlidingMenuButton;
-	WebView webView;
-	SlidingMenuAdapter menuAdapter;
-	ArrayList<SlidingMenuItem> slidingMenuList;
-	View mapLayout;
 	
-	Button nativeMenuButton;
-	MapView mapView;
-	boolean mapon = false;
-	GoogleMap map;
-	LatLng initialPos = new LatLng(37.789238, -122.401407);
-	MapAPIProxy mapProxy;
-	JSONArray busRoutes;
-	JSONArray busStops;
-	Map<String, JSONObject> stopsMap = new HashMap<String, JSONObject>();
-		
+	private ListView slidingMenuListView;
+	private View menuLayout, mainLayout;
+	private Button showSlidingMenuButton;
+	private WebView webView;
+	private SlidingMenuAdapter menuAdapter;
+	private ArrayList<SlidingMenuItem> slidingMenuList;
+	private View mapLayout;
+	private Button nativeMenuButton;
+	private MapView mapView;
+	private boolean mapon = false;
+	private GoogleMap map;
+	private MapManager mapManager;
+
 	@Override
 	protected CordovaWebViewClient createWebViewClient() {
 		return new AAUMobileWebViewClient(this);
@@ -88,53 +90,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		mapView.onCreate(savedInstanceState);
 		map = mapView.getMap();
 		
-		mapProxy = new MapAPIProxy(this);
-		
-		// Center and zoom map on initial position
-		try {
-			MapsInitializer.initialize(this);
-
-			map.animateCamera(CameraUpdateFactory.newLatLngZoom(initialPos, 14.0f));
-		} catch (GooglePlayServicesNotAvailableException e) {
-			// TODO handle map is not available situation
-			e.printStackTrace();
-		}
-		
-		// Load bus stop data from Salesforce
-		busRoutes = mapProxy.getBusStops();
-		
-		busStops = new JSONArray();
-		
-		try {
-			for(int i = 0; i < busRoutes.length(); i++) {
-				JSONObject route = (JSONObject) busRoutes.get(i);
-				JSONArray routeStops = (JSONArray) route.get("stops");
-				
-				for(int j = 0; j < routeStops.length(); j++) {
-					JSONObject stop = (JSONObject) routeStops.get(j);
-					
-					stopsMap.put(stop.get("id").toString(), stop);
-				}
-			}
-
-			for(String id : stopsMap.keySet()) {
-				JSONObject stop = stopsMap.get(id);
-				
-				MarkerOptions mo = new MarkerOptions();
-				LatLng pos = new LatLng(stop.getDouble("latitude"), stop.getDouble("longitude"));
-				
-				mo.position(pos);
-				
-				map.addMarker(mo);
-			}
-
-		} catch (JSONException e) {
-			e.printStackTrace();
-			
-			throw new AMException(e);
-		}
-		
-		
+		mapManager = new MapManager(this, map);
 	}
 	
 	@Override
@@ -309,6 +265,8 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 			if(!mapon) {
 				rootLayout.removeView(this.appView);
 				rootLayout.addView(this.mapLayout);
+				
+				mapManager.showMap();
 				
 				mapon = true;
 			}

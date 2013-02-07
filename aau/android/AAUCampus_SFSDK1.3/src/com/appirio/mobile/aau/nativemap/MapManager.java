@@ -38,6 +38,7 @@ public class MapManager {
 	private BitmapDescriptor defaultBusIcon;
 	private List<Marker> vehicleMarkers = new ArrayList<Marker>();
 	private MapUpdater mapUpdater;
+	private List<String> routes;
 	
 	private class MapUpdater implements Runnable {
 
@@ -143,8 +144,16 @@ public class MapManager {
 					}
 				}
 
+				routes = new ArrayList<String>();
+				
 				for(String id : stopsMap.keySet()) {
 					JSONObject stop = stopsMap.get(id);
+
+					String route = stop.get("routeTeletracName").toString();
+					
+					if(!routes.contains(route)) {
+						routes.add(route);
+					}
 					
 					MarkerOptions mo = new MarkerOptions();
 					LatLng pos = new LatLng(stop.getDouble("latitude"), stop.getDouble("longitude"));
@@ -177,4 +186,13 @@ public class MapManager {
 		}
 		
 	}
+	
+	public List<String> getRoutes() {
+		return routes;
+	}
+	
+	public void showRoutes(List<String> routes) {
+		
+	}
 }
+ 

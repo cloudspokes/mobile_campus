@@ -40,7 +40,21 @@ public class TeletracInfoParser {
 					Node attr = vehicleNode.getChildNodes().item(j);
 					
 					if(attr.getNodeName().equals("VehicleName")) {
-						vehicle.setVehicleName(attr.getTextContent());
+						String rawName = attr.getTextContent();
+						
+						String[] parsedName = rawName.split("_");
+						
+						if(parsedName.length > 0) {
+							vehicle.setVehicleName(parsedName[0]);
+						}
+						
+						if(parsedName.length > 1) {
+							vehicle.setRoute(parsedName[1]);
+						}
+						
+						if(parsedName.length > 2) {
+							vehicle.setSubroute(parsedName[2]);
+						}
 					} else if(attr.getNodeName().equals("Latitude")) {
 						vehicle.setLatitude(Double.parseDouble(attr.getTextContent())); 
 					} else if(attr.getNodeName().equals("Longitude")) {

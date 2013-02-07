@@ -6,7 +6,14 @@ public class Vehicle {
 	private double latitude;
 	private double longitude;
 	private String route;
+	private String subroute;
 	
+	public String getSubroute() {
+		return subroute;
+	}
+	public void setSubroute(String subroute) {
+		this.subroute = subroute;
+	}
 	public String getVehicleName() {
 		return vehicleName;
 	}

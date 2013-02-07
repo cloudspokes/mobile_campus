@@ -1,5 +1,6 @@
 package com.appirio.mobile.aau.nativemap;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.appirio.aau.R;
@@ -19,6 +21,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapManager {
@@ -30,19 +33,98 @@ public class MapManager {
 	private MapAPIProxy mapProxy;
 	private GoogleMap map;
 	private boolean mapAvailable;
-	private BitmapDescriptor stopBitmap; 
+	private BitmapDescriptor stopBitmap;
+	private Map<String, BitmapDescriptor> routeIconMap;
+	private BitmapDescriptor defaultBusIcon;
+	private List<Marker> vehicleMarkers = new ArrayList<Marker>();
+	private MapUpdater mapUpdater;
 	
+	private class MapUpdater implements Runnable {
+
+		private boolean autoRefreshOn = true;
+		private int autoRefreshInterval = 30000;
+
+		private MapUpdater() {
+		}
+		
+		private void refreshBuses() throws AMException {
+			List<Vehicle> vehicles = new TeletracInfoParser().parse(mapProxy.getVehicles());
+			
+			for(Marker m : vehicleMarkers) {
+				m.remove();
+			}
+			
+			vehicleMarkers.clear();
+			
+			for(Vehicle v: vehicles) {
+				if(v.getVehicleName() != null && v.getRoute() != null) {
+					MarkerOptions mo = new MarkerOptions();
+					LatLng pos = new LatLng(v.getLatitude(), v.getLongitude());
+
+					BitmapDescriptor bd = routeIconMap.get(v.getRoute());
+					
+					if(bd == null) {
+						bd = defaultBusIcon;
+					}
+					
+					mo.position(pos);
+					mo.icon(bd);
+					mo.title("Route: " + v.getRoute());
+					
+					vehicleMarkers.add(map.addMarker(mo));
+				}
+			}
+			
+		}
+
+		@Override
+		public void run() {
+			try {
+				while(this.autoRefreshOn) {
+					((Activity)ctx).runOnUiThread(new Runnable() {
+						
+						@Override
+						public void run() {
+							try {
+								mapUpdater.refreshBuses();
+							} catch (AMException e) {
+								e.printStackTrace();
+							}
+						}
+					});
+					Thread.currentThread().sleep(this.autoRefreshInterval);
+				}
+			} catch (Exception e) {
+				// TODO handle issues refreshing buses
+				e.printStackTrace();
+			}
+		}
+		
+	}
 
 	public MapManager(Context ctx, GoogleMap map) throws AMException {
 		this.ctx = ctx;
 		mapProxy = new MapAPIProxy((DroidGap)this.ctx);
 		this.map = map;
+		this.mapUpdater = new MapUpdater();
 		
 		// Center and zoom map on initial position
 		try {
 			MapsInitializer.initialize(ctx);
 			
 			stopBitmap = BitmapDescriptorFactory.fromResource(R.drawable.marker_busstop);
+			
+			routeIconMap = new HashMap<String, BitmapDescriptor>();
+			
+			routeIconMap.put("A", BitmapDescriptorFactory.fromResource(R.drawable.marker_a));
+			routeIconMap.put("D", BitmapDescriptorFactory.fromResource(R.drawable.marker_d));
+			routeIconMap.put("E", BitmapDescriptorFactory.fromResource(R.drawable.marker_e));
+			routeIconMap.put("G", BitmapDescriptorFactory.fromResource(R.drawable.marker_g));
+			routeIconMap.put("H", BitmapDescriptorFactory.fromResource(R.drawable.marker_h));
+			routeIconMap.put("I", BitmapDescriptorFactory.fromResource(R.drawable.marker_i));
+			routeIconMap.put("M", BitmapDescriptorFactory.fromResource(R.drawable.marker_m));
+			
+			defaultBusIcon = BitmapDescriptorFactory.fromResource(R.drawable.marker_bus_darkred);
 
 			mapAvailable = true;
 			
@@ -73,33 +155,19 @@ public class MapManager {
 					map.addMarker(mo);
 				}
 
+				new Thread(mapUpdater).start();
 			} catch (JSONException e) {
 				e.printStackTrace();
 				
 				throw new AMException(e);
 			}
-			
-			
-			List<Vehicle> vehicles = new TeletracInfoParser().parse(mapProxy.getVehicles());
-			
-			for(Vehicle v: vehicles) {
-				MarkerOptions mo = new MarkerOptions();
-				LatLng pos = new LatLng(v.getLatitude(), v.getLongitude());
-				BitmapDescriptor bd = BitmapDescriptorFactory.fromResource(R.drawable.aaulogo);
-				
-				mo.position(pos);
-				mo.icon(bd);
-				
-				map.addMarker(mo);
-			}
+						
 		} catch (GooglePlayServicesNotAvailableException e) {
 			// TODO handle map is not available situation
 			e.printStackTrace();
 			
 			mapAvailable = false;
 		}
-		
-		
 	}
 	
 	public void showMap() {

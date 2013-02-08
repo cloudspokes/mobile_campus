@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.appirio.aau.R;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -115,16 +116,6 @@ public class MapManager {
 			
 			stopBitmap = BitmapDescriptorFactory.fromResource(R.drawable.marker_busstop);
 			
-			routeIconMap = new HashMap<String, BitmapDescriptor>();
-			
-			routeIconMap.put("A", BitmapDescriptorFactory.fromResource(R.drawable.marker_a));
-			routeIconMap.put("D", BitmapDescriptorFactory.fromResource(R.drawable.marker_d));
-			routeIconMap.put("E", BitmapDescriptorFactory.fromResource(R.drawable.marker_e));
-			routeIconMap.put("G", BitmapDescriptorFactory.fromResource(R.drawable.marker_g));
-			routeIconMap.put("H", BitmapDescriptorFactory.fromResource(R.drawable.marker_h));
-			routeIconMap.put("I", BitmapDescriptorFactory.fromResource(R.drawable.marker_i));
-			routeIconMap.put("M", BitmapDescriptorFactory.fromResource(R.drawable.marker_m));
-			
 			defaultBusIcon = BitmapDescriptorFactory.fromResource(R.drawable.marker_bus_darkred);
 
 			mapAvailable = true;
@@ -133,12 +124,30 @@ public class MapManager {
 			busRoutes = mapProxy.getBusStops();
 
 			try {
+				routeIconMap = new HashMap<String, BitmapDescriptor>(); 
+
 				for(int i = 0; i < busRoutes.length(); i++) {
 					JSONObject route = (JSONObject) busRoutes.get(i);
 					JSONArray routeStops = (JSONArray) route.get("stops");
-					
+
 					for(int j = 0; j < routeStops.length(); j++) {
 						JSONObject stop = (JSONObject) routeStops.get(j);
+						String routeName = stop.get("routeTeletracName").toString();
+						
+						if(routeIconMap.get(routeName) == null) {
+							String markerName = stop.get("routeMarker").toString();
+							
+							markerName = markerName.toLowerCase();
+							markerName = markerName.substring(0, markerName.length() - 4);
+							
+							int markerId = this.ctx.getResources().getIdentifier(markerName, "drawable", this.ctx.getPackageName());
+							
+							if(markerId != 0) {
+								routeIconMap.put(routeName, BitmapDescriptorFactory.fromResource(markerId));
+							} else {
+								routeIconMap.put(routeName, defaultBusIcon);
+							}
+						}
 						
 						stopsMap.put(stop.get("id").toString(), stop);
 					}

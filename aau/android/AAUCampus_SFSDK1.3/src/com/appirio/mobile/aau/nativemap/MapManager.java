@@ -30,7 +30,6 @@ public class MapManager {
 	private Context ctx;
 	private LatLng initialPos = new LatLng(37.789238, -122.401407);
 	private JSONArray busRoutes;
-	private Map<String, JSONObject> stopsMap = new HashMap<String, JSONObject>();
 	private MapAPIProxy mapProxy;
 	private GoogleMap map;
 	private boolean mapAvailable;
@@ -40,6 +39,81 @@ public class MapManager {
 	private List<Marker> vehicleMarkers = new ArrayList<Marker>();
 	private MapUpdater mapUpdater;
 	private List<String> routes;
+	private RoutesParser transitManager;
+	private TransitMapInfoWindowAdapter infoWindowAdapter;
+	
+	public MapManager(Context ctx, GoogleMap map) throws AMException {
+		this.ctx = ctx;
+		mapProxy = new MapAPIProxy((DroidGap)this.ctx);
+		this.map = map;
+		this.mapUpdater = new MapUpdater();
+		
+		// Center and zoom map on initial position
+		try {
+			MapsInitializer.initialize(ctx);
+			
+			stopBitmap = BitmapDescriptorFactory.fromResource(R.drawable.marker_busstop);
+			defaultBusIcon = BitmapDescriptorFactory.fromResource(R.drawable.marker_bus_darkred);
+			mapAvailable = true;
+			
+			// Load bus stop data from Salesforce
+			busRoutes = mapProxy.getBusStops();
+			transitManager = new RoutesParser(busRoutes);
+			routeIconMap = new HashMap<String, BitmapDescriptor>();
+			infoWindowAdapter = new TransitMapInfoWindowAdapter(this.ctx);
+			
+			try {
+				for(Route route : transitManager.getRoutes()) {
+					String markerName = route.getMarkerIcon();
+					
+					markerName = markerName.toLowerCase().substring(0, markerName.length() - 4);
+					
+					routeIconMap.put(route.getName(), BitmapDescriptorFactory.fromResource(this.ctx.getResources().getIdentifier(markerName, "drawable", this.ctx.getPackageName())));
+				}
+				
+				for(BusStop stop : transitManager.getStops()) {
+					MarkerOptions mo = new MarkerOptions();
+					
+					mo.icon(stopBitmap);
+					mo.title(stop.getAddress() + "<br />Routes: " + stop.getRoutesString());
+					
+					mo.position(new LatLng(stop.getLatitude(), stop.getLongitude()));
+					
+					map.addMarker(mo);
+				}
+				
+				map.setInfoWindowAdapter(infoWindowAdapter);
+				
+				new Thread(mapUpdater).start();
+			} catch (Exception e) {
+				e.printStackTrace();
+				
+				throw new AMException(e);
+			}
+						
+		} catch (GooglePlayServicesNotAvailableException e) {
+			// TODO handle map is not available situation
+			e.printStackTrace();
+			
+			mapAvailable = false;
+		}
+	}
+	
+	public void showMap() {
+		if(mapAvailable) {
+			map.animateCamera(CameraUpdateFactory.newLatLngZoom(initialPos, 14.0f));
+			
+		}
+		
+	}
+	
+	public List<String> getRoutes() {
+		return routes;
+	}
+	
+	public void showRoutes(List<String> routes) {
+		
+	}
 	
 	private class MapUpdater implements Runnable {
 
@@ -102,106 +176,6 @@ public class MapManager {
 			}
 		}
 		
-	}
-
-	public MapManager(Context ctx, GoogleMap map) throws AMException {
-		this.ctx = ctx;
-		mapProxy = new MapAPIProxy((DroidGap)this.ctx);
-		this.map = map;
-		this.mapUpdater = new MapUpdater();
-		
-		// Center and zoom map on initial position
-		try {
-			MapsInitializer.initialize(ctx);
-			
-			stopBitmap = BitmapDescriptorFactory.fromResource(R.drawable.marker_busstop);
-			
-			defaultBusIcon = BitmapDescriptorFactory.fromResource(R.drawable.marker_bus_darkred);
-
-			mapAvailable = true;
-			
-			// Load bus stop data from Salesforce
-			busRoutes = mapProxy.getBusStops();
-
-			try {
-				routeIconMap = new HashMap<String, BitmapDescriptor>(); 
-
-				for(int i = 0; i < busRoutes.length(); i++) {
-					JSONObject route = (JSONObject) busRoutes.get(i);
-					JSONArray routeStops = (JSONArray) route.get("stops");
-
-					for(int j = 0; j < routeStops.length(); j++) {
-						JSONObject stop = (JSONObject) routeStops.get(j);
-						String routeName = stop.get("routeTeletracName").toString();
-						
-						if(routeIconMap.get(routeName) == null) {
-							String markerName = stop.get("routeMarker").toString();
-							
-							markerName = markerName.toLowerCase();
-							markerName = markerName.substring(0, markerName.length() - 4);
-							
-							int markerId = this.ctx.getResources().getIdentifier(markerName, "drawable", this.ctx.getPackageName());
-							
-							if(markerId != 0) {
-								routeIconMap.put(routeName, BitmapDescriptorFactory.fromResource(markerId));
-							} else {
-								routeIconMap.put(routeName, defaultBusIcon);
-							}
-						}
-						
-						stopsMap.put(stop.get("id").toString(), stop);
-					}
-				}
-
-				routes = new ArrayList<String>();
-				
-				for(String id : stopsMap.keySet()) {
-					JSONObject stop = stopsMap.get(id);
-
-					String route = stop.get("routeTeletracName").toString();
-					
-					if(!routes.contains(route)) {
-						routes.add(route);
-					}
-					
-					MarkerOptions mo = new MarkerOptions();
-					LatLng pos = new LatLng(stop.getDouble("latitude"), stop.getDouble("longitude"));
-					
-					mo.icon(stopBitmap);
-					mo.position(pos);
-					
-					map.addMarker(mo);
-				}
-
-				new Thread(mapUpdater).start();
-			} catch (JSONException e) {
-				e.printStackTrace();
-				
-				throw new AMException(e);
-			}
-						
-		} catch (GooglePlayServicesNotAvailableException e) {
-			// TODO handle map is not available situation
-			e.printStackTrace();
-			
-			mapAvailable = false;
-		}
-	}
-	
-	public void showMap() {
-		if(mapAvailable) {
-			map.animateCamera(CameraUpdateFactory.newLatLngZoom(initialPos, 14.0f));
-			
-		}
-		
-	}
-	
-	public List<String> getRoutes() {
-		return routes;
-	}
-	
-	public void showRoutes(List<String> routes) {
-		
-	}
+	}	
 }
  

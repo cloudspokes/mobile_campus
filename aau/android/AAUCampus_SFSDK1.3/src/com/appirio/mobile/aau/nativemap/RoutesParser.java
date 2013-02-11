@@ -17,6 +17,7 @@ public class RoutesParser {
 	public RoutesParser(JSONArray busRoutes) throws AMException {
 		try {
 			routes = new ArrayList<Route>();
+			System.out.println(busRoutes);
 			
 			// Parse json into java structures
 			for(int i = 0; i < busRoutes.length(); i++) {

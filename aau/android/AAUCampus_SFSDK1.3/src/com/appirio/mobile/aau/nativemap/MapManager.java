@@ -149,6 +149,16 @@ public class MapManager {
 		}
 	}
 	
+	public void startAutoUpdate() {
+		mapUpdater.autoRefreshOn = true;
+		
+		new Thread(mapUpdater).start();
+	}
+	
+	public void stopAutoUpdate() {
+		mapUpdater.autoRefreshOn = false;
+	}
+	
 	private class MapUpdater implements Runnable {
 
 		private boolean autoRefreshOn = true;

@@ -11,6 +11,7 @@ public class Route {
 	private String name;
 	private String markerIcon;
 	private List<BusStop> busStop;
+	private List<Waypoint> waypoints;
 	
 	public String getName() {
 		return name;

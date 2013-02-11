@@ -72,10 +72,17 @@ public class MapManager {
 				}
 				
 				for(BusStop stop : transitManager.getStops()) {
+					JSONObject markerInfo = new JSONObject();
+					
 					MarkerOptions mo = new MarkerOptions();
 					
 					mo.icon(stopBitmap);
-					mo.title(stop.getAddress() + "<br />Routes: " + stop.getRoutesString());
+					
+					markerInfo.put("type", "stop");
+					markerInfo.put("stopName", stop.getAddress());
+					markerInfo.put("routes", stop.getRoutesString());
+					
+					mo.title(markerInfo.toString());
 					
 					mo.position(new LatLng(stop.getLatitude(), stop.getLongitude()));
 					
@@ -83,6 +90,7 @@ public class MapManager {
 				}
 				
 				map.setInfoWindowAdapter(infoWindowAdapter);
+				map.setOnInfoWindowClickListener(infoWindowAdapter);
 				
 				new Thread(mapUpdater).start();
 			} catch (Exception e) {
@@ -134,6 +142,8 @@ public class MapManager {
 			
 			for(Vehicle v: vehicles) {
 				if(v.getVehicleName() != null && v.getRoute() != null) {
+					JSONObject markerInfo = new JSONObject();
+					
 					MarkerOptions mo = new MarkerOptions();
 					LatLng pos = new LatLng(v.getLatitude(), v.getLongitude());
 
@@ -145,7 +155,16 @@ public class MapManager {
 					
 					mo.position(pos);
 					mo.icon(bd);
-					mo.title("Route: " + v.getRoute());
+					
+					try {
+						markerInfo.put("type", "bus");
+						markerInfo.put("route", v.getRoute());
+						mo.title(markerInfo.toString());
+					} catch (JSONException e) {
+						e.printStackTrace();
+						
+						mo.title(v.getRoute());
+					}
 					
 					vehicleMarkers.add(map.addMarker(mo));
 				}

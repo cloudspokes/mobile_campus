@@ -1,6 +1,7 @@
 package com.appirio.mobile.aau.nativemap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 public class MapManager {
 
@@ -39,8 +42,9 @@ public class MapManager {
 	private List<Marker> vehicleMarkers = new ArrayList<Marker>();
 	private MapUpdater mapUpdater;
 	private List<String> routes;
-	private RoutesParser transitManager;
+	private RoutesParser routesParser;
 	private TransitMapInfoWindowAdapter infoWindowAdapter;
+	private List<Polyline> routesShown;
 	
 	public MapManager(Context ctx, GoogleMap map) throws AMException {
 		this.ctx = ctx;
@@ -58,12 +62,13 @@ public class MapManager {
 			
 			// Load bus stop data from Salesforce
 			busRoutes = mapProxy.getBusStops();
-			transitManager = new RoutesParser(busRoutes);
+			routesParser = new RoutesParser(busRoutes);
 			routeIconMap = new HashMap<String, BitmapDescriptor>();
 			infoWindowAdapter = new TransitMapInfoWindowAdapter(this.ctx);
+			routesShown = new ArrayList<Polyline>();
 			
 			try {
-				for(Route route : transitManager.getRoutes()) {
+				for(Route route : routesParser.getRoutes()) {
 					String markerName = route.getMarkerIcon();
 					
 					markerName = markerName.toLowerCase().substring(0, markerName.length() - 4);
@@ -71,7 +76,7 @@ public class MapManager {
 					routeIconMap.put(route.getName(), BitmapDescriptorFactory.fromResource(this.ctx.getResources().getIdentifier(markerName, "drawable", this.ctx.getPackageName())));
 				}
 				
-				for(BusStop stop : transitManager.getStops()) {
+				for(BusStop stop : routesParser.getStops()) {
 					JSONObject markerInfo = new JSONObject();
 					
 					MarkerOptions mo = new MarkerOptions();
@@ -92,6 +97,8 @@ public class MapManager {
 				map.setInfoWindowAdapter(infoWindowAdapter);
 				map.setOnInfoWindowClickListener(infoWindowAdapter);
 				map.setMyLocationEnabled(true);
+				
+				showRoutes(Arrays.asList(new String[]{"I"}));
 				
 				new Thread(mapUpdater).start();
 			} catch (Exception e) {
@@ -120,8 +127,26 @@ public class MapManager {
 		return routes;
 	}
 	
-	public void showRoutes(List<String> routes) {
+	public void showRoutes(List<String> routeNames) {
+		for(Polyline route : routesShown) {
+			route.remove();
+		}
 		
+		routesShown.clear();
+		
+		List<Route> routes = routesParser.getRoutes(routeNames);
+		
+		for(Route r : routes) {
+			PolylineOptions route = new PolylineOptions();
+			
+			for(BusStop stop : r.getBusStops()) {
+				LatLng point = new LatLng(stop.getLatitude(), stop.getLongitude());
+				
+				route.add(point);
+			}
+			
+			routesShown.add(map.addPolyline(route));
+		}
 	}
 	
 	private class MapUpdater implements Runnable {

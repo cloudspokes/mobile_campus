@@ -70,4 +70,19 @@ public class RoutesParser {
 		return routes;
 	}
 
+	public List<Route> getRoutes(List<String> routeNames) {
+		ArrayList<Route> result = new ArrayList<Route>();
+		
+		for(String routeName : routeNames) {
+			for(Route route : this.getRoutes()) {
+				if(routeName.equals(route.getName())) {
+					result.add(route);
+					break;
+				}
+			}
+		}
+		
+		return result;
+	}
+
 }

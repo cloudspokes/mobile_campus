@@ -91,6 +91,7 @@ public class MapManager {
 				
 				map.setInfoWindowAdapter(infoWindowAdapter);
 				map.setOnInfoWindowClickListener(infoWindowAdapter);
+				map.setMyLocationEnabled(true);
 				
 				new Thread(mapUpdater).start();
 			} catch (Exception e) {

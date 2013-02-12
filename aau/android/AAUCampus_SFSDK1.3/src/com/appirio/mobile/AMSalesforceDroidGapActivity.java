@@ -28,6 +28,7 @@ import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -71,7 +72,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	private SlidingMenuAdapter menuAdapter;
 	private ArrayList<SlidingMenuItem> slidingMenuList;
 	private View mapLayout;
-	private Button nativeMenuButton;
+	private ImageButton nativeMenuButton;
 	private MapView mapView;
 	private boolean mapon = false;
 	private GoogleMap map;
@@ -137,7 +138,10 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		showSlidingMenuButton.setOnClickListener(this);
 		slidingMenuListView.setOnItemClickListener(this);
 		
-		nativeMenuButton = (Button) mapLayout.findViewById(R.id.menu);
+		
+		//nativeMenuButton = (Button) mapLayout.findViewById(R.id.menu);
+		// AI Comment: change Buttons to ImageButton
+		nativeMenuButton = (ImageButton) mapLayout.findViewById(R.id.menu);
 		
 		nativeMenuButton.setOnClickListener(this);
 		

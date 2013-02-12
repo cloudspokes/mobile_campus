@@ -3,6 +3,7 @@ package com.appirio.mobile.aau.nativemap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +29,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.common.collect.Sets;
 
 public class MapManager {
 
@@ -46,6 +48,10 @@ public class MapManager {
 	private TransitMapInfoWindowAdapter infoWindowAdapter;
 	private List<Polyline> routesPolylineShown;
 	private List<Route> routesShown;
+	
+	public List<Route> getRoutesShown() {
+		return routesShown;
+	}
 	
 	public MapManager(Context ctx, GoogleMap map) throws AMException {
 		this.ctx = ctx;
@@ -99,6 +105,13 @@ public class MapManager {
 				map.setInfoWindowAdapter(infoWindowAdapter);
 				map.setOnInfoWindowClickListener(infoWindowAdapter);
 				map.setMyLocationEnabled(true);
+				
+				Set<String> testRoutes = new HashSet<String>();
+				
+				testRoutes.add("D");
+				testRoutes.add("Jerrold");
+				
+				showRoutes(testRoutes);				
 				
 				new Thread(mapUpdater).start();
 			} catch (Exception e) {

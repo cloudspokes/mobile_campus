@@ -184,6 +184,10 @@ public class MapManager {
 	public void stopAutoUpdate() {
 		mapUpdater.autoRefreshOn = false;
 	}
+
+	public boolean getAutoUpdate() {
+		return mapUpdater.autoRefreshOn;
+	}
 	
 	private class MapUpdater implements Runnable {
 

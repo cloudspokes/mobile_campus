@@ -10,5 +10,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_native_map_acivity">NativeMapAcivity</string>
     <string name="menuButton">Menu</string>
-
+	<string name="settingsButton">Settings</string> 
+    <string name="label_StaticMap">Static Map</string>
+    <string name="label_LiveBusUpdates">Live Bus Updates</string>
+    <string name="label_ActiveRoutes">Active Routes</string>
 </resources>

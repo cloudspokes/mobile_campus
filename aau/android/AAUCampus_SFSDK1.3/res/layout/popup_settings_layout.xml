@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/popup"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+    
+  
+	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content" >
+    
+    	<LinearLayout 
+        	xmlns:android="http://schemas.android.com/apk/res/android" 
+			android:orientation="vertical"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content" >
+           
+    		<RelativeLayout
+        		xmlns:android="http://schemas.android.com/apk/res/android"
+        		android:id="@+id/qrCodeContainer"
+        		android:layout_width="fill_parent"
+        		android:layout_height="fill_parent"
+        		android:layout_gravity="center_horizontal"
+        		android:background="@drawable/rounded_corners"
+        		android:orientation="vertical"
+        		android:padding="15dp"
+        		android:layout_margin="6dp" >
+
+				<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    				android:id="@+id/tableLayout1"
+    				android:layout_width="fill_parent"
+    				android:layout_height="fill_parent" >
+ 
+    				<!-- 2 columns -->
+    				<TableRow
+        				android:id="@+id/tableRow1"
+        				android:layout_width="wrap_content"
+        				android:layout_height="wrap_content"
+        				android:padding="5dip" >
+ 
+ 						<TextView
+   							android:id="@+id/textView1"
+   							android:layout_width="wrap_content"
+   							android:layout_height="wrap_content"
+   							android:text="@string/label_StaticMap"
+   							android:textAppearance="?android:attr/textAppearanceSmall"
+   							android:layout_gravity="left"
+   							android:textColor="@color/white"/>
+
+						<ImageButton
+    						android:id="@+id/staticMap"
+    						style="?android:attr/buttonStyleSmall"
+    						android:layout_width="wrap_content"
+    						android:layout_height="wrap_content"
+    						android:src="@drawable/arrow_right_small"
+    						android:onClick="onStaticMapBtnClicked"
+    						android:layout_gravity="right"
+    					    android:background="@android:color/transparent"/>
+             
+    				</TableRow>
+ 
+        			<!-- just draw a white separator line -->
+    				<View
+        				android:layout_height="1dip"
+        				android:background="@color/white" />
+    
+    				<!-- Live Bus Update 2 columns -->
+    				<TableRow
+        				android:id="@+id/tableRow2"
+        				android:layout_width="wrap_content"
+        				android:layout_height="wrap_content"
+        				android:padding="5dip" >
+ 
+						<TextView
+		    				android:id="@+id/textView2"
+		    				android:layout_width="wrap_content"
+		    				android:layout_height="wrap_content"
+		    				android:layout_marginTop="5dp"
+		    				android:text="@string/label_LiveBusUpdates"
+		    				android:layout_gravity="left"
+		    				android:textColor="@color/white" />
+
+						<ToggleButton
+		    				android:id="@+id/toggleLiveUpdatesButton"
+		    				android:layout_width="40dp"
+		    				android:layout_height="45dp"
+		    				android:onClick="onLiveUpdatesClicked"
+		    				android:layout_gravity="right"
+		    				android:text="ToggleButton" />
+    				</TableRow>
+ 
+    				<!-- just draw a white line -->
+    				<View
+        				android:layout_height="1dip"
+        				android:background="@color/white" />
+ 
+    				<!-- Active Routes list -->
+    				<TableRow
+        				android:id="@+id/tableRow3"
+        				android:layout_width="wrap_content"
+        				android:layout_height="wrap_content"
+       				 	android:padding="5dip" >
+ 
+        				<TextView
+            				android:id="@+id/textView3"
+            				android:layout_width="fill_parent"
+            				android:layout_height="wrap_content"
+            				android:gravity="center"
+            				android:text="@string/label_ActiveRoutes"
+            				android:textColor="@color/white" />
+          
+    				</TableRow>
+
+    				<!-- just draw a white line -->
+    				<View
+        				android:layout_height="1dip"
+        				android:background="@color/white" />
+    
+				</TableLayout>
+        
+			</RelativeLayout>
+			
+		</LinearLayout>
+
+	</ScrollView>  
+	  
+</RelativeLayout>
+

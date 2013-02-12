@@ -11,16 +11,22 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -28,12 +34,21 @@ import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.appirio.mobile.aau.nativemap.AMException;
 import com.appirio.mobile.aau.nativemap.MapAPIProxy;
 import com.appirio.mobile.aau.nativemap.MapManager;
+import com.appirio.mobile.aau.nativemap.SettingsManager;
 import com.appirio.mobile.aau.nativemap.TeletracInfoParser;
 import com.appirio.mobile.aau.nativemap.Vehicle;
 import com.appirio.aau.R;
@@ -71,11 +86,16 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	private SlidingMenuAdapter menuAdapter;
 	private ArrayList<SlidingMenuItem> slidingMenuList;
 	private View mapLayout;
-	private Button nativeMenuButton;
+	private ImageButton nativeMenuButton;
+	private ImageButton nativeSettingsButton;
 	private MapView mapView;
 	private boolean mapon = false;
 	private GoogleMap map;
 	private MapManager mapManager;
+	private SettingsManager settingsManager;
+	
+	//The "x" and "y" position of the "Settings Button" on screen.
+	Point p;
 
 	@Override
 	protected CordovaWebViewClient createWebViewClient() {
@@ -137,14 +157,49 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		showSlidingMenuButton.setOnClickListener(this);
 		slidingMenuListView.setOnItemClickListener(this);
 		
-		nativeMenuButton = (Button) mapLayout.findViewById(R.id.menu);
+		
+		//nativeMenuButton = (Button) mapLayout.findViewById(R.id.menu);
+		// AI Comment: change Buttons to ImageButton
+		nativeMenuButton = (ImageButton) mapLayout.findViewById(R.id.menu);
 		
 		nativeMenuButton.setOnClickListener(this);
+		
+		// Connect Settings popup panel
+		nativeSettingsButton = (ImageButton) mapLayout.findViewById(R.id.settings_popup);
+		settingsManager = new SettingsManager(this, this);
+		nativeSettingsButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+
+				//Open popup window
+				if (p != null)
+					showPopup(AMSalesforceDroidGapActivity.this, p);
+			}
+		});
 		
 		super.setIntegerProperty("splashscreen", com.appirio.aau.R.drawable.aau_load);
 
 		super.loadUrl("file:///android_asset/www/bootstrap.html",10000); 
 		
+	}
+
+	// Get the x and y position after the button is draw on screen
+	// (Important: note that we can't get the position in the onCreate(),
+	// because at that stage most probably the view isn't drawn yet, so it will return (0, 0))
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+
+		int[] location = new int[2];
+		//ImageButton button = (ImageButton) findViewById(R.id.settings_popup);
+
+		// Get the x, y location and store it in the location[] array
+		// location[0] = x, location[1] = y.
+		nativeSettingsButton.getLocationOnScreen(location);
+
+		//Initialize the Point with x, and y positions
+		p = new Point();
+		p.x = location[0];
+		p.y = location[1];
 	}
 
 	private static final String FEEDBACK_PREFS = "feedback_prefs";
@@ -316,5 +371,193 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 			}
 		});
 	}
+
+	
+	
+	//////////////////////////////////////////////
+	// TEST POPUP CODE HERE activity
+
+	
+	// The method that displays the popup.
+	private void showPopup(final Activity context, Point p) {
+		int popupWidth = 460;
+		int popupHeight = 650;
+
+		// Inflate the popup_layout.xml
+		LinearLayout viewGroup = (LinearLayout) context.findViewById(R.id.popup);
+		LayoutInflater layoutInflater = (LayoutInflater) context
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View layout = layoutInflater.inflate(R.layout.popup_settings_layout, viewGroup);
+
+		// Creating the PopupWindow
+		final PopupWindow popup = new PopupWindow(context);
+		popup.setContentView(layout);
+		popup.setWidth(popupWidth);
+		popup.setHeight(popupHeight);
+		popup.setFocusable(true);
+
+		// Some offset to align the popup a bit to the right, and a bit down, relative to button's position.
+		int OFFSET_X = 20;
+		int OFFSET_Y = 45;
+
+		// Clear the default translucent background
+		popup.setBackgroundDrawable(new BitmapDrawable());
+
+		// Displaying the popup at the specified location, + offsets.
+		popup.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y + OFFSET_Y);
+
+		// Dynamically add bttons here
+		addRoutesTable(popup);
+		//initListView(popup);
+	
+		
+	}
+
+	private void addRoutesTable(PopupWindow popup){
+		
+		TableLayout tl = (TableLayout)popup.getContentView().findViewById(R.id.tableLayout1);
+		int cnt = 1;
+		TableRow tr = null;
+		CheckBox cb = null;
+		boolean isOdd = false;
+		List<String> rtList = stubRoutsList();
+		    for (String s : rtList) {
+		         cb = createCheckBox(cnt, s);
+		         
+		         
+		         if (( cnt & 1) == 0 ) { 
+		        	 // even... 
+			         tl.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
+			 		 // Get Line sep view
+			         addLineSeparator(tl);
+			         isOdd = false;	
+		         } else { 
+			         // Odd
+		        	 tr = new TableRow(this);
+			         tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+			         tr.setPadding(5, 0, 5, 0);		
+			         isOdd = true;
+		         }
+		         
+		         
+		         tr.addView(cb);
+
+		         cnt++;
+		    }
+		    
+	         // Check if its last element
+	         if (isOdd){
+		         tl.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
+		         //tr.addView(cb);
+		         // Get Line sep view
+		         addLineSeparator(tl);
+	         }
+
+	}
+	
+	private CheckBox createCheckBox(int id, String s){
+        CheckBox cb = new CheckBox(this);
+        cb.setId(id);
+        cb.setText(s);
+      
+        TableRow.LayoutParams lp2 = new TableRow.LayoutParams(
+       		 TableRow.LayoutParams.WRAP_CONTENT,
+       		 TableRow.LayoutParams.WRAP_CONTENT
+       		 );
+        
+        cb.setLayoutParams(lp2);  
+        cb.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+           	 testCheckHandler(v);	
+           	 // TODO Auto-generated method stub
+            }
+        });     
+		
+        return cb;
+	}
+	
+	private void addLineSeparator(TableLayout tl){
+		 // Get Line sep view
+		 View v = new View(this);
+		 v.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, 1));
+		 v.setBackgroundColor(Color.rgb(51, 51, 51));
+        
+        tl.addView(v);		
+	}
+	
+	// Set up test route list
+	private List<String> stubRoutsList(){
+		List<String> al = new ArrayList<String>();
+		String rt1 = "D";
+		String rt2 = "H";
+		String rt3 = "C";
+		String rt4 = "Polk";
+		String rt5 = "Campus Tour";
+		String rt6 = "Warf9";
+		String rt7 = "A";
+		al.add(rt1);
+		al.add(rt2);
+		al.add(rt3);
+		al.add(rt4);
+		al.add(rt5);
+		al.add(rt6);
+		al.add(rt7);
+		
+		//return mapManager.getRoutes();
+		return al;
+	}
+	
+	// Method to open WebView and display a static map image
+	public void onStaticMapBtnClicked(View v){
+	    if(v.getId() == R.id.staticMap){
+	        
+	    	MessageBox("Show static map");
+
+	        //this.webView.loadUrl("http://www.google.com");
+			//rootLayout.removeView(this.appView);
+			//rootLayout.addView(this.webView);
+	    }
+
+	}
+	
+	// Method to handle Toggle button to set flag for Live Bus updates from Teletrack
+	public void onLiveUpdatesClicked(View v){
+	    if(v.getId() == R.id.toggleLiveUpdatesButton){
+	    	
+	    	boolean on = ((ToggleButton) v).isChecked();
+	        
+	        if (on) {
+	            // Enable Bus live updates
+	        	MessageBox("Enable Bus Live Updates");
+	        } else {
+	            // Disable Bus Live updates
+	        	MessageBox("Disable Bus Live Updates");
+	        }	        
+	    	
+	    }
+	}
+	
+	
+	public void onRouteSelectorClicked(View view) {
+		testCheckHandler(view);
+	}	
+	
+	private void testCheckHandler(View view){
+	    // Is the view now checked?
+	    boolean checked = ((CheckBox) view).isChecked();
+	    if (checked){
+	    	MessageBox("Selected: "+view.getId());
+	    }
+	    if (!checked){
+	    	MessageBox("NOT Selected: "+view.getId());
+	    }
+		
+	}
+    public void MessageBox(String message)
+    {
+       Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }   
 	
 }

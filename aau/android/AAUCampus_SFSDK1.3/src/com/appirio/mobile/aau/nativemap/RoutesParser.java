@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -71,7 +72,7 @@ public class RoutesParser {
 		return routes;
 	}
 
-	public List<Route> getRoutes(List<String> routeNames) {
+	public List<Route> getRoutes(Set<String> routeNames) {
 		ArrayList<Route> result = new ArrayList<Route>();
 		
 		for(String routeName : routeNames) {

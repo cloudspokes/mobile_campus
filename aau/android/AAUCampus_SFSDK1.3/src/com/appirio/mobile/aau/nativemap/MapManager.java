@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.cordova.DroidGap;
 import org.json.JSONArray;
@@ -41,10 +42,10 @@ public class MapManager {
 	private BitmapDescriptor defaultBusIcon;
 	private List<Marker> vehicleMarkers = new ArrayList<Marker>();
 	private MapUpdater mapUpdater;
-	private List<String> routes;
 	private RoutesParser routesParser;
 	private TransitMapInfoWindowAdapter infoWindowAdapter;
-	private List<Polyline> routesShown;
+	private List<Polyline> routesPolylineShown;
+	private List<Route> routesShown;
 	
 	public MapManager(Context ctx, GoogleMap map) throws AMException {
 		this.ctx = ctx;
@@ -57,7 +58,7 @@ public class MapManager {
 			MapsInitializer.initialize(ctx);
 			
 			stopBitmap = BitmapDescriptorFactory.fromResource(R.drawable.marker_busstop);
-			defaultBusIcon = BitmapDescriptorFactory.fromResource(R.drawable.marker_bus_darkred);
+			defaultBusIcon = BitmapDescriptorFactory.fromResource(R.drawable.marker_busstop_black_suware);
 			mapAvailable = true;
 			
 			// Load bus stop data from Salesforce
@@ -65,7 +66,8 @@ public class MapManager {
 			routesParser = new RoutesParser(busRoutes);
 			routeIconMap = new HashMap<String, BitmapDescriptor>();
 			infoWindowAdapter = new TransitMapInfoWindowAdapter(this.ctx);
-			routesShown = new ArrayList<Polyline>();
+			routesPolylineShown = new ArrayList<Polyline>();
+			routesShown = new ArrayList<Route>();
 			
 			try {
 				for(Route route : routesParser.getRoutes()) {
@@ -98,8 +100,6 @@ public class MapManager {
 				map.setOnInfoWindowClickListener(infoWindowAdapter);
 				map.setMyLocationEnabled(true);
 				
-				showRoutes(Arrays.asList(new String[]{"G", "I", "D"}));
-				
 				new Thread(mapUpdater).start();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -118,25 +118,24 @@ public class MapManager {
 	public void showMap() {
 		if(mapAvailable) {
 			map.animateCamera(CameraUpdateFactory.newLatLngZoom(initialPos, 14.0f));
-			
 		}
-		
 	}
 	
 	public List<Route> getRoutes() {
 		return routesParser.getRoutes();
 	}
 	
-	public void showRoutes(List<String> routeNames) {
-		for(Polyline route : routesShown) {
+	public void showRoutes(Set<String> routeNames) throws AMException {
+		for(Polyline route : routesPolylineShown) {
 			route.remove();
 		}
 		
+		routesPolylineShown.clear();
 		routesShown.clear();
 		
-		List<Route> routes = routesParser.getRoutes(routeNames);
+		routesShown = routesParser.getRoutes(routeNames);
 		
-		for(Route r : routes) {
+		for(Route r : routesShown) {
 			PolylineOptions route = new PolylineOptions();
 			
 			route.color(r.getRouteColor());
@@ -155,8 +154,10 @@ public class MapManager {
 				route.add(point);
 			}
 			
-			routesShown.add(map.addPolyline(route));
+			routesPolylineShown.add(map.addPolyline(route));
 		}
+		
+		mapUpdater.refreshBusesUI();
 	}
 	
 	public void startAutoUpdate() {
@@ -191,33 +192,50 @@ public class MapManager {
 			
 			for(Vehicle v: vehicles) {
 				if(v.getVehicleName() != null && v.getRoute() != null) {
-					JSONObject markerInfo = new JSONObject();
-					
-					MarkerOptions mo = new MarkerOptions();
-					LatLng pos = new LatLng(v.getLatitude(), v.getLongitude());
 
-					BitmapDescriptor bd = routeIconMap.get(v.getRoute());
-					
-					if(bd == null) {
-						bd = defaultBusIcon;
-					}
-					
-					mo.position(pos);
-					mo.icon(bd);
-					
-					try {
-						markerInfo.put("type", "bus");
-						markerInfo.put("route", v.getRoute());
-						mo.title(markerInfo.toString());
-					} catch (JSONException e) {
-						e.printStackTrace();
+					if(shouldShowBus(v)) {
+						JSONObject markerInfo = new JSONObject();
 						
-						mo.title(v.getRoute());
+						MarkerOptions mo = new MarkerOptions();
+						LatLng pos = new LatLng(v.getLatitude(), v.getLongitude());
+	
+						BitmapDescriptor bd = routeIconMap.get(v.getRoute());
+						
+						if(bd == null) {
+							bd = defaultBusIcon;
+						}
+						
+						mo.position(pos);
+						mo.icon(bd);
+						
+						try {
+							markerInfo.put("type", "bus");
+							markerInfo.put("route", v.getRoute());
+							mo.title(markerInfo.toString());
+						} catch (JSONException e) {
+							e.printStackTrace();
+							
+							mo.title(v.getRoute());
+						}
+						
+						vehicleMarkers.add(map.addMarker(mo));
 					}
-					
-					vehicleMarkers.add(map.addMarker(mo));
 				}
 			}
+		}
+
+		private boolean shouldShowBus(Vehicle v) {
+			if(routesShown.isEmpty()) {
+				return true;
+			} 
+			
+			for(Route route: routesShown) {
+				if(route.getName().equals(v.getRoute())) {
+					return true;
+				}
+			}
+		
+			return false;
 		}
 
 		@Override

@@ -2,16 +2,22 @@ package com.appirio.mobile.aau.nativemap;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
+import org.apache.commons.codec.binary.Hex;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import android.graphics.Color;
 
 public class Route {
 
 	private String name;
 	private String markerIcon;
 	private List<BusStop> busStop;
-	private List<Waypoint> waypoints;
+	private Set<Waypoint> waypoints;
+	private int routeColor;
 	
 	public String getName() {
 		return name;
@@ -45,12 +51,27 @@ public class Route {
 			JSONArray stops = jsonRoute.getJSONArray("stops");
 			
 			if(stops.length() > 0) {
-				markerIcon = (stops.getJSONObject(0)).get("routeMarker").toString();
+				JSONObject stop = stops.getJSONObject(0);
+				
+				this.routeColor = Color.parseColor(stop.getString("color"));
+				
+				markerIcon = (stop).get("routeMarker").toString();
 			}
 			
 			for(int i = 0; i < stops.length(); i++) {
 				busStop.add(new BusStop(stops.getJSONObject(i)));
 			}
+			
+			waypoints = new TreeSet<Waypoint>(new WaypointComparator());
+						
+			if(jsonRoute.has("highFidelity")) {
+				JSONArray highFidelity = jsonRoute.getJSONArray("highFidelity");
+				
+				for(int i = 0; i < highFidelity.length(); i++) {
+					waypoints.add(new Waypoint((JSONObject) highFidelity.get(i))); 
+				}
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			
@@ -58,6 +79,22 @@ public class Route {
 		}
 		
 		
+	}
+
+	public Set<Waypoint> getWaypoints() {
+		return waypoints;
+	}
+
+	public void setWaypoints(Set<Waypoint> waypoints) {
+		this.waypoints = waypoints;
+	}
+
+	public int getRouteColor() {
+		return routeColor;
+	}
+
+	public void setRouteColor(int routeColor) {
+		this.routeColor = routeColor;
 	}
 
 }

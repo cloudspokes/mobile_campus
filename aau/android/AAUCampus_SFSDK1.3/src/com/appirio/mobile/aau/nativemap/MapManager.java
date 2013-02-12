@@ -98,7 +98,7 @@ public class MapManager {
 				map.setOnInfoWindowClickListener(infoWindowAdapter);
 				map.setMyLocationEnabled(true);
 				
-				showRoutes(Arrays.asList(new String[]{"I"}));
+				showRoutes(Arrays.asList(new String[]{"G", "I", "D"}));
 				
 				new Thread(mapUpdater).start();
 			} catch (Exception e) {
@@ -139,7 +139,17 @@ public class MapManager {
 		for(Route r : routes) {
 			PolylineOptions route = new PolylineOptions();
 			
-			for(BusStop stop : r.getBusStops()) {
+			route.color(r.getRouteColor());
+			
+			for(Waypoint stop : r.getWaypoints()) {
+				LatLng point = new LatLng(stop.getLatitude(), stop.getLongitude());
+				
+				route.add(point);
+			}
+			
+			if(r.getWaypoints().size() > 0) {
+				Waypoint stop = r.getWaypoints().iterator().next();
+				
 				LatLng point = new LatLng(stop.getLatitude(), stop.getLongitude());
 				
 				route.add(point);
@@ -163,13 +173,16 @@ public class MapManager {
 
 		private boolean autoRefreshOn = true;
 		private int autoRefreshInterval = 30000;
+		private List<Vehicle> vehicles;
 
 		private MapUpdater() {
 		}
 		
 		private void refreshBuses() throws AMException {
-			List<Vehicle> vehicles = new TeletracInfoParser().parse(mapProxy.getVehicles());
-			
+			vehicles = new TeletracInfoParser().parse(mapProxy.getVehicles());
+		}
+
+		private void refreshBusesUI() throws AMException {
 			for(Marker m : vehicleMarkers) {
 				m.remove();
 			}
@@ -205,19 +218,19 @@ public class MapManager {
 					vehicleMarkers.add(map.addMarker(mo));
 				}
 			}
-			
 		}
 
 		@Override
 		public void run() {
 			try {
 				while(this.autoRefreshOn) {
+					this.refreshBuses();
 					((Activity)ctx).runOnUiThread(new Runnable() {
 						
 						@Override
 						public void run() {
 							try {
-								mapUpdater.refreshBuses();
+								mapUpdater.refreshBusesUI();
 							} catch (AMException e) {
 								e.printStackTrace();
 							}

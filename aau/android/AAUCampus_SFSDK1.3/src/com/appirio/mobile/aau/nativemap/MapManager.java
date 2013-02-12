@@ -123,8 +123,8 @@ public class MapManager {
 		
 	}
 	
-	public List<String> getRoutes() {
-		return routes;
+	public List<Route> getRoutes() {
+		return routesParser.getRoutes();
 	}
 	
 	public void showRoutes(List<String> routeNames) {

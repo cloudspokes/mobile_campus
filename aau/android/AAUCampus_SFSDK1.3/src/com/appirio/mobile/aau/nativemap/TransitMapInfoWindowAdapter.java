@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -61,11 +62,9 @@ public class TransitMapInfoWindowAdapter implements InfoWindowAdapter, OnInfoWin
 
 	@Override
 	public void onInfoWindowClick(Marker arg0) {
-		Builder builder = new AlertDialog.Builder(ctx);
+		Intent intent = new Intent(this.ctx, StopScheduleActivity.class); 
 		
-		builder.setMessage("Here is where the routes go!");
-		
-		builder.create().show();
+		this.ctx.startActivity(intent);
 	}
 
 }

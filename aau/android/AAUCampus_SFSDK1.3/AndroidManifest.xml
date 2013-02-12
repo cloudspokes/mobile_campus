@@ -110,6 +110,10 @@
             android:name="com.appirio.mobile.aau.nativemap.NativeMapAcivity"
             android:label="@string/title_activity_native_map_acivity" >
         </activity>
+        <activity
+            android:name="com.appirio.mobile.aau.nativemap.StopScheduleActivity"
+            android:label="@string/title_activity_stop_schedule" >
+        </activity>
     </application>
 
 </manifest>

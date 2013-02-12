@@ -48,6 +48,7 @@ import android.widget.ToggleButton;
 import com.appirio.mobile.aau.nativemap.AMException;
 import com.appirio.mobile.aau.nativemap.MapAPIProxy;
 import com.appirio.mobile.aau.nativemap.MapManager;
+import com.appirio.mobile.aau.nativemap.Route;
 import com.appirio.mobile.aau.nativemap.SettingsManager;
 import com.appirio.mobile.aau.nativemap.TeletracInfoParser;
 import com.appirio.mobile.aau.nativemap.Vehicle;
@@ -93,7 +94,6 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	private GoogleMap map;
 	private MapManager mapManager;
 	private SettingsManager settingsManager;
-	
 	//The "x" and "y" position of the "Settings Button" on screen.
 	Point p;
 
@@ -385,8 +385,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 
 		// Inflate the popup_layout.xml
 		LinearLayout viewGroup = (LinearLayout) context.findViewById(R.id.popup);
-		LayoutInflater layoutInflater = (LayoutInflater) context
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View layout = layoutInflater.inflate(R.layout.popup_settings_layout, viewGroup);
 
 		// Creating the PopupWindow
@@ -406,11 +405,15 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		// Displaying the popup at the specified location, + offsets.
 		popup.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y + OFFSET_Y);
 
+		// Set Autoupdate flag from map Manager
+		ToggleButton liveUpdBtn = (ToggleButton)context.findViewById(R.id.toggleLiveUpdatesButton);
+		if (liveUpdBtn != null){
+			liveUpdBtn.setChecked(mapManager.getAutoUpdate());
+		}
+		
 		// Dynamically add bttons here
 		addRoutesTable(popup);
-		//initListView(popup);
-	
-		
+			
 	}
 
 	private void addRoutesTable(PopupWindow popup){
@@ -420,9 +423,11 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		TableRow tr = null;
 		CheckBox cb = null;
 		boolean isOdd = false;
-		List<String> rtList = stubRoutsList();
-		    for (String s : rtList) {
-		         cb = createCheckBox(cnt, s);
+		//List<String> rtList = stubRoutsList();
+		List<Route> rtList = mapManager.getRoutes();
+		
+		    for (Route s : rtList) {
+		         cb = createCheckBox(cnt, s.getName());
 		         
 		         
 		         if (( cnt & 1) == 0 ) { 
@@ -505,7 +510,6 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		al.add(rt6);
 		al.add(rt7);
 		
-		//return mapManager.getRoutes();
 		return al;
 	}
 	
@@ -515,6 +519,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	        
 	    	MessageBox("Show static map");
 
+	    	
 	        //this.webView.loadUrl("http://www.google.com");
 			//rootLayout.removeView(this.appView);
 			//rootLayout.addView(this.webView);
@@ -530,9 +535,11 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	        
 	        if (on) {
 	            // Enable Bus live updates
+	        	mapManager.startAutoUpdate();
 	        	MessageBox("Enable Bus Live Updates");
 	        } else {
 	            // Disable Bus Live updates
+	        	mapManager.stopAutoUpdate();
 	        	MessageBox("Disable Bus Live Updates");
 	        }	        
 	    	
@@ -546,12 +553,13 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	
 	private void testCheckHandler(View view){
 	    // Is the view now checked?
+		String route_name = (String)((CheckBox) view).getText();
 	    boolean checked = ((CheckBox) view).isChecked();
 	    if (checked){
-	    	MessageBox("Selected: "+view.getId());
+	    	MessageBox("Selected: "+view.getId()+" "+route_name);
 	    }
 	    if (!checked){
-	    	MessageBox("NOT Selected: "+view.getId());
+	    	MessageBox("NOT Selected: "+view.getId()+" "+route_name);
 	    }
 		
 	}

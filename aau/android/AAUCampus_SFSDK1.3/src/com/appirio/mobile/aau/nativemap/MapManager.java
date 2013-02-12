@@ -106,12 +106,14 @@ public class MapManager {
 				map.setOnInfoWindowClickListener(infoWindowAdapter);
 				map.setMyLocationEnabled(true);
 				
+				/*
 				Set<String> testRoutes = new HashSet<String>();
 				
 				testRoutes.add("D");
 				testRoutes.add("Jerrold");
 				
 				showRoutes(testRoutes);				
+				*/
 				
 				new Thread(mapUpdater).start();
 			} catch (Exception e) {
@@ -203,35 +205,37 @@ public class MapManager {
 			
 			vehicleMarkers.clear();
 			
-			for(Vehicle v: vehicles) {
-				if(v.getVehicleName() != null && v.getRoute() != null) {
-
-					if(shouldShowBus(v)) {
-						JSONObject markerInfo = new JSONObject();
-						
-						MarkerOptions mo = new MarkerOptions();
-						LatLng pos = new LatLng(v.getLatitude(), v.getLongitude());
+			if(vehicles != null) {
+				for(Vehicle v: vehicles) {
+					if(v.getVehicleName() != null && v.getRoute() != null) {
 	
-						BitmapDescriptor bd = routeIconMap.get(v.getRoute());
-						
-						if(bd == null) {
-							bd = defaultBusIcon;
-						}
-						
-						mo.position(pos);
-						mo.icon(bd);
-						
-						try {
-							markerInfo.put("type", "bus");
-							markerInfo.put("route", v.getRoute());
-							mo.title(markerInfo.toString());
-						} catch (JSONException e) {
-							e.printStackTrace();
+						if(shouldShowBus(v)) {
+							JSONObject markerInfo = new JSONObject();
 							
-							mo.title(v.getRoute());
+							MarkerOptions mo = new MarkerOptions();
+							LatLng pos = new LatLng(v.getLatitude(), v.getLongitude());
+		
+							BitmapDescriptor bd = routeIconMap.get(v.getRoute());
+							
+							if(bd == null) {
+								bd = defaultBusIcon;
+							}
+							
+							mo.position(pos);
+							mo.icon(bd);
+							
+							try {
+								markerInfo.put("type", "bus");
+								markerInfo.put("route", v.getRoute());
+								mo.title(markerInfo.toString());
+							} catch (JSONException e) {
+								e.printStackTrace();
+								
+								mo.title(v.getRoute());
+							}
+							
+							vehicleMarkers.add(map.addMarker(mo));
 						}
-						
-						vehicleMarkers.add(map.addMarker(mo));
 					}
 				}
 			}

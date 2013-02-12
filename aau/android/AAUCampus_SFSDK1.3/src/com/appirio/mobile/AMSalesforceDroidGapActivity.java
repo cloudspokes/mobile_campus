@@ -2,16 +2,12 @@ package com.appirio.mobile;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.cordova.CordovaWebViewClient;
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -41,33 +37,22 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.appirio.mobile.aau.nativemap.AMException;
-import com.appirio.mobile.aau.nativemap.MapAPIProxy;
 import com.appirio.mobile.aau.nativemap.MapManager;
 import com.appirio.mobile.aau.nativemap.Route;
 import com.appirio.mobile.aau.nativemap.SettingsManager;
-import com.appirio.mobile.aau.nativemap.TeletracInfoParser;
-import com.appirio.mobile.aau.nativemap.Vehicle;
 import com.appirio.aau.R;
 
 import com.appirio.mobile.aau.slidingmenu.SlidingMenuAdapter;
 import com.appirio.mobile.aau.slidingmenu.SlidingMenuItem;
 import com.appirio.mobile.aau.slidingmenu.SlidingMenuLayout;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.salesforce.androidsdk.ui.LoginActivity;
 import com.salesforce.androidsdk.ui.SalesforceDroidGapActivity;
 
@@ -96,7 +81,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	private GoogleMap map;
 	private MapManager mapManager;
 	private SettingsManager settingsManager;
-	private List<Route> routeList;
+	//private List<Route> routeList;
 	//The "x" and "y" position of the "Settings Button" on screen.
 	Point p;
 
@@ -408,16 +393,18 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		// Displaying the popup at the specified location, + offsets.
 		popup.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y + OFFSET_Y);
 
+		
+		// Dynamically add bttons here
+		//routeList = mapManager.getRoutesShown();
+		addRoutesTable(popup);
+
 		// Set Autoupdate flag from map Manager
-		ToggleButton liveUpdBtn = (ToggleButton)context.findViewById(R.id.toggleLiveUpdatesButton);
+		
+		ToggleButton liveUpdBtn = (ToggleButton)popup.getContentView().findViewById(R.id.toggleLiveUpdatesButton);
 		if (liveUpdBtn != null){
 			liveUpdBtn.setChecked(mapManager.getAutoUpdate());
 		}
 		
-		// Dynamically add bttons here
-		routeList = mapManager.getRoutesShown();
-		addRoutesTable(popup);
-			
 	}
 
 	private void addRoutesTable(PopupWindow popup){
@@ -510,27 +497,6 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		 v.setBackgroundColor(Color.rgb(51, 51, 51));
         
         tl.addView(v);		
-	}
-	
-	// Set up test route list
-	private List<String> stubRoutsList(){
-		List<String> al = new ArrayList<String>();
-		String rt1 = "D";
-		String rt2 = "H";
-		String rt3 = "C";
-		String rt4 = "Polk";
-		String rt5 = "Campus Tour";
-		String rt6 = "Warf9";
-		String rt7 = "A";
-		al.add(rt1);
-		al.add(rt2);
-		al.add(rt3);
-		al.add(rt4);
-		al.add(rt5);
-		al.add(rt6);
-		al.add(rt7);
-		
-		return al;
 	}
 	
 	// Method to open WebView and display a static map image

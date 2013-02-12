@@ -56,7 +56,7 @@
     						android:src="@drawable/arrow_right_small"
     						android:onClick="onStaticMapBtnClicked"
     						android:layout_gravity="right"
-    						android:text="To Map" android:background="@android:color/transparent"/>
+    					    android:background="@android:color/transparent"/>
              
     				</TableRow>
  
@@ -117,58 +117,6 @@
         				android:layout_height="1dip"
         				android:background="@color/white" />
     
-    <!-- display this button in 3rd column via layout_column(zero based) 
-    <TableRow
-        android:id="@+id/tableRow4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="5dip" >
- 
-				<CheckBox
-    				android:id="@+id/checkBox_RouteD"
-    				android:layout_width="wrap_content"
-    				android:layout_height="wrap_content"
-    				android:onClick="onRouteSelectorClicked"
-    				android:layout_gravity="left"
-    				android:text="D" />
-
-				<CheckBox
-    				android:id="@+id/checkBox_RouteC"
-    				android:layout_width="wrap_content"
-    				android:layout_height="wrap_content"
-    				android:onClick="onRouteSelectorClicked"
-    				android:layout_gravity="right"
-    				android:text="C" />
-        
-
-    </TableRow>
-
-    -->
-    <!-- display this button in 2nd column via layout_column(zero based) 
-    <TableRow
-        android:id="@+id/tableRow5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="5dip" >
- 
-			<CheckBox
-    			android:id="@+id/checkBox_RoutePolk"
-    			android:layout_width="wrap_content"
-    			android:layout_height="wrap_content"
-    			android:onClick="onRouteSelectorClicked"
-    			android:layout_gravity="left"
-    			android:text="Polk" />
-			
-			<CheckBox
-    			android:id="@+id/checkBox_RouteTest"
-    			android:layout_width="wrap_content"
-    			android:layout_height="wrap_content"
-    			android:onClick="onRouteSelectorClicked"
-    			android:layout_gravity="right"
-    			android:text="Campus Tour" />
-        
-    </TableRow>
- -->
 				</TableLayout>
         
 			</RelativeLayout>

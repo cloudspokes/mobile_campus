@@ -90,6 +90,8 @@
         <columns>Bus_Route__c</columns>
         <columns>Bus_Stop__c</columns>
         <columns>Stop_Order__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>UPDATEDBY_USER</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
         <language>en_US</language>

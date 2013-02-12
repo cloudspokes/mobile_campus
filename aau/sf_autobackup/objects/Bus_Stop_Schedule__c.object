@@ -299,7 +299,7 @@
         <language>en_US</language>
     </listViews>
     <listViews>
-        <fullName>Route_Polk_Nrpnt</fullName>
+        <fullName>Route_Nrpnt</fullName>
         <columns>NAME</columns>
         <columns>Order__c</columns>
         <columns>Bus_Stop__c</columns>
@@ -311,9 +311,9 @@
         <filters>
             <field>Bus_Route__c</field>
             <operation>startsWith</operation>
-            <value>Polk Nrpnt</value>
+            <value>Nrpnt</value>
         </filters>
-        <label>Route Polk Nrpnt</label>
+        <label>Route Nrpnt</label>
         <language>en_US</language>
     </listViews>
     <nameField>

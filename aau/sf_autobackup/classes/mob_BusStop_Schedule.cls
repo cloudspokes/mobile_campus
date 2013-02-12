@@ -21,7 +21,7 @@ global with sharing class  mob_BusStop_Schedule {
                 routes.put(busStopSchedule.Bus_Route__r.Name, currentRoute);
             }
             
-            currentRoute.schedule.add(busStopSchedule.Time__c);
+            currentRoute.schedule.add(busStopSchedule.Time__c); 
             
         }
         system.debug('current busStopName: ' + busStopName);
@@ -49,4 +49,5 @@ global with sharing class  mob_BusStop_Schedule {
         
     }
     
+   
 }

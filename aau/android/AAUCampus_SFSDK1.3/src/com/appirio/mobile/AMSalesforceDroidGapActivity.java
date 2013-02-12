@@ -3,8 +3,10 @@ package com.appirio.mobile;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.cordova.CordovaWebViewClient;
 import org.json.JSONArray;
@@ -94,6 +96,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	private GoogleMap map;
 	private MapManager mapManager;
 	private SettingsManager settingsManager;
+	private List<Route> routeList;
 	//The "x" and "y" position of the "Settings Button" on screen.
 	Point p;
 
@@ -412,6 +415,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		}
 		
 		// Dynamically add bttons here
+		routeList = mapManager.getRoutesShown();
 		addRoutesTable(popup);
 			
 	}
@@ -428,7 +432,8 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		
 		    for (Route s : rtList) {
 		         cb = createCheckBox(cnt, s.getName());
-		         
+		         // Set checkbox value
+		         cb.setChecked(isRouteDisplay(s.getName()));
 		         
 		         if (( cnt & 1) == 0 ) { 
 		        	 // even... 
@@ -458,6 +463,21 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		         addLineSeparator(tl);
 	         }
 
+	}
+	
+	private boolean isRouteDisplay(String name) {
+		boolean rc = false;
+		if (mapManager != null){
+			List<Route> rtList = mapManager.getRoutesShown();
+			for (Route rt : rtList){
+				if (name.equals(rt.getName())){
+					rc = true;
+					// stop itterator adn return
+					return rc;
+				}
+			}
+		}
+		return rc;
 	}
 	
 	private CheckBox createCheckBox(int id, String s){
@@ -536,11 +556,11 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	        if (on) {
 	            // Enable Bus live updates
 	        	mapManager.startAutoUpdate();
-	        	MessageBox("Enable Bus Live Updates");
+	        	//MessageBox("Enable Bus Live Updates");
 	        } else {
 	            // Disable Bus Live updates
 	        	mapManager.stopAutoUpdate();
-	        	MessageBox("Disable Bus Live Updates");
+	        	//MessageBox("Disable Bus Live Updates");
 	        }	        
 	    	
 	    }
@@ -551,18 +571,56 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		testCheckHandler(view);
 	}	
 	
-	private void testCheckHandler(View view){
+	public void testCheckHandler(View view){
 	    // Is the view now checked?
 		String route_name = (String)((CheckBox) view).getText();
 	    boolean checked = ((CheckBox) view).isChecked();
+	    try{
 	    if (checked){
-	    	MessageBox("Selected: "+view.getId()+" "+route_name);
+	    	addDisplayRoute(route_name);
+	    	//MessageBox("Selected: "+view.getId()+" "+route_name);
 	    }
 	    if (!checked){
-	    	MessageBox("NOT Selected: "+view.getId()+" "+route_name);
+	    	removeDisplayRoute(route_name);
+	    	//MessageBox("NOT Selected: "+view.getId()+" "+route_name);
 	    }
-		
+	    }catch(Exception e){
+	    	e.printStackTrace();
+	    }
 	}
+	
+	public Route getRouteByName(String name){
+		List<Route> rtList = mapManager.getRoutes();
+		for (Route rt : rtList){
+			if (name.equals(rt.getName())){
+				return rt;
+			}
+		}
+		return null;
+	}
+	
+	public Set<String> getRouteSet(List<Route> rtList){
+		HashSet<String> hs = new HashSet<String>();
+		for (Route rt : rtList){
+			 hs.add(rt.getName());
+		}
+		return hs;
+	}
+	
+	public void addDisplayRoute(String name) throws Exception {
+		List<Route> rtList = mapManager.getRoutesShown();
+		if (rtList != null){
+			rtList.add(getRouteByName(name));
+		}
+		mapManager.showRoutes(getRouteSet(rtList));
+	}
+
+	public void removeDisplayRoute(String name) throws Exception {
+		List<Route> rtList = mapManager.getRoutesShown();
+		rtList.remove(getRouteByName(name));
+		mapManager.showRoutes(getRouteSet(rtList));
+	}
+	
     public void MessageBox(String message)
     {
        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();

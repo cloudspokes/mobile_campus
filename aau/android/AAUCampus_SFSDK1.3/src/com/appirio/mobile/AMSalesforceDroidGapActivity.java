@@ -23,6 +23,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -368,8 +369,13 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	
 	// The method that displays the popup.
 	private void showPopup(final Activity context, Point p) {
-		int popupWidth = 460;
-		int popupHeight = 650;
+		
+		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+		int width = metrics.widthPixels;
+		int height = metrics.heightPixels;
+		
+		int popupWidth = width - 40; // 460;
+		int popupHeight = height - 100; //650;
 
 		// Inflate the popup_layout.xml
 		LinearLayout viewGroup = (LinearLayout) context.findViewById(R.id.popup);
@@ -385,7 +391,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 
 		// Some offset to align the popup a bit to the right, and a bit down, relative to button's position.
 		int OFFSET_X = 20;
-		int OFFSET_Y = 45;
+		int OFFSET_Y = 60;
 
 		// Clear the default translucent background
 		popup.setBackgroundDrawable(new BitmapDrawable());

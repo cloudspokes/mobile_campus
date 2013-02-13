@@ -15,5 +15,6 @@
     <string name="label_LiveBusUpdates">Live Bus Updates</string>
     <string name="label_ActiveRoutes">Active Routes</string>
     <string name="title_activity_stop_schedule">StopScheduleActivity</string>
-
+	<string name="label_Done">Done</string>
+	
 </resources>

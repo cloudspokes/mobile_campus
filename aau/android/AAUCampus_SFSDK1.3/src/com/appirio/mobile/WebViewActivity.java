@@ -23,6 +23,10 @@ public class WebViewActivity extends Activity {
         
         v.getSettings().setSupportZoom(true);
         
+        // Test if content will autoscale for screen size and orientation
+        v.getSettings().setLoadWithOverviewMode(true);
+		v.getSettings().setUseWideViewPort(true);
+        
         v.loadUrl(getIntent().getStringExtra("url"));
     }
 

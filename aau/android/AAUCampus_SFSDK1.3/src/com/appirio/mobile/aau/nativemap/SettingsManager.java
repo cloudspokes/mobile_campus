@@ -22,7 +22,6 @@ import android.widget.ToggleButton;
 
 import com.appirio.aau.R;
 import com.appirio.mobile.AMSalesforceDroidGapActivity;
-import com.google.android.gms.maps.GoogleMap;
 
 public class SettingsManager {
 

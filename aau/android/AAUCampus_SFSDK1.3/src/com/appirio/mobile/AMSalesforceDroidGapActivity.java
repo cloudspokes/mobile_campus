@@ -82,7 +82,6 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	private GoogleMap map;
 	private MapManager mapManager;
 	private SettingsManager settingsManager;
-	private View staticMapLayout;
 	private PopupWindow popup;
 	//private List<Route> routeList;
 	//The "x" and "y" position of the "Settings Button" on screen.
@@ -99,8 +98,6 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		mapView = (MapView) mapLayout.findViewById(R.id.map);
 		
 		mapView.onCreate(savedInstanceState);
-		
-		staticMapLayout = getLayoutInflater().inflate(R.layout.static_map_layout, null);
 		
 		map = mapView.getMap();
 		
@@ -489,6 +486,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
        		 );
         
         cb.setLayoutParams(lp2);  
+        cb.setTextColor(Color.rgb(255, 255, 255));
         cb.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -505,37 +503,19 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		 // Get Line sep view
 		 View v = new View(this);
 		 v.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, 1));
-		 v.setBackgroundColor(Color.rgb(51, 51, 51));
+		 v.setBackgroundColor(Color.rgb(255, 255, 255));
         
         tl.addView(v);		
 	}
 	
 	// Method to open WebView and display a static map image
 	public void onStaticMapBtnClicked(View v){
-	    if(v.getId() == R.id.staticMap){
-	        
-	    	// MessageBox("Show static map");
-	    	// Find a way to handle this URL dnamically ???
-	        this.webView.loadUrl("https://aau--dev6.cs12.my.salesforce.com/resource/1345836089000/mob_busmap");
-			rootLayout.removeView(this.appView);
-			
-			LinearLayout viewStaticMap = (LinearLayout) staticMapLayout.findViewById(R.id.static_map);
-			viewStaticMap.addView(this.webView);
-			popup.dismiss();
-			rootLayout.addView(staticMapLayout);
-	    }
-
-	}
 	
-	public void onDoneBtnClicked(View v){
+		rootLayout.removeView(appView);
+		webView.getSettings().setLoadWithOverviewMode(true);
+		webView.getSettings().setUseWideViewPort(true);
+	    webView.loadUrl("javascript:showStaticMap()");
 
-		rootLayout.removeView(this.staticMapLayout);
-		//rootLayout.addView(this.mapLayout);
-		
-		mapManager.showMap();
-		
-		mapon = true;
-		
 	}
 	
 	

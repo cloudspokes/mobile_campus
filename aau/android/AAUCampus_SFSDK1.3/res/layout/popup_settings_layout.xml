@@ -48,6 +48,7 @@
         				android:id="@+id/tableRow1"
         				android:layout_width="wrap_content"
         				android:layout_height="wrap_content"
+        				android:onClick="onStaticMapBtnClicked"
         				android:padding="5dip" >
  
  						<TextView
@@ -57,6 +58,7 @@
    							android:text="@string/label_StaticMap"
    							android:textAppearance="?android:attr/textAppearanceSmall"
    							android:layout_gravity="left"
+   							android:onClick="onStaticMapBtnClicked"
    							android:textColor="@color/white"/>
 
 						<ImageButton
@@ -73,7 +75,7 @@
  
         			<!-- just draw a white separator line -->
     				<View
-        				android:layout_height="1dip"
+        				android:layout_height="1px"
         				android:background="@color/white" />
     
     				<!-- Live Bus Update 2 columns -->
@@ -103,7 +105,7 @@
  
     				<!-- just draw a white line -->
     				<View
-        				android:layout_height="1dip"
+        				android:layout_height="1px"
         				android:background="@color/white" />
  
     				<!-- Active Routes list -->
@@ -125,7 +127,7 @@
 
     				<!-- just draw a white line -->
     				<View
-        				android:layout_height="1dip"
+        				android:layout_height="1px"
         				android:background="@color/white" />
     
 				</TableLayout>

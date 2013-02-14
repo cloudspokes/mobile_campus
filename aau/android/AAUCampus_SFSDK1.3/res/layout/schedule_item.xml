@@ -13,7 +13,7 @@
             android:minWidth="95dp" >
 
             <TextView
-                android:id="@+id/TextView02"
+                android:id="@+id/txtRouteName"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_gravity="center_vertical|center_horizontal"
@@ -46,7 +46,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/TextView08"
+                    android:id="@+id/txtETA"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="5dp"
@@ -58,7 +58,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/TextView07"
+                android:id="@+id/txtUpcomingStops"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Upcoming Stops: 12:30 PM, 1:30 PM, 2:30 PM, 3:30 PM, 4:30 PM, 5:30 PM, 6:30 PM"

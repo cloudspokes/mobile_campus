@@ -35,9 +35,19 @@ public class StopScheduleActivity extends Activity {
 			((TextView)scheduleView.findViewById(R.id.txtRouteName)).setText(routeSchedule.getName());
 			((TextView)scheduleView.findViewById(R.id.txtRouteName)).setBackgroundColor(Color.parseColor(routeSchedule.getColor()));
 			
-			((TextView)scheduleView.findViewById(R.id.txtETA)).setText(routeSchedule.getNextBusETA());
+			String upcomingStops = routeSchedule.getTodaysNextStops();
+			if(upcomingStops == null) {
+				((TextView)scheduleView.findViewById(R.id.txtUpcomingStops)).setText("No Upcoming Stops.");
+			} else {
+				((TextView)scheduleView.findViewById(R.id.txtUpcomingStops)).setText("Upcoming Stops: " + upcomingStops);
+			}
 			
-			((TextView)scheduleView.findViewById(R.id.txtUpcomingStops)).setText(routeSchedule.getTodaysNextStops());
+			String eta = routeSchedule.getNextBusETA();
+			if(eta == null) {
+				((TextView)scheduleView.findViewById(R.id.txtNextStopTilte)).setText("No More Stops Today");
+			} else {
+				((TextView)scheduleView.findViewById(R.id.txtETA)).setText(eta);
+			}
 
 			stopSchedulecontainer.addView(scheduleView);
 		}

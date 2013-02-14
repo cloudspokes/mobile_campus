@@ -71,7 +71,25 @@ public class RouteStopSchedule implements Serializable {
 	}
 	
 	public String getNextBusETA() {
-		return "3 minutes";
+		try {
+			int nextStopIndex = getNextStopIndex();
+			
+			if(nextStopIndex == -1) {
+				return null;
+			} else {
+				Date nextStop = format.parse(schedule.get(nextStopIndex));
+				
+				Calendar now = Calendar.getInstance();
+				
+				now.set(1970, 0, 1);
+
+				return ((nextStop.getTime() - now.getTimeInMillis()) / (1000 * 60)) + " minutes";
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+			
+			return null;
+		}
 	}
 	
 	public String getTodaysNextStops() {
@@ -80,11 +98,17 @@ public class RouteStopSchedule implements Serializable {
 		
 		int nextStopIndex = getNextStopIndex();
 		
-		for(String time : schedule) {
-			result.append(separator);
-			result.append(time);
-			
-			separator = ", ";
+		if(nextStopIndex != -1) { 
+			for(int i = nextStopIndex; i < schedule.size() && (i < nextStopIndex + 4); i++) {
+				String time = schedule.get(i);
+				
+				result.append(separator);
+				result.append(time);
+				
+				separator = ", ";
+			}
+		} else {
+			return null;
 		}
 		
 		return result.toString();

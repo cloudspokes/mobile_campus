@@ -1,9 +1,7 @@
 package com.appirio.mobile.aau.nativemap;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,7 +13,6 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 
 import com.appirio.aau.R;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -29,7 +26,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.common.collect.Sets;
 
 public class MapManager {
 
@@ -48,6 +44,25 @@ public class MapManager {
 	private TransitMapInfoWindowAdapter infoWindowAdapter;
 	private List<Polyline> routesPolylineShown;
 	private List<Route> routesShown;
+
+	public ArrayList<RouteStopSchedule> getSchedule(String stopName) throws AMException {
+		try {
+			JSONObject schedule = mapProxy.getSchedule(stopName);
+			ArrayList<RouteStopSchedule> result = new ArrayList<RouteStopSchedule>();
+			
+			JSONArray routes = schedule.getJSONArray("routes");
+			
+			for(int i = 0; i < routes.length(); i++) {
+				result.add(new RouteStopSchedule((JSONObject) routes.get(i)));
+			}
+			
+			return result;
+		} catch (JSONException e) {
+			e.printStackTrace();
+			
+			throw new AMException(e);
+		}
+	}
 	
 	public List<Route> getRoutesShown() {
 		return routesShown;
@@ -71,7 +86,7 @@ public class MapManager {
 			busRoutes = mapProxy.getBusStops();
 			routesParser = new RoutesParser(busRoutes);
 			routeIconMap = new HashMap<String, BitmapDescriptor>();
-			infoWindowAdapter = new TransitMapInfoWindowAdapter(this.ctx);
+			infoWindowAdapter = new TransitMapInfoWindowAdapter(this.ctx, this);
 			routesPolylineShown = new ArrayList<Polyline>();
 			routesShown = new ArrayList<Route>();
 			

@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import org.apache.cordova.DroidGap;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.salesforce.androidsdk.app.ForceApp;
@@ -177,6 +177,18 @@ public class MapAPIProxy {
 			e.printStackTrace();
 			
 			throw new AMException(uri);
+		}
+	}
+	
+	public JSONObject getSchedule(String stopName) throws AMException {
+		try {
+			ensureToken();
+			
+			return new JSONObject(makeSFRequest(instanceUrl + "/services/apexrest/BusStopSchedule?busStopName=" + URLEncoder.encode(stopName, "UTF-8"), true));
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			throw new AMException(e);
 		}
 	}
 	

@@ -1,5 +1,8 @@
 package com.appirio.mobile.aau.nativemap;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -18,9 +21,11 @@ import com.google.android.gms.maps.model.Marker;
 public class TransitMapInfoWindowAdapter implements InfoWindowAdapter, OnInfoWindowClickListener {
 
 	private Context ctx;
+	private MapManager mapManager;
 	
-	public TransitMapInfoWindowAdapter(Context ctx) {
+	public TransitMapInfoWindowAdapter(Context ctx, MapManager mapManager) {
 		this.ctx = ctx;
+		this.mapManager = mapManager;
 	}
 	
 	@Override
@@ -61,10 +66,27 @@ public class TransitMapInfoWindowAdapter implements InfoWindowAdapter, OnInfoWin
 	}
 
 	@Override
-	public void onInfoWindowClick(Marker arg0) {
-		Intent intent = new Intent(this.ctx, StopScheduleActivity.class); 
-		
-		this.ctx.startActivity(intent);
+	public void onInfoWindowClick(Marker marker) {
+		try {
+			JSONObject markerInfo = new JSONObject(marker.getTitle());
+			
+			if(markerInfo.has("type") && markerInfo.getString("type").equals("stop")) {
+				String stopName = markerInfo.getString("stopName");
+
+				ArrayList<RouteStopSchedule> schedule = this.mapManager.getSchedule(stopName);
+
+				Intent intent = new Intent(this.ctx, StopScheduleActivity.class);
+				
+				intent.putExtra("schedule", schedule);
+				intent.putExtra("stopName", stopName);
+				
+				this.ctx.startActivity(intent);
+				
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
 	}
 
 }

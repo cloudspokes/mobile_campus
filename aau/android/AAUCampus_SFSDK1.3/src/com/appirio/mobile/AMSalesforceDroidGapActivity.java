@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
@@ -24,6 +25,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,7 +48,6 @@ import android.widget.ToggleButton;
 import com.appirio.mobile.aau.nativemap.AMException;
 import com.appirio.mobile.aau.nativemap.MapManager;
 import com.appirio.mobile.aau.nativemap.Route;
-import com.appirio.mobile.aau.nativemap.SettingsManager;
 import com.appirio.aau.R;
 
 import com.appirio.mobile.aau.slidingmenu.SlidingMenuAdapter;
@@ -81,7 +82,6 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	private boolean mapon = false;
 	private GoogleMap map;
 	private MapManager mapManager;
-	private SettingsManager settingsManager;
 	private PopupWindow popup;
 	//private List<Route> routeList;
 	//The "x" and "y" position of the "Settings Button" on screen.
@@ -157,7 +157,6 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		
 		// Connect Settings popup panel
 		nativeSettingsButton = (ImageButton) mapLayout.findViewById(R.id.settings_popup);
-		settingsManager = new SettingsManager(this, this);
 		nativeSettingsButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -179,18 +178,10 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	// because at that stage most probably the view isn't drawn yet, so it will return (0, 0))
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
-
-		int[] location = new int[2];
-		//ImageButton button = (ImageButton) findViewById(R.id.settings_popup);
-
 		// Get the x, y location and store it in the location[] array
 		// location[0] = x, location[1] = y.
-		nativeSettingsButton.getLocationOnScreen(location);
-
 		//Initialize the Point with x, and y positions
-		p = new Point();
-		p.x = location[0];
-		p.y = location[1];
+		p = getSettingAnchorPoint();
 	}
 
 	private static final String FEEDBACK_PREFS = "feedback_prefs";
@@ -395,11 +386,15 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		int OFFSET_X = 20;
 		int OFFSET_Y = 60;
 
+		//Initialize the Point with x, and y positions
+		Point pbtn = getSettingAnchorPoint();
+		
 		// Clear the default translucent background
 		popup.setBackgroundDrawable(new BitmapDrawable());
 
+		// Log.d("NATIVE MAP Activity", "Setting POINT: "+ pbtn.x + OFFSET_X + " " + pbtn.y + OFFSET_Y);
 		// Displaying the popup at the specified location, + offsets.
-		popup.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y + OFFSET_Y);
+		popup.showAtLocation(layout, Gravity.NO_GRAVITY, pbtn.x + OFFSET_X, pbtn.y + OFFSET_Y);
 
 		
 		// Dynamically add bttons here
@@ -414,7 +409,19 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		}
 		
 	}
+	// Return actual point for Setting anchor button to position pannel
+	private Point getSettingAnchorPoint(){
+		// Get the x, y location and store it in the location[] array
+		// location[0] = x, location[1] = y.
+		int[] location = new int[2];
+		nativeSettingsButton.getLocationOnScreen(location);
 
+		//Initialize the Point with x, and y positions
+		Point pbtn = new Point();
+		pbtn.x = location[0];
+		pbtn.y = location[1];
+		return pbtn;
+	}
 	private void addRoutesTable(PopupWindow popup){
 		
 		TableLayout tl = (TableLayout)popup.getContentView().findViewById(R.id.tableLayout1);
@@ -596,6 +603,22 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
     public void MessageBox(String message)
     {
        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }   
+    } 
+    
+    
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        	if (this.popup != null && this.popup.isShowing()){
+        		this.popup.dismiss();
+        	}
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+        	if (this.popup != null && this.popup.isShowing()){
+        		this.popup.dismiss();
+        	}
+        }
+      }
 	
 }

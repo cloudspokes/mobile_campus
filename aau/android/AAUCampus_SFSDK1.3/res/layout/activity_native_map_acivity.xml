@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:configChanges="orientation|keyboardHidden"
     tools:context=".NativeMapAcivity" >
 <!-- 
     <LinearLayout
@@ -30,7 +31,7 @@
             android:id="@+id/menu"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="38dp"
-            android:layout_height="32dp"
+            android:layout_height="38dp"
             android:layout_alignParentLeft="true"
             android:background="@drawable/map_btn_shape"
     		android:src="@drawable/menu_btn"/>
@@ -39,7 +40,7 @@
        <ImageButton android:id="@+id/settings_popup"
            style="?android:attr/buttonStyleSmall"
             android:layout_width="38dp"
-            android:layout_height="32dp"
+            android:layout_height="38dp"
             android:layout_alignParentRight="true"
             android:background="@drawable/map_btn_shape"
     		android:src="@drawable/settings_btn"/>

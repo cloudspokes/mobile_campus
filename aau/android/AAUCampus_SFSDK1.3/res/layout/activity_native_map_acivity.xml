@@ -36,6 +36,29 @@
             android:background="@drawable/map_btn_shape"
     		android:src="@drawable/menu_btn"/>
 
+		<RelativeLayout
+        	android:id="@+id/NativeMapMenuBar"
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:layout_toRightOf="@+id/menu"
+        	android:layout_toLeftOf="@+id/settings_popup"
+        	android:background="#000" >
+        
+			<RadioGroup android:id="@+id/radioGrp"  android:layout_width="fill_parent"
+      			android:layout_height="wrap_content" android:gravity="center"
+      			android:orientation="horizontal" >
+					<RadioButton android:id="@+id/togle_map_view" android:background="@drawable/radio"
+            			android:button="@null" android:checked="true"
+            			android:gravity="center"
+            			android:onClick="onToggleViewClicked"
+            			android:text="@string/map_button" />
+					<RadioButton android:id="@+id/toggle_stop_list_view" android:background="@drawable/radio"
+            			android:button="@null" android:checked="false"
+            			android:gravity="center"
+            			android:onClick="onToggleViewClicked"
+            			android:text="@string/stop_list_button" />
+			</RadioGroup>        
+	   </RelativeLayout>        
         
        <ImageButton android:id="@+id/settings_popup"
            style="?android:attr/buttonStyleSmall"

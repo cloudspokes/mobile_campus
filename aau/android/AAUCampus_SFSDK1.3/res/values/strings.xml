@@ -21,5 +21,7 @@
     <string name="label_ActiveRoutes">Active Routes</string>
     <string name="title_activity_stop_schedule">StopScheduleActivity</string>
 	<string name="label_Done">Done</string>
-	
+    <string name="map_button">Map</string>
+    <string name="stop_list_button">Stop List</string>
+		
 </resources>

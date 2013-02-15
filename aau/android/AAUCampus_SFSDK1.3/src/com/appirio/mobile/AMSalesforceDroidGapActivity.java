@@ -25,7 +25,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,9 +35,11 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.PopupWindow;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -619,13 +620,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		List<Route> rtList = mapManager.getRoutesShown();
 		rtList.remove(getRouteByName(name));
 		mapManager.showRoutes(getRouteSet(rtList));
-	}
-	
-    public void MessageBox(String message)
-    {
-       Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    } 
-    
+	}    
     
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -641,5 +636,32 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
         	}
         }
       }
-	
+
+    // Event handler to switch views on toggle Map/Stop List
+    public void onToggleViewClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+        
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.togle_map_view:
+                if (checked)
+                    // Map view display
+                	// TODO replace this code with MAP VIEW display
+                	MessageBox("Show Map view");
+                break;
+            case R.id.toggle_stop_list_view:
+                if (checked)
+                    // Stop List View display
+                	// TODO replace this message code with STOP LIST display view
+                	MessageBox("Show Stop List");
+                break;
+        }
+    }
+    
+    public void MessageBox(String message)
+    {
+       Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    } 
+    
 }

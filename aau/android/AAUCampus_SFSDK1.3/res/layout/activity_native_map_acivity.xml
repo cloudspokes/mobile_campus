@@ -40,12 +40,15 @@
         	android:id="@+id/NativeMapMenuBar"
         	android:layout_width="fill_parent"
         	android:layout_height="wrap_content"
+        	android:gravity="center"
         	android:layout_toRightOf="@+id/menu"
         	android:layout_toLeftOf="@+id/settings_popup"
         	android:background="#000" >
         
-			<RadioGroup android:id="@+id/radioGrp"  android:layout_width="fill_parent"
-      			android:layout_height="wrap_content" android:gravity="center"
+			<RadioGroup android:id="@+id/radioGrp"  
+			    android:layout_width="fill_parent"
+      			android:layout_height="wrap_content" 
+      			android:gravity="center"
       			android:orientation="horizontal" >
 					<RadioButton android:id="@+id/togle_map_view" android:background="@drawable/radio"
             			android:button="@null" android:checked="true"

@@ -61,6 +61,13 @@ import com.salesforce.androidsdk.ui.SalesforceDroidGapActivity;
 public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity implements OnClickListener, OnItemClickListener {
 	
 	@Override
+	protected void onStart() {
+		super.onStart();
+		
+		getMapManager();		
+	}
+
+	@Override
 	public void onPause() {
 		super.onPause();
 		
@@ -87,6 +94,22 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	//The "x" and "y" position of the "Settings Button" on screen.
 	Point p;
 
+	private MapManager getMapManager() {
+		try {
+			if(mapManager == null) {
+				mapManager = new MapManager(this, map);
+			}
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			
+			// TODO handle map initialization error
+		}
+		
+		return mapManager;
+
+	}
+	
 	@Override
 	protected CordovaWebViewClient createWebViewClient() {
 		return new AAUMobileWebViewClient(this);
@@ -100,8 +123,6 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		mapView.onCreate(savedInstanceState);
 		
 		map = mapView.getMap();
-		
-		mapManager = new MapManager(this, map);
 	}
 	
 	@Override
@@ -114,7 +135,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 			// TODO Handle map initialization errors
 			e.printStackTrace();
 		} 
-		
+
 		/* Create a new SlidingMenuLayout and set Layout parameters. */
 		rootLayout = new SlidingMenuLayout(this);
 		rootLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.0F));
@@ -303,7 +324,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 				rootLayout.removeView(this.appView);
 				rootLayout.addView(this.mapLayout);
 				
-				mapManager.showMap();
+				getMapManager().showMap();
 				
 				mapon = true;
 			}

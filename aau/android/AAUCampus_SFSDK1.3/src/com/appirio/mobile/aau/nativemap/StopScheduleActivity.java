@@ -45,6 +45,7 @@ public class StopScheduleActivity extends Activity {
 			String eta = routeSchedule.getNextBusETA();
 			if(eta == null) {
 				((TextView)scheduleView.findViewById(R.id.txtNextStopTilte)).setText("No More Stops Today");
+				((TextView)scheduleView.findViewById(R.id.txtETA)).setText("");
 			} else {
 				((TextView)scheduleView.findViewById(R.id.txtETA)).setText(eta);
 			}

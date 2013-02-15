@@ -16,7 +16,7 @@ import com.salesforce.androidsdk.rest.ClientManager;
 import com.salesforce.androidsdk.rest.ClientManager.AccountInfoNotFoundException;
 import com.salesforce.androidsdk.rest.RestClient;
 
-public class MapAPIProxy {
+public class APIProxy {
 	
 	private DroidGap ctx;
 	private static String authToken = null;
@@ -49,7 +49,7 @@ public class MapAPIProxy {
 		}
 	}
 	
-	public MapAPIProxy(DroidGap ctx) {
+	public APIProxy(DroidGap ctx) {
 		this.ctx = ctx;
 	}
 	

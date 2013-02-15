@@ -32,7 +32,7 @@ public class MapManager {
 	private Context ctx;
 	private LatLng initialPos = new LatLng(37.789238, -122.401407);
 	private JSONArray busRoutes;
-	private MapAPIProxy mapProxy;
+	private APIProxy mapProxy;
 	private GoogleMap map;
 	private boolean mapAvailable;
 	private BitmapDescriptor stopBitmap;
@@ -70,7 +70,7 @@ public class MapManager {
 	
 	public MapManager(Context ctx, GoogleMap map) throws AMException {
 		this.ctx = ctx;
-		mapProxy = new MapAPIProxy((DroidGap)this.ctx);
+		mapProxy = new APIProxy((DroidGap)this.ctx);
 		this.map = map;
 		this.mapUpdater = new MapUpdater();
 		

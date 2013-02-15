@@ -90,6 +90,10 @@ public class AMTimePicker extends Plugin {
 					final TimeSetListener timeSetListener = new TimeSetListener(datePickerPlugin, callBackId);
 					final TimePickerDialog timeDialog = new TimePickerDialog(currentCtx, timeSetListener, mHour,
 							mMinutes, false);
+					
+					timeDialog.setCancelable(false);
+					timeDialog.setCanceledOnTouchOutside(false);
+					
 					timeDialog.show();
 				}
 			};

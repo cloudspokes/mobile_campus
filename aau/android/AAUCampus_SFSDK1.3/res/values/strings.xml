@@ -4,8 +4,8 @@
     <string name="hello">Hello World, AAUCampusActivity!</string>
     <string name="app_name">AAUCampus</string>
     
-    <string name="sf_default_url">https://test.salesforce.com</string>
-    <!-- <string name="sf_default_url">https://aau**sb1.cs3.my.salesforce.com</string> -->
+     <string name="sf_default_url">https://test.salesforce.com</string>
+    <!-- <string name="sf_default_url">https://aau**sb1.cs3.my.salesforce.com</string> --> 
     <!-- <string name="sf_default_url">https://test.salesforce.com</string> -->
     <!-- <string name="sf_default_url">https://test.salesforce.com</string> -->
     

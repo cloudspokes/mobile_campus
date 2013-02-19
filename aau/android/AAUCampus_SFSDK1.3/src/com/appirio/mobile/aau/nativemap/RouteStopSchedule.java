@@ -11,8 +11,6 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.text.format.DateFormat;
-
 public class RouteStopSchedule implements Serializable {
 
 	private static final long serialVersionUID = 1L;

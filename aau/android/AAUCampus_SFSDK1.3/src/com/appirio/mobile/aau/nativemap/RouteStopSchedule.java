@@ -20,8 +20,7 @@ public class RouteStopSchedule implements Serializable {
 	private String color;
 	private String name;
 	private List<String> schedule;
-	private SimpleDateFormat format = new SimpleDateFormat("h:mm a");
-	
+
 	public RouteStopSchedule(JSONObject object) throws AMException {
 		try {
 			if(object.has("color")) {
@@ -73,6 +72,7 @@ public class RouteStopSchedule implements Serializable {
 	public String getNextBusETA() {
 		try {
 			int nextStopIndex = getNextStopIndex();
+			SimpleDateFormat format = new SimpleDateFormat("h:mm a");
 			
 			if(nextStopIndex == -1) {
 				return null;
@@ -116,6 +116,7 @@ public class RouteStopSchedule implements Serializable {
 	
 	private int getNextStopIndex() {
 		try {
+			SimpleDateFormat format = new SimpleDateFormat("h:mm a");
 			Calendar now = Calendar.getInstance();
 			
 			now.set(1970, 0, 1);

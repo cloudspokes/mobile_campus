@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#000"
     android:configChanges="orientation|keyboardHidden"
     tools:context=".NativeMapAcivity" >
 <!-- 
@@ -20,7 +21,19 @@
             android:text="@string/menuButton" />
 
     </LinearLayout>
+		android:background="#696969"
+    	android:padding="10dp"
+    	android:layout_margin="5dp"
+
  -->
+    <LinearLayout
+        android:id="@+id/NativeMapMenuBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+    	android:padding="2dp"
+    	android:layout_margin="2dp"
+    	android:orientation="vertical" >
+
     <RelativeLayout
         android:id="@+id/NativeMapMenuBar"
         android:layout_width="fill_parent"
@@ -38,7 +51,7 @@
 
 		<RelativeLayout
         	android:id="@+id/NativeMapMenuBar"
-        	android:layout_width="fill_parent"
+        	android:layout_width="wrap_content"
         	android:layout_height="wrap_content"
         	android:gravity="center"
         	android:layout_toRightOf="@+id/menu"
@@ -80,5 +93,5 @@
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/NativeMapMenuBar" />
-
+</LinearLayout>
 </RelativeLayout>

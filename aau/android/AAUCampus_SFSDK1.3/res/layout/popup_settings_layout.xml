@@ -15,18 +15,16 @@
         android:layout_marginBottom="15dp"
         android:src="@drawable/settings_arrow_hack" />
         
-   	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+   	<ScrollView 
     	android:layout_width="fill_parent"
     	android:layout_height="wrap_content" >
     
     	<LinearLayout 
-        	xmlns:android="http://schemas.android.com/apk/res/android" 
 			android:orientation="vertical"
         	android:layout_width="wrap_content"
         	android:layout_height="wrap_content" >
            
     		<RelativeLayout
-        		xmlns:android="http://schemas.android.com/apk/res/android"
         		android:id="@+id/qrCodeContainer"
         		android:layout_width="fill_parent"
         		android:layout_height="fill_parent"
@@ -38,7 +36,7 @@
 
     		    		    
     		    
-				<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				<TableLayout 
     				android:id="@+id/tableLayout1"
     				android:layout_width="fill_parent"
     				android:layout_height="fill_parent" >
@@ -67,10 +65,10 @@
     						android:layout_width="wrap_content"
     						android:layout_height="wrap_content"
     						android:src="@drawable/arrow_right_small"
-    						android:onClick="onStaticMapBtnClicked"
     						android:layout_gravity="right"
+    						android:onClick="onStaticMapBtnClicked"
     					    android:background="@android:color/transparent"/>
-             
+
     				</TableRow>
  
         			<!-- just draw a white separator line -->

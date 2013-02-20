@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -254,6 +255,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	private static final String FEEDBACK_PREFS = "feedback_prefs";
 	private static final String ASK_FEEDBACK_ON_PREF = "AskFeedbackOn";
 	private static final int ASK_FEEDBACK_AFTER_DAYS = 3;
+	private static final String FEEDBACK_VERSION = "feedback_version";
 	
 	private boolean isConnected() {
 	    boolean haveConnectedWifi = false;
@@ -294,6 +296,14 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
    		  		  }
 		  	}).show();
 		} else {
+			String version = null;
+			
+			try {
+				PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+				version = pInfo.versionName;
+			} catch (Exception ex) {
+				// This should never be thrown since the package name is coming from the current activity
+			}
 			
 			// If the user has the app installed for more than 3 days, ask for feedback
 			SharedPreferences settings = getSharedPreferences(
@@ -302,14 +312,24 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 			SharedPreferences.Editor editor = settings.edit();
 			editor.putString(LoginActivity.SERVER_URL_CURRENT_SELECTION,
 			  getString(com.appirio.aau.R.string.sf_default_url));
-			
+
 			long askFeedbackOn = settings.getLong(ASK_FEEDBACK_ON_PREF, 0);
+			
+			String feedbackVersion =  settings.getString(FEEDBACK_VERSION, null);
+			
+			// Request feedback when app is updated
+			if((askFeedbackOn == -1) && ((feedbackVersion == null && Double.valueOf(version) < 2.0) || !version.equals(feedbackVersion))) {
+				feedbackVersion = version;
+				askFeedbackOn = 0;
+				editor.putString(FEEDBACK_VERSION, version);
+			}
+			
 			Calendar calendar = Calendar.getInstance();
 			calendar.add(Calendar.DAY_OF_MONTH, ASK_FEEDBACK_AFTER_DAYS);
 
 			if(askFeedbackOn == 0) {
 				editor.putLong(ASK_FEEDBACK_ON_PREF, calendar.getTimeInMillis());
-			} else if(askFeedbackOn != -1) {
+			} else if(askFeedbackOn > -1) {
 				if(askFeedbackOn < System.currentTimeMillis()) {
 					Builder dialogBuilder = new Builder(this);
 					
@@ -348,7 +368,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 			calendar.add(Calendar.DAY_OF_MONTH, ASK_FEEDBACK_AFTER_DAYS);
 			
 			if(which == DialogInterface.BUTTON_NEGATIVE) {
-				editor.putLong(ASK_FEEDBACK_ON_PREF, -1);
+				editor.putLong(ASK_FEEDBACK_ON_PREF, -2);
 			} else if(which == DialogInterface.BUTTON_NEUTRAL) {
 				editor.putLong(ASK_FEEDBACK_ON_PREF, calendar.getTimeInMillis());
 			} else if (which == DialogInterface.BUTTON_POSITIVE) {

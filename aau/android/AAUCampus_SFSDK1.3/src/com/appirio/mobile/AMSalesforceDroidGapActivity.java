@@ -49,6 +49,7 @@ import android.widget.ToggleButton;
 import com.appirio.mobile.aau.nativemap.AMException;
 import com.appirio.mobile.aau.nativemap.MapManager;
 import com.appirio.mobile.aau.nativemap.Route;
+import com.appirio.mobile.aau.nativemap.StopListAdapter;
 import com.appirio.aau.R;
 
 import com.appirio.mobile.aau.slidingmenu.SlidingMenuAdapter;
@@ -93,6 +94,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	private PopupWindow popup;
 	private ViewGroup mapContainer;
 	private View stopListView;
+	private StopListAdapter stopListAdapter;
 	//private List<Route> routeList;
 	//The "x" and "y" position of the "Settings Button" on screen.
 	Point p;
@@ -191,8 +193,11 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 			}
 		});
 		
-		mapContainer = (ViewGroup) mapLayout.findViewById(R.id.mapContainer); 
-		stopListView = getLayoutInflater().inflate(R.layout.stop_list, null);
+		mapContainer = (ViewGroup) mapLayout.findViewById(R.id.mapContainer);
+		
+		stopListAdapter = new StopListAdapter(this, getMapManager());
+		
+		stopListView = stopListAdapter.getStopListView();
 		
 		RadioButton stopList = (RadioButton) mapLayout.findViewById(R.id.toggle_stop_list_view);
 		RadioButton mapList = (RadioButton) mapLayout.findViewById(R.id.togle_map_view);
@@ -202,7 +207,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 			@Override
 			public void onClick(View v) {
 				if(mapContainer.findViewById(R.id.map) != null) {
-					mapContainer.addView(stopListView);
+					mapContainer.addView(stopListView); 
 					mapContainer.removeView(mapView); 
 				}
 			}
@@ -213,6 +218,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 			@Override
 			public void onClick(View v) {
 				if(mapContainer.findViewById(R.id.map) == null) {
+					mapContainer.removeView(stopListView); 
 					mapContainer.addView(mapView);
 				}
 			}

@@ -204,6 +204,10 @@ public class MapManager {
 		return mapUpdater.autoRefreshOn;
 	}
 	
+	public List<BusStop> getBusStops() {
+		return routesParser.getStops();
+	}
+	
 	private class MapUpdater implements Runnable {
 
 		private boolean autoRefreshOn = true;

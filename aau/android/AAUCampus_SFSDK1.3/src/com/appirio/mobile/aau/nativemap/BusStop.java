@@ -11,7 +11,16 @@ public class BusStop {
 	private Set<String> routes = new HashSet<String>();
 	private double latitude;
 	private double longitude;
+	private int order;
 	
+	public int getOrder() {
+		return order;
+	}
+
+	public void setOrder(int order) {
+		this.order = order;
+	}
+
 	public double getLatitude() {
 		return latitude;
 	}
@@ -34,6 +43,8 @@ public class BusStop {
 			
 			this.latitude = jsonStop.getDouble("latitude");
 			this.longitude = jsonStop.getDouble("longitude");
+			
+			this.order = jsonStop.getInt("stopOrder");
 			
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -1,6 +1,7 @@
 package com.appirio.mobile.aau.nativemap;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.cordova.DroidGap;
@@ -24,6 +25,8 @@ public class StopListAdapter implements OnClickListener {
 		this.ctx = ctx;
 		this.mapManager = mapManager;
 		this.stops = mapManager.getBusStops();
+		
+		Collections.sort(stops, new BusStopOrderComparator());
 	}
 	
 	public ViewGroup getStopListView() {

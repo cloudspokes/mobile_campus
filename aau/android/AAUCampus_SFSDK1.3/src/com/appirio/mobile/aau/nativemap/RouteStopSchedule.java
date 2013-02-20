@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.json.JSONException;
@@ -96,14 +97,28 @@ public class RouteStopSchedule implements Serializable {
 		
 		int nextStopIndex = getNextStopIndex();
 		
-		if(nextStopIndex != -1) { 
-			for(int i = nextStopIndex; i < schedule.size() && (i < nextStopIndex + 4); i++) {
+		if(nextStopIndex != -1) {
+			int i = 0;
+			
+			for(i = nextStopIndex; i < schedule.size() && (i < nextStopIndex + 4); i++) {
 				String time = schedule.get(i);
 				
 				result.append(separator);
 				result.append(time);
 				
 				separator = ", ";
+			}
+			
+			if(i < (nextStopIndex + 4)) {
+				Iterator<String> it = schedule.iterator();
+				while(it.hasNext() && i < (nextStopIndex + 4)) {
+					String time = it.next();
+					
+					result.append(separator);
+					result.append(time);
+					
+					separator = ", ";
+				}
 			}
 		} else {
 			return null;

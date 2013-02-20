@@ -70,11 +70,17 @@
             			android:gravity="center"
             			android:onClick="onToggleViewClicked"
             			android:text="@string/map_button" />
-					<RadioButton android:id="@+id/toggle_stop_list_view" android:background="@drawable/radio"
-            			android:button="@null" android:checked="false"
-            			android:gravity="center"
-            			android:onClick="onToggleViewClicked"
-            			android:text="@string/stop_list_button" />
+
+					<RadioButton
+					    android:id="@+id/toggle_stop_list_view"
+					    android:background="@drawable/radio"
+					    android:button="@null"
+					    android:checked="false"
+					    android:gravity="center"
+					    android:onClick="onToggleViewClicked"
+					    android:text="@string/stop_list_button"
+					    android:textColor="#FF0000" />
+
 			</RadioGroup>        
 	   </RelativeLayout>        
         

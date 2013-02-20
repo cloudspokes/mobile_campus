@@ -95,6 +95,10 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	private ViewGroup mapContainer;
 	private View stopListView;
 	private StopListAdapter stopListAdapter;
+	
+	private RadioButton stopListBtn;
+	private RadioButton mapListBtn;
+	
 	//private List<Route> routeList;
 	//The "x" and "y" position of the "Settings Button" on screen.
 	Point p;
@@ -199,27 +203,33 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		
 		stopListView = stopListAdapter.getStopListView();
 		
-		RadioButton stopList = (RadioButton) mapLayout.findViewById(R.id.toggle_stop_list_view);
-		RadioButton mapList = (RadioButton) mapLayout.findViewById(R.id.togle_map_view);
+		stopListBtn = (RadioButton) mapLayout.findViewById(R.id.toggle_stop_list_view);
+		mapListBtn = (RadioButton) mapLayout.findViewById(R.id.togle_map_view);
 		
-		stopList.setOnClickListener(new OnClickListener() {
+		stopListBtn.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				if(mapContainer.findViewById(R.id.map) != null) {
 					mapContainer.addView(stopListView); 
-					mapContainer.removeView(mapView); 
+					mapContainer.removeView(mapView);
+					
+					stopListBtn.setTextColor(Color.WHITE);
+					mapListBtn.setTextColor(Color.RED);
 				}
 			}
 		});
 		
-		mapList.setOnClickListener(new OnClickListener() {
+		mapListBtn.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				if(mapContainer.findViewById(R.id.map) == null) {
 					mapContainer.removeView(stopListView); 
 					mapContainer.addView(mapView);
+
+					stopListBtn.setTextColor(Color.RED);
+					mapListBtn.setTextColor(Color.WHITE);
 				}
 			}
 		});

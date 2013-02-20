@@ -91,6 +91,8 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	private GoogleMap map;
 	private MapManager mapManager;
 	private PopupWindow popup;
+	private ViewGroup mapContainer;
+	private View stopListView;
 	//private List<Route> routeList;
 	//The "x" and "y" position of the "Settings Button" on screen.
 	Point p;
@@ -148,7 +150,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		//rootLayout.addView(mainLayout);
 		
 		this.root.removeView(this.appView);
-		
+				
 		rootLayout.addView((View)this.appView);
 		
 		/* Set activity content as sliding menu layout. */
@@ -186,6 +188,33 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 				//Open popup window
 				if (p != null)
 					showPopup(AMSalesforceDroidGapActivity.this, p);
+			}
+		});
+		
+		mapContainer = (ViewGroup) mapLayout.findViewById(R.id.mapContainer); 
+		stopListView = getLayoutInflater().inflate(R.layout.stop_list, null);
+		
+		RadioButton stopList = (RadioButton) mapLayout.findViewById(R.id.toggle_stop_list_view);
+		RadioButton mapList = (RadioButton) mapLayout.findViewById(R.id.togle_map_view);
+		
+		stopList.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if(mapContainer.findViewById(R.id.map) != null) {
+					mapContainer.addView(stopListView);
+					mapContainer.removeView(mapView); 
+				}
+			}
+		});
+		
+		mapList.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if(mapContainer.findViewById(R.id.map) == null) {
+					mapContainer.addView(mapView);
+				}
 			}
 		});
 		
@@ -334,7 +363,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		} else {
 			
 			if(mapon) {
-				rootLayout.addView(this.appView);
+				rootLayout.addView(this.appView); 
 				rootLayout.removeView(this.mapLayout);
 				mapon = false;
 			}

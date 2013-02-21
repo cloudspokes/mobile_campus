@@ -94,7 +94,9 @@ public class MapManager {
 				for(Route route : routesParser.getRoutes()) {
 					String markerName = route.getMarkerIcon();
 					
-					markerName = markerName.toLowerCase().substring(0, markerName.length() - 4);
+					if(markerName != null && markerName.length() > 5) {
+						markerName = markerName.toLowerCase().substring(0, markerName.length() - 4);
+					}
 					
 					routeIconMap.put(route.getName(), BitmapDescriptorFactory.fromResource(this.ctx.getResources().getIdentifier(markerName, "drawable", this.ctx.getPackageName())));
 				}

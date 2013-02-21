@@ -1,15 +1,22 @@
 package com.appirio.mobile.aau.nativemap;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
 import org.apache.cordova.DroidGap;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.content.Context;
 
 import com.salesforce.androidsdk.app.ForceApp;
 import com.salesforce.androidsdk.rest.ClientManager;
@@ -24,21 +31,115 @@ public class APIProxy {
 	private static String clientId = null;
 	private static String refreshToken = null;
 	private static String teletracQueryString = null;
-	private static final String TELETRAC_INFO_ENDPOINT = "/services/apexrest/teletracInfo/";
+	private static JSONObject settings;
+
+	private static final String SETTINGS_ENDPOINT = "/services/apexrest/teletracInfo/";
+	private static JSONObject cacheObject;
+	
+	private static JSONObject loadCacheObject(Context ctx, boolean reload) {
+		if(cacheObject != null && !reload) {
+			return cacheObject;
+		}
+		
+		File cacheFile = new File(ctx.getFilesDir(), "cacheFile.txt");
+		
+		try {
+			if(cacheFile.exists()) {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(cacheFile)));
+				
+				String line = null;
+				StringBuilder cacheData = new StringBuilder();
+				
+				while((line = reader.readLine()) != null) {
+					cacheData.append(line);
+				}
+				
+				cacheObject = new JSONObject(cacheData.toString());
+			}
+		} catch (Exception e) {
+			// Cache issue, can be safely ignored
+			
+			e.printStackTrace();
+		}
+		
+		if(cacheObject == null) {
+			cacheObject = new JSONObject();
+		}
+		
+		return cacheObject;
+	}
+	
+	private static void saveCacheObject(Context ctx) {
+		try {
+			if(cacheObject != null) {
+				File cacheFile = new File(ctx.getFilesDir(), "cacheFile.txt");
+
+				if(cacheFile.exists()) {
+					cacheFile.delete();
+				}
+				
+				OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(cacheFile));
+				
+				out.write(cacheObject.toString());
+				
+				out.close();
+			}
+		} catch (Exception e) {
+			// Cache issue, can be safely ignored
+			
+			e.printStackTrace();
+		}
+	}
+	
+	private static void cachePut(String key, String value, Context ctx) {
+		try {
+			loadCacheObject(ctx, false);
+			
+			JSONObject cacheItem = new JSONObject();
+			
+			cacheItem.put("storeDate", System.currentTimeMillis());
+			cacheItem.put("data", value);
+			
+			cacheObject.put(key, cacheItem.toString());
+			
+			saveCacheObject(ctx);
+		} catch (JSONException e) {
+			// Cache problem, can be safely ignored
+			
+			e.printStackTrace();
+		}
+	}
+	
+	private static String cacheGet(String key, int expirationInDays, Context ctx) {
+		try {
+			loadCacheObject(ctx, false);
+			
+			if(cacheObject.has(key)) {
+				JSONObject cacheItem = new JSONObject(cacheObject.get(key).toString());
+				
+				if(cacheItem.getLong("storeDate") + (expirationInDays * 24 * 60 * 60 * 10000) > System.currentTimeMillis()) {
+					return cacheObject.getString("data");
+				}
+			}
+		} catch (JSONException e) {
+			// Cache issue, can be safely ignored
+			
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 	
 	private String getTeletracQueryString() throws AMException {
 		try {
 			ensureToken();
 
 			if(teletracQueryString == null) {
-				String teletracResponse = makeSFRequest(instanceUrl + TELETRAC_INFO_ENDPOINT, true);
-				JSONObject teletracInfo = new JSONObject(teletracResponse);
-
 				teletracQueryString = String.format(
 						"?strAccountId=%s&strUserName=%s&strPwd=%s",
-						teletracInfo.getString("Account"),
-						teletracInfo.getString("Username"),
-						teletracInfo.getString("Password"));
+						settings.getString("Account"),
+						settings.getString("Username"),
+						settings.getString("Password"));
 			}
 			
 			return teletracQueryString;
@@ -53,7 +154,7 @@ public class APIProxy {
 		this.ctx = ctx;
 	}
 	
-	private void ensureToken() throws AccountInfoNotFoundException {
+	private void ensureToken() throws AccountInfoNotFoundException, AMException, JSONException {
 		if (authToken == null) {
 			ClientManager mgr = new ClientManager(this.ctx.getContext(),
 					ForceApp.APP.getAccountType(), null);
@@ -63,6 +164,20 @@ public class APIProxy {
 			refreshToken = cli.getRefreshToken();
 			instanceUrl = cli.getClientInfo().instanceUrl.toString();
 			clientId = cli.getClientInfo().clientId;
+
+			String settingsResponse = cacheGet(instanceUrl + SETTINGS_ENDPOINT, 30, ctx);
+			if(settingsResponse == null) { 
+				settingsResponse = makeSFRequest(instanceUrl + SETTINGS_ENDPOINT, true);
+			} else { 
+				settings = new JSONObject(settingsResponse);
+				
+				if(settings.getInt("cacheTimeout") < 30) {
+					settingsResponse = makeSFRequest(instanceUrl + SETTINGS_ENDPOINT, true);
+				}
+			}
+			
+			settings = new JSONObject(settingsResponse);
+
 		}
 	}
 	
@@ -70,6 +185,14 @@ public class APIProxy {
 		
 		try {
 			ensureToken();
+			
+			if(settings != null) {
+				String cacheData = cacheGet(uri, settings.getInt("cacheTimeout"), ctx);
+				
+				if(cacheData != null) {
+					return cacheData;
+				}
+			}
 			
 			boolean error = false;
 
@@ -144,6 +267,8 @@ public class APIProxy {
 					throw new RuntimeException(conn.getResponseMessage());
 				}
 			} else {
+				cachePut(uri, responseBody.toString(), ctx); 
+				
 				return responseBody.toString();
 			}
 		} catch (Exception e) {

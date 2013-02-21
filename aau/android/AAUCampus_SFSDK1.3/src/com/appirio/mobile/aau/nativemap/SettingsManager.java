@@ -8,6 +8,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,24 +28,31 @@ public class SettingsManager {
 
 	private Context ctx;
 	private AMSalesforceDroidGapActivity view;
+	private MapManager mapManager;
+	private PopupWindow popup;
 	
-	public SettingsManager(Context ctx, AMSalesforceDroidGapActivity parent_view) {
+	public SettingsManager(Context ctx, AMSalesforceDroidGapActivity parent_view, MapManager map_mgr) {
 		this.ctx = ctx;
+		this.mapManager = map_mgr;
 	}
 
 	// The method that displays the popup.
-	public void showPopup(final Activity context, Point p) {
-		int popupWidth = 460;
-		int popupHeight = 650;
+	private void showPopup(final Activity context, Point p) {
+		
+		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+		int width = metrics.widthPixels;
+		int height = metrics.heightPixels;
+		
+		int popupWidth = width - 40; // 460;
+		int popupHeight = height - 100; //650;
 
 		// Inflate the popup_layout.xml
 		LinearLayout viewGroup = (LinearLayout) context.findViewById(R.id.popup);
-		LayoutInflater layoutInflater = (LayoutInflater) context
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View layout = layoutInflater.inflate(R.layout.popup_settings_layout, viewGroup);
 
 		// Creating the PopupWindow
-		final PopupWindow popup = new PopupWindow(context);
+		popup = new PopupWindow(context);
 		popup.setContentView(layout);
 		popup.setWidth(popupWidth);
 		popup.setHeight(popupHeight);
@@ -52,17 +60,29 @@ public class SettingsManager {
 
 		// Some offset to align the popup a bit to the right, and a bit down, relative to button's position.
 		int OFFSET_X = 20;
-		int OFFSET_Y = 45;
+		int OFFSET_Y = 60;
 
+		//Initialize the Point with x, and y positions
+		Point pbtn = p; //getSettingAnchorPoint();
+		
 		// Clear the default translucent background
 		popup.setBackgroundDrawable(new BitmapDrawable());
 
+		// Log.d("NATIVE MAP Activity", "Setting POINT: "+ pbtn.x + OFFSET_X + " " + pbtn.y + OFFSET_Y);
 		// Displaying the popup at the specified location, + offsets.
-		popup.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y + OFFSET_Y);
+		popup.showAtLocation(layout, Gravity.NO_GRAVITY, pbtn.x + OFFSET_X, pbtn.y + OFFSET_Y);
 
+		
 		// Dynamically add bttons here
+		//routeList = mapManager.getRoutesShown();
 		addRoutesTable(popup);
-	
+
+		// Set Autoupdate flag from map Manager
+		
+		ToggleButton liveUpdBtn = (ToggleButton)popup.getContentView().findViewById(R.id.toggleLiveUpdatesButton);
+		if (liveUpdBtn != null){
+			liveUpdBtn.setChecked(mapManager.getAutoUpdate());
+		}
 		
 	}
 

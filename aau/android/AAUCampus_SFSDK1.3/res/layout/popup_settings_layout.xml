@@ -18,12 +18,13 @@
    	<ScrollView 
     	android:layout_width="fill_parent"
     	android:layout_height="wrap_content" >
-    
+
+   	    
     	<LinearLayout 
 			android:orientation="vertical"
         	android:layout_width="wrap_content"
         	android:layout_height="wrap_content" >
-           
+            
     		<RelativeLayout
         		android:id="@+id/qrCodeContainer"
         		android:layout_width="fill_parent"
@@ -94,10 +95,12 @@
 
 						<ToggleButton
 		    				android:id="@+id/toggleLiveUpdatesButton"
-		    				android:layout_width="40dp"
+		    				android:layout_width="55dp"
 		    				android:layout_height="45dp"
 		    				android:onClick="onLiveUpdatesClicked"
 		    				android:layout_gravity="right"
+		    				android:textOn="ON"
+		    				android:textOff="OFF"
 		    				android:text="ToggleButton" />
     				</TableRow>
  
@@ -131,7 +134,7 @@
 				</TableLayout>
         
 			</RelativeLayout>
-			
+ 			
 		</LinearLayout>
 
 	</ScrollView>  

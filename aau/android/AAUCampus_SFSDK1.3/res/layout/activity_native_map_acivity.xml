@@ -1,0 +1,114 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:configChanges="orientation|keyboardHidden"
+    android:orientation="vertical"
+    tools:context=".NativeMapAcivity" >
+
+<!-- 
+    <LinearLayout
+        android:id="@+id/NativeMapMenuBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#000" >
+
+        <Button
+            android:id="@+id/menu"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/menuButton" />
+
+    </LinearLayout>
+		android:background="#696969"
+    	android:padding="10dp"
+    	android:layout_margin="5dp"
+
+ -->
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_margin="2dp"
+        android:orientation="vertical"
+        android:padding="2dp" >
+
+    <RelativeLayout
+        android:id="@+id/NativeMapMenuBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#000" >
+        
+        <ImageButton
+            android:id="@+id/menu"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/map_btn_shape"
+    		android:src="@drawable/menu_btn"/>
+
+		<RelativeLayout
+        	android:id="@+id/NativeMapMenuBar"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:gravity="center"
+        	android:layout_toRightOf="@+id/menu"
+        	android:layout_toLeftOf="@+id/settings_popup"
+        	android:background="#000" >
+        
+			<RadioGroup android:id="@+id/radioGrp"  
+			    android:layout_width="fill_parent"
+      			android:layout_height="wrap_content" 
+      			android:gravity="center"
+      			android:orientation="horizontal" >
+					<RadioButton android:id="@+id/togle_map_view" android:background="@drawable/radio"
+            			android:button="@null" android:checked="true"
+            			android:gravity="center"
+            			android:onClick="onToggleViewClicked"
+            			android:text="@string/map_button" />
+
+					<RadioButton
+					    android:id="@+id/toggle_stop_list_view"
+					    android:background="@drawable/radio"
+					    android:button="@null"
+					    android:checked="false"
+					    android:gravity="center"
+					    android:onClick="onToggleViewClicked"
+					    android:text="@string/stop_list_button"
+					    android:textColor="#FF0000" />
+
+			</RadioGroup>        
+	   </RelativeLayout>        
+        
+       <ImageButton android:id="@+id/settings_popup"
+           style="?android:attr/buttonStyleSmall"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/map_btn_shape"
+    		android:src="@drawable/settings_btn"/>
+	
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/mapContainer"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:background="#FFFFFF"
+        android:orientation="vertical" >
+
+        <com.google.android.gms.maps.MapView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/map"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent" >
+        </com.google.android.gms.maps.MapView>
+
+    </LinearLayout>
+
+</LinearLayout>
+</RelativeLayout>

@@ -26,4 +26,5 @@
     <plugin name="com.appirio.mobile.menu" value="com.appirio.mobile.plugins.AMMenu"/>
     <plugin name="DatePickerPlugin" value="com.appirio.mobile.plugins.AMTimePicker"/>
     <plugin name="com.appirio.mobile.closeactivity" value="com.appirio.mobile.plugins.AMCloseActivity"/>
+    
 </plugins>

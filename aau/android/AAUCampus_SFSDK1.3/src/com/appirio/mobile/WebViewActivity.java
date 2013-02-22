@@ -22,6 +22,11 @@ public class WebViewActivity extends Activity {
         v.setWebViewClient(new AppirioWebViewClient());
         
         v.getSettings().setSupportZoom(true);
+        v.getSettings().setBuiltInZoomControls(true);
+        
+        // Test if content will autoscale for screen size and orientation
+        v.getSettings().setLoadWithOverviewMode(true);
+		v.getSettings().setUseWideViewPort(true);
         
         v.loadUrl(getIntent().getStringExtra("url"));
     }

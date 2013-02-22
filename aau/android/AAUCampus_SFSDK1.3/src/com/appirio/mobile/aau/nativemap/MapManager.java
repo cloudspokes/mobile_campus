@@ -12,7 +12,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 
 import com.appirio.aau.R;
@@ -143,11 +142,6 @@ public class MapManager {
 		} catch (GooglePlayServicesNotAvailableException e) {
 			// TODO handle map is not available situation
 			e.printStackTrace();
-			
-			AlertDialog ad = new AlertDialog.Builder(this.ctx).create();  
-			ad.setCancelable(false);   
-			ad.setMessage("Google Play services not found on this device, please install Google Play");  
-			ad.show();			
 			
 			mapAvailable = false;
 		}

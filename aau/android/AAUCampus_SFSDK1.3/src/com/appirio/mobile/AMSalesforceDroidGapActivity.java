@@ -74,7 +74,9 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	public void onPause() {
 		super.onPause();
 		
-		mapView.onPause();
+		if(mapView != null) {
+			mapView.onPause();
+		}
 	}
 
 	public SlidingMenuLayout rootLayout;
@@ -96,6 +98,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	private ViewGroup mapContainer;
 	private StopListAdapter stopListAdapter;
 	private View stopListView;
+	private boolean mapAvailable;
 
 	private View getStopListView() {
 		if(stopListView == null) {
@@ -151,103 +154,130 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		try {
-			mapInit(savedInstanceState);
-		} catch (AMException e) {
-			// TODO Handle map initialization errors
-			e.printStackTrace();
-		} 
+	    try
+	    {
+	        // check if Google Maps is supported on given device
+	        Class.forName("com.google.android.gms.maps.GoogleMap");
 
-		/* Create a new SlidingMenuLayout and set Layout parameters. */
-		rootLayout = new SlidingMenuLayout(this);
-		rootLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.0F));
+	        this.mapAvailable = true;
+	    }
+	    catch (Exception e)
+	    {
+	        e.printStackTrace();
+	        
+	        this.mapAvailable = false;
+	    }		
 		
-		/* Inflate and add the main view layout and menu layout to root sliding menu layout. Menu layout should be added first.. */
-		menuLayout = getLayoutInflater().inflate(R.layout.sliding_menu_layout, null);
-		mainLayout = getLayoutInflater().inflate(R.layout.main_layout, null);
-		rootLayout.addView(menuLayout);
-		//rootLayout.addView(mainLayout);
-		
-		this.root.removeView(this.appView);
-				
-		rootLayout.addView((View)this.appView);
-		
-		/* Set activity content as sliding menu layout. */
-		this.root.addView(rootLayout);
-		
-		/* Initialize list view and buttons to handle showing of menu. */
-		slidingMenuListView = (ListView) menuLayout.findViewById(R.id.sliding_menu_list_view);
-		showSlidingMenuButton = (Button) mainLayout.findViewById(R.id.show_menu_button);
-		
-		/* Initialize the main web view for displaying of web content. */
-		//webView = (WebView) mainLayout.findViewById(R.id.content_web_view);
-		webView = this.appView;
-		
-		/* Initialize the menu adapter and set to list view to load menu from the XML file. */
-		menuAdapter = new SlidingMenuAdapter(getLayoutInflater(), this);
-		slidingMenuListView.setAdapter(menuAdapter);
-		
-		/* Handle button and list item clicks. */
-		showSlidingMenuButton.setOnClickListener(this);
-		slidingMenuListView.setOnItemClickListener(this);
-		
-		
-		//nativeMenuButton = (Button) mapLayout.findViewById(R.id.menu);
-		// AI Comment: change Buttons to ImageButton
-		nativeMenuButton = (ImageButton) mapLayout.findViewById(R.id.menu);
-		
-		nativeMenuButton.setOnClickListener(this);
-		
-		// Connect Settings popup panel
-		nativeSettingsButton = (ImageButton) mapLayout.findViewById(R.id.settings_popup);
-		nativeSettingsButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-
-				//Open popup window
-				if (p != null)
-					showPopup(AMSalesforceDroidGapActivity.this, p);
+	    if(mapAvailable) {
+			try {
+				mapInit(savedInstanceState);
+			} catch (AMException e) {
+				// TODO Handle map initialization errors
+				e.printStackTrace();
 			}
-		});
-		
-		mapContainer = (ViewGroup) mapLayout.findViewById(R.id.mapContainer);
-		
-		stopListAdapter = new StopListAdapter(this, getMapManager());
-		
-		stopListBtn = (RadioButton) mapLayout.findViewById(R.id.toggle_stop_list_view);
-		mapListBtn = (RadioButton) mapLayout.findViewById(R.id.togle_map_view);
-		
-		stopListBtn.setOnClickListener(new OnClickListener() {
+	
+			/* Create a new SlidingMenuLayout and set Layout parameters. */
+			rootLayout = new SlidingMenuLayout(this);
+			rootLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.0F));
 			
-			@Override
-			public void onClick(View v) {
-				if(mapContainer.findViewById(R.id.map) != null) {
-					mapContainer.addView(getStopListView()); 
-					mapContainer.removeView(mapView);
+			/* Inflate and add the main view layout and menu layout to root sliding menu layout. Menu layout should be added first.. */
+			menuLayout = getLayoutInflater().inflate(R.layout.sliding_menu_layout, null);
+			mainLayout = getLayoutInflater().inflate(R.layout.main_layout, null);
+			rootLayout.addView(menuLayout);
+			//rootLayout.addView(mainLayout);
+			
+			this.root.removeView(this.appView);
 					
-					stopListBtn.setTextColor(Color.WHITE);
-					mapListBtn.setTextColor(Color.RED);
-				}
-			}
-		});
-		
-		mapListBtn.setOnClickListener(new OnClickListener() {
+			rootLayout.addView((View)this.appView);
 			
-			@Override
-			public void onClick(View v) {
-				if(mapContainer.findViewById(R.id.map) == null) {
-					mapContainer.removeView(getStopListView()); 
-					mapContainer.addView(mapView);
-
-					stopListBtn.setTextColor(Color.RED);
-					mapListBtn.setTextColor(Color.WHITE);
+			/* Set activity content as sliding menu layout. */
+			this.root.addView(rootLayout);
+			
+			/* Initialize list view and buttons to handle showing of menu. */
+			slidingMenuListView = (ListView) menuLayout.findViewById(R.id.sliding_menu_list_view);
+			showSlidingMenuButton = (Button) mainLayout.findViewById(R.id.show_menu_button);
+			
+			/* Initialize the main web view for displaying of web content. */
+			//webView = (WebView) mainLayout.findViewById(R.id.content_web_view);
+			webView = this.appView;
+			
+			/* Initialize the menu adapter and set to list view to load menu from the XML file. */
+			menuAdapter = new SlidingMenuAdapter(getLayoutInflater(), this);
+			slidingMenuListView.setAdapter(menuAdapter);
+			
+			/* Handle button and list item clicks. */
+			showSlidingMenuButton.setOnClickListener(this);
+			slidingMenuListView.setOnItemClickListener(this);
+			
+			
+			//nativeMenuButton = (Button) mapLayout.findViewById(R.id.menu);
+			// AI Comment: change Buttons to ImageButton
+			nativeMenuButton = (ImageButton) mapLayout.findViewById(R.id.menu);
+			
+			nativeMenuButton.setOnClickListener(this);
+			
+			// Connect Settings popup panel
+			nativeSettingsButton = (ImageButton) mapLayout.findViewById(R.id.settings_popup);
+			nativeSettingsButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View arg0) {
+	
+					//Open popup window
+					if (p != null)
+						showPopup(AMSalesforceDroidGapActivity.this, p);
 				}
-			}
-		});
-		
-		super.setIntegerProperty("splashscreen", com.appirio.aau.R.drawable.aau_load);
-
-		super.loadUrl("file:///android_asset/www/bootstrap.html",10000); 
+			});
+			
+			mapContainer = (ViewGroup) mapLayout.findViewById(R.id.mapContainer);
+			
+			stopListAdapter = new StopListAdapter(this, getMapManager());
+			
+			stopListBtn = (RadioButton) mapLayout.findViewById(R.id.toggle_stop_list_view);
+			mapListBtn = (RadioButton) mapLayout.findViewById(R.id.togle_map_view);
+			
+			stopListBtn.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					if(mapContainer.findViewById(R.id.map) != null) {
+						mapContainer.addView(getStopListView()); 
+						mapContainer.removeView(mapView);
+						
+						stopListBtn.setTextColor(Color.WHITE);
+						mapListBtn.setTextColor(Color.RED);
+					}
+				}
+			});
+			
+			mapListBtn.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					if(mapContainer.findViewById(R.id.map) == null) {
+						mapContainer.removeView(getStopListView()); 
+						mapContainer.addView(mapView);
+	
+						stopListBtn.setTextColor(Color.RED);
+						mapListBtn.setTextColor(Color.WHITE);
+					}
+				}
+			});
+			
+			super.setIntegerProperty("splashscreen", com.appirio.aau.R.drawable.aau_load);
+	
+			super.loadUrl("file:///android_asset/www/bootstrap.html",10000);
+	    } else {
+	    	AlertDialog ad = new AlertDialog.Builder(this).create();  
+	    	ad.setCancelable(false); // This blocks the 'BACK' button  
+	    	ad.setMessage("Google Play services not present on device, please install Google Play");  
+	    	ad.setButton("OK", new DialogInterface.OnClickListener() {  
+	    	    @Override  
+	    	    public void onClick(DialogInterface dialog, int which) {  
+	    	        dialog.dismiss();                      
+	    	    }  
+	    	});  
+	    	ad.show(); 
+	    }
 		
 	}
 
@@ -286,80 +316,94 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	
 	@Override
 	public void onResume() {
-		this.appView.loadUrl("javascript:aauMobile.init.appActivation();");
+		if(mapAvailable) {
 		
-		mapView.onResume();
-		
-		if(!isConnected()) {
-		  	AlertDialog.Builder adb = new AlertDialog.Builder(this);
-		  	
-		  	adb.setTitle("Error!");
-		  	adb.setMessage("This device is not currently connected to the internet, please restart the application when a connection is available");
-		  	
-		  	new AlertDialog.Builder(this)
-  		  	  .setTitle("Error")
-   		  	  .setMessage("This device is not currently connected to the internet, please restart the application when a connection is available")
-   		  	  .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-   		  		  public void onClick(DialogInterface dialog,
-   		  		    int which) {
-   				  	endActivity();
-   		  		  }
-		  	}).show();
-		} else {
-			String version = null;
+			this.appView.loadUrl("javascript:aauMobile.init.appActivation();");
 			
-			try {
-				PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-				version = pInfo.versionName;
-			} catch (Exception ex) {
-				// This should never be thrown since the package name is coming from the current activity
-			}
+			mapView.onResume();
 			
-			// If the user has the app installed for more than 3 days, ask for feedback
-			SharedPreferences settings = getSharedPreferences(
-					FEEDBACK_PREFS,
-					Context.MODE_PRIVATE);
-			SharedPreferences.Editor editor = settings.edit();
-			editor.putString(LoginActivity.SERVER_URL_CURRENT_SELECTION,
-			  getString(com.appirio.aau.R.string.sf_default_url));
-
-			long askFeedbackOn = settings.getLong(ASK_FEEDBACK_ON_PREF, 0);
-			
-			String feedbackVersion =  settings.getString(FEEDBACK_VERSION, null);
-			
-			// Request feedback when app is updated
-			if((askFeedbackOn == -1) && ((feedbackVersion == null && Double.valueOf(version) < 2.0) || !version.equals(feedbackVersion))) {
-				feedbackVersion = version;
-				askFeedbackOn = 0;
-				editor.putString(FEEDBACK_VERSION, version);
-			}
-			
-			Calendar calendar = Calendar.getInstance();
-			calendar.add(Calendar.DAY_OF_MONTH, ASK_FEEDBACK_AFTER_DAYS);
-
-			if(askFeedbackOn == 0) {
-				editor.putLong(ASK_FEEDBACK_ON_PREF, calendar.getTimeInMillis());
-			} else if(askFeedbackOn > -1) {
-				if(askFeedbackOn < System.currentTimeMillis()) {
-					Builder dialogBuilder = new Builder(this);
-					
-					dialogBuilder.setMessage("Would you like to provide feedback on this app?");
-					dialogBuilder.setTitle("Feedback");
-					
-					FeedbackDialogListener listener = new FeedbackDialogListener(this, editor);
-					
-					dialogBuilder.setNegativeButton("Don't ask again", listener);
-					dialogBuilder.setNeutralButton("Not now", listener);
-					dialogBuilder.setPositiveButton("Yes!", listener);
-					
-					dialogBuilder.show();
+			if(!isConnected()) {
+			  	AlertDialog.Builder adb = new AlertDialog.Builder(this);
+			  	
+			  	adb.setTitle("Error!");
+			  	adb.setMessage("This device is not currently connected to the internet, please restart the application when a connection is available");
+			  	
+			  	new AlertDialog.Builder(this)
+	  		  	  .setTitle("Error")
+	   		  	  .setMessage("This device is not currently connected to the internet, please restart the application when a connection is available")
+	   		  	  .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+	   		  		  public void onClick(DialogInterface dialog,
+	   		  		    int which) {
+	   				  	endActivity();
+	   		  		  }
+			  	}).show();
+			} else {
+				String version = null;
+				
+				try {
+					PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+					version = pInfo.versionName;
+				} catch (Exception ex) {
+					// This should never be thrown since the package name is coming from the current activity
 				}
+				
+				// If the user has the app installed for more than 3 days, ask for feedback
+				SharedPreferences settings = getSharedPreferences(
+						FEEDBACK_PREFS,
+						Context.MODE_PRIVATE);
+				SharedPreferences.Editor editor = settings.edit();
+				editor.putString(LoginActivity.SERVER_URL_CURRENT_SELECTION,
+				  getString(com.appirio.aau.R.string.sf_default_url));
+	
+				long askFeedbackOn = settings.getLong(ASK_FEEDBACK_ON_PREF, 0);
+				
+				String feedbackVersion =  settings.getString(FEEDBACK_VERSION, null);
+				
+				// Request feedback when app is updated
+				if((askFeedbackOn == -1) && ((feedbackVersion == null && Double.valueOf(version) < 2.0) || !version.equals(feedbackVersion))) {
+					feedbackVersion = version;
+					askFeedbackOn = 0;
+					editor.putString(FEEDBACK_VERSION, version);
+				}
+				
+				Calendar calendar = Calendar.getInstance();
+				calendar.add(Calendar.DAY_OF_MONTH, ASK_FEEDBACK_AFTER_DAYS);
+	
+				if(askFeedbackOn == 0) {
+					editor.putLong(ASK_FEEDBACK_ON_PREF, calendar.getTimeInMillis());
+				} else if(askFeedbackOn > -1) {
+					if(askFeedbackOn < System.currentTimeMillis()) {
+						Builder dialogBuilder = new Builder(this);
+						
+						dialogBuilder.setMessage("Would you like to provide feedback on this app?");
+						dialogBuilder.setTitle("Feedback");
+						
+						FeedbackDialogListener listener = new FeedbackDialogListener(this, editor);
+						
+						dialogBuilder.setNegativeButton("Don't ask again", listener);
+						dialogBuilder.setNeutralButton("Not now", listener);
+						dialogBuilder.setPositiveButton("Yes!", listener);
+						
+						dialogBuilder.show();
+					}
+				}
+				
+				editor.commit();
 			}
 			
-			editor.commit();
+		} else {
+			AlertDialog ad = new AlertDialog.Builder(this).create();  
+			ad.setCancelable(false); // This blocks the 'BACK' button  
+			ad.setMessage("Google Play services not found on device, please install Google Play");  
+			ad.setButton("OK", new DialogInterface.OnClickListener() {  
+			    @Override  
+			    public void onClick(DialogInterface dialog, int which) {  
+			        dialog.dismiss();                      
+			    }  
+			});  
+			ad.show(); 			
 		}
-		
-		
+
 		super.onStart();
 	}
 	

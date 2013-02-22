@@ -11,6 +11,9 @@ import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnDismissListener;
 import android.util.Log;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
@@ -91,8 +94,7 @@ public class AMTimePicker extends Plugin {
 					final TimePickerDialog timeDialog = new TimePickerDialog(currentCtx, timeSetListener, mHour,
 							mMinutes, false);
 					
-					timeDialog.setCancelable(false);
-					timeDialog.setCanceledOnTouchOutside(false);
+					timeDialog.setOnDismissListener(new DismissListener(datePickerPlugin, callBackId));
 					
 					timeDialog.show();
 				}
@@ -157,4 +159,20 @@ public class AMTimePicker extends Plugin {
 
 		}
 	}
+	
+	private final class DismissListener implements OnDismissListener {
+		private final AMTimePicker datePickerPlugin;
+		private final String callBackId;
+
+		private DismissListener(AMTimePicker datePickerPlugin, String callBackId) {
+			this.datePickerPlugin = datePickerPlugin;
+			this.callBackId = callBackId;
+		}
+
+		@Override
+		public void onDismiss(DialogInterface dialog) {
+			datePickerPlugin.success(new PluginResult(PluginResult.Status.OK, "cancelled"), this.callBackId);
+		}
+	}
+	
 }

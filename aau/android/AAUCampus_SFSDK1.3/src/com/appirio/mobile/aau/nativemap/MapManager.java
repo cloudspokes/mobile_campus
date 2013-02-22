@@ -76,6 +76,9 @@ public class MapManager {
 		
 		// Center and zoom map on initial position
 		try {
+			busRoutes = mapProxy.getBusStops();
+			routesParser = new RoutesParser(busRoutes);
+
 			MapsInitializer.initialize(ctx);
 			
 			stopBitmap = BitmapDescriptorFactory.fromResource(R.drawable.marker_busstop);
@@ -83,8 +86,6 @@ public class MapManager {
 			mapAvailable = true;
 			
 			// Load bus stop data from Salesforce
-			busRoutes = mapProxy.getBusStops();
-			routesParser = new RoutesParser(busRoutes);
 			routeIconMap = new HashMap<String, BitmapDescriptor>();
 			infoWindowAdapter = new TransitMapInfoWindowAdapter(this.ctx, this);
 			routesPolylineShown = new ArrayList<Polyline>();

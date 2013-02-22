@@ -94,8 +94,20 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	private MapManager mapManager;
 	private PopupWindow popup;
 	private ViewGroup mapContainer;
-	private View stopListView;
 	private StopListAdapter stopListAdapter;
+	private View stopListView;
+
+	private View getStopListView() {
+		if(stopListView == null) {
+			stopListView = getStopListAdapter().getStopListView();
+		}
+		
+		return stopListView;
+	}
+	
+	private StopListAdapter getStopListAdapter() {
+		return new StopListAdapter(this, mapManager);
+	}
 	
 	private RadioButton stopListBtn;
 	private RadioButton mapListBtn;
@@ -202,8 +214,6 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		
 		stopListAdapter = new StopListAdapter(this, getMapManager());
 		
-		stopListView = stopListAdapter.getStopListView();
-		
 		stopListBtn = (RadioButton) mapLayout.findViewById(R.id.toggle_stop_list_view);
 		mapListBtn = (RadioButton) mapLayout.findViewById(R.id.togle_map_view);
 		
@@ -212,7 +222,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 			@Override
 			public void onClick(View v) {
 				if(mapContainer.findViewById(R.id.map) != null) {
-					mapContainer.addView(stopListView); 
+					mapContainer.addView(getStopListView()); 
 					mapContainer.removeView(mapView);
 					
 					stopListBtn.setTextColor(Color.WHITE);
@@ -226,7 +236,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 			@Override
 			public void onClick(View v) {
 				if(mapContainer.findViewById(R.id.map) == null) {
-					mapContainer.removeView(stopListView); 
+					mapContainer.removeView(getStopListView()); 
 					mapContainer.addView(mapView);
 
 					stopListBtn.setTextColor(Color.RED);

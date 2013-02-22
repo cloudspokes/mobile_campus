@@ -18,18 +18,28 @@ public class StopListAdapter implements OnClickListener {
 
 	private ViewGroup stopListView;
 	private DroidGap ctx;
-	private List<BusStop> stops;
+	private List<BusStop> stops = new ArrayList<BusStop>();
 	private MapManager mapManager;
 	
 	public StopListAdapter(DroidGap ctx, MapManager mapManager) {
 		this.ctx = ctx;
 		this.mapManager = mapManager;
-		this.stops = mapManager.getBusStops();
+		
+		if(mapManager != null) {
+			this.stops = mapManager.getBusStops();
+		}
 		
 		Collections.sort(stops, new BusStopOrderComparator());
 	}
 	
 	public ViewGroup getStopListView() {
+		if(stops.size() == 0) {
+			if(mapManager != null) {
+				stopListView = null;
+				this.stops = mapManager.getBusStops();
+			}
+		}
+		
 		if(stopListView == null) {
 			stopListView = (ViewGroup) ctx.getLayoutInflater().inflate(R.layout.stop_list, null);
 			
@@ -42,8 +52,8 @@ public class StopListAdapter implements OnClickListener {
 				String separator = "";
 				
 				for(String route : stop.getRoutes()) {
-					routes.append(route);
 					routes.append(separator);
+					routes.append(route);
 					
 					separator = ", ";
 				}

@@ -34,7 +34,7 @@
     </actionOverrides>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>false</enableActivities>
-    <enableFeeds>false</enableFeeds>
+    <enableFeeds>true</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
     <fields>
@@ -144,6 +144,7 @@
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>Picklist</type>
     </fields>
     <fields>
@@ -154,6 +155,7 @@
         <precision>2</precision>
         <required>true</required>
         <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>Number</type>
         <unique>false</unique>
     </fields>
@@ -165,6 +167,7 @@
         <relationshipName>Class_Meeting</relationshipName>
         <relationshipOrder>0</relationshipOrder>
         <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>MasterDetail</type>
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
@@ -173,6 +176,7 @@
         <externalId>false</externalId>
         <label>End Date</label>
         <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
         <type>Date</type>
     </fields>
     <fields>
@@ -181,6 +185,7 @@
         <label>End Time</label>
         <length>10</length>
         <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -189,6 +194,7 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Friday</label>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -197,6 +203,7 @@
         <label>Instructor 1 Type</label>
         <length>4</length>
         <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -206,6 +213,7 @@
         <label>Instructor 2 Type</label>
         <length>4</length>
         <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -217,6 +225,7 @@
         <label>Instructor Name</label>
         <length>200</length>
         <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -226,6 +235,7 @@
         <label>Location</label>
         <length>30</length>
         <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -234,6 +244,7 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Monday</label>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -242,6 +253,7 @@
         <label>Psft_Ext_Id__c</label>
         <length>20</length>
         <required>true</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -251,6 +263,7 @@
         <label>Room</label>
         <length>30</length>
         <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -259,6 +272,7 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Saturday</label>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -267,6 +281,7 @@
         <label>Special Topic</label>
         <length>30</length>
         <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -275,6 +290,7 @@
         <externalId>false</externalId>
         <label>Start Date</label>
         <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
         <type>Date</type>
     </fields>
     <fields>
@@ -283,6 +299,7 @@
         <label>Start Time</label>
         <length>10</length>
         <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -291,6 +308,7 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Sunday</label>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -298,6 +316,7 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Thursday</label>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -305,6 +324,7 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Tuesday</label>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -312,6 +332,7 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Wednesday</label>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
     </fields>
     <label>ps_Class Meeting</label>
@@ -330,6 +351,7 @@
     </listViews>
     <nameField>
         <label>Class Meeting Name</label>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
     </nameField>
     <pluralLabel>ps_Class Meetings</pluralLabel>

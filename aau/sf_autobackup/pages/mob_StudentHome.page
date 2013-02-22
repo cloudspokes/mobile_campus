@@ -79,6 +79,8 @@
 	var hasNativeResources = {!hasNativeResources}; 
 	var hasNativeMenu = {!hasNativeMenu}; 
 	var hasNativeMap = {!hasNativeMap};
+		var rangeValue;
+		var locationValue;
 		//alert('hasNativeResource: '+hasNativeResources+'. hasNativeMenu: '+hasNativeMenu);
         
         /* PARTH : This method is called from Refresh button click */
@@ -119,7 +121,6 @@
         	WebViewer.showWebView('{!$Setup.mob_Student__c.Base_Url__c}{!URLFOR($Resource.mob_busmap)}');
         } 
 		
-		
     </script>
      
 	
@@ -129,8 +130,9 @@
     <script type="text/javascript" src="{!$Resource.mob_StudentJs}"></script>
     <script type="text/javascript" src="{!$Resource.mob_mapJS}"></script>
     <script type="text/javascript" src="{!$Resource.mob_transitManager}"></script>
-    
-    <!--  <script type="text/javascript" src="{!$Resource.mob_CombinedJs_min}"></script>  -->
+    <!--  
+	<script type="text/javascript" src="{!$Resource.mob_CombinedJs_min}"></script>
+	-->
 	
         
     <c:mob_BackButton /> 
@@ -488,12 +490,31 @@
          <a data-rel="back" class="mob-back-button">Back</a>
         <h1>Class Info</h1>
     </div>
-    <div data-role="content" id="dtlId" class="mob-content">
+    <div data-role="content" id="dtlId" style="overflow-x: hidden;" class="mob-content">
       <div id="classNameDv" class="classDetail"/>
        <ul data-role="listview"  data-theme="g" id="ulDlId">
        </ul>
      <c:mob_ClassDetail hasNativeResources="{!hasNativeResources}" />  
-      <div id="classDescrDv" style="min-height:100%;"/>
+      <div id="classDescrDv"/>
+      <div id="classChatterPosts">
+      	<div id="classChatterHeader">Class Discussions</div>
+      	<div id="classChatterNoResults">No Discussions Yet For This Class.</div>
+      	<div  id="loadingChatter" style="text-align: center;"><img src="{!IF(hasNativeResources,"aaumobile://spinner.gif", URLFOR($Resource.mob_Design, "/mob_Design/images/ajax-loader.gif"))}"/></div>
+      	<ul data-role="listview" data-theme="g" id="classChatterUl">
+      	</ul>
+      	<div id="classChatterShowMore">Show More Comments <span class="ui-icon ui-icon-arrow-r ui-icon-shadow" style="display:block; float:right; margin-right: 10px; margin-top: 10px;"></span></div>
+      </div>
+      <div id="classChatterInput">
+      	<form id="classChatterForm" name="classChatterForm">
+      		<fieldset style="padding: 4px;">
+      			<legend style="margin-left: 3px;"><strong>Post a Comment</strong></legend>
+      			<input type="hidden" name="classMeetingId" id="classMeetingId" value=""/>
+      			<label for="userId" style="margin-left: 5px"><strong>Name:</strong> {!$User.FirstName} {!$User.LastName}</label><input type="hidden" name="userId" value="{!$User.ID}"/>
+      			<label for="meetingNote"></label><textarea id="meetingNote" name="meetingNote" rows="8" cols="5" style="margin-left: 4px; width: 93%; height: 80px;"></textarea>
+      			<button id="classChatterSubmit">Submit</button>
+      		</fieldset>
+      	</form>
+      </div>
      </div>
 </div>
 
@@ -581,13 +602,16 @@
 <div data-role="page" id="event-list" class="page-container">
     <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false">
         <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
+        <div class="mob-header-icon header-right" id="sports-settings"><div class="mob-header-MenuIcon3" /></div>
         <!-- PARTH : Refresh Icon-->
-        <div class="mob-header-icon header-right" id="refreshBtn"><div class="mob-header-RefreshIcon" onClick="JavaScript:RefreshDataJS(4);" /></div>
+        <!-- <div class="mob-header-icon header-right" id="refreshBtn"><div class="mob-header-RefreshIcon" onClick="JavaScript:RefreshDataJS(4);" /></div>-->
         <h1>Sports</h1>
     </div>
+   <c:mob_SportsSettings hasNativeResources="{!hasNativeResources}"  isAndroid="{!isAndroid}"/>
     <div data-role="content" class="mob-content">
         <c:mob_Events />  
     </div>
+    
 </div>
 
 <div data-role="page" id="link-list" class="page-container">

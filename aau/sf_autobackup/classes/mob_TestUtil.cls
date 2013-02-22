@@ -146,7 +146,7 @@ public class mob_TestUtil {
         busStop.Active__c = true;
         busStop.Lat__c = lat;
         busStop.Long__c = longitute;
-        busStop.High_Fidelity_Waypoint__c = false;
+        busStop.High_Fidelity_Waypoint__c = false; 
         busStop.Order__c = 0;
         insert busStop;
         return busStop;
@@ -156,6 +156,7 @@ public class mob_TestUtil {
         Bus_Stop_Schedule__c schedule = new Bus_Stop_Schedule__c();
         schedule.Bus_Route__c = route;
         schedule.Bus_Stop__c = stop;
+        schedule.Sub_Route__c = '0';
         schedule.name = 'test' + ord;
         schedule.Order__c = ord;
         schedule.Time__c = tim;

@@ -49,8 +49,6 @@ global with sharing class  mob_TripPlanner {
         
        return  getBestRoutes();
     }
-    
-    
 
     
     
@@ -93,9 +91,11 @@ global with sharing class  mob_TripPlanner {
     public static Map<String, List<Map<String, String>>> getBestPathwaysMAP() {
         Map<String, List<Map<String, String>>> bestPathways_map = new Map<String, List<Map<String, String>>>();
         
+		integer i = 0;
         for(String key : bestPathways) {
-            bestPathways_map.put(key, pathways.get(key));
+            bestPathways_map.put(i.format(), pathways.get(key));
 			system.debug('WOOT5 Best Path: '+key+', '+pathways.get(key));
+			i++;
         }
 
         return bestPathways_map; 

@@ -34,7 +34,7 @@
     </actionOverrides>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>false</enableActivities>
-    <enableFeeds>false</enableFeeds>
+    <enableFeeds>true</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
     <fields>
@@ -43,6 +43,7 @@
         <label>Catalog Nbr</label>
         <length>10</length>
         <required>true</required>
+        <trackFeedHistory>true</trackFeedHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -52,6 +53,7 @@
         <label>Class Section</label>
         <length>4</length>
         <required>true</required>
+        <trackFeedHistory>true</trackFeedHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -62,6 +64,7 @@
         <label>Course Component</label>
         <length>10</length>
         <required>true</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -70,6 +73,7 @@
         <externalId>false</externalId>
         <label>Course Description</label>
         <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>LongTextArea</type>
         <visibleLines>5</visibleLines>
     </fields>
@@ -79,6 +83,7 @@
         <label>Course Title</label>
         <length>100</length>
         <required>true</required>
+        <trackFeedHistory>true</trackFeedHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -99,6 +104,7 @@
         <label>Psft_Ext_Id</label>
         <length>15</length>
         <required>true</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
         <unique>true</unique>
     </fields>
@@ -108,6 +114,7 @@
         <label>Subject</label>
         <length>5</length>
         <required>true</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -119,6 +126,7 @@
         <relationshipName>Class_Sections</relationshipName>
         <relationshipOrder>0</relationshipOrder>
         <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>MasterDetail</type>
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
@@ -140,6 +148,7 @@
     </listViews>
     <nameField>
         <label>Class Name</label>
+        <trackFeedHistory>true</trackFeedHistory>
         <type>Text</type>
     </nameField>
     <pluralLabel>ps_Classes</pluralLabel>

@@ -31,14 +31,17 @@ public with sharing class mob_DeviceDetection {
          	isAndroid = true;
          	phonegapJS = 'phonegap_android_min';
          	if(appVersion != null){
-         		if(appVersion == '1_2' || appVersion == '1_3'){
-         			if(appVersion == '1_3'){
+         		if(appVersion == '1_2' || appVersion == '1_3' || appVersion == '2_1'){
+         			if(appVersion == '1_3' || appVersion == '2_1'){
          				Pattern MyPattern = Pattern.compile('android [3-9]');
 						Matcher MyMatcher = MyPattern.matcher(userAgent);
 						if (MyMatcher.find()) {
 							//hasNativeResources = true;
 						}
          				hasNativeMenu = true;
+         			}
+         			if(appVersion == '2_1'){
+         				hasNativeMap = true;
          			}
          			phonegapJS += '_1_2';
          		}else{

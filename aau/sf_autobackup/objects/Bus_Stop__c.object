@@ -125,9 +125,36 @@
         <columns>Long__c</columns>
         <columns>High_Fidelity_Waypoint__c</columns>
         <columns>Order__c</columns>
+        <columns>UPDATEDBY_USER</columns>
         <columns>LAST_UPDATE</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_I_Waypoints</fullName>
+        <columns>NAME</columns>
+        <columns>Active__c</columns>
+        <columns>Routes_Count__c</columns>
+        <columns>Schedules_Count__c</columns>
+        <columns>Lat__c</columns>
+        <columns>Long__c</columns>
+        <columns>High_Fidelity_Waypoint__c</columns>
+        <columns>Order__c</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>High_Fidelity_Waypoint__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Route I</value>
+        </filters>
+        <label>All I Waypoints</label>
         <language>en_US</language>
     </listViews>
     <nameField>

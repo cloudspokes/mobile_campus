@@ -3,6 +3,9 @@
  #event-ul li a{
     padding:0 !important;
     padding-right:30px !important;
+    position: relative;
+    text-align: center;
+    color: #000;
  }
  .event-title{
     padding: 5px;
@@ -25,6 +28,88 @@
  #event-container{
 	 width: 100%;
  }
+ .event-opponent, .event-AAU{
+ 	width: 80px;
+ 	max-width: 80px;
+ 	min-width: 80px;
+ 	display: inline-block;
+ 	text-align: center;
+ 	position: absolute;
+ 	top: 30px;
+ }
+ .event-opponent.event-H, .event-AAU.event-A, .event-AAU.event-N{
+ 	left: 45px; 
+ }
+ .event-AAU.event-H, .event-opponent.event-A, .event-opponent.event-N{
+ 	right: 20px;
+ }
+ 
+ .event-opponent-score.event-H, .event-AAU-score.event-A{
+ 	left:118px;
+ }
+ .event-AAU-score.event-H, .event-opponent-score.event-A{
+ 	right: 88px;
+ }
+ .event-team-logo{
+ 	max-height: 40px;
+ 	max-width: 40px !important;
+ 	display: inline-block;
+ }
+ .event-team-name{
+ 	font-size: 7px;
+ 	white-space: normal !important;
+ }
+ .event-li{
+ 	display: block;
+ 	width: 100%;
+ 	text-align: center;
+ 	height: 110px;
+ 	max-height: 110px;
+ 	overflow: hidden;
+ 	    color: #000;
+ 	    padding: 0 !important;
+ }
+ a.event-link{
+ 	padding: 0 !important;
+ 	position: relative;
+ }
+ .event-team-score{
+ 	font-size: 30px;
+ 	position: absolute;
+ 	top: 35px;
+ }
+ .event-icon{
+ 	display: inline-block;
+ 	background-color: #000;
+ 	width:32px;
+ 	height: 110px;
+ 	float: left;
+ }
+ .event-sport, .event-location{
+ 	font-size: 12px;
+ }
+ .event-date{
+ 	font-size: 11px;
+ 	color: #dc2221;
+ }
+ .event-location{
+ 	position: relative;
+ 	top: 65px;
+ }
+ .event-atsign{
+ 	position: absolute;
+ 	font-size: 30px;
+ 	color: #626262;
+ 	top: 40px;
+ 	left: 50%;
+ }
+.event-facility{
+	max-width: 60%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: inline-block;
+}
+ 
 </style>
 <div id="event-container">
     <ul data-role="listview" data-theme="d" id="event-ul">
@@ -38,11 +123,34 @@
     <div class="event-origin">${eventOrigin}</div>
 </li>
 </script> 
+
+<script id="sport-template" type="text/x-jquery-tmpl">
+<li class="event-li">
+	{{if eventURL != ""}}<a class="event-link" href="javascript:WebViewer.showWebView('${eventURL}');;">{{/if}}
+		<div class="event-icon ${eventAbbrev}">&nbsp;</div>
+		<div class="event-sport">${eventSport}</div>
+		<div class="event-date">${"" + (eventDate.getMonth() + 1) + "/" + eventDate.getDate() + "/" + eventDate.getUTCFullYear()} - ${eventTime}</div>
+		<div class="event-location"><span class="event-facility">${eventFacility}</span> - ${eventLocation}</div>
+		<div class="event-opponent event-${eventLocationIndicator}">
+			<img class="event-team-logo" src="${eventOpponentLogo}"/><br/>
+			<div class="event-team-name">${eventOpponentName}</div>
+		</div>
+		<div class="event-team-score event-opponent-score event-${eventLocationIndicator}">${eventOpponentScore}</div>
+		<div class="event-AAU event-${eventLocationIndicator}">
+			<img class="event-team-logo" src="${eventAAULogo}"/>
+			<div class="event-team-name">${eventAAUName}</div>
+		</div>
+		<div class="event-team-score event-AAU-score event-${eventLocationIndicator}">${eventAAUScore}</div>
+		<div class="event-atsign">@</div>
+	{{if eventURL != ""}}</a>{{/if}}
+</li>
+</script>
+
 <script id="no-event-template" type="text/x-jquery-tmpl">
 <li class="event-li">
 	<a href="javascript:RefreshDataJS(4);">
-		<div class="event-title" style="text-align:center">No Sport Events Retrieved.</div>
-		<div class="event-origin" style="text-align:center">Tap here to retry.</div>
+		<div class="event-title" style="text-align:center">No Events Found.</div>
+		<div class="event-origin" style="text-align:center">If this is incorrect: Tap here to retry.</div>
 	</a>
 </li>
 </script>

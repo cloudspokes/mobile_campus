@@ -170,7 +170,7 @@ classSchedule: {
 
 				var meetingSTDate = new Date(classMeeting.startDate.replace(/-/g,'/'));
 				var meetingENDate = new Date(classMeeting.endDate.replace(/-/g,'/'));
-				//console.log('looping through class meeting records.:: meetingSTDate::'+meetingSTDate+' ::meetingENDate::'+meetingENDate);
+				console.log('looping through class meeting records.:: meetingSTDate::'+meetingSTDate+' ::meetingENDate::'+meetingENDate);
 
 				if(stDate >= meetingSTDate && stDate<=meetingENDate){
 					//console.log('meeting fits timeframe.');
@@ -302,6 +302,7 @@ classSchedule: {
 		$('#ulDlId').empty();
 		$('#classNameDv').empty();
 		$('#classDescrDv').empty();
+		$('#classMeetingId').val(classSectionId);
 
 		$("<span class='section-details'>"+onlineClassDetail.classSubject+"&nbsp;"+onlineClassDetail.classCatalogNbr+"."+onlineClassDetail.classSection+"</span>").appendTo('#classNameDv');
 		$("<h2>"+onlineClassDetail.className+"</h2>").appendTo('#classNameDv');
@@ -331,6 +332,8 @@ classSchedule: {
 			$(window).trigger('orientationchange');
 		}
 		$("#ulDlId").css("margin","0px");
+		aauMobile.classChatter.activeId = classSectionId;
+		aauMobile.classChatter.init();
     },
     showClassDetails: function(meetingId) {
         //get Class detail and Enrollment Details for the selected Class Meeting
@@ -347,6 +350,7 @@ classSchedule: {
 		$('#ulDlId').empty();
 		$('#classNameDv').empty();
 		$('#classDescrDv').empty();
+		$('#classMeetingId').val(meetingId);
 
 		$("<span class='section-details'>"+enrolledClass.classSubject+"&nbsp;"+enrolledClass.classCatalogNbr+"."+enrolledClass.classSection+"</span>").appendTo('#classNameDv');
 		$("<h2>"+enrolledClass.className+"</h2>").appendTo('#classNameDv');
@@ -379,9 +383,108 @@ classSchedule: {
 			$(window).trigger('orientationchange');
 		}
 		$("#ulDlId").css("margin","0px");
+		aauMobile.classChatter.activeId = meetingId;
+		aauMobile.classChatter.init();
     }
 },
-
+/******** Class Chatter *********/
+classChatter: {
+	activeId: "",
+	displayCount: 0,
+	activePosts: [],
+	init: function(){
+		console.log("classChatter Init called");
+		if(aauMobile.classChatter.activeId != ""){
+			$("#loadingChatter").show();
+			var restPath = "/classMeetingChat/" + aauMobile.classChatter.activeId;
+			console.log(restPath);
+			RestDataPlugin.getData(aauMobile.classChatter.showDiscussions, aauMobile.classChatter.initFailure, restPath, true, "GET", "json");
+		} else{
+			console.log("No ID set for chatter. Exiting.");
+			aauMobile.classChatter.onComplete();
+		}
+		$("#classChatterUl").empty();
+	},
+	onComplete: function(){
+		aauMobile.classChatter.activeId = "";
+		$("#loadingChatter").hide();
+		hideProgress();
+	},
+	showDiscussions: function(results){
+		console.log("Discussion Results " + JSON.stringify(results)); 
+		console.log("results length " + results.length);
+		aauMobile.classChatter.activePosts = results;
+		if(aauMobile.classChatter.activePosts.length > 0){	
+			var toDisplay = aauMobile.classChatter.activePosts.slice(0,5);
+			
+			aauMobile.classChatter.displayCount = toDisplay.length;
+			
+			if(aauMobile.classChatter.activePosts.length <= aauMobile.classChatter.displayCount){
+				//Hide the load additional link
+				$("#classChatterShowMore").css("display", "none");
+			} else{
+				$("#classChatterShowMore").css("display", "block");
+			}
+			
+			$("#classChatterNoResults").css("display", "none");
+			var template = $("#student-classDetail-chatter-template");
+			$(template).tmpl(toDisplay).appendTo("#classChatterUl");
+		
+			if($('#classChatterUl').hasClass('ui-listview')){
+				$("#classChatterUl").listview('refresh');
+			}
+		} else{
+			$("#classChatterNoResults").css("display", "block");
+		}
+		aauMobile.classChatter.onComplete();
+	},
+	initFailure: function(result){
+		aauMobile.classChatter.onComplete();
+	},
+	submitChatterPost: function(e){
+		e.preventDefault();
+		e.stopPropagation();
+		
+		var formData = $("#classChatterForm").serialize();
+		var restPath = "/createClassMeetingChat/?" + formData;
+		
+		console.log(restPath);
+		
+		RestDataPlugin.getData(aauMobile.classChatter.submitChatterPostSuccess, aauMobile.classChatter.initFailure, restPath, true, "GET", "json");
+	},
+	submitChatterPostSuccess: function(result){
+		console.log(result);
+		var post = {userName: "You", postDate: "Just Now", meetingNote: $("#meetingNote").val()};
+		console.log(post);
+		
+		var template = $("#student-classDetail-chatter-template");
+		$(template).tmpl(post).prependTo("#classChatterUl");
+		
+		if($('#classChatterUl').hasClass('ui-listview')){
+			$("#classChatterUl").listview('refresh');
+		}
+		
+		$("#meetingNote").val("");
+	},
+	showMoreChatter: function(){
+			var toDisplay = aauMobile.classChatter.activePosts.slice(aauMobile.classChatter.displayCount, (aauMobile.classChatter.displayCount + 5));
+			
+			aauMobile.classChatter.displayCount += toDisplay.length;
+			
+			if(aauMobile.classChatter.activePosts.length <= aauMobile.classChatter.displayCount){
+				//Hide the load additional link
+				$("#classChatterShowMore").css("display", "none");
+			}
+			
+			$("#classChatterNoResults").css("display", "none");
+			var template = $("#student-classDetail-chatter-template");
+			$(template).tmpl(toDisplay).appendTo("#classChatterUl");
+		
+			if($('#classChatterUl').hasClass('ui-listview')){
+				$("#classChatterUl").listview('refresh');
+			}
+	}
+},
 /******************** CLASS HISTORY START *************************/
 classHistory: {
 	data: [],
@@ -1179,34 +1282,46 @@ campusFeed: {
 rssEvent: {
 	feedData: [],
 	/* PARTH: key for local storage */
-	dataKey : 'rssEventData',
+	dataKey : 'sportsData',
 	/* PARTH: This method clears data in the local storage */
 	clearLocalStorage: function(){
 		aauMobile.clearLocalStorage(aauMobile.rssEvent.dataKey);
-		
 	},
 	isRefreshEvent : false,
-	onComplete: function(){},
+	onComplete: function(){
+	},
 	init: function(callback) {
 		aauMobile.rssEvent.feedData = [];
 	    aauMobile.rssEvent.onComplete = callback; 
 		
 		/* PARTH: If local Data exists, use it 
 		 * else get fresh data  */
-		var eventData = aauMobile.getLocalStorage(aauMobile.rssEvent.dataKey);
+		//var eventData = aauMobile.getLocalStorage(aauMobile.rssEvent.dataKey);
+		var eventData;
 		
-		if(aauMobile.rssEvent.isRefreshEvent || eventData == null || eventData.length < 1 || eventData.channel.item[0].title == null){
+		if(aauMobile.rssEvent.isRefreshEvent || eventData == null || eventData.length < 1 || eventData.game[0].game_id == undefined){
 			console.log('rssEvent : NO LOCAL DATA - LOADING FRESH DATA');
-			var rssUrl = 'http://www.artuathletics.com/services/calendar.ashx/calendar.rss';
+			//var rssUrl = 'http://www.artuathletics.com/services/calendar.ashx/calendar.rss';
+			var rssUrl = 'http://www.artuathletics.com/services/scores.aspx?';
+			if(rangeValue == "undefined" || rangeValue == null || rangeValue == ""){
+				rangeValue = $("input:radio[name=range-choice]:checked").val();
+			}
+			if(locationValue == "undefined" || locationValue == null || locationValue == ""){
+				locationValue = $("input:radio[name=location-choice]:checked").val();
+			}
+			var sportValue = $("#sport-choice").val();
+			console.log("Range value: " + rangeValue);
+			console.log("Location value: " + locationValue);
+			console.log("Sport choice: " + sportValue);
+			rssUrl += "range=" + rangeValue + "&location_indicator="+ locationValue + "&path=" + sportValue;
 			RestDataPlugin.getData(aauMobile.rssEvent.processFreshData, aauMobile.rssEvent.initFailure, rssUrl, false, "GET", "xml");
 		}else{
 			//Load existing data
 			console.log('rssEvent : FOUND LOCAL  DATA - LOADING EXISTING DATA');
 			aauMobile.rssEvent.buildEvents(eventData);
-			
 		}
-
 	},
+	
 	
 	/* PARTH: this methods saves fresh results to the local storage 
 	 * and  builds the Events feed */
@@ -1222,36 +1337,50 @@ rssEvent: {
 	buildEvents: function(result) {
 		/* PARTH : Commented out this method as this conversion is done the process fresh data method */
 		//result = $.xml2json(result);
-		//console.log('RSS Feed Success! ' + result.channel.title);
+		//console.log('RSS Feed Success! ' + result.game[0]);
 		
-		result.channel.item.sort(function(a,b){
-			//return a.title.localeCompare(b.title);
-			return a.localstartdate.localeCompare(b.localstartdate);
-		});
-		
-		var feedTemplate = $("#event-template");
+		var feedTemplate = $("#sport-template");
 		var feedContainer = $("#event-ul");
 		var jsonList = [];
 		$(feedContainer).empty();
-		if(result.channel.item[0].title != null){
+		if(result != "" && result.game[0] != undefined && result.game[0].game_id != undefined){
 				var itemCount = 0;
 				var currDate = new Date();
 				currDate.setHours(0);
 				currDate.setMinutes(0);
 				currDate.setSeconds(0);
 
-			$.each(result.channel.item, function(index, item){
-				//console.log('Event Item: ' + JSON.stringify(item));
+			$.each(result.game, function(index, item){
+				console.log('Event Item: ' + JSON.stringify(item));
 				//stDate is in format '2012-10-20T19:00:00.0000000'
-				var stDate = new Date(item.localstartdate.split('T')[0].replace(/-/g,'/'));
+				//var stDate = new Date(item.localstartdate.split('T')[0].replace(/-/g,'/'));
 				//var stDate2 = new Date(item.startdate.replace(/-/g,'/'));
-
+				 var stDate = new Date();
 				//alert(JSON.stringify(item.localstartdate));
 				//alert(stDate+' : '+currDate);
 
 				if(itemCount < 20 && stDate > currDate ){
+					var eventLink = "";
+					if(item.game_postgame_story_id != undefined && item.game_postgame_story_id != null && item.game_postgame_story_id != ""){
+						eventLink = "http://www.artuathletics.com/mobile/index.aspx?story=" + item.game_postgame_story_id;
+						console.log("Postgame story id = " + eventLink);
+					}
+					else if(item.game_pregame_story_id != undefined && item.game_pregame_story_id != null && item.game_pregame_story_id != ""){
+						eventLink = "http://www.artuathletics.com/mobile/index.aspx?story=" + item.game_pregame_story_id;
+						console.log("Pregame story id = " + eventLink);
+					}
+					console.log("Team Score: " + item.team_score);
+					console.log("Opponent score: " + item.opponent_score);
+					
+					if(item.team_score == undefined || item.team_score == null || item.team_score == ""){
+						item.team_score = "-";
+					}
+					if(item.opponent_score == undefined || item.opponent_score == null || item.opponent_score == ""){
+						item.opponent_score = "-";
+					}
+					item.date = new Date(item.date);
 					//feedTemplate.tmpl({eventTitle: item.title, eventOrigin: result.channel.title}).appendTo(feedContainer);	
-					jsonList.push({eventTitle: item.title, eventOrigin: result.channel.title});		
+					jsonList.push({eventURL: eventLink, eventAbbrev: item.sport_abbrev, eventLocationIndicator: item.location_indicator, eventSport: item.sport, eventDate: item.date, eventTime: item.time, eventFacility: item.facility, eventLocation: item.location, eventOpponentLogo: item.opponent_logo, eventOpponentName: item.opponent, eventOpponentScore: item.opponent_score, eventAAULogo: item.hometeam_logo, eventAAUName: item.hometeam, eventAAUScore: item.team_score});		
 					itemCount++;
 				}else if(itemCount >= 20){
 					return false;
@@ -1276,6 +1405,7 @@ rssEvent: {
 				$(window).trigger('orientationchange');
 			}
 		}
+		$('#sports-result-container').toggle(false);
 		$(feedContainer).css('margin','0px');
 		/* PARTH : hide spinner */
 		//hideProgress();
@@ -1314,6 +1444,7 @@ rssEvent: {
 		/* PARTH: hide spinner*/
 		//hideProgress();
 		//dataInitComplete('event-list');
+		$('#sports-result-container').toggle(false);
 		aauMobile.rssEvent.onComplete();
 		if(result==""){ return;}
 		if(result.indexOf("Unable to resolve host")>=0){
@@ -1692,14 +1823,14 @@ tripPlanner: {
 	//alert('weekdayOption = ' + aauMobile.tripPlanner.weekdayOption);
 	
 	
-	var selTemplate = $("#trip-selection-template");
-	var selContainer = $("#ul-trip-planner-selection").empty();
-	var selDetailsContainer = $("#ul-trip-details-selection").empty();
+		var selTemplate = $("#trip-selection-template");
+		var selContainer = $("#ul-trip-planner-selection").empty();
+		var selDetailsContainer = $("#ul-trip-details-selection").empty();
 	
-	var selectedItems = [];
-	 selectedItems.push({
-		     					startTrip: aauMobile.tripPlanner.tripStart,
-								endTrip: aauMobile.tripPlanner.tripEnd });
+		var selectedItems = [];
+		selectedItems.push({
+			startTrip: aauMobile.tripPlanner.tripStart,
+			endTrip: aauMobile.tripPlanner.tripEnd });
 	
 		$(selTemplate).tmpl(selectedItems).appendTo(selContainer);
 		$(selTemplate).tmpl(selectedItems).appendTo(selDetailsContainer);
@@ -1721,7 +1852,7 @@ tripPlanner: {
 		 * If local Data exists, use it else get fresh data */
 		var localData = aauMobile.getLocalStorage(aauMobile.tripPlanner.dataKey);
 	
-		if(aauMobile.tripPlanner.isRefreshEvent || localData == null || localData.length < 1 || localData.startDate == null){
+		//if(aauMobile.tripPlanner.isRefreshEvent || localData == null || localData.length < 1 || localData.startDate == null){
 			//Load Fresh Data
 			console.log('tripPlanner: NO LOCAL DATA FOUND - FETCHING FRESH DATA');
 			
@@ -1732,14 +1863,14 @@ tripPlanner: {
 			var restPath = "/tripplanner?toId=" + toId + "&fromId=" + fromId + "&startTime="+ startTime;
 			RestDataPlugin.getData(aauMobile.tripPlanner.processFreshData, aauMobile.tripPlanner.initFailure, restPath, true, "GET", "json");
 		
-		}
+		/*}
 		else{
 			//Load existing data
 			console.log('FOUND LOCAL DATA FOUND - LOADING EXISTING DATA');
 			aauMobile.tripPlanner.buildTripList(localData);
 			//aauMobile.tripPlanner.onComplete();
 			
-		}
+		}*/
 		
 	},
 	/* PARTH: This method saves the fresh results to database and then builds the DOM */
@@ -1748,30 +1879,41 @@ tripPlanner: {
 		//console.log('full routes : '+ JSON.stringify(result));
 		console.log('full routes : '+ JSON.stringify(result.routes));
 		aauMobile.setLocalStorage(aauMobile.tripPlanner.dataKey,JSON.stringify(result));
+		//aauMobile.setLocalStorage(aauMobile.tripPlanner.dataKey,aauMobile.tripPlanner.processResultIndex(JSON.stringify(result)));
 		aauMobile.tripPlanner.isRefreshEvent = false;
 		aauMobile.tripPlanner.buildTripList(result);
 		aauMobile.tripPlanner.onComplete();
 		
-		
 	}, 
+/*
+	processResultIndex : function(result){
+		var myResult = [];
+		$.each(result, function(index, route){
+			console.log('processIndex: '+index);
+			myResult.push(route);
+		});
+		return myResult;
+	},
+*/
 	
 	buildTripList: function(result){
 		
-		//alert("chatterFeed Result: "+ JSON.stringify(result));
+		//console.log("chatterFeed Result: "+ JSON.stringify(result));
 		aauMobile.tripPlanner.data = result.routes;
 		
 		//alert(JSON.stringify(result.routes));
 		
 		var unsortedItems = [];
 		var listItems = [];
+		var myIndex = 0;
 		
 		//if(result != null && result.lstRoutes != null && result.lstRoutes[0] != null){
 		if(result != null && result.routes != null){
-			console.log('WOOT - Has TripPlanner Result Data');
+			//console.log('WOOT - Has TripPlanner Result Data');
 
 			$.each(result.routes, function(index, route) {
 			//alert(JSON.stringify(route[0]));
-				console.log('WOOT Route: '+JSON.stringify(route));
+				//console.log('WOOT Route: '+JSON.stringify(route));
 			
 				var hasMore = true;
 				var i=0;
@@ -1790,6 +1932,7 @@ tripPlanner: {
 					}
 					if(route[i].type == 'START'){
 						startTime = route[i].fromTime;
+						//console.log('WOOT Route Index: '+index+', myIndex: '+myIndex);
 						routeData = {
 									routecolor: '',
 									routename: route[i].fromRoute,
@@ -1797,7 +1940,7 @@ tripPlanner: {
 									arrivalTime: aauMobile.tripPlanner.get12HrTime(route[i].fromTime), //route[i].fromTime.replace('.',':'),
 									deptTime: aauMobile.tripPlanner.get12HrTime(route[i].fromTime), //route[i].fromTime.replace('.',':'),
 									travelTime: '',
-									tripId: index,
+									tripId: myIndex,
 									showNextIcon : true,
 									transfers:0,
 									destTime:'',
@@ -1866,6 +2009,7 @@ tripPlanner: {
 					listItems.push(routeData);
 				}
 
+				myIndex++;  //because the jQuery index var was storing something screwy
 			});
 
 			listItems.sort(function(a,b){
@@ -1975,15 +2119,19 @@ tripPlanner: {
 	},
     
     showTripDetails: function(callback,tripId) { 
+		console.log('Inside showTripDetails: '+tripId+' = Id');
     	aauMobile.tripPlanner.onComplete = callback; 
+		console.log('after tripPlanner.oncomplete');
    		var tripDetail;
    		//alert(JSON.stringify(aauMobile.tripPlanner.data.lstRoutes));
    		var route = aauMobile.tripPlanner.data[tripId];
+		console.log('after tripPlanner.data: '+JSON.stringify(aauMobile.tripPlanner.data));
    		//alert(JSON.stringify(route));
    		var tripHeaderData = [];
    		var tripDetailsData = [];
    		//Change the Page to Show the details of Selected chatterpost
 		$.mobile.changePage("#trip-details", {transition: 'slide', changeHash: true});
+		console.log('Changed Page to detail');
 			var hasMore = true;
 			var i=0;
 			var routeData = {};
@@ -1992,12 +2140,12 @@ tripPlanner: {
 			var endTime ;
 			var trans = 0;
 			for( i=0; hasMore == true ;i++){
-				//alert(JSON.stringify(route[i]));
 				
 				if(route[i] == null){
 						hasMore = false;
 						break;
 					}
+			console.log(JSON.stringify(route[i]));
 					
 					//alert(JSON.stringify(route[i]));
 					if(route[i].type == 'TRANS'){
@@ -2100,9 +2248,8 @@ tripPlanner: {
 			routeData.transfers = trans;
 			tripHeaderData.push(routeData);
 		
-		
-		
-		//alert( JSON.stringify(listItems));
+		console.log('listItems'+JSON.stringify(tripDetailsData));
+
 		
 		var blockTemplate = $("#trip-options-template");
 		var feedContainer = $("#trip-detail-option-list").empty();
@@ -2766,6 +2913,7 @@ function studentDataInit() {
 };*/
 
 var focusIsBound = false;
+var pickerShowing = false;
 
 //function bindEvents(callback) {
 function bindEvents() {
@@ -2779,6 +2927,24 @@ function bindEvents() {
     $("#transit-settings").live(aauMobile.clickEvent, function(){ 
 	        $('#result-container').toggle(); 
 	}); 
+	$("#sports-settings").live(aauMobile.clickEvent, function(event){
+			$('#sports-result-container').toggle();
+			event.preventDefault();
+			event.stopPropagation();
+	});
+	$("#sports-settings-button").live(aauMobile.clickEvent, function(event){
+		event.preventDefault();
+		event.stopPropagation();
+		RefreshRSSEventsJS();
+	});
+	$("input:radio[name=range-choice]").click(function() {
+    	rangeValue = $(this).val();
+	});
+	$("input:radio[name=location-choice]").click(function() {
+    	locationValue = $(this).val();
+	});
+	$("#classChatterSubmit").live(aauMobile.clickEvent, aauMobile.classChatter.submitChatterPost);
+	$("#classChatterShowMore").live(aauMobile.clickEvent, aauMobile.classChatter.showMoreChatter);
 	$('#result-list span.settings-checkbox').live(aauMobile.clickEvent, function(){
 		mapManager.toggleRoute($(this).parent(), $(this).parent().attr('name'));
 	});
@@ -2809,27 +2975,31 @@ function bindEvents() {
 	  $('#plantime').unbind();
   	  focusIsBound = true;
 	    $('#plantime').on("touchstart", function(event) {
-	        var currentField = $(this);
-	        var time = currentField.val();
-	        var myNewTime = new Date();
-
-	        console.log(time);
-
-	        myNewTime.setHours(time.substr(0, 2));
-	        myNewTime.setMinutes(time.substr(3, 2));
-
-	        // Same handling for iPhone and Android
-	        plugins.datePicker.show({
-	            date : myNewTime,
-	            mode : 'time', // date or time or blank for both
-	            allowOldDates : true
-	        }, function(returnDate) {
-	          // returnDate is generated by .toLocaleString() in Java so it will be relative to the current time zone
-	            var newDate = new Date(returnDate);
-	            currentField.val((newDate.getHours() < 10 ? "0" + newDate.getHours() : newDate.getHours()) + ":" + (newDate.getMinutes() < 10 ? "0" + newDate.getMinutes() : newDate.getMinutes()));
-
-	            currentField.blur();
-	        });
+		if(!pickerShowing) {
+			pickerShowing = true;
+			var currentField = $(this);
+			var time = currentField.val();
+			var myNewTime = new Date();
+	
+			console.log(time);
+	
+			myNewTime.setHours(time.substr(0, 2));
+			myNewTime.setMinutes(time.substr(3, 2));
+	
+			// Same handling for iPhone and Android
+			plugins.datePicker.show({
+			    date : myNewTime,
+			    mode : 'time', // date or time or blank for both
+			    allowOldDates : true
+			}, function(returnDate) {
+			    pickerShowing = false;
+			  // returnDate is generated by .toLocaleString() in Java so it will be relative to the current time zone
+			    var newDate = new Date(returnDate);
+			    currentField.val((newDate.getHours() < 10 ? "0" + newDate.getHours() : newDate.getHours()) + ":" + (newDate.getMinutes() < 10 ? "0" + newDate.getMinutes() : newDate.getMinutes()));
+	
+			    currentField.blur();
+			});
+		}
 	    });
 
 	 }

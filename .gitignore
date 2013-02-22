@@ -4,4 +4,3 @@ aau/android/SalesforceSDK/bin/*
 aau/android/AAUCampus_SFSDK1.3/gen/*
 aau/android/google-play-services_lib/bin/*
 !.gitignore
-aau/android/AAUCampus_SFSDK1.3/project.properties

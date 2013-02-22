@@ -267,18 +267,22 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	
 			super.loadUrl("file:///android_asset/www/bootstrap.html",10000);
 	    } else {
-	    	AlertDialog ad = new AlertDialog.Builder(this).create();  
-	    	ad.setCancelable(false); // This blocks the 'BACK' button  
-	    	ad.setMessage("Google Play services not present on device, please install Google Play");  
-	    	ad.setButton("OK", new DialogInterface.OnClickListener() {  
-	    	    @Override  
-	    	    public void onClick(DialogInterface dialog, int which) {  
-	    	        dialog.dismiss();                      
-	    	    }  
-	    	});  
-	    	ad.show(); 
+	    	showGoogleServiceMissingAlert(); 
 	    }
 		
+	}
+
+	private void showGoogleServiceMissingAlert() {
+		AlertDialog ad = new AlertDialog.Builder(this).create();  
+		ad.setCancelable(false); // This blocks the 'BACK' button  
+		ad.setMessage("Google Play services not present on device, please install Google Play");  
+		ad.setButton("OK", new DialogInterface.OnClickListener() {  
+		    @Override  
+		    public void onClick(DialogInterface dialog, int which) {  
+		        dialog.dismiss();                      
+		    }  
+		});  
+		ad.show();
 	}
 
 	// Get the x and y position after the button is draw on screen
@@ -392,16 +396,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 			}
 			
 		} else {
-			AlertDialog ad = new AlertDialog.Builder(this).create();  
-			ad.setCancelable(false); // This blocks the 'BACK' button  
-			ad.setMessage("Google Play services not found on device, please install Google Play");  
-			ad.setButton("OK", new DialogInterface.OnClickListener() {  
-			    @Override  
-			    public void onClick(DialogInterface dialog, int which) {  
-			        dialog.dismiss();                      
-			    }  
-			});  
-			ad.show(); 			
+			showGoogleServiceMissingAlert();
 		}
 
 		super.onStart();

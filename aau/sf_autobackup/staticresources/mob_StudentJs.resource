@@ -436,6 +436,11 @@ classChatter: {
 		} else{
 			$("#classChatterNoResults").css("display", "block");
 		}
+
+		if(aauMobile.isAndroid() && $($.mobile.activePage).attr('id') == 'chatter-detail'){
+			$(window).trigger('orientationchange');
+		} 
+		
 		aauMobile.classChatter.onComplete();
 	},
 	initFailure: function(result){
@@ -463,7 +468,9 @@ classChatter: {
 		if($('#classChatterUl').hasClass('ui-listview')){
 			$("#classChatterUl").listview('refresh');
 		}
-		
+		if(aauMobile.isAndroid()){
+			$(window).trigger('orientationchange');
+		}
 		$("#meetingNote").val("");
 	},
 	showMoreChatter: function(){
@@ -483,6 +490,12 @@ classChatter: {
 			if($('#classChatterUl').hasClass('ui-listview')){
 				$("#classChatterUl").listview('refresh');
 			}
+		if(aauMobile.isAndroid()){
+			$(window).trigger('orientationchange');
+		}
+		//alert("Window height: " + $(window).height());
+		//alert("Container height: " + $("#container").height());
+		//alert("Page height: " + $("#dtlId").height());
 	}
 },
 /******************** CLASS HISTORY START *************************/
@@ -1291,15 +1304,16 @@ rssEvent: {
 	onComplete: function(){
 	},
 	init: function(callback) {
+		console.log("Beginning of init");
 		aauMobile.rssEvent.feedData = [];
 	    aauMobile.rssEvent.onComplete = callback; 
 		
 		/* PARTH: If local Data exists, use it 
 		 * else get fresh data  */
-		//var eventData = aauMobile.getLocalStorage(aauMobile.rssEvent.dataKey);
-		var eventData;
-		
-		if(aauMobile.rssEvent.isRefreshEvent || eventData == null || eventData.length < 1 || eventData.game[0].game_id == undefined){
+		var eventData = aauMobile.getLocalStorage(aauMobile.rssEvent.dataKey);
+		//var eventData;
+		console.log("Got Local Storage");
+		if(aauMobile.rssEvent.isRefreshEvent || eventData == undefined || eventData == null || eventData.game == undefined || eventData.game == null || eventData.game.length < 1 || eventData.game[0].game_id == undefined){
 			console.log('rssEvent : NO LOCAL DATA - LOADING FRESH DATA');
 			//var rssUrl = 'http://www.artuathletics.com/services/calendar.ashx/calendar.rss';
 			var rssUrl = 'http://www.artuathletics.com/services/scores.aspx?';
@@ -1314,19 +1328,28 @@ rssEvent: {
 			console.log("Location value: " + locationValue);
 			console.log("Sport choice: " + sportValue);
 			rssUrl += "range=" + rangeValue + "&location_indicator="+ locationValue + "&path=" + sportValue;
+			console.log(rssUrl);
 			RestDataPlugin.getData(aauMobile.rssEvent.processFreshData, aauMobile.rssEvent.initFailure, rssUrl, false, "GET", "xml");
 		}else{
 			//Load existing data
 			console.log('rssEvent : FOUND LOCAL  DATA - LOADING EXISTING DATA');
 			aauMobile.rssEvent.buildEvents(eventData);
 		}
+		console.log("End of Init Method");
 	},
 	
 	
 	/* PARTH: this methods saves fresh results to the local storage 
 	 * and  builds the Events feed */
 	processFreshData : function(result){
+		console.log("Processing fresh data." + JSON.stringify(result));
+		var beginningTag =  result.indexOf('<');
+		console.log("Beginning Tag index = " + beginningTag);
+		if(beginningTag >= 0){
+			result = result.substr(beginningTag);
+		}
 		result = $.xml2json(result);
+		console.log("xml2json of result: " + JSON.stringify(result));
 		aauMobile.setLocalStorage(aauMobile.rssEvent.dataKey,JSON.stringify(result));
 		aauMobile.rssEvent.isRefreshEvent = false;
 		aauMobile.rssEvent.buildEvents(result);
@@ -1337,7 +1360,7 @@ rssEvent: {
 	buildEvents: function(result) {
 		/* PARTH : Commented out this method as this conversion is done the process fresh data method */
 		//result = $.xml2json(result);
-		//console.log('RSS Feed Success! ' + result.game[0]);
+		console.log('RSS Feed Success! ' + JSON.stringify(result));
 		
 		var feedTemplate = $("#sport-template");
 		var feedContainer = $("#event-ul");
@@ -2913,7 +2936,6 @@ function studentDataInit() {
 };*/
 
 var focusIsBound = false;
-var pickerShowing = false;
 
 //function bindEvents(callback) {
 function bindEvents() {
@@ -2967,39 +2989,47 @@ function bindEvents() {
 		   $('.transit-settings').css('visibility', "hidden");
 		}
 	});*/
-	
+
+var pickerShowing = false;
+
   //Special changes to make the Android version function/appear correctly.
   if(appirioUtils.isAndroid()) {
   
   	if(!focusIsBound) {
 	  $('#plantime').unbind();
   	  focusIsBound = true;
-	    $('#plantime').on("touchstart", function(event) {
-		if(!pickerShowing) {
-			pickerShowing = true;
-			var currentField = $(this);
-			var time = currentField.val();
-			var myNewTime = new Date();
+
+	    $('#plantime').on("focus", function(event) {
+			if(!pickerShowing) {
+				pickerShowing = true;
+				var currentField = $(this);
+				var time = currentField.val();
+				var myNewTime = new Date();
+		
+				console.log(time);
+		
+				myNewTime.setHours(time.substr(0, 2));
+				myNewTime.setMinutes(time.substr(3, 2));
+		
+				// Same handling for iPhone and Android
+				plugins.datePicker.show({
+				    date : myNewTime,
+				    mode : 'time', // date or time or blank for both
+				    allowOldDates : true
+				}, function(returnDate) {
+					pickerShowing = false;
+					if(returnDate != "cancelled") {
+					    pickerShowing = false;
+					  // returnDate is generated by .toLocaleString() in Java so it will be relative to the current time zone
+					    var newDate = new Date(returnDate);
+					    currentField.val((newDate.getHours() < 10 ? "0" + newDate.getHours() : newDate.getHours()) + ":" + (newDate.getMinutes() < 10 ? "0" + newDate.getMinutes() : newDate.getMinutes()));
+					}
 	
-			console.log(time);
-	
-			myNewTime.setHours(time.substr(0, 2));
-			myNewTime.setMinutes(time.substr(3, 2));
-	
-			// Same handling for iPhone and Android
-			plugins.datePicker.show({
-			    date : myNewTime,
-			    mode : 'time', // date or time or blank for both
-			    allowOldDates : true
-			}, function(returnDate) {
-			    pickerShowing = false;
-			  // returnDate is generated by .toLocaleString() in Java so it will be relative to the current time zone
-			    var newDate = new Date(returnDate);
-			    currentField.val((newDate.getHours() < 10 ? "0" + newDate.getHours() : newDate.getHours()) + ":" + (newDate.getMinutes() < 10 ? "0" + newDate.getMinutes() : newDate.getMinutes()));
-	
-			    currentField.blur();
-			});
-		}
+				    currentField.blur();	
+				    $("#travelPlanButton").focus();
+				    
+				});
+			}
 	    });
 
 	 }
@@ -3049,8 +3079,7 @@ function bindEvents() {
   		}
   	});
   	$(window).on('orientationchange', function(){
-		//Size map properly for Andriod
-  		var pageHeight = $($.mobile.activePage).height();
+		  var pageHeight = $($.mobile.activePage).height();
   		if(pageHeight > $(window).height()){
   			$('#container').css('height', (pageHeight + 50) + "px");
   		}else{
@@ -3379,6 +3408,7 @@ function loadPage(){
 		if(currPage == 'event-list' && aauMobile.rssEvent.feedData.length === 0){
 			console.log('Go Spinny Go!');
 			/* Parth: Load Events List Data */
+			console.log("Fire Sports Page");
 			appirioUtils.fireEvent(aauMobile.rssEvent.init, null, null);
 		}
 		if(currPage == 'link-list' && aauMobile.externalLinks.linkData.length === 0){

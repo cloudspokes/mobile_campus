@@ -47,7 +47,11 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="#000"
-        android:clickable="true" >
+        android:clickable="true"
+        android:paddingBottom="3dp"
+        android:paddingLeft="1dp"
+        android:paddingRight="1dp"
+        android:paddingTop="3dp" >
         
         <ImageButton
             android:id="@+id/menu"
@@ -59,13 +63,14 @@
     		android:src="@drawable/menu_btn"/>
 
 		<RelativeLayout
-        	android:id="@+id/NativeMapMenuBar"
-        	android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
-        	android:gravity="center"
-        	android:layout_toRightOf="@+id/menu"
-        	android:layout_toLeftOf="@+id/settings_popup"
-        	android:background="#000" >
+		    android:id="@+id/NativeMapMenuBar"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_centerVertical="true"
+		    android:layout_toLeftOf="@+id/settings_popup"
+		    android:layout_toRightOf="@+id/menu"
+		    android:background="#000"
+		    android:gravity="center" >
         
 			<RadioGroup android:id="@+id/radioGrp"  
 			    android:layout_width="fill_parent"

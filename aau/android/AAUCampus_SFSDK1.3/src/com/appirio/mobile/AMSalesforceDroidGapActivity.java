@@ -180,8 +180,6 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 			rootLayout = new SlidingMenuLayout(this);
 			rootLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.0F));
 			
-			rootLayout.setPadding(20, 20, 20, 20);
-
 			/* Inflate and add the main view layout and menu layout to root sliding menu layout. Menu layout should be added first.. */
 			menuLayout = getLayoutInflater().inflate(R.layout.sliding_menu_layout, null);
 			mainLayout = getLayoutInflater().inflate(R.layout.main_layout, null);
@@ -441,8 +439,6 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 				rootLayout.removeView(this.appView);
 				rootLayout.addView(this.mapLayout);
 				
-				rootLayout.setPadding(0, 0, 0, 0);
-
 				getMapManager().showMap();
 				
 				mapon = true;
@@ -457,8 +453,6 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 				mapon = false;
 			}
 			
-			rootLayout.setPadding(20, 20, 20, 20);
-
 			SlidingMenuItem menuItem = (SlidingMenuItem) menuAdapter.getItem(position);
 			webView.loadUrl("javascript:" + menuItem.getAction());
 

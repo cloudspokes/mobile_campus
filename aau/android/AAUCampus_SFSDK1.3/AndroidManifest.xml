@@ -3,7 +3,7 @@
     package="com.appirio.aau"
     android:installLocation="internalOnly"
     android:versionCode="2"
-    android:versionName="2.0" >
+    android:versionName="2.1.001" >
 
     <supports-screens
         android:anyDensity="true"

@@ -16,9 +16,27 @@ import com.appirio.aau.R;
 public class StopScheduleActivity extends Activity {
 	
 	@Override
+	protected void onStop() {
+		active = false;
+		super.onStop();
+	}
+
+	private static boolean active = false;
+	
+	public static boolean isActive() {
+		return active;
+	}
+
+	public static void setActive(boolean _active) {
+		active = _active;
+	}
+	
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+		active = true;
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_stop_schedule);
 		

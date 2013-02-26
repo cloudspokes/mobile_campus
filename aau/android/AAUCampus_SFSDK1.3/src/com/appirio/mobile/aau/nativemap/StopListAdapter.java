@@ -6,13 +6,13 @@ import java.util.List;
 
 import org.apache.cordova.DroidGap;
 
-import com.appirio.aau.R;
-
 import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.appirio.aau.R;
 
 public class StopListAdapter implements OnClickListener {
 
@@ -73,16 +73,20 @@ public class StopListAdapter implements OnClickListener {
 	@Override
 	public void onClick(View view) {
 		try {
-			String stopName = ((TextView)view.findViewById(R.id.txtStopName)).getText().toString();
-			
-			ArrayList<RouteStopSchedule> schedule = this.mapManager.getSchedule(stopName);
-
-			Intent intent = new Intent(this.ctx, StopScheduleActivity.class);
-			
-			intent.putExtra("schedule", schedule);
-			intent.putExtra("stopName", stopName);
-			
-			this.ctx.startActivity(intent);
+			if(!StopScheduleActivity.isActive()) {
+				StopScheduleActivity.setActive(true);
+				
+				String stopName = ((TextView)view.findViewById(R.id.txtStopName)).getText().toString();
+				
+				ArrayList<RouteStopSchedule> schedule = this.mapManager.getSchedule(stopName);
+	
+				Intent intent = new Intent(this.ctx, StopScheduleActivity.class);
+				
+				intent.putExtra("schedule", schedule);
+				intent.putExtra("stopName", stopName);
+				
+				this.ctx.startActivity(intent);
+			}
 		} catch (AMException e) {
 			// TODO handle this exception
 			e.printStackTrace();

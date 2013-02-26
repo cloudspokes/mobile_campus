@@ -118,7 +118,7 @@ public class APIProxy {
 				JSONObject cacheItem = new JSONObject(cacheObject.get(key).toString());
 				
 				if(cacheItem.getLong("storeDate") + (expirationInDays * 24 * 60 * 60 * 10000) > System.currentTimeMillis()) {
-					return cacheObject.getString("data");
+					return cacheItem.getString("data"); 
 				}
 			}
 		} catch (JSONException e) {

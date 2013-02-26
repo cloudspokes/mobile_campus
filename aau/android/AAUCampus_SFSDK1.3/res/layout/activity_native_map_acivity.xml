@@ -26,8 +26,6 @@
     	android:padding="10dp"
     	android:layout_margin="5dp"
 
- -->
-
     <LinearLayout
         android:id="@+id/linearLayout1"
         android:layout_width="fill_parent"
@@ -35,6 +33,14 @@
         android:layout_margin="2dp"
         android:orientation="vertical"
         android:padding="2dp" >
+
+ -->
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
 
     <RelativeLayout
         android:id="@+id/NativeMapMenuBar"

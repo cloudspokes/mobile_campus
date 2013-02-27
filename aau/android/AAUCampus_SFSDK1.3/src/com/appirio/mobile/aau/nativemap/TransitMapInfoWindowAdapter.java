@@ -68,20 +68,23 @@ public class TransitMapInfoWindowAdapter implements InfoWindowAdapter, OnInfoWin
 	@Override
 	public void onInfoWindowClick(Marker marker) {
 		try {
-			JSONObject markerInfo = new JSONObject(marker.getTitle());
-			
-			if(markerInfo.has("type") && markerInfo.getString("type").equals("stop")) {
-				String stopName = markerInfo.getString("stopName");
-
-				ArrayList<RouteStopSchedule> schedule = this.mapManager.getSchedule(stopName);
-
-				Intent intent = new Intent(this.ctx, StopScheduleActivity.class);
+			if(!StopScheduleActivity.isActive()) {
+				StopScheduleActivity.setActive(true);
+				JSONObject markerInfo = new JSONObject(marker.getTitle());
 				
-				intent.putExtra("schedule", schedule);
-				intent.putExtra("stopName", stopName);
-				
-				this.ctx.startActivity(intent);
-				
+				if(markerInfo.has("type") && markerInfo.getString("type").equals("stop")) {
+					String stopName = markerInfo.getString("stopName");
+	
+					ArrayList<RouteStopSchedule> schedule = this.mapManager.getSchedule(stopName);
+	
+					Intent intent = new Intent(this.ctx, StopScheduleActivity.class);
+					
+					intent.putExtra("schedule", schedule);
+					intent.putExtra("stopName", stopName);
+					
+					this.ctx.startActivity(intent);
+					
+				}
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();

@@ -431,33 +431,48 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		
 	}
 	
+	public void showMap() {
+		this.runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				if(!mapon) {
+					rootLayout.removeView(appView);
+					rootLayout.addView(mapLayout);
+					
+					getMapManager().showMap();
+					
+					mapon = true;
+				}
+			}
+		});
+	}
+	
+	public void showWebView() {
+		this.runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				if(mapon) {
+					rootLayout.addView(appView); 
+					rootLayout.removeView(mapLayout);
+					mapon = false;
+				}
+			}
+		});
+		
+	}
+	
 	@Override
 	public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
 	{
-		if(position == 3) {
-			if(!mapon) {
-				rootLayout.removeView(this.appView);
-				rootLayout.addView(this.mapLayout);
-				
-				getMapManager().showMap();
-				
-				mapon = true;
-			}
-
-			rootLayout.closeMenu();
-		} else {
-			
-			if(mapon) {
-				rootLayout.addView(this.appView); 
-				rootLayout.removeView(this.mapLayout);
-				mapon = false;
-			}
-			
-			SlidingMenuItem menuItem = (SlidingMenuItem) menuAdapter.getItem(position);
-			webView.loadUrl("javascript:" + menuItem.getAction());
-
-			rootLayout.closeMenu();
+		SlidingMenuItem menuItem = (SlidingMenuItem) menuAdapter.getItem(position);
+		if(menuItem.getActionType().equals("js")) {
+			this.showWebView();
 		}
+		webView.loadUrl("javascript:" + menuItem.getAction());
+
+		rootLayout.closeMenu();
 	}
 
 	@Override

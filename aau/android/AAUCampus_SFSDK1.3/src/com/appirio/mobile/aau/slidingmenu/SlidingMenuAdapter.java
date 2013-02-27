@@ -115,8 +115,9 @@ public class SlidingMenuAdapter extends BaseAdapter implements ListAdapter {
 				menuItem.setMenuIcon(context.getResources()
 								.getIdentifier("icon.png", "drawable",
 										context.getPackageName()));
-				menuItem.setMenuURL("www.google.com");
+				menuItem.setMenuURL("www.academyart.edu");
 				menuItem.setAction(menu.get("action").toString());
+				menuItem.setActionType(menu.get("actionType").toString());
 				if(menu.has("nonsprite")) {
 					String iconName = menu.get("nonsprite").toString();
 					

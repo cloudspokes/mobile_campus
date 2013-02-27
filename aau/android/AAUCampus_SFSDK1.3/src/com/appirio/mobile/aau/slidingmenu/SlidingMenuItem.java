@@ -6,6 +6,16 @@ public class SlidingMenuItem
 	int menuIcon;
 	String menuURL;
 	String action;
+	public String getActionType() {
+		return actionType;
+	}
+
+	public void setActionType(String actionType) {
+		this.actionType = actionType;
+	}
+
+	String actionType;
+	
 
 	public String getMenuTitle() 
 	{

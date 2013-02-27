@@ -8,9 +8,9 @@
         android:padding="1dp" >
 
         <LinearLayout
-            android:layout_width="95dp"
+            android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:minWidth="95dp" >
+            android:minWidth="120dp" >
 
             <TextView
                 android:id="@+id/txtRouteName"
@@ -19,10 +19,13 @@
                 android:layout_gravity="center_vertical|center_horizontal"
                 android:background="#FF00FF"
                 android:gravity="center_vertical|center_horizontal"
+                android:minWidth="150dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
-                android:text="Polk Wrhse"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:text="Jarrold"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/white" />
+
         </LinearLayout>
 
         <LinearLayout

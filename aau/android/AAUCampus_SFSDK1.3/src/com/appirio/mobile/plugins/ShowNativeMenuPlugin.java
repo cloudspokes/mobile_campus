@@ -12,7 +12,11 @@ public class ShowNativeMenuPlugin extends Plugin {
 	public PluginResult execute(String arg0, JSONArray arg1, String arg2) {
 		AMSalesforceDroidGapActivity activity = ((AMSalesforceDroidGapActivity)this.ctx);
 		
-		activity.showMap();
+		if(arg0.equals("showMap")) {
+			activity.showMap();
+		} else if (arg0.equals("hideMap")) {
+			activity.showWebView();
+		}
 		
 		return new PluginResult(PluginResult.Status.NO_RESULT);
 	}

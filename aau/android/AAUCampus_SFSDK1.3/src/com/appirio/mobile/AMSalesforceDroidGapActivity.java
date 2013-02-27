@@ -153,7 +153,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
 	    try
 	    {
 	        // check if Google Maps is supported on given device

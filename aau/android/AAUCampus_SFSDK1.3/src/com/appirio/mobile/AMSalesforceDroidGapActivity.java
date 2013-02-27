@@ -153,6 +153,8 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		super.setIntegerProperty("loadUrlTimeoutValue", 90000); 
+		
 		super.onCreate(savedInstanceState);
 		
 	    try

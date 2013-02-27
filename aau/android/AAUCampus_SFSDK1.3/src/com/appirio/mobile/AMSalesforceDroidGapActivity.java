@@ -519,8 +519,8 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		popup.setFocusable(true);
 
 		// Some offset to align the popup a bit to the right, and a bit down, relative to button's position.
-		int OFFSET_X = 20;
-		int OFFSET_Y = 60;
+		//int OFFSET_X = nativeSettingsButton.getWidth(); //  20;
+		//int OFFSET_Y = nativeSettingsButton.getHeight(); // 60;
 
 		//Initialize the Point with x, and y positions
 		Point pbtn = getSettingAnchorPoint();
@@ -530,7 +530,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 
 		// Log.d("NATIVE MAP Activity", "Setting POINT: "+ pbtn.x + OFFSET_X + " " + pbtn.y + OFFSET_Y);
 		// Displaying the popup at the specified location, + offsets.
-		popup.showAtLocation(layout, Gravity.NO_GRAVITY, pbtn.x + OFFSET_X, pbtn.y + OFFSET_Y);
+		popup.showAtLocation(layout, Gravity.NO_GRAVITY, pbtn.x + nativeSettingsButton.getWidth(), pbtn.y + nativeSettingsButton.getHeight());
 
 		
 		// Dynamically add bttons here

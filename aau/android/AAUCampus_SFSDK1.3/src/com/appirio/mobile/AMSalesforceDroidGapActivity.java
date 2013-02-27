@@ -42,6 +42,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
@@ -534,8 +535,8 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		popup.setFocusable(true);
 
 		// Some offset to align the popup a bit to the right, and a bit down, relative to button's position.
-		int OFFSET_X = 20;
-		int OFFSET_Y = 60;
+		//int OFFSET_X = nativeSettingsButton.getWidth(); //  20;
+		//int OFFSET_Y = nativeSettingsButton.getHeight(); // 60;
 
 		//Initialize the Point with x, and y positions
 		Point pbtn = getSettingAnchorPoint();
@@ -545,7 +546,8 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 
 		// Log.d("NATIVE MAP Activity", "Setting POINT: "+ pbtn.x + OFFSET_X + " " + pbtn.y + OFFSET_Y);
 		// Displaying the popup at the specified location, + offsets.
-		popup.showAtLocation(layout, Gravity.NO_GRAVITY, pbtn.x + OFFSET_X, pbtn.y + OFFSET_Y);
+				
+		popup.showAtLocation(layout, Gravity.NO_GRAVITY, pbtn.x + nativeSettingsButton.getLeft(), pbtn.y + nativeSettingsButton.getHeight());
 
 		
 		// Dynamically add bttons here
@@ -560,6 +562,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity imp
 		}
 		
 	}
+
 	// Return actual point for Setting anchor button to position pannel
 	private Point getSettingAnchorPoint(){
 		// Get the x, y location and store it in the location[] array

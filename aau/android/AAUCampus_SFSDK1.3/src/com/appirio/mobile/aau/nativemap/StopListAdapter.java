@@ -25,14 +25,14 @@ public class StopListAdapter implements OnClickListener {
 		this.ctx = ctx;
 		this.mapManager = mapManager;
 		
-		if(mapManager != null) {
-			this.stops = mapManager.getBusStops();
-		}
-		
-		Collections.sort(stops, new BusStopOrderComparator());
 	}
 	
 	public ViewGroup getStopListView() {
+		if(mapManager != null && this.stops == null) {
+			this.stops = mapManager.getBusStops();
+
+		}
+
 		if(stops.size() == 0) {
 			if(mapManager != null) {
 				stopListView = null;
@@ -40,6 +40,12 @@ public class StopListAdapter implements OnClickListener {
 			}
 		}
 		
+		if(this.stops.size() == 0) {
+			stopListView = null;
+		}
+		
+		Collections.sort(stops, new BusStopOrderComparator());
+
 		if(stopListView == null) {
 			stopListView = (ViewGroup) ctx.getLayoutInflater().inflate(R.layout.stop_list, null);
 			
@@ -92,6 +98,10 @@ public class StopListAdapter implements OnClickListener {
 			e.printStackTrace();
 		}
 		
+	}
+
+	public boolean hasStops() {
+		return stops.size() > 0;
 	}
 	
 }

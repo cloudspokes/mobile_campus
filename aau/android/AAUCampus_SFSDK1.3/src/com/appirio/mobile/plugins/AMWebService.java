@@ -22,22 +22,29 @@ public class AMWebService extends Plugin {
 	public AMWebService() {
 	}
 	
-	@Override
-	public PluginResult execute(String arg0, JSONArray arg1, String arg2) {
+	public PluginResult execute(String arg0, JSONArray arg1, String arg2, boolean retry) {
 		try {
-
-
 			String uri = arg1.get(0).toString();
 
 			if (uri.equals("https://xmlgateway.teletrac.net/AsciiService.asmx/GetVehicles")) {
 				return new PluginResult(PluginResult.Status.OK, getProxy().makeTeletracRequest(uri));
 			} else {
-				return new PluginResult(PluginResult.Status.OK, getProxy().makeSFRequest(uri, true));
+				return new PluginResult(PluginResult.Status.OK, getProxy().makeSFRequest(uri, true, false));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			
+			if(retry) {
+				return execute(arg0, arg1, arg2, false);
+			}
+
 			return new PluginResult(PluginResult.Status.ERROR, e.getMessage());
 		}
+	}
+	
+	@Override
+	public PluginResult execute(String arg0, JSONArray arg1, String arg2) {
+		return execute(arg0, arg1, arg2, true);
 	}
 
 }

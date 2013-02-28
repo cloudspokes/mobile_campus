@@ -167,12 +167,12 @@ public class APIProxy {
 
 			String settingsResponse = cacheGet(instanceUrl + SETTINGS_ENDPOINT, 30, ctx);
 			if(settingsResponse == null) { 
-				settingsResponse = makeSFRequest(instanceUrl + SETTINGS_ENDPOINT, true);
+				settingsResponse = makeSFRequest(instanceUrl + SETTINGS_ENDPOINT, true, true);
 			} else { 
 				settings = new JSONObject(settingsResponse);
 				
 				if(settings.getInt("cacheTimeout") < 30) {
-					settingsResponse = makeSFRequest(instanceUrl + SETTINGS_ENDPOINT, true);
+					settingsResponse = makeSFRequest(instanceUrl + SETTINGS_ENDPOINT, true, true);
 				}
 			}
 			
@@ -181,12 +181,12 @@ public class APIProxy {
 		}
 	}
 	
-	public String makeSFRequest(String uri, boolean retry) throws AMException {
+	public String makeSFRequest(String uri, boolean retry, boolean useCache) throws AMException {
 		
 		try {
 			ensureToken();
 			
-			if(settings != null) {
+			if(settings != null && useCache) {
 				String cacheData = cacheGet(uri, settings.getInt("cacheTimeout"), ctx);
 				
 				if(cacheData != null) {
@@ -261,7 +261,7 @@ public class APIProxy {
 
 					authToken = new JSONObject(responseBody.toString()).getString("access_token"); 
 					
-					return makeSFRequest(uri, false);
+					return makeSFRequest(uri, false, true);
 
 				} else {
 					throw new RuntimeException(conn.getResponseMessage());
@@ -309,7 +309,7 @@ public class APIProxy {
 		try {
 			ensureToken();
 			
-			return new JSONObject(makeSFRequest(instanceUrl + "/services/apexrest/BusStopSchedule?busStopName=" + URLEncoder.encode(stopName, "UTF-8"), true));
+			return new JSONObject(makeSFRequest(instanceUrl + "/services/apexrest/BusStopSchedule?busStopName=" + URLEncoder.encode(stopName, "UTF-8"), true, true));
 		} catch (Exception e) {
 			e.printStackTrace();
 			
@@ -321,7 +321,7 @@ public class APIProxy {
 		try {
 			ensureToken();
 			
-			return new JSONArray(makeSFRequest(instanceUrl + "/services/apexrest/BusStops/", true));
+			return new JSONArray(makeSFRequest(instanceUrl + "/services/apexrest/BusStops/", true, true));
 		} catch (Exception e) {
 			e.printStackTrace();
 			

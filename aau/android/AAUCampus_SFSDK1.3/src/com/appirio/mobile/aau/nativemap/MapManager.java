@@ -44,6 +44,9 @@ public class MapManager {
 	private TransitMapInfoWindowAdapter infoWindowAdapter;
 	private List<Polyline> routesPolylineShown;
 	private List<Route> routesShown;
+	private MapManager mapManager;
+	private List<MarkerOptions> busStopsMos;
+	private boolean isInit = false;
 
 	public ArrayList<RouteStopSchedule> getSchedule(String stopName) throws AMException {
 		try {
@@ -68,88 +71,109 @@ public class MapManager {
 		return routesShown;
 	}
 	
-	public MapManager(Context ctx, GoogleMap map) throws AMException {
-		this.ctx = ctx;
-		mapProxy = new APIProxy((DroidGap)this.ctx);
-		this.map = map;
-		this.mapUpdater = new MapUpdater();
-		
-		// Center and zoom map on initial position
-		try {
-			busRoutes = mapProxy.getBusStops();
-			routesParser = new RoutesParser(busRoutes);
-
-			MapsInitializer.initialize(ctx);
-			
-			stopBitmap = BitmapDescriptorFactory.fromResource(R.drawable.marker_busstop);
-			defaultBusIcon = BitmapDescriptorFactory.fromResource(R.drawable.marker_busstop_black_suware);
-			mapAvailable = true;
-			
-			// Load bus stop data from Salesforce
-			routeIconMap = new HashMap<String, BitmapDescriptor>();
-			infoWindowAdapter = new TransitMapInfoWindowAdapter(this.ctx, this);
-			routesPolylineShown = new ArrayList<Polyline>();
-			routesShown = new ArrayList<Route>();
-			
-			try {
-				for(Route route : routesParser.getRoutes()) {
-					String markerName = route.getMarkerIcon();
-					
-					if(markerName != null && markerName.length() > 5) {
-						markerName = markerName.toLowerCase().substring(0, markerName.length() - 4);
-					}
-					
-					routeIconMap.put(route.getName(), BitmapDescriptorFactory.fromResource(this.ctx.getResources().getIdentifier(markerName, "drawable", this.ctx.getPackageName())));
-				}
+	public void init() {
+		if(!isInit) {
+			new Thread(new Runnable() {
 				
-				for(BusStop stop : routesParser.getStops()) {
-					JSONObject markerInfo = new JSONObject();
-					
-					MarkerOptions mo = new MarkerOptions();
-					
-					mo.icon(stopBitmap);
-					
-					markerInfo.put("type", "stop");
-					markerInfo.put("stopName", stop.getAddress());
-					markerInfo.put("routes", stop.getRoutesString());
-					
-					mo.title(markerInfo.toString());
-					
-					mo.position(new LatLng(stop.getLatitude(), stop.getLongitude()));
-					
-					map.addMarker(mo);
-				}
-				
-				map.setInfoWindowAdapter(infoWindowAdapter);
-				map.setOnInfoWindowClickListener(infoWindowAdapter);
-				map.setMyLocationEnabled(true);
-				
-				/*
-				Set<String> testRoutes = new HashSet<String>();
-				
-				testRoutes.add("D");
-				testRoutes.add("Jerrold");
-				
-				showRoutes(testRoutes);				
-				*/
-				
-				new Thread(mapUpdater).start();
-			} catch (Exception e) {
-				e.printStackTrace();
-				
-				throw new AMException(e);
-			}
+				@Override
+				public void run() {
+					try {
 						
-		} catch (GooglePlayServicesNotAvailableException e) {
-			// TODO handle map is not available situation
-			e.printStackTrace();
-			
-			mapAvailable = false;
+						busRoutes = mapProxy.getBusStops();
+						routesParser = new RoutesParser(busRoutes);
+
+						MapsInitializer.initialize(ctx);
+						
+						stopBitmap = BitmapDescriptorFactory.fromResource(R.drawable.marker_busstop);
+						defaultBusIcon = BitmapDescriptorFactory.fromResource(R.drawable.marker_busstop_black_suware);
+						mapAvailable = true;
+						
+						// Load bus stop data from Salesforce
+						routeIconMap = new HashMap<String, BitmapDescriptor>();
+						infoWindowAdapter = new TransitMapInfoWindowAdapter(ctx, mapManager);
+						routesPolylineShown = new ArrayList<Polyline>();
+						routesShown = new ArrayList<Route>();
+						
+						try {
+							for(Route route : routesParser.getRoutes()) {
+								String markerName = route.getMarkerIcon();
+								
+								if(markerName != null && markerName.length() > 5) {
+									markerName = markerName.toLowerCase().substring(0, markerName.length() - 4);
+								}
+								
+								routeIconMap.put(route.getName(), BitmapDescriptorFactory.fromResource(ctx.getResources().getIdentifier(markerName, "drawable", ctx.getPackageName())));
+							}
+							
+							for(BusStop stop : routesParser.getStops()) {
+								JSONObject markerInfo = new JSONObject();
+								
+								MarkerOptions mo = new MarkerOptions();
+								
+								mo.icon(stopBitmap);
+								
+								markerInfo.put("type", "stop");
+								markerInfo.put("stopName", stop.getAddress());
+								markerInfo.put("routes", stop.getRoutesString());
+								
+								mo.title(markerInfo.toString());
+								
+								mo.position(new LatLng(stop.getLatitude(), stop.getLongitude()));
+								
+								busStopsMos.add(mo);
+							}
+							
+							((Activity)ctx).runOnUiThread(new Runnable() {
+								
+								@Override
+								public void run() {
+									for(MarkerOptions mo : busStopsMos) {
+										map.addMarker(mo);
+									}
+									
+									map.setInfoWindowAdapter(infoWindowAdapter);
+									map.setOnInfoWindowClickListener(infoWindowAdapter);
+									map.setMyLocationEnabled(true);
+									
+									map.animateCamera(CameraUpdateFactory.newLatLngZoom(initialPos, 14.0f));
+
+								}
+							});
+							
+							new Thread(mapUpdater).start();
+							
+							isInit = true;
+						} catch (Exception e) {
+							e.printStackTrace();
+							
+							//throw new AMException(e);
+						}				
+				} catch (Exception e) {
+					// TODO handle map is not available situation
+					e.printStackTrace();
+					
+				}
+			}
+			}).start();			
 		}
+	}
+	
+	public MapManager(Context _ctx, GoogleMap _map) throws AMException {
+		this.ctx = _ctx;
+		mapProxy = new APIProxy((DroidGap)this.ctx);
+		this.map = _map;
+		this.mapUpdater = new MapUpdater();
+		mapManager = this;
+		busStopsMos = new ArrayList<MarkerOptions>();
+		
+		init();
 	}
 	
 	public void showMap() {
 		if(mapAvailable) {
+			if(!isInit) {
+				this.init();
+			}
 			map.animateCamera(CameraUpdateFactory.newLatLngZoom(initialPos, 14.0f));
 		}
 	}
@@ -208,7 +232,11 @@ public class MapManager {
 	}
 	
 	public List<BusStop> getBusStops() {
-		return routesParser.getStops();
+		if(routesParser != null) {
+			return routesParser.getStops();
+		} else {
+			return new ArrayList<BusStop>();
+		}
 	}
 	
 	private class MapUpdater implements Runnable {

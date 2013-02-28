@@ -9,4 +9,5 @@ public class AppirioWebViewClient extends WebViewClient {
 		view.loadUrl(url);
 		return true;
 	}
+	
 }

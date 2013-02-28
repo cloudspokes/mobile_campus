@@ -106,10 +106,10 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 	private OrientationEventListener orientationListener;
 
 	private View getStopListView() {
-		if (stopListView == null || !stopListAdapter.hasStops()) {
+		if (stopListView == null) {
 			stopListView = getStopListAdapter().getStopListView();
 		}
-
+		
 		return stopListView;
 	}
 
@@ -267,6 +267,10 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 
 					stopListBtn.setTextColor(Color.RED);
 					mapListBtn.setTextColor(Color.WHITE);
+					
+					if(stopListAdapter == null || !stopListAdapter.hasStops()) {
+						stopListView = null;
+					}
 				}
 			}
 		});
@@ -285,31 +289,8 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 		super.setIntegerProperty("splashscreen",
 				com.appirio.aau.R.drawable.aau_load);
 			
-		orientationListener = new OrientationEventListener(this) {
-			
-			@Override
-			public void onOrientationChanged(int orientation) {
-				if(rootLayout != null) {
-					rootLayout.closeMenu();
-				}
-			}
-		};
-		
 		super.loadUrl("file:///android_asset/www/bootstrap.html", 10000);
 
-	}
-
-	private void showGoogleServiceMissingAlert() {
-		AlertDialog ad = new AlertDialog.Builder(this).create();
-		ad.setCancelable(false); // This blocks the 'BACK' button
-		ad.setMessage("Google Play services not present on device, please install Google Play");
-		ad.setButton("OK", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
-		ad.show();
 	}
 
 	// Get the x and y position after the button is draw on screen

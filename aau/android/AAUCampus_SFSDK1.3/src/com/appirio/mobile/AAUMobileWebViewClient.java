@@ -17,17 +17,27 @@ public class AAUMobileWebViewClient extends CordovaWebViewClient {
 
 	@Override
 	public boolean shouldOverrideUrlLoading(WebView webView, String url) {
-
-		//if(url.contains("mob_StudentHome")){
-		//	//String html = "<html><link rel=\"Stylesheet\" type=\"text/css\" href=\"file:///android_asset/jquery_mobile.css\"></link><img src=\"file:///android_asset/sports-icon.png\"/></html>";//readHtml(url);
-		//	String x_url = "https://aau--dev7.cs1.my.salesforce.com/apex/mob_StudentHome?appVersion=2_1";	
-		//	String html = readHtml(x_url);
-		//	Log.d("AAUMobileWebViewClient",html);
-		//	webView.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "utf-8", "");
-		//	return true;
-		//}
+/*
+		try {
+			if(url.endsWith("mob_StudentHome?appVersion=2_1")){
+				//String html = "<html><link rel=\"Stylesheet\" type=\"text/css\" href=\"file:///android_asset/jquery_mobile.css\"></link><img src=\"file:///android_asset/sports-icon.png\"/></html>";//readHtml(url);
+				String x_url = url; //"https://aau--dev7.cs1.my.salesforce.com/apex/mob_StudentHome?appVersion=2_1";	
+				String html = readHtml(x_url); readHtml(url)
+				Log.d("AAUMobileWebViewClient",html);
+				html = html.replaceAll("aaumobile://", "file:///android_asset/");
+				webView.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "utf-8", "");
+				return true;
+			} else {
+				return super.shouldOverrideUrlLoading(webView, url);
+			}
+		} catch(Exception ex) {
+			ex.printStackTrace();
+			
+			throw new RuntimeException(ex);
+		}
+	*/
+		
 		return super.shouldOverrideUrlLoading(webView, url);
-	
 	}
 
 	

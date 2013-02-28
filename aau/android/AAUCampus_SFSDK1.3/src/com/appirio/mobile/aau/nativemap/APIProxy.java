@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 
+import com.appirio.mobile.AMSalesforceDroidGapActivity;
 import com.salesforce.androidsdk.app.ForceApp;
 import com.salesforce.androidsdk.rest.ClientManager;
 import com.salesforce.androidsdk.rest.ClientManager.AccountInfoNotFoundException;
@@ -185,7 +186,7 @@ public class APIProxy {
 		
 		try {
 			ensureToken();
-			
+
 			if(settings != null && useCache) {
 				String cacheData = cacheGet(uri, settings.getInt("cacheTimeout"), ctx);
 				
@@ -273,6 +274,9 @@ public class APIProxy {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			
+			//AMSalesforceDroidGapActivity.alert("Exception: " + e.getClass().getName() + " Message:" + e.getMessage() + " URI:" + uri);
+			
 			throw new AMException(e);
 		}
 

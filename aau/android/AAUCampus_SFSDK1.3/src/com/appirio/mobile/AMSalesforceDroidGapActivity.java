@@ -104,6 +104,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 	private StopListAdapter stopListAdapter;
 	private View stopListView;
 	private OrientationEventListener orientationListener;
+	private static AMSalesforceDroidGapActivity mainActivity;
 
 	private View getStopListView() {
 		if (stopListView == null) {
@@ -120,6 +121,26 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 	private RadioButton stopListBtn;
 	private RadioButton mapListBtn;
 
+	public static void alert(final String message) {
+		if(mainActivity != null) {
+			mainActivity.runOnUiThread(new Runnable() {
+				
+				@Override
+				public void run() {
+					new AlertDialog.Builder(mainActivity)
+				    .setTitle("Alert")
+				    .setMessage(message)
+				    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+				    	public void onClick(DialogInterface dialog, int which) { 
+				    		dialog.dismiss();
+				    	}
+				    })				    
+				    .show();		
+				}
+			});
+		}
+	}
+	
 	// private List<Route> routeList;
 	// The "x" and "y" position of the "Settings Button" on screen.
 	Point p;
@@ -161,6 +182,8 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		mainActivity = this;
+		
 		super.setIntegerProperty("loadUrlTimeoutValue", 90000);
 
 		super.onCreate(savedInstanceState);

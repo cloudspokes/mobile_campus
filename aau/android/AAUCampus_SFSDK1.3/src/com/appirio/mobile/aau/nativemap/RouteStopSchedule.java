@@ -5,6 +5,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -19,7 +21,7 @@ public class RouteStopSchedule implements Serializable {
 	private String color;
 	private String name;
 	private List<String> schedule;
-
+	
 	public RouteStopSchedule(JSONObject object) throws AMException {
 		try {
 			if(object.has("color")) {
@@ -37,6 +39,8 @@ public class RouteStopSchedule implements Serializable {
 					schedule.add(object.getJSONArray("schedule").getString(i));
 				}
 			}
+			
+			Collections.sort(schedule, new ScheduleComparator());
 		} catch (JSONException e) {
 			e.printStackTrace();
 			
@@ -82,7 +86,13 @@ public class RouteStopSchedule implements Serializable {
 				
 				now.set(1970, 0, 1);
 
-				return ((nextStop.getTime() - now.getTimeInMillis()) / (1000 * 60)) + " minutes";
+				long eta = (nextStop.getTime() - now.getTimeInMillis()) / (1000 * 60);
+				
+				if(eta > 30) {
+					return schedule.get(nextStopIndex);
+				} else {
+					return eta + " minutes";
+				}
 			}
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -91,7 +101,31 @@ public class RouteStopSchedule implements Serializable {
 		}
 	}
 	
+	public long getNextBusETAInMillis() {
+		try {
+			int nextStopIndex = getNextStopIndex();
+			SimpleDateFormat format = new SimpleDateFormat("h:mm a");
+			
+			if(nextStopIndex == -1) {
+				return 0;
+			} else {
+				Date nextStop = format.parse(schedule.get(nextStopIndex));
+				
+				Calendar now = Calendar.getInstance();
+				
+				now.set(1970, 0, 1);
+
+				return (nextStop.getTime() - now.getTimeInMillis()) / (1000 * 60);
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+			
+			return 0;
+		}
+	}
+
 	public String getTodaysNextStops() {
+		int limitStops = 5;
 		StringBuilder result = new StringBuilder();
 		String separator = "";
 		
@@ -100,7 +134,7 @@ public class RouteStopSchedule implements Serializable {
 		if(nextStopIndex != -1) {
 			int i = 0;
 			
-			for(i = nextStopIndex; i < schedule.size() && (i < nextStopIndex + 4); i++) {
+			for(i = nextStopIndex; i < schedule.size() && (i < nextStopIndex + limitStops); i++) {
 				String time = schedule.get(i);
 				
 				result.append(separator);
@@ -109,9 +143,9 @@ public class RouteStopSchedule implements Serializable {
 				separator = ", ";
 			}
 			
-			if(i < (nextStopIndex + 4)) {
+			if(i < (nextStopIndex + limitStops) && i < schedule.size()) {
 				Iterator<String> it = schedule.iterator();
-				while(it.hasNext() && i < (nextStopIndex + 4)) {
+				while(it.hasNext() && i < (nextStopIndex + limitStops)) {
 					String time = it.next();
 					
 					result.append(separator);

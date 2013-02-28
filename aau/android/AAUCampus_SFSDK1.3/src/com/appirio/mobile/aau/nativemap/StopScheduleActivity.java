@@ -1,6 +1,8 @@
 package com.appirio.mobile.aau.nativemap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -46,6 +48,8 @@ public class StopScheduleActivity extends Activity {
 		((TextView)this.findViewById(R.id.txtBusStopName)).setText(getIntent().getExtras().getString("stopName"));
 		
 		ArrayList<RouteStopSchedule> schedule = (ArrayList<RouteStopSchedule>) getIntent().getExtras().get("schedule");
+		
+		Collections.sort(schedule, new RouteStopScheduleComparator()); 
 		
 		for(RouteStopSchedule routeSchedule : schedule) {
 			View scheduleView = this.getLayoutInflater().inflate(R.layout.schedule_item, null);

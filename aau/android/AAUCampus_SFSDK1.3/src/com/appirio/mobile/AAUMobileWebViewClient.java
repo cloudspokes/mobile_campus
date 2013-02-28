@@ -1,22 +1,37 @@
 package com.appirio.mobile;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.apache.cordova.CordovaWebViewClient;
 import org.apache.cordova.DroidGap;
 
+import android.util.Log;
 import android.webkit.WebView;
 
 public class AAUMobileWebViewClient extends CordovaWebViewClient {
 
 	@Override
 	public boolean shouldOverrideUrlLoading(WebView webView, String url) {
-		
+
+		//if(url.contains("mob_StudentHome")){
+		//	//String html = "<html><link rel=\"Stylesheet\" type=\"text/css\" href=\"file:///android_asset/jquery_mobile.css\"></link><img src=\"file:///android_asset/sports-icon.png\"/></html>";//readHtml(url);
+		//	String x_url = "https://aau--dev7.cs1.my.salesforce.com/apex/mob_StudentHome?appVersion=2_1";	
+		//	String html = readHtml(x_url);
+		//	Log.d("AAUMobileWebViewClient",html);
+		//	webView.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "utf-8", "");
+		//	return true;
+		//}
 		return super.shouldOverrideUrlLoading(webView, url);
+	
 	}
 
+	
+	
 	/*
 	@Override
 	public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
@@ -82,6 +97,11 @@ public class AAUMobileWebViewClient extends CordovaWebViewClient {
 //				return;
 //			}
 //		}
+
+		//if (url.endsWith("mob_StudentHome?appVersion=2_1")){
+			//ext_html = readHtml(url);
+		//	save_url = url;
+		//}
 		
 		super.onLoadResource(view, url);
 	}
@@ -104,4 +124,27 @@ public class AAUMobileWebViewClient extends CordovaWebViewClient {
 	    return sb.toString();
 	}
 	
+	private String readHtml(String remoteUrl) {
+	    String out = "";
+	    BufferedReader in = null;
+	    try {
+	        URL url = new URL(remoteUrl);
+	        in = new BufferedReader(new InputStreamReader(url.openStream()));
+	        String str;
+	        while ((str = in.readLine()) != null) {
+	            out += str;
+	        }
+	    } catch (MalformedURLException e) { 
+	    } catch (IOException e) { 
+	    } finally {
+	        if (in != null) {
+	            try {
+	                in.close();
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	    }
+	    return out;
+	}	
 }

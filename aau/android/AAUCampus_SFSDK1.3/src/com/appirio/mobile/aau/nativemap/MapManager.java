@@ -39,14 +39,14 @@ public class MapManager {
 	private BitmapDescriptor stopBitmap;
 	private Map<String, BitmapDescriptor> routeIconMap;
 	private BitmapDescriptor defaultBusIcon;
-	private List<Marker> vehicleMarkers = new ArrayList<Marker>();
+	private List<Marker> vehicleMarkers = new Vector<Marker>();
 	private MapUpdater mapUpdater;
 	private RoutesParser routesParser;
 	private TransitMapInfoWindowAdapter infoWindowAdapter;
 	private List<Polyline> routesPolylineShown;
 	private List<Route> routesShown;
 	private MapManager mapManager;
-	private Vector<MarkerOptions> busStopsMos;
+	private List<MarkerOptions> busStopsMos;
 	private boolean isInit = false;
 
 	public ArrayList<RouteStopSchedule> getSchedule(String stopName) throws AMException {
@@ -92,8 +92,8 @@ public class MapManager {
 						// Load bus stop data from Salesforce
 						routeIconMap = new HashMap<String, BitmapDescriptor>();
 						infoWindowAdapter = new TransitMapInfoWindowAdapter(ctx, mapManager);
-						routesPolylineShown = new ArrayList<Polyline>();
-						routesShown = new ArrayList<Route>();
+						routesPolylineShown = new Vector<Polyline>();
+						routesShown = new Vector<Route>();
 						
 						try {
 							for(Route route : routesParser.getRoutes()) {

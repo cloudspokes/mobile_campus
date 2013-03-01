@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import org.apache.cordova.DroidGap;
 import org.json.JSONArray;
@@ -45,7 +46,7 @@ public class MapManager {
 	private List<Polyline> routesPolylineShown;
 	private List<Route> routesShown;
 	private MapManager mapManager;
-	private List<MarkerOptions> busStopsMos;
+	private Vector<MarkerOptions> busStopsMos;
 	private boolean isInit = false;
 
 	public ArrayList<RouteStopSchedule> getSchedule(String stopName) throws AMException {
@@ -127,6 +128,7 @@ public class MapManager {
 								
 								@Override
 								public void run() {
+									
 									for(MarkerOptions mo : busStopsMos) {
 										map.addMarker(mo);
 									}
@@ -164,7 +166,7 @@ public class MapManager {
 		this.map = _map;
 		this.mapUpdater = new MapUpdater();
 		mapManager = this;
-		busStopsMos = new ArrayList<MarkerOptions>();
+		busStopsMos = new Vector<MarkerOptions>();
 		
 		init();
 	}

@@ -155,10 +155,11 @@ public class APIProxy {
 	}
 	
 	private void ensureToken() throws AccountInfoNotFoundException, AMException, JSONException {
-		if (authToken == null) {
-			ClientManager mgr = new ClientManager(this.ctx.getContext(),
-					ForceApp.APP.getAccountType(), null);
-			RestClient cli = mgr.peekRestClient();
+		ClientManager mgr = new ClientManager(this.ctx.getContext(),
+				ForceApp.APP.getAccountType(), null);
+		RestClient cli = mgr.peekRestClient();
+
+		if (authToken == null || refreshToken == null || !refreshToken.equals(cli.getRefreshToken())) {
 
 			authToken = cli.getAuthToken();
 			refreshToken = cli.getRefreshToken();

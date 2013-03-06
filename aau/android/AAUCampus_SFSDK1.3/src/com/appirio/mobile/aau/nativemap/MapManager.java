@@ -15,7 +15,6 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.appirio.aau.R;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
@@ -44,6 +43,7 @@ public class MapManager {
 	private TransitMapInfoWindowAdapter infoWindowAdapter;
 	private List<Polyline> routesPolylineShown;
 	private List<Route> routesShown;
+	private List<BusStop> allBusStopsList = new ArrayList<BusStop>();
 	private MapManager mapManager;
 	private List<MarkerOptions> busStopsMos;
 	private boolean isInit = false;
@@ -104,20 +104,15 @@ public class MapManager {
 								
 								routeIconMap.put(route.getName(), BitmapDescriptorFactory.fromResource(ctx.getResources().getIdentifier(markerName, "drawable", ctx.getPackageName())));
 							}
-							
+							allBusStopsList.clear();
 							for(BusStop stop : routesParser.getStops()) {
-								JSONObject markerInfo = new JSONObject();
+								
+								allBusStopsList.add(stop);
 								
 								MarkerOptions mo = new MarkerOptions();
-								
 								mo.icon(stopBitmap);
-								
-								markerInfo.put("type", "stop");
-								markerInfo.put("stopName", stop.getAddress());
-								markerInfo.put("routes", stop.getRoutesString());
-								
+								JSONObject markerInfo = getMarkerJSON(stop);
 								mo.title(markerInfo.toString());
-								
 								mo.position(new LatLng(stop.getLatitude(), stop.getLongitude()));
 								
 								busStopsMos.add(mo);
@@ -182,15 +177,17 @@ public class MapManager {
 		return routesParser.getRoutes();
 	}
 	
-	public void showRoutes(Set<String> routeNames) throws AMException {
+	public void showRoutes(Set<String> routeNames) throws AMException, JSONException {
 		for(Polyline route : routesPolylineShown) {
 			route.remove();
 		}
 		
 		routesPolylineShown.clear();
 		routesShown.clear();
-		
+		map.clear();
+
 		routesShown = routesParser.getRoutes(routeNames);
+		
 		
 		for(Route r : routesShown) {
 			PolylineOptions route = new PolylineOptions();
@@ -212,9 +209,66 @@ public class MapManager {
 			}
 			
 			routesPolylineShown.add(map.addPolyline(route));
+			
+			// Set stops for route
+			displayBusStopForGivenRoute(r);
+			
 		}
 		
+		// If no routes select show all stops
+		if (routesShown.size() == 0){
+			showAllBusStops();
+		}
 		mapUpdater.refreshBusesUI();
+	}
+	
+	private void displayBusStopForGivenRoute(Route r) throws JSONException {
+		for (BusStop stop : r.getBusStops()){
+			MarkerOptions mo = new MarkerOptions();
+			
+			mo.icon(stopBitmap);
+			
+			JSONObject markerInfo = getMarkerJSON(stop);			
+			mo.title(markerInfo.toString());
+			
+			mo.position(new LatLng(stop.getLatitude(), stop.getLongitude()));
+			
+			busStopsMos.add(mo);
+			map.addMarker(mo);
+		}
+		
+	}
+	
+	/**
+	 * Display all bus stops on the map
+	 * @throws JSONException
+	 */
+	private void showAllBusStops() throws JSONException{
+		busStopsMos.clear();
+		for(BusStop stop : allBusStopsList) {
+
+			MarkerOptions mo = new MarkerOptions();
+
+			mo.icon(stopBitmap);
+
+			JSONObject markerInfo = getMarkerJSON(stop);
+			mo.title(markerInfo.toString());
+
+			mo.position(new LatLng(stop.getLatitude(), stop.getLongitude()));
+
+			busStopsMos.add(mo);
+			map.addMarker(mo);
+		}					
+	}
+	
+	private JSONObject getMarkerJSON(BusStop stop) throws JSONException {
+		JSONObject markerInfo = new JSONObject();
+
+		markerInfo.put("type", "stop");
+		markerInfo.put("stopName", stop.getAddress());
+		markerInfo.put("routes", stop.getRoutesString());
+
+		return markerInfo;
 	}
 	
 	public void startAutoUpdate() {

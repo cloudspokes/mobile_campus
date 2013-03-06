@@ -7,7 +7,7 @@ public class RouteStopScheduleComparator implements
 
 	@Override
 	public int compare(RouteStopSchedule lhs, RouteStopSchedule rhs) {
-		return Long.valueOf(lhs.getNextBusETAInMillis()).compareTo(Long.valueOf(rhs.getNextBusETAInMillis()));
+		return Long.valueOf(lhs.getNextBusETAInMillisSort()).compareTo(Long.valueOf(rhs.getNextBusETAInMillisSort()));
 	}
 
 }

@@ -123,6 +123,30 @@ public class RouteStopSchedule implements Serializable {
 		}
 	}
 
+	// Use with Sort comparisson
+	public long getNextBusETAInMillisSort() {
+		try {
+			int nextStopIndex = getNextStopIndex();
+			SimpleDateFormat format = new SimpleDateFormat("h:mm a");
+			
+			if(nextStopIndex == -1) {
+				return 99999; // set large value for sort to push it downwards
+			} else {
+				Date nextStop = format.parse(schedule.get(nextStopIndex));
+				
+				Calendar now = Calendar.getInstance();
+				
+				now.set(1970, 0, 1);
+
+				return (nextStop.getTime() - now.getTimeInMillis()) / (1000 * 60);
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+			
+			return 0;
+		}
+	}
+	
 	public String getTodaysNextStops() {
 		int limitStops = 5;
 		StringBuilder result = new StringBuilder();

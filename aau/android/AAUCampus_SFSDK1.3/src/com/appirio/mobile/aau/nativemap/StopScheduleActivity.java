@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.ArcShape;
-import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -44,7 +43,7 @@ public class StopScheduleActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_stop_schedule);
 		
-		ViewGroup root = (ViewGroup) this.findViewById(R.id.mainStopScheduleContainer);
+		//ViewGroup root = (ViewGroup) this.findViewById(R.id.mainStopScheduleContainer);
 		ViewGroup stopSchedulecontainer = (ViewGroup) this.findViewById(R.id.stopScheduleContainer);
 
 		((TextView)this.findViewById(R.id.txtBusStopName)).setText(getIntent().getExtras().getString("stopName"));
@@ -60,8 +59,8 @@ public class StopScheduleActivity extends Activity {
 			// ((TextView)scheduleView.findViewById(R.id.txtRouteName)).setBackgroundColor(Color.parseColor(routeSchedule.getColor()));
 			
 			ShapeDrawable circle = new ShapeDrawable( new ArcShape(0, 360));
-			circle.setIntrinsicHeight(110);
-			circle.setIntrinsicWidth(40);
+			circle.setIntrinsicHeight(150);
+			circle.setIntrinsicWidth(100); // this does not effect anything, width set by layout
 			circle.getPaint().setColor(Color.parseColor(routeSchedule.getColor()));
 			((TextView)scheduleView.findViewById(R.id.txtRouteName)).setBackgroundDrawable(circle);
 			

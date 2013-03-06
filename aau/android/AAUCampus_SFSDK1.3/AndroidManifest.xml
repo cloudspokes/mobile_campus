@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.appirio.aau"
     android:installLocation="internalOnly"
-    android:versionCode="3"
+    android:versionCode="21"
     android:versionName="2.1.012" >
 
     <supports-screens

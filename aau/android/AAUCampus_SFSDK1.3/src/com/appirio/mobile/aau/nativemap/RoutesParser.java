@@ -3,7 +3,6 @@ package com.appirio.mobile.aau.nativemap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.json.JSONArray;
@@ -13,7 +12,7 @@ public class RoutesParser {
 
 	private List<Route> routes;
 	private List<BusStop> stops;
-	private Map<String, String> markerIconMap = new HashMap<String, String>();
+	//private Map<String, String> markerIconMap = new HashMap<String, String>();
 	
 	public RoutesParser(JSONArray busRoutes) throws AMException {
 		try {

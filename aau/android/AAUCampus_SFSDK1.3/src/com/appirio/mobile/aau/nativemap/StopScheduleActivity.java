@@ -1,11 +1,13 @@
 package com.appirio.mobile.aau.nativemap;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.ArcShape;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -55,7 +57,13 @@ public class StopScheduleActivity extends Activity {
 			View scheduleView = this.getLayoutInflater().inflate(R.layout.schedule_item, null);
 			
 			((TextView)scheduleView.findViewById(R.id.txtRouteName)).setText(routeSchedule.getName());
-			((TextView)scheduleView.findViewById(R.id.txtRouteName)).setBackgroundColor(Color.parseColor(routeSchedule.getColor()));
+			// ((TextView)scheduleView.findViewById(R.id.txtRouteName)).setBackgroundColor(Color.parseColor(routeSchedule.getColor()));
+			
+			ShapeDrawable circle = new ShapeDrawable( new ArcShape(0, 360));
+			circle.setIntrinsicHeight(110);
+			circle.setIntrinsicWidth(40);
+			circle.getPaint().setColor(Color.parseColor(routeSchedule.getColor()));
+			((TextView)scheduleView.findViewById(R.id.txtRouteName)).setBackgroundDrawable(circle);
 			
 			String upcomingStops = routeSchedule.getTodaysNextStops();
 			if(upcomingStops == null) {

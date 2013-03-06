@@ -1,6 +1,5 @@
 package com.appirio.mobile;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +27,6 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -38,13 +36,11 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
@@ -59,7 +55,6 @@ import com.appirio.aau.R;
 import com.appirio.mobile.aau.slidingmenu.SlidingMenuAdapter;
 import com.appirio.mobile.aau.slidingmenu.SlidingMenuItem;
 import com.appirio.mobile.aau.slidingmenu.SlidingMenuLayout;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.salesforce.androidsdk.ui.LoginActivity;
@@ -91,7 +86,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 	private Button showSlidingMenuButton;
 	private WebView webView;
 	private SlidingMenuAdapter menuAdapter;
-	private ArrayList<SlidingMenuItem> slidingMenuList;
+	// private ArrayList<SlidingMenuItem> slidingMenuList;
 	private View mapLayout;
 	private ImageButton nativeMenuButton;
 	private ImageButton nativeSettingsButton;
@@ -103,7 +98,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 	private ViewGroup mapContainer;
 	private StopListAdapter stopListAdapter;
 	private View stopListView;
-	private OrientationEventListener orientationListener;
+	// private OrientationEventListener orientationListener;
 	private static AMSalesforceDroidGapActivity mainActivity;
 
 	private View getStopListView() {

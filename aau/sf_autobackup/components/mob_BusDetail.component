@@ -16,7 +16,7 @@
     padding-right:30px !important;
  }
  .bus-stop-table{
-    height: 100%;
+    height: 74px;
     width: 100%;
     margin: 0;
     padding: 0;

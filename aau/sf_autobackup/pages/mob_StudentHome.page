@@ -299,7 +299,9 @@
       color: white;
       font-weight: bold;
       font-size: 13pt;  
-      background-color: transparent;     
+      background-color: transparent;    
+      word-wrap:normal;
+      width:200px; 
     }
     .infoBubbleLink{
       background-image: url({!IF(hasNativeResources,"aaumobile://icons-18-white.png", URLFOR($Resource.mob_Design, "/mob_Design/images/icons-18-white.png"))});      width: 20px;
@@ -322,6 +324,7 @@
      width: 100%;
      height: 100%;
      overflow-x: hidden;
+     background-color: #000;
     }
     #transit-map-navbar{
         margin-top: 3px;
@@ -442,7 +445,6 @@
     
     
  }
- 
 
 
 </style>
@@ -468,7 +470,7 @@
        <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false" >
         <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div  class="mob-header-MenuIcon1"/></div>
         <!-- PARTH : Refresh Icon-->
-        <div class="mob-header-icon header-right" id="refreshBtn"><div class="mob-header-RefreshIcon" onClick="JavaScript:RefreshDataJS(1);" /></div>
+        <div class="mob-header-icon header-right" id="refreshBtn"  onClick="JavaScript:RefreshDataJS(1);"><div class="mob-header-RefreshIcon" /></div>
         <h1>Class Schedule</h1>
     </div>
     
@@ -511,9 +513,9 @@
       			<input type="hidden" name="classMeetingId" id="classMeetingId" value=""/>
       			<label for="userId" style="margin-left: 5px"><strong>Name:</strong> {!$User.FirstName} {!$User.LastName}</label><input type="hidden" name="userId" value="{!$User.ID}"/>
       			<label for="meetingNote"></label><textarea id="meetingNote" name="meetingNote" rows="8" cols="5" style="margin-left: 4px; width: 93%; height: 80px;"></textarea>
-      			<button id="classChatterSubmit">Submit</button>
       		</fieldset>
       	</form>
+      	<button id="classChatterSubmit">Submit</button>                                                                              
       </div>
      </div>
 </div>
@@ -522,9 +524,9 @@
     
        <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false" >
         <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div  class="mob-header-MenuIcon1"/></div>
-        <div class="mob-header-icon header-right" id="refreshBtn"><div class="mob-header-RefreshIcon" onClick="JavaScript:RefreshDataJS(8);" /></div>
+        <div class="mob-header-icon header-right" id="refreshBtn" onClick="JavaScript:RefreshDataJS(8);" ><div class="mob-header-RefreshIcon" /></div>
         <h1>Class History</h1>
-    </div>
+    </div> 
     
     <div data-role="content"  class="mob-content">
           <div  id="class-history-container2" >
@@ -552,7 +554,7 @@
     <div data-role="header"   class="mob-header aau-fixed-header" data-tap-toggle="false">
         <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
         <!-- PARTH : Refresh Icon-->
-        <div class="mob-header-icon header-right" id="refreshBtn"><div class="mob-header-RefreshIcon" onClick="JavaScript:RefreshDataJS(2);" /></div>
+        <div class="mob-header-icon header-right" id="refreshBtn" onClick="JavaScript:RefreshDataJS(2);"><div class="mob-header-RefreshIcon"  /></div>
         <h1>Campus News</h1>
     </div>
     <div data-role="content" class="mob-content">
@@ -576,7 +578,7 @@
     <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false">
         <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
         <!-- PARTH : Refresh Icon-->
-        <div class="mob-header-icon header-right" id="refreshBtn"><div class="mob-header-RefreshIcon" onClick="JavaScript:RefreshDataJS(3);" /></div>
+        <div class="mob-header-icon header-right" id="refreshBtn" onClick="JavaScript:RefreshDataJS(3);" ><div class="mob-header-RefreshIcon" /></div>
         <h1>Campus Events</h1>
     </div>
     <div data-role="content" class="mob-content">
@@ -604,7 +606,7 @@
         <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
         <div class="mob-header-icon header-right" id="sports-settings"><div class="mob-header-MenuIcon3" /></div>
         <!-- PARTH : Refresh Icon-->
-        <!-- <div class="mob-header-icon header-right" id="refreshBtn"><div class="mob-header-RefreshIcon" onClick="JavaScript:RefreshDataJS(4);" /></div>-->
+        <!-- <div class="mob-header-icon header-right" id="refreshBtn" onClick="JavaScript:RefreshDataJS(4);"><div class="mob-header-RefreshIcon"  /></div>-->
         <h1>Sports</h1>
     </div>
    <c:mob_SportsSettings hasNativeResources="{!hasNativeResources}"  isAndroid="{!isAndroid}"/>
@@ -618,7 +620,7 @@
     <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false">
         <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
         <!-- PARTH : Refresh Icon-->
-        <div class="mob-header-icon header-right" id="refreshBtn"><div class="mob-header-RefreshIcon" onClick="JavaScript:RefreshDataJS(5);" /></div>
+        <div class="mob-header-icon header-right" id="refreshBtn" onClick="JavaScript:RefreshDataJS(5);"><div class="mob-header-RefreshIcon"  /></div>
         <h1>Helpful Links</h1>
     </div>
     <div data-role="content" class="mob-content">
@@ -630,7 +632,7 @@
     <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false">
         <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>
         <!-- PARTH : Refresh Icon-->
-        <div class="mob-header-icon header-right" id="refreshBtn"><div class="mob-header-RefreshIcon" onClick="JavaScript:RefreshDataJS(6);" /></div>
+        <div class="mob-header-icon header-right" id="refreshBtn" onClick="JavaScript:RefreshDataJS(6);"><div class="mob-header-RefreshIcon"  /></div>
         <h1>Message Center</h1>
     </div>
     <div data-role="content" class="mob-content">
@@ -662,7 +664,7 @@
           <h1>Trip Planner</h1>
     </div> 
      <div data-role="content" id="planner-dtlId" class="mob-content trip-planner-content" align="center"  >
-	    <c:mob_tripPlanner_page1 />
+	    <c:mob_tripPlanner_page1 isAndroid="{!isAndroid}" />  
 	</div>
 </div>
 

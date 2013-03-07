@@ -1,4 +1,5 @@
 <apex:component >
+<apex:attribute name="isAndroid" description="True or false for whether device is android or ios" type="boolean" required="true"/>  
 <style>
 .div-parent-page1{
 	/*width:100%;*/
@@ -99,7 +100,7 @@
 						   		</div>
 				 			</h3>
 						   <div class="ui-collapsible-content ui-body-f1 aau-corner-bottom" >
-						   		<input type="time" data-theme="c" name="plantime" id="plantime" value="" data-mini="true" class="nativedatepicker"></input>
+						   		<input type="{!IF(isAndroid,'text','time')}" data-theme="c" name="plantime" id="plantime" value="" data-mini="true" class="nativedatepicker"></input>
 						   	</div>	
 			<!-- <table data-mini="true" width="100%" padding="5px" border="0px" align="center">
 				<tr>

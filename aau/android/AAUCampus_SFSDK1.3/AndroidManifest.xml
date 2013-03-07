@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.appirio.aau"
     android:installLocation="internalOnly"
-    android:versionCode="2"
-    android:versionName="2.1.010" >
+    android:versionCode="21"
+    android:versionName="2.1.012" >
 
     <supports-screens
         android:anyDensity="true"
@@ -104,7 +104,7 @@
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyCShQHyMMnqyZw_13C23fmcy0VJZ9N6RvU" />
+            android:value="AIzaSyAKsgex_Uqa5bCVMY36vu7syAZpANgzCoU" />
 
         <activity
             android:name="com.appirio.mobile.aau.nativemap.NativeMapAcivity"

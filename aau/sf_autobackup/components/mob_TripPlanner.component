@@ -10,7 +10,7 @@
 .ui-bar-f1 {
 	border: 1px solid #CC0018 /*{f-bar-border}*/;
 	background: #CC0018 /*{f-bar-background-color}*/;
-	color: #ffffff /*{f-bar-color}*/;
+	color: #ffffff /*{f-bar-color}*/; 
 	font-weight: bold;
 	text-shadow: 0 ;
 	background-image: -webkit-gradient(linear, left top, left bottom, from( #FF1e27 /*{f-bar-background-start}*/), to( #d51920 /*{f-bar-background-end}*/)); /* Saf4+, Chrome */
@@ -268,6 +268,7 @@
 					color: white;
 					font-size: 13pt;
 					white-space: pre-line;
+					text-shadow: none;
 				  }
 			.next-bus{
 					font-size: 10pt;
@@ -288,11 +289,11 @@
 			.arrivalTime{margin-left: 5px;}	  
 			.bigdigit{font-size:1.5em;}
 			.nextIcon{
-				background-image: url(/resource/1351575749000/mob_Design/mob_Design/images/icons-18-white.png);
+				background-image: url({!IF(hasNativeResources,"aaumobile://icons-18-white.png", URLFOR($Resource.mob_Design, "/mob_Design/images/icons-18-white.png"))}) ;
 				width: 20px;
-				background-position: -107px 1px;
+				background-position: -107px 1px; 
 				background-color: #60A0E0;
-				border-radius: 12px;
+				border-radius: 12px; 
 				display: inline-block;
 				border: solid 2px white;
 				position: absolute;
@@ -371,6 +372,17 @@
 				position: relative;
 			
 			}
+			.circle-content-longtext {
+				text-align: center;
+				position: relative;
+				top: 1.5em;
+				padding: 5px;
+				color: white;
+				font-size: 6pt;
+				white-space: pre-line;
+				font-weight: normal;
+				text-shadow: none;
+			}
 /* end trip Details css*/		
 
 .bus-stop-routes{
@@ -442,8 +454,12 @@
 				{{/if}}
      	                <table border="0" cellpadding="0" cellspacing="0" class="bus-stop-table" style="padding-left:5px;">     
      	                        <tr> 
-     	                        	<td width="1%"><div class="circle-div" style="background-color: ${routecolor}"><div class="circle-content" >${routename}</div></div></td>
-									
+     	                        	<td width="1%"><div class="circle-div" style="background-color: ${routecolor}">
+										{{if (routename.length >3)}}
+											<div class="circle-content-longtext" >${routename}</div></div></td>
+										{{else}}
+											<div class="circle-content" >${routename}</div></div></td>
+										{{/if}}
 									<td   style="width: 1px;padding-left: 10px;" >
 										<!--<table>
 											<tr >
@@ -539,7 +555,7 @@
 										</td>
 									</tr>
 									<tr> 
-	     	                        	<td   style="width: 1px;padding-left: 10px;" ><div >${routecrosses}</div>
+	     	                        	<td   style="width: 1px;padding-left: 10px;" ><div style="width:90%">${routecrosses}</div>
 										</td>
 									</tr>
 								{{if stoptype == "START"}}

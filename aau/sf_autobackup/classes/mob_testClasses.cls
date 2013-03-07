@@ -10,11 +10,17 @@ public  class mob_testClasses {
 	        String name = 'test' + Math.random() + '@academyart.edu';
 	
 			List<CollaborationGroup> grp=[select id from CollaborationGroup where name='Student Services'];
+			List<CollaborationGroup> grp2=[select id from CollaborationGroup where name='AAU Campus Admin'];
 			
 			if(grp.size() ==0 ){
 				CollaborationGroup grp1 = new CollaborationGroup(name='Student Services',CollaborationType='Public' );
 			
 				insert grp1;
+			}
+			if(grp2.size() ==0 ){
+				CollaborationGroup grp3 = new CollaborationGroup(name='AAU Campus Admin',CollaborationType='Public' );
+			
+				insert grp3;
 			}
 	        User user = new User( Alias = 'testuser'
 	                            , Email = name

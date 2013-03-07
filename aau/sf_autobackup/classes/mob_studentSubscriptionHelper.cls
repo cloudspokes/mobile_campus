@@ -1,6 +1,6 @@
 global without sharing class mob_studentSubscriptionHelper {
-	@future
-	 public static void addMembers(Set<Id> studentIds,Id groupId) {
+	/*@future
+	 public static void addMembers_old(Set<Id> studentIds,Id groupId) {
 	 	
 	 	List<CollaborationGroupMember> newMembers = new List<CollaborationGroupMember>();
 		for(Id studentID : studentIds){
@@ -8,8 +8,26 @@ global without sharing class mob_studentSubscriptionHelper {
 			newMembers.add(newMembership);
 			
 		}	
-		insert newMembers;	
+		insert newMembers;	 
 	 	
 	}
+	*/
+	@future
+	 public static void addMembers(list<string> newMembersList) {
+	 	
+	 	List<CollaborationGroupMember> newMembers = new List<CollaborationGroupMember>();
+	 	
+	 	
+	 	for(string membership:newMembersList){
+	 		 string grpId = membership.split('-')[0];
+	 		 string stdId = membership.split('-')[1];
+	 		 CollaborationGroupMember newMembership= new CollaborationGroupMember(MemberId=stdId,CollaborationGroupId = grpId );
+			 newMembers.add(newMembership);
+	 		 
+	 	}
+	 	 
+	 	insert newMembers;	  
+	 	
+	}  
 
 }

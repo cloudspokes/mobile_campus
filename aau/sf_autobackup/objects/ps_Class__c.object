@@ -134,12 +134,14 @@
     <listViews>
         <fullName>All</fullName>
         <columns>NAME</columns>
+        <columns>Course_Title__c</columns>
         <columns>Term__c</columns>
         <columns>Subject__c</columns>
         <columns>Catalog_Nbr__c</columns>
         <columns>Class_Section__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
+        <language>en_US</language>
     </listViews>
     <listViews>
         <fullName>All1</fullName>

@@ -8,12 +8,22 @@ trigger SubscribeToStudentServices on User (after insert,after update) {
 		return;
 	}
 	string GroupName = 'Student Services';
+	set<string> Groups = new Set<string>();
+	set<string> GroupIds = new Set<string>();
+	Groups.add('Student Services');
+	Groups.add('AAU Campus Admin');
 	
 	//Retrieve Student Service Chatter group
-	List<CollaborationGroup> studentServicesGroup = [Select id,name from CollaborationGroup where name = :GroupName limit 1];
+	List<CollaborationGroup> studentServicesGroup = [Select id,name from CollaborationGroup where name in :Groups ];
 	if(studentServicesGroup.size() == 0){
 		system.debug('CollaborationGroup Student Services does not exist');
 		return;
+	}
+	map<ID,set<ID>> existingMembersMap = new map<ID,set<ID>>();
+	
+	for(CollaborationGroup grp:studentServicesGroup){
+		GroupIds.add(grp.id);
+		existingMembersMap.put(grp.id,new set<ID>());
 	}
 	
 	//Create set of Student ids
@@ -33,22 +43,29 @@ trigger SubscribeToStudentServices on User (after insert,after update) {
 	List<CollaborationGroupMember> existingMembership =[Select MemberId, CollaborationGroup.Name, CollaborationGroupId 
 														From CollaborationGroupMember
 														where MemberId in :studentIds
-															  and CollaborationGroupId =:studentServicesGroup[0].id];
+															  and CollaborationGroupId in :GroupIds];
+	
+	system.debug('_________________' + existingMembership);
 	
 	//Remove ids with existing memberships 													  
 	for(CollaborationGroupMember member : existingMembership)	{
-		studentIds.remove(member.MemberId);
+		existingMembersMap.get(member.CollaborationGroupId).add(member.MemberId);
+		//studentIds.remove(member.MemberId);
 	}	
 	
-	//Create new memberships
-	/*List<CollaborationGroupMember> newMembers = new List<CollaborationGroupMember>();
+	list<string> newMembersList = new list<string>();
 	for(Id studentID : studentIds){
-		CollaborationGroupMember newMembership= new CollaborationGroupMember(MemberId=studentId,CollaborationGroupId =studentServicesGroup[0].id );
-		newMembers.add(newMembership);
-		
-	}	
-	insert newMembers;	
-	*/
-	mob_studentSubscriptionHelper.addMembers(studentIds,studentServicesGroup[0].id)	;	   					
+		for(ID groupId : GroupIds)	{
+			
+			if(!existingMembersMap.get(groupId).contains(studentID)){
+				newMembersList.add(groupId + '-' +studentID);
+				
+			}
+			//studentIds.remove(member.MemberId);
+		}
+	}  
+	
+	
+	mob_studentSubscriptionHelper.addMembers(newMembersList)	;	    					
 	
 }

@@ -140,8 +140,9 @@ var MapManager = function() {
             content += '</div>';
           }
           
-          var size = 150;
-          var s = content.split(/\<.*?\>/);
+          //var size = 230;150;
+          var size = 230;
+         /* var s = content.split(/\<.*?\>/);
           
           if(s) {
             size = 0;
@@ -155,7 +156,7 @@ var MapManager = function() {
           }
           if(size < 150){
           	size = 150;
-          }
+          }*/
           
           $("#popupMeasureDiv").html(content);
          
@@ -172,7 +173,7 @@ var MapManager = function() {
               arrowSize: 10,
               borderWidth: 1,
               borderColor: '#000',
-              minHeight: 45,
+              //minHeight: 45,
               minWidth: size
             });
             

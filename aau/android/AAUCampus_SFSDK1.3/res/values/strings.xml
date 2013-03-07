@@ -23,5 +23,6 @@
 	<string name="label_Done">Done</string>
     <string name="map_button">Map</string>
     <string name="stop_list_button">Stop List</string>
+	<string name="external_site_title">External Site</string>
 		
 </resources>

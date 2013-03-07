@@ -15,7 +15,7 @@
 	text-shadow: 0 0px 0 black;
 }
 .div-selection{
-	width: 75%;
+	width: 68%;
 	float: left;
 	margin-left: 0px;
 	position: relative;
@@ -47,7 +47,7 @@
 						<!-- trip-selection-template -->
 					</ul></td></tr></table>
 			</div>
-	   		<div class="mob-header-icon header-right" id="refreshBtn"><div class="mob-header-RefreshIcon" onClick="JavaScript:RefreshDataJS(7);" /></div>
+	   		<div class="mob-header-icon header-right" id="refreshBtn" onClick="JavaScript:RefreshDataJS(7);"><div class="mob-header-RefreshIcon"  /></div>
 	   		
 	   		
 	   	</div>

@@ -225,6 +225,7 @@ var RestDataPlugin = {
 	baseUrl: str_baseUrl,		//$Setup.mob_Student__c.Base_Url__c
 	restUrl: str_restUrl,		//$Setup.mob_Student__c.Rest_Url__c
 	//offline: false,
+	retryCount: 0,
 	
 	getData: function(successCallback, failureCallback, restPath, isSFDC, restType, dataType) {
 		var isSuccess = false;
@@ -233,38 +234,50 @@ var RestDataPlugin = {
 			console.log('Rest call via Phonegap...');
 			//RestDataPlugin.getPhonegapData(successCallback, failureCallback, restPath, isSFDC, restType, dataType);
 			 setTimeout(function(){
-			 					
-								if( !isSuccess){
-									isTimeout = true;
-									//alert("We cannot complete the request at this time. Try again when you are connected to the internet.");
-									alert("Due to slow or no connection, this action has been canceled. Please try again later.");
-									failureCallback("");
-								}else{
-									isTimeout = false;
-								}
-									},15000);
-			RestDataPlugin.getPhonegapData(function (rawResult) {
+				if(!isSuccess){
+					isTimeout = true;
+					//alert("We cannot complete the request at this time. Try again when you are connected to the internet.");
+					alert("Due to slow or no connection, this action has been canceled. Please try again later.");
+					failureCallback("");
+				}else{
+					isTimeout = false;
+				}
+			},30000);
+
+			RestDataPlugin.getPhonegapData(mySuccess, myFailure, restPath);
+
+			function mySuccess (rawResult) {
 			  							
-										  isSuccess = true;
-										  if(isTimeout){
-										  	return ;//failureCallback("");
-										  }
-										  isTimeout = false;
-										  appirioUtils.log("This is the rawResult from PhoneGap: " + rawResult);
-										  try {
-										    var json = JSON.parse(rawResult);
-										    successCallback(json);
-										  } catch (e) {
-							                successCallback(rawResult);		 	  
-										  } 
-			}, function (rawResult){
+				  isSuccess = true;
+				  if(isTimeout){
+					return ;//failureCallback("");
+				  }
+				  isTimeout = false;
+				  appirioUtils.log("This is the rawResult from PhoneGap: " + rawResult);
+				  try {
+				    var json = JSON.parse(rawResult);
+				    successCallback(json);
+				  } catch (e) {
+					  successCallback(rawResult);		 	  
+				  } 
+
+			}
+			function myFailure (rawResult){
 					isSuccess = true;
 					 if(isTimeout){
 					  	return ;//failureCallback("");
 					  }
 					  isTimeout = false;
+				if(RestDataPlugin.retryCount > 1){
 					failureCallback(rawResult);
-					}, restPath);
+				}else{
+					//RestDataPlugin.getData(successCallback, failureCallback, restPath, isSFDC, restType, dataType);
+					retryCount++;
+					setTimeout(function(){
+						RestDataPlugin.getPhonegapData(mySuccess, myFailure, restPath, isSFDC, restType, dataType);
+					},2000);
+				}
+			}//, restPath);
 		}else{
 			console.log('Rest call via AJAX Toolkit...');
 			RestDataPlugin.getAjaxDataByForceTK(successCallback, failureCallback, restPath, isSFDC, restType, dataType);
@@ -310,6 +323,7 @@ var RestDataPlugin = {
 		console.log('REST CALL - '+ [restPath]);
 		aauMobile.nativeAdapter.exec(successCallback, failureCallback, "com.appirio.mobile.webservice", "getRestData", [restPath]);
 	},
+	//retryPhonegapData: function(successCall, failureCall
 
 	getAjaxDataByForceTK: function(successCallback, failureCallback, restPath, isSFDC, restType, dataType) {
 

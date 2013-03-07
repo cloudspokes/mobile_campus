@@ -44,10 +44,10 @@
  	right: 20px;
  }
  
- .event-opponent-score.event-H, .event-AAU-score.event-A{
+ .event-opponent-score.event-H, .event-AAU-score.event-A, .event-AAU-score.event-N{
  	left:118px;
  }
- .event-AAU-score.event-H, .event-opponent-score.event-A{
+ .event-AAU-score.event-H, .event-opponent-score.event-A, .event-opponent-score.event-N{
  	right: 88px;
  }
  .event-team-logo{
@@ -72,6 +72,7 @@
  a.event-link{
  	padding: 0 !important;
  	position: relative;
+ 	height: 110px !important;
  }
  .event-team-score{
  	font-size: 30px;
@@ -80,11 +81,61 @@
  }
  .event-icon{
  	display: inline-block;
- 	background-color: #000;
- 	width:32px;
- 	height: 110px;
  	float: left;
+ 	height: 110px;
+ 	width: 32px;
+ 	padding-right: 4px;
+ 	padding-left: 4px;
+ 	background-color: #000;
  }
+ 
+ .event-icon span{
+ 	background-image: url({!URLFOR($Resource.mob_Design, "/mob_Design/images/sports-icon.png")});
+ 	width:32px;
+ 	height: 32px;
+ 	margin-top: 39px;
+ 	background-size: 100%;
+ 	display: block;
+ }
+ .event-icon.MBB span, .event-icon.WBB span{
+ 	background-position-y: -66px;
+ }
+ .event-icon.BB span{
+ 	background-position-y: 0px;
+ }
+ .event-icon.SB span{
+ 	background-position-y: -34px;
+ }
+ .event-icon.MTEN span, .event-icon.WTEN span{
+ 	background-position-y: -272px;
+ }
+ .event-icon.MTRK span, .event-icon.WTRK span{
+ 	background-position-y: -188px;
+ 	height: 24px;
+ 	margin-top: 43px;
+ }
+ .event-icon.MGOLF span, .event-icon.WGOLF span{
+ 	background-position-y: -123px;
+ }
+ 
+ /* Sports that currently don't show an abbreviation */
+ .event-icon.MVB span, .event-icon.WVB span{
+ 	background-position-y: -214px;
+ }
+ .event-icon.CHEER span,.event-icon.DANCE span{
+ 	background-position-y: -246px;
+ 	height: 25px;
+ 	margin-top: 42px;
+ }
+ .event-icon.MSOC span, .event-icon.WSOC span {
+ 	background-position-y: -156px;
+ }
+ .event-icon.MXC span, .event-icon.WXC span{
+ 	background-position-y: -100px;
+ 	height: 23px;
+ 	margin-top: 43px;
+ }
+ /* End of currently non-working events. */
  .event-sport, .event-location{
  	font-size: 12px;
  }
@@ -127,7 +178,7 @@
 <script id="sport-template" type="text/x-jquery-tmpl">
 <li class="event-li">
 	{{if eventURL != ""}}<a class="event-link" href="javascript:WebViewer.showWebView('${eventURL}');;">{{/if}}
-		<div class="event-icon ${eventAbbrev}">&nbsp;</div>
+		<div class="event-icon ${eventAbbrev}"><span>&nbsp;</span></div>
 		<div class="event-sport">${eventSport}</div>
 		<div class="event-date">${"" + (eventDate.getMonth() + 1) + "/" + eventDate.getDate() + "/" + eventDate.getUTCFullYear()} - ${eventTime}</div>
 		<div class="event-location"><span class="event-facility">${eventFacility}</span> - ${eventLocation}</div>

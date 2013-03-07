@@ -304,8 +304,8 @@ classSchedule: {
 		$('#classDescrDv').empty();
 		$('#classMeetingId').val(classSectionId);
 
-		$("<span class='section-details'>"+onlineClassDetail.classSubject+"&nbsp;"+onlineClassDetail.classCatalogNbr+"."+onlineClassDetail.classSection+"</span>").appendTo('#classNameDv');
-		$("<h2>"+onlineClassDetail.className+"</h2>").appendTo('#classNameDv');
+		$("<span class='section-details'><b>Code: </b>"+onlineClassDetail.classSubject+"&nbsp;"+onlineClassDetail.classCatalogNbr+"."+onlineClassDetail.classSection+"</span>").appendTo('#classNameDv');
+		$("<h2>"+onlineClassDetail.courseTitle+"</h2>").appendTo('#classNameDv');
 		$("<h3>"+onlineClassDetail.classDescription+"</h3>").appendTo('#classDescrDv');
         
 		var blockTemplate = $("#student-classDetail-template");
@@ -352,8 +352,8 @@ classSchedule: {
 		$('#classDescrDv').empty();
 		$('#classMeetingId').val(meetingId);
 
-		$("<span class='section-details'>"+enrolledClass.classSubject+"&nbsp;"+enrolledClass.classCatalogNbr+"."+enrolledClass.classSection+"</span>").appendTo('#classNameDv');
-		$("<h2>"+enrolledClass.className+"</h2>").appendTo('#classNameDv');
+		$("<span class='section-details'><b>Code: </b>"+enrolledClass.classSubject+"&nbsp;"+enrolledClass.classCatalogNbr+"."+enrolledClass.classSection+"</span>").appendTo('#classNameDv');
+		$("<h2>"+enrolledClass.courseTitle+"</h2>").appendTo('#classNameDv');
 		$("<h3>"+enrolledClass.classDescription+"</h3>").appendTo('#classDescrDv');
         
 		   
@@ -435,9 +435,10 @@ classChatter: {
 			}
 		} else{
 			$("#classChatterNoResults").css("display", "block");
+			$("#classChatterShowMore").css("display", "none"); 
 		}
 
-		if(aauMobile.isAndroid() && $($.mobile.activePage).attr('id') == 'chatter-detail'){
+		if(aauMobile.isAndroid()){
 			$(window).trigger('orientationchange');
 		} 
 		
@@ -471,7 +472,8 @@ classChatter: {
 		if(aauMobile.isAndroid()){
 			$(window).trigger('orientationchange');
 		}
-		$("#meetingNote").val("");
+		$("#meetingNote").val("").blur();
+		$("#classChatterHeader")[0].scrollIntoView(true);
 	},
 	showMoreChatter: function(){
 			var toDisplay = aauMobile.classChatter.activePosts.slice(aauMobile.classChatter.displayCount, (aauMobile.classChatter.displayCount + 5));
@@ -678,7 +680,7 @@ classHistory: {
 		var blockTemplate = $("#student-classDetail-template");
 		var hasGrade = false;
 
-		$("<span class='section-details'>"+enrolledClass.classSubject+"&nbsp;"+enrolledClass.classCatalogNbr+"."+enrolledClass.classSection+"</span>").appendTo(nameDiv);
+		$("<span class='section-details'><b>Code: </b>"+enrolledClass.classSubject+"&nbsp;"+enrolledClass.classCatalogNbr+"."+enrolledClass.classSection+"</span>").appendTo(nameDiv);
 		$("<h2>"+enrolledClass.className+"</h2>").appendTo(nameDiv);
 		$("<h3>"+enrolledClass.classDescription+"</h3>").appendTo(descDiv);
         
@@ -1132,7 +1134,7 @@ campusFeed: {
 		if(aauMobile.campusFeed.isRefreshEvent || campusData == null || campusData.length < 1 || campusData.channel.title == null){
 			console.log('campusFeed : NO LOCAL DATA - LOADING FRESH DATA');
 			
-			var rssUrl = 'https://www.academyart.edu/news.rss';
+			var rssUrl = 'http://www.academyart.edu/news.rss';
 			RestDataPlugin.getData(aauMobile.campusFeed.processFreshData, aauMobile.campusFeed.initFailure, rssUrl, false, "GET", "xml");
 		}else{
 			//Load existing data
@@ -1313,7 +1315,7 @@ rssEvent: {
 		var eventData = aauMobile.getLocalStorage(aauMobile.rssEvent.dataKey);
 		//var eventData;
 		console.log("Got Local Storage");
-		if(aauMobile.rssEvent.isRefreshEvent || eventData == undefined || eventData == null || eventData.game == undefined || eventData.game == null || eventData.game.length < 1 || eventData.game[0].game_id == undefined){
+		if(aauMobile.rssEvent.isRefreshEvent || eventData == undefined || eventData == null || eventData.game == undefined || eventData.game == null || ($.isArray(eventData.game) && eventData.game.length > 0 && eventData.game[0].game_id != undefined) || (!$.isArray(eventData.game) && eventData.game.game_id != undefined)){
 			console.log('rssEvent : NO LOCAL DATA - LOADING FRESH DATA');
 			//var rssUrl = 'http://www.artuathletics.com/services/calendar.ashx/calendar.rss';
 			var rssUrl = 'http://www.artuathletics.com/services/scores.aspx?';
@@ -1323,11 +1325,15 @@ rssEvent: {
 			if(locationValue == "undefined" || locationValue == null || locationValue == ""){
 				locationValue = $("input:radio[name=location-choice]:checked").val();
 			}
+			var sortValue = "desc";
+			if(rangeValue == "future"){
+				sortValue = "asc";
+			}
 			var sportValue = $("#sport-choice").val();
 			console.log("Range value: " + rangeValue);
 			console.log("Location value: " + locationValue);
 			console.log("Sport choice: " + sportValue);
-			rssUrl += "range=" + rangeValue + "&location_indicator="+ locationValue + "&path=" + sportValue;
+			rssUrl += "range=" + rangeValue + "&location_indicator="+ locationValue + "&path=" + sportValue + "&sort=" + sortValue;
 			console.log(rssUrl);
 			RestDataPlugin.getData(aauMobile.rssEvent.processFreshData, aauMobile.rssEvent.initFailure, rssUrl, false, "GET", "xml");
 		}else{
@@ -1366,7 +1372,12 @@ rssEvent: {
 		var feedContainer = $("#event-ul");
 		var jsonList = [];
 		$(feedContainer).empty();
-		if(result != "" && result.game[0] != undefined && result.game[0].game_id != undefined){
+		if(result != undefined && result.game != undefined && (!$.isArray(result.game) && result.game.game_id != undefined)){
+			var tempGame = result.game;
+			result.game = [];
+			result.game[0] = tempGame;
+		}
+		if(result != "" && ($.isArray(result.game) && result.game.length > 0 && result.game[0].game_id != undefined)){
 				var itemCount = 0;
 				var currDate = new Date();
 				currDate.setHours(0);
@@ -1382,7 +1393,7 @@ rssEvent: {
 				//alert(JSON.stringify(item.localstartdate));
 				//alert(stDate+' : '+currDate);
 
-				if(itemCount < 20 && stDate > currDate ){
+				if(itemCount < 20){
 					var eventLink = "";
 					if(item.game_postgame_story_id != undefined && item.game_postgame_story_id != null && item.game_postgame_story_id != ""){
 						eventLink = "http://www.artuathletics.com/mobile/index.aspx?story=" + item.game_postgame_story_id;
@@ -1668,8 +1679,10 @@ chatterFeed: {
 			if(index>19){
 				return false;
 			}
+			if(appirioUtils.isGingerbreadOrBelow()){
+				item.createdDate = item.createdDate.substr(0,item.createdDate.indexOf("T"));
+			}
 			var stDate = new Date(item.createdDate);
-			
 		    var localeDate = appirioUtils.formatDate(stDate);		
 			if(stDate.getDay() != currDay){
 				currDay = stDate.getDay();
@@ -2062,6 +2075,8 @@ tripPlanner: {
 			}
 		}
 		
+		$(window).trigger("orientationchange");
+		
 		//PARTH: Hide Spinner
 		aauMobile.tripPlanner.onComplete();
 		
@@ -2309,6 +2324,7 @@ tripPlanner: {
 			}
 		}
 		
+		$(window).trigger("orientationchange");
 		
 		//PARTH: Hide Spinner
 		aauMobile.tripPlanner.onComplete();
@@ -2611,7 +2627,9 @@ slideMenu: {
 			}
 		}
 	},
-        toggleMenu: function(){
+    toggleMenu: function(e){
+        event.preventDefault();
+        event.stopPropagation();
 		aauMobile.nativeAdapter.exec(function (){}, function(){}, "com.appirio.mobile.menu", "toggleMenu", []);
 	},
 	nativeSetup: function(){
@@ -2622,7 +2640,7 @@ slideMenu: {
 		
 		var transitMap = {"title":"Transit Map", "id" : "transit-map-link", "icon":"iconsprite_grey.png", "nonsprite":"transit.png", "imageRect":{ "x": 0, "y": 31, "width": 38, "height": 31}, "action":"$.mobile.changePage('#transit-map'); $(window).trigger('orientationchange');", "actionType" : "js"};
 		if(hasNativeMap){
-			transitMap = {"title":"Transit Map", "id" : "native-transit-map-link", "icon":"iconsprite_grey.png", "nonsprite":"transit.png", "imageRect":{ "x": 0, "y": 31, "width": 38, "height": 31}, "action":"aauMobile.nativeAdapter.exec(null, null, 'com.appirio.mobile.map', 'showMap', []);", "actionType":"native"}
+			transitMap = {"title":"Transit Map", "id" : "native-transit-map-link", "icon":"iconsprite_grey.png", "nonsprite":"transit.png", "imageRect":{ "x": 0, "y": 31, "width": 38, "height": 31}, "action":"$.mobile.urlHistory.addNew('transit-map-native'); aauMobile.nativeAdapter.exec(null, null, 'com.appirio.mobile.map', 'showMap', []);", "actionType":"native"}
 		}
 		
 		aauMobile.nativeAdapter.exec(function(){}, function(){}, "com.appirio.mobile.menu", "populateMenu", [{buttons: [
@@ -2680,7 +2698,8 @@ slideMenu: {
 		$('.menu-btn').on(aauMobile.clickEvent, appirioUtils.fireEvent(aauMobile.slideMenu.show, event, null));
 		*/
 		$('.menu-btn').on(aauMobile.clickEvent, function(event){
-			
+			event.preventDefault();
+			event.stopPropagation();
 			appirioUtils.fireEvent(aauMobile.slideMenu.show, event, null);
 		});
 	
@@ -2713,7 +2732,7 @@ slideMenu: {
 				//mapManager.triggerResize();
 				$(window).trigger('orientationchange');
 			}
-
+ 
 			if(!$(this).hasClass('slide-out')){
 				$('.mob-header').css('position','fixed');
 				//$('#result-container').css('position','fixed');
@@ -2937,6 +2956,14 @@ function studentDataInit() {
 
 var focusIsBound = false;
 
+function IsInputTypeSupported(typeName) {
+    var input = document.createElement("input");
+    input.setAttribute("type", typeName);
+    var val = (input.type !== "text");
+    delete input;
+    return val;
+}
+
 //function bindEvents(callback) {
 function bindEvents() {
 	
@@ -2951,14 +2978,17 @@ function bindEvents() {
 	}); 
 	$("#sports-settings").live(aauMobile.clickEvent, function(event){
 			$('#sports-result-container').toggle();
+			if(appirioUtils.isAndroid() && !appirioUtils.isGingerbreadOrBelow()){
+				$('#sports-result-container').css("margin-top","40px");
+			}
+			if($("#sports-result-container").css("display") == "none"){
+				//We just hid the container. Refresh.
+				RefreshRSSEventsJS();
+			}
 			event.preventDefault();
 			event.stopPropagation();
 	});
-	$("#sports-settings-button").live(aauMobile.clickEvent, function(event){
-		event.preventDefault();
-		event.stopPropagation();
-		RefreshRSSEventsJS();
-	});
+
 	$("input:radio[name=range-choice]").click(function() {
     	rangeValue = $(this).val();
 	});
@@ -2989,8 +3019,8 @@ function bindEvents() {
 		   $('.transit-settings').css('visibility', "hidden");
 		}
 	});*/
-
-var pickerShowing = false;
+	
+	var pickerShowing = false;
 
   //Special changes to make the Android version function/appear correctly.
   if(appirioUtils.isAndroid()) {
@@ -3056,14 +3086,19 @@ var pickerShowing = false;
   	    }
   		var index = $.mobile.urlHistory.activeIndex - 1;
 		if(index >= lowIndex){
-		    var prevPageUrl;
-		    if(index == 0){
+		    var prevPageUrl = "#" + $.mobile.urlHistory.getPrev().url;
+		    if(prevPageUrl.indexOf("mob_StudentHome") > -1){
 		    	prevPageUrl = "#student-home";
 		    }
-		    else{
-		    	prevPageUrl = "#" + $.mobile.urlHistory.getPrev().pageUrl
-		    }
-			$.mobile.changePage(prevPageUrl);
+			if($.mobile.urlHistory.getActive().url == "transit-map-native"){
+				aauMobile.nativeAdapter.exec(null, null, 'com.appirio.mobile.map', 'hideMap', []);
+			}
+			if(prevPageUrl == "#transit-map-native"){
+				aauMobile.nativeAdapter.exec(null, null, 'com.appirio.mobile.map', 'showMap', []);
+			}
+			else{
+				$.mobile.changePage(prevPageUrl);
+			}
 			$.mobile.urlHistory.activeIndex = index;
 			$.mobile.urlHistory.clearForward();
 			event.preventDefault();
@@ -3072,35 +3107,32 @@ var pickerShowing = false;
 		}
   	});
   	$('.page-container').live('pageshow', function(){
-  		if($(this).height() > $(window).height()){
-  			$('#container').css('height', ($(this).height() + 50) + "px");
-  		}else{
-  			$('#container').css('height', '100%');
-  		}
+		$(window).trigger('orientationchange');
   	});
-  	$(window).on('orientationchange', function(){
-		  var pageHeight = $($.mobile.activePage).height();
-  		if(pageHeight > $(window).height()){
-  			$('#container').css('height', (pageHeight + 50) + "px");
-  		}else{
-  			$('#container').css('height', '100%');
-  		}
-	});
 	if(appirioUtils.isGingerbreadOrBelow()){
 		$(".mob-content").css("position", "relative !important");
 		$(".mob-content").css("top", "0px");
 		$(".mob-header").css("position", "relative !important");
 	}
   }
-
-  $(window).on('orientationchange', function(){
-	//Size the map properly for iPads
-	$('#map-content').css('height', ($(window).height() - 50) + "px");
-	if(mapManager){
-		mapManager.triggerResize();
-	}
-  });
+  if(!hasNativeMap){
+  	$(window).on('orientationchange', function(){
+		//Size the map properly for iPads
+		$('#map-content').css('height', ($(window).height() - 44) + "px");
+		if(mapManager){
+			mapManager.triggerResize();
+		}
+	  });
+  }
   
+  //Fixes the page sizing issues.
+  $(window).on('orientationchange', function(){
+		if(appirioUtils.isAndroid()){
+			window.setTimeout(resizeElements, 300);
+		} else{
+			resizeElements();
+		}
+	});
   
 	//alert('uncomment  this code!!');
 /*
@@ -3142,6 +3174,25 @@ var pickerShowing = false;
   } 
  //callback();
 }
+
+function resizeElements(){
+			//Reset Inline Styles.
+			$('#container').css('height', "");
+	  		$(".page-container").css('min-height', "" );
+	  		$(".mob-content").css('height', "" );
+			
+			var pageHeight = $($.mobile.activePage).find(".mob-content")[0].scrollHeight;
+	  		if(pageHeight > $(window).height() && appirioUtils.isGingerbreadOrBelow()){
+	  			$('#container').css('height', (pageHeight + 44) + "px");
+	  			$(".page-container").css('min-height', (pageHeight + 44) + "px" );
+	  			$(".mob-content").css('height', (pageHeight + 44) + "px" );	
+	  		}else{
+	  			$('#container').css('height', (window.outerHeight /window.devicePixel) + "px" );
+	  			$(".page-container").css('min-height', ($(window).height()) + "px" );
+	  			$(".mob-content").css('height', ($(window).height() - 44) + "px" );
+	  		}
+	  		
+  		}
 
 function map_BackButtonClick(){
 	//alert('aaa');
@@ -3244,7 +3295,7 @@ function initApp(){
 				return null;
 			}
 			appirioUtils.eventInProgress = true;*/
-			
+			//alert("Show Progress Called");
 			$.mobile.showPageLoadingMsg("b", "This is only a test", false);
 			return true;
 			

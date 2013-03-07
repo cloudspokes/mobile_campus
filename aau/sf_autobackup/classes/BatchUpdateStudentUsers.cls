@@ -16,11 +16,22 @@ global class BatchUpdateStudentUsers implements Database.Batchable<SObject>{
     	List<User> usrStudents = (List<User>)(objects);
     	
     	string GroupName = 'Student Services';
-        //Retrieve Student Service Chatter group
-		List<CollaborationGroup> studentServicesGroup = [Select id,name from CollaborationGroup where name = :GroupName limit 1];
+		set<string> Groups = new Set<string>();
+		set<string> GroupIds = new Set<string>();
+		Groups.add('Student Services');
+		Groups.add('AAU Campus Admin');
+		
+		//Retrieve Student Service Chatter group
+		List<CollaborationGroup> studentServicesGroup = [Select id,name from CollaborationGroup where name in :Groups ];
 		if(studentServicesGroup.size() == 0){
 			system.debug('CollaborationGroup Student Services does not exist');
 			return;
+		}
+		map<ID,set<ID>> existingMembersMap = new map<ID,set<ID>>();
+		
+		for(CollaborationGroup grp:studentServicesGroup){
+			GroupIds.add(grp.id);
+			existingMembersMap.put(grp.id,new set<ID>());
 		}
 		
 		//Create set of Student ids
@@ -30,24 +41,33 @@ global class BatchUpdateStudentUsers implements Database.Batchable<SObject>{
 			
 		}
 		
-		//Retrieve List of existing memberships
+			//Retrieve List of existing memberships
 		List<CollaborationGroupMember> existingMembership =[Select MemberId, CollaborationGroup.Name, CollaborationGroupId 
 															From CollaborationGroupMember
 															where MemberId in :studentIds
-																  and CollaborationGroupId =:studentServicesGroup[0].id];
+																  and CollaborationGroupId in :GroupIds];
+		
+		system.debug('_________________' + existingMembership);
 		
 		//Remove ids with existing memberships 													  
 		for(CollaborationGroupMember member : existingMembership)	{
-			studentIds.remove(member.MemberId);
+			existingMembersMap.get(member.CollaborationGroupId).add(member.MemberId);
+			//studentIds.remove(member.MemberId);
 		}	
 		
-		//Create new memberships
 		List<CollaborationGroupMember> newMembers = new List<CollaborationGroupMember>();
 		for(Id studentID : studentIds){
-			CollaborationGroupMember newMembership= new CollaborationGroupMember(MemberId=studentId,CollaborationGroupId =studentServicesGroup[0].id );
-			newMembers.add(newMembership);
-			
-		}	
+			for(ID groupId : GroupIds)	{
+				
+				if(!existingMembersMap.get(groupId).contains(studentID)){
+					CollaborationGroupMember newMembership= new CollaborationGroupMember(MemberId=studentID,CollaborationGroupId =groupId);
+					newMembers.add(newMembership);
+					
+				}
+				
+			}
+		}  
+		
 		insert newMembers;	
 		
     }

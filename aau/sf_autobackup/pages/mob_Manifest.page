@@ -39,7 +39,7 @@ CACHE:
 {!$Resource.mob_Design}/mob_Design/iconsprite_white.png
 {!$Resource.mob_Design}/mob_Design/iconsprite_grey.png
 {!$Resource.jquerymobile1dot1}/images/icons-18-white.png
-{!$Resource.mob_Design}/mob_Design/images/Transit/marker_person.png
+{!$Resource.mob_Design}/mob_Design/images/Transit/marker_person.png 
 {!$Resource.mob_Design}/mob_Design/images/Transit/marker_A.png
 {!$Resource.mob_Design}/mob_Design/images/Transit/marker_D.png
 {!$Resource.mob_Design}/mob_Design/images/Transit/marker_E.png
@@ -54,6 +54,9 @@ CACHE:
 {!$Resource.mob_Design}/mob_Design/images/settings-arrow-hack.png
 {!$Resource.mob_Design}/mob_Design/images/settings-list-hack.png
 {!$Resource.mob_Design}/mob_Design/images/ajax-loader.gif
+{!$Resource.mob_Design}/mob_Design/images/icons-18-white.png
+{!$Resource.mob_Design}/mob_Design/images/sports-icon.png
+
 
 https://aau--dev7--c.cs1.visual.force.com/jslibrary/1345063354000/sfdc/JiffyStubs.js
 

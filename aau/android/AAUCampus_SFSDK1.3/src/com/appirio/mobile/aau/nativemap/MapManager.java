@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import org.apache.cordova.DroidGap;
 import org.json.JSONArray;
@@ -37,7 +38,7 @@ public class MapManager {
 	private BitmapDescriptor stopBitmap;
 	private Map<String, BitmapDescriptor> routeIconMap;
 	private BitmapDescriptor defaultBusIcon;
-	private List<Marker> vehicleMarkers = new ArrayList<Marker>();
+	private List<Marker> vehicleMarkers = new Vector<Marker>();
 	private MapUpdater mapUpdater;
 	private RoutesParser routesParser;
 	private TransitMapInfoWindowAdapter infoWindowAdapter;
@@ -91,8 +92,8 @@ public class MapManager {
 						// Load bus stop data from Salesforce
 						routeIconMap = new HashMap<String, BitmapDescriptor>();
 						infoWindowAdapter = new TransitMapInfoWindowAdapter(ctx, mapManager);
-						routesPolylineShown = new ArrayList<Polyline>();
-						routesShown = new ArrayList<Route>();
+						routesPolylineShown = new Vector<Polyline>();
+						routesShown = new Vector<Route>();
 						
 						try {
 							for(Route route : routesParser.getRoutes()) {
@@ -122,6 +123,7 @@ public class MapManager {
 								
 								@Override
 								public void run() {
+									
 									for(MarkerOptions mo : busStopsMos) {
 										map.addMarker(mo);
 									}
@@ -159,7 +161,7 @@ public class MapManager {
 		this.map = _map;
 		this.mapUpdater = new MapUpdater();
 		mapManager = this;
-		busStopsMos = new ArrayList<MarkerOptions>();
+		busStopsMos = new Vector<MarkerOptions>();
 		
 		init();
 	}

@@ -1,13 +1,10 @@
 package com.appirio.mobile.aau.nativemap;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
@@ -71,15 +68,17 @@ public class TransitMapInfoWindowAdapter implements InfoWindowAdapter, OnInfoWin
 			if(!StopScheduleActivity.isActive()) {
 				StopScheduleActivity.setActive(true);
 				JSONObject markerInfo = new JSONObject(marker.getTitle());
-				
+
 				if(markerInfo.has("type") && markerInfo.getString("type").equals("stop")) {
 					String stopName = markerInfo.getString("stopName");
-	
-					ArrayList<RouteStopSchedule> schedule = this.mapManager.getSchedule(stopName);
+
+					StopScheduleActivity.setMapManager(this.mapManager);
+
+					//ArrayList<RouteStopSchedule> schedule = this.mapManager.getSchedule(stopName);
 	
 					Intent intent = new Intent(this.ctx, StopScheduleActivity.class);
 					
-					intent.putExtra("schedule", schedule);
+					//intent.putExtra("schedule", schedule);
 					intent.putExtra("stopName", stopName);
 					
 					this.ctx.startActivity(intent);

@@ -77,6 +77,9 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 		if (mapView != null) {
 			mapView.onPause();
 		}
+		if (this.mapManager != null){
+			this.mapManager.stopAutoUpdate();
+		}
 	}
 
 	public SlidingMenuLayout rootLayout;
@@ -100,7 +103,8 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 	private View stopListView;
 	// private OrientationEventListener orientationListener;
 	private static AMSalesforceDroidGapActivity mainActivity;
-
+	private boolean isLiveBusUpdates = false;
+	
 	private View getStopListView() {
 		if (stopListView == null) {
 			stopListView = getStopListAdapter().getStopListView();
@@ -370,7 +374,11 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 							}).show();
 		} else {
 			String version = null;
-
+			// Restart Live Auto Updates if ON
+			if (this.isLiveBusUpdates){
+				this.mapManager.startAutoUpdate();
+			}
+			
 			try {
 				PackageInfo pInfo = getPackageManager().getPackageInfo(
 						getPackageName(), 0);
@@ -723,9 +731,9 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 	public void onLiveUpdatesClicked(View v) {
 		if (v.getId() == R.id.toggleLiveUpdatesButton) {
 
-			boolean on = ((ToggleButton) v).isChecked();
-
-			if (on) {
+			this.isLiveBusUpdates = ((ToggleButton) v).isChecked();
+		
+			if (this.isLiveBusUpdates) {
 				// Enable Bus live updates
 				mapManager.startAutoUpdate();
 				// MessageBox("Enable Bus Live Updates");

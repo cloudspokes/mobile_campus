@@ -5,6 +5,23 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <LinearLayout
+        android:id="@+id/webViewTitleBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#000" >
+        
+ 		<TextView
+ 		    android:id="@+id/titleText"
+ 		    android:layout_width="fill_parent"
+ 		    android:layout_height="wrap_content"
+ 		    android:text="@string/external_site_title"
+ 		    android:textAppearance="?android:attr/textAppearanceLarge"
+ 		    android:gravity="center_horizontal"
+ 		    android:textColor="@color/white" />
+        
+    </LinearLayout>
     <WebView
         android:id="@+id/webView"
         android:layout_width="match_parent"

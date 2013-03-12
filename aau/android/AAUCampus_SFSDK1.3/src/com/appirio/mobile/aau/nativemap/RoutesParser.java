@@ -28,7 +28,7 @@ public class RoutesParser {
 
 			// Associate routes with stops and create stops list
 			HashMap<String, BusStop> stopMap = new HashMap<String, BusStop>();
-			for(Route route : routes) {
+			for(Route route : routes) { 
 				for(BusStop stop : route.getBusStops()) {
 					BusStop tempStop = stopMap.get(stop.getAddress());
 					

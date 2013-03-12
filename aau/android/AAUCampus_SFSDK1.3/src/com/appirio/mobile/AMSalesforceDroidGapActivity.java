@@ -325,7 +325,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 
 	private static final String FEEDBACK_PREFS = "feedback_prefs";
 	private static final String ASK_FEEDBACK_ON_PREF = "AskFeedbackOn";
-	private static final int ASK_FEEDBACK_AFTER_DAYS = 3;
+	private static final int ASK_FEEDBACK_AFTER_DAYS = 0;
 	private static final String FEEDBACK_VERSION = "feedback_version";
 
 	private boolean isConnected() {
@@ -394,7 +394,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 
 			// Request feedback when app is updated
 			if ((askFeedbackOn == -1)
-					&& ((feedbackVersion == null && Double.valueOf(version) < 2.0) || !version
+					&& ((feedbackVersion == null && (version.length() >= 3 && Double.valueOf(version.substring(0, 3)) < 2.0)) || !version
 							.equals(feedbackVersion))) {
 				feedbackVersion = version;
 				askFeedbackOn = 0;

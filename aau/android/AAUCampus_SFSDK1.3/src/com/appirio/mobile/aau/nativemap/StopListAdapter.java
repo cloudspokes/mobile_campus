@@ -80,20 +80,22 @@ public class StopListAdapter implements OnClickListener {
 	public void onClick(View view) {
 		try {
 			if(!StopScheduleActivity.isActive()) {
+				
 				StopScheduleActivity.setActive(true);
+				StopScheduleActivity.setMapManager(this.mapManager);
 				
 				String stopName = ((TextView)view.findViewById(R.id.txtStopName)).getText().toString();
 				
-				ArrayList<RouteStopSchedule> schedule = this.mapManager.getSchedule(stopName);
+				//ArrayList<RouteStopSchedule> schedule = this.mapManager.getSchedule(stopName);
 	
 				Intent intent = new Intent(this.ctx, StopScheduleActivity.class);
 				
-				intent.putExtra("schedule", schedule);
+				//intent.putExtra("schedule", schedule);
 				intent.putExtra("stopName", stopName);
 				
 				this.ctx.startActivity(intent);
 			}
-		} catch (AMException e) {
+		} catch (Exception e) {  //(AMException e) {
 			// TODO handle this exception
 			e.printStackTrace();
 		}

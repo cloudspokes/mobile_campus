@@ -18,7 +18,6 @@ import org.json.JSONObject;
 
 import android.content.Context;
 
-import com.appirio.mobile.AMSalesforceDroidGapActivity;
 import com.salesforce.androidsdk.app.ForceApp;
 import com.salesforce.androidsdk.rest.ClientManager;
 import com.salesforce.androidsdk.rest.ClientManager.AccountInfoNotFoundException;
@@ -54,7 +53,7 @@ public class APIProxy {
 				while((line = reader.readLine()) != null) {
 					cacheData.append(line);
 				}
-				
+				reader.close();
 				cacheObject = new JSONObject(cacheData.toString());
 			}
 		} catch (Exception e) {

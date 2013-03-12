@@ -71,12 +71,14 @@ public class TransitMapInfoWindowAdapter implements InfoWindowAdapter, OnInfoWin
 
 				if(markerInfo.has("type") && markerInfo.getString("type").equals("stop")) {
 					String stopName = markerInfo.getString("stopName");
-	
-					ArrayList<RouteStopSchedule> schedule = this.mapManager.getSchedule(stopName);
+
+					StopScheduleActivity.setMapManager(this.mapManager);
+
+					//ArrayList<RouteStopSchedule> schedule = this.mapManager.getSchedule(stopName);
 	
 					Intent intent = new Intent(this.ctx, StopScheduleActivity.class);
 					
-					intent.putExtra("schedule", schedule);
+					//intent.putExtra("schedule", schedule);
 					intent.putExtra("stopName", stopName);
 					
 					this.ctx.startActivity(intent);

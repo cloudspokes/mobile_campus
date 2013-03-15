@@ -60,6 +60,14 @@ import com.google.android.gms.maps.MapView;
 import com.salesforce.androidsdk.ui.LoginActivity;
 import com.salesforce.androidsdk.ui.SalesforceDroidGapActivity;
 
+/**
+ * Version old 
+ *     android:versionCode="21"
+    android:versionName="2.1.012" >
+
+ * @author iandrosov
+ *
+ */
 public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 		implements OnClickListener, OnItemClickListener {
 

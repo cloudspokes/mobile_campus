@@ -376,7 +376,8 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 			try {
 
 				// Restart Live Auto Updates if ON
-				if (this.isLiveBusUpdates){
+				if (this.mapManager.getAutoUpdate()){
+				//if (this.isLiveBusUpdates){
 					this.mapManager.startAutoUpdate();
 				}
 
@@ -606,7 +607,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 		ToggleButton liveUpdBtn = (ToggleButton) popup.getContentView()
 				.findViewById(R.id.toggleLiveUpdatesButton);
 		if (liveUpdBtn != null) {
-			liveUpdBtn.setChecked(mapManager.getAutoUpdate());
+			liveUpdBtn.setChecked(this.isLiveBusUpdates); //mapManager.getAutoUpdate());
 		}
 
 	}

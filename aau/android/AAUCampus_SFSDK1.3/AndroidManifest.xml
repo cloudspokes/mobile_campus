@@ -2,16 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.appirio.aau"
     android:installLocation="internalOnly"
-    android:versionCode="22"
-    android:versionName="2.1.013" >
+    android:versionCode="21"
+    android:versionName="2.1.012" >
 
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
         android:normalScreens="true"
         android:resizeable="true"
-        android:smallScreens="true" />
-
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
+ 
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" >
@@ -45,7 +46,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
-    <uses-sdk android:minSdkVersion="8" />
+    <uses-sdk android:minSdkVersion="8" 
+        		android:targetSdkVersion="10" />
 
     <application
         android:name="com.appirio.mobile.aau.AAUCampusApp"

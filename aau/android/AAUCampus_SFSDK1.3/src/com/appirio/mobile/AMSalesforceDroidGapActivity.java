@@ -351,64 +351,72 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 								}
 							}).show();
 		} else {
-			String version = null;
-
+			
 			try {
-				PackageInfo pInfo = getPackageManager().getPackageInfo(
-						getPackageName(), 0);
-				version = pInfo.versionName;
-			} catch (Exception ex) {
-				// This should never be thrown since the package name is
-				// coming from the current activity
-			}
-
-			// If the user has the app installed for more than 3 days, ask
-			// for feedback
-			SharedPreferences settings = getSharedPreferences(FEEDBACK_PREFS,
-					Context.MODE_PRIVATE);
-			SharedPreferences.Editor editor = settings.edit();
-			editor.putString(LoginActivity.SERVER_URL_CURRENT_SELECTION,
-					getString(com.appirio.aau.R.string.sf_default_url));
-
-			long askFeedbackOn = settings.getLong(ASK_FEEDBACK_ON_PREF, 0);
-
-			String feedbackVersion = settings.getString(FEEDBACK_VERSION, null);
-
-			// Request feedback when app is updated
-			if ((askFeedbackOn == -1)
-					&& ((feedbackVersion == null && Double.valueOf(version) < 2.0) || !version
-							.equals(feedbackVersion))) {
-				feedbackVersion = version;
-				askFeedbackOn = 0;
-				editor.putString(FEEDBACK_VERSION, version);
-			}
-
-			Calendar calendar = Calendar.getInstance();
-			calendar.add(Calendar.DAY_OF_MONTH, ASK_FEEDBACK_AFTER_DAYS);
-
-			if (askFeedbackOn == 0) {
-				editor.putLong(ASK_FEEDBACK_ON_PREF, calendar.getTimeInMillis());
-			} else if (askFeedbackOn > -1) {
-				if (askFeedbackOn < System.currentTimeMillis()) {
-					Builder dialogBuilder = new Builder(this);
-
-					dialogBuilder
-							.setMessage("Would you like to provide feedback on this app?");
-					dialogBuilder.setTitle("Feedback");
-
-					FeedbackDialogListener listener = new FeedbackDialogListener(
-							this, editor);
-
-					dialogBuilder
-							.setNegativeButton("Don't ask again", listener);
-					dialogBuilder.setNeutralButton("Not now", listener);
-					dialogBuilder.setPositiveButton("Yes!", listener);
-
-					dialogBuilder.show();
+				
+				String version = null;
+	
+				try {
+					PackageInfo pInfo = getPackageManager().getPackageInfo(
+							getPackageName(), 0);
+					version = pInfo.versionName;
+				} catch (Exception ex) {
+					// This should never be thrown since the package name is
+					// coming from the current activity
 				}
+	
+				// If the user has the app installed for more than 3 days, ask
+				// for feedback
+				SharedPreferences settings = getSharedPreferences(FEEDBACK_PREFS,
+						Context.MODE_PRIVATE);
+				SharedPreferences.Editor editor = settings.edit();
+				editor.putString(LoginActivity.SERVER_URL_CURRENT_SELECTION,
+						getString(com.appirio.aau.R.string.sf_default_url));
+	
+				long askFeedbackOn = settings.getLong(ASK_FEEDBACK_ON_PREF, 0);
+	
+				String feedbackVersion = settings.getString(FEEDBACK_VERSION, null);
+	
+				// Request feedback when app is updated
+				if ((askFeedbackOn == -1)
+						&& ((feedbackVersion == null && (version.length() >= 3 && Double.valueOf(version.substring(0, 3)) < 2.0)) || !version
+								.equals(feedbackVersion))) {
+					feedbackVersion = version;
+					askFeedbackOn = 0;
+					editor.putString(FEEDBACK_VERSION, version);
+				}
+	
+				Calendar calendar = Calendar.getInstance();
+				calendar.add(Calendar.DAY_OF_MONTH, ASK_FEEDBACK_AFTER_DAYS);
+	
+				if (askFeedbackOn == 0) {
+					editor.putLong(ASK_FEEDBACK_ON_PREF, calendar.getTimeInMillis());
+				} else if (askFeedbackOn > -1) {
+					if (askFeedbackOn < System.currentTimeMillis()) {
+						Builder dialogBuilder = new Builder(this);
+	
+						dialogBuilder
+								.setMessage("Would you like to provide feedback on this app?");
+						dialogBuilder.setTitle("Feedback");
+	
+						FeedbackDialogListener listener = new FeedbackDialogListener(
+								this, editor);
+	
+						dialogBuilder
+								.setNegativeButton("Don't ask again", listener);
+						dialogBuilder.setNeutralButton("Not now", listener);
+						dialogBuilder.setPositiveButton("Yes!", listener);
+	
+						dialogBuilder.show();
+					}
+				}
+	
+				editor.commit();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			
+				// Feedback related error, non critical so can be ignored
 			}
-
-			editor.commit();
 		}
 
 		super.onStart();

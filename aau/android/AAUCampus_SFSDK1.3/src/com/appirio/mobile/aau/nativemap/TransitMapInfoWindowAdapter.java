@@ -66,10 +66,11 @@ public class TransitMapInfoWindowAdapter implements InfoWindowAdapter, OnInfoWin
 	public void onInfoWindowClick(Marker marker) {
 		try {
 			if(!StopScheduleActivity.isActive()) {
-				StopScheduleActivity.setActive(true);
 				JSONObject markerInfo = new JSONObject(marker.getTitle());
 
 				if(markerInfo.has("type") && markerInfo.getString("type").equals("stop")) {
+					StopScheduleActivity.setActive(true);
+
 					String stopName = markerInfo.getString("stopName");
 
 					StopScheduleActivity.setMapManager(this.mapManager);

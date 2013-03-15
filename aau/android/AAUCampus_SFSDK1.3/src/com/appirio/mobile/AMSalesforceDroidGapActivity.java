@@ -329,7 +329,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 
 	private static final String FEEDBACK_PREFS = "feedback_prefs";
 	private static final String ASK_FEEDBACK_ON_PREF = "AskFeedbackOn";
-	private static final int ASK_FEEDBACK_AFTER_DAYS = 0;
+	private static final int ASK_FEEDBACK_AFTER_DAYS = 3;
 	private static final String FEEDBACK_VERSION = "feedback_version";
 
 	private boolean isConnected() {

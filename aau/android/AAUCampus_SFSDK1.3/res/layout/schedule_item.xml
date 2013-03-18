@@ -9,20 +9,21 @@
 
         <LinearLayout
             android:layout_width="100dp"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:minWidth="100dp" >
 
             <TextView
                 android:id="@+id/txtRouteName"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:layout_gravity="center_vertical|center_horizontal"
                 android:background="#FF00FF"
                 android:gravity="center_vertical|center_horizontal"
                 android:minWidth="100dp"
+                android:minHeight="100dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
-                android:text="Jarrold"
+                android:text="@string/temp_stop_name_Jarrold"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/white" />
 
@@ -43,7 +44,7 @@
                     android:id="@+id/txtNextStopTilte"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Next Bus In: "
+                    android:text="@string/temp_stop_title_Next_Bus_In"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#707070"
                     android:textSize="20sp"
@@ -54,7 +55,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="5dp"
-                    android:text="3 minutes"
+                    android:text="@string/temp_stop_3_minutes"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#FF0000"
                     android:textSize="20sp"
@@ -65,7 +66,7 @@
                 android:id="@+id/txtUpcomingStops"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Upcoming Stops: 12:30 PM, 1:30 PM, 2:30 PM, 3:30 PM, 4:30 PM, 5:30 PM, 6:30 PM"
+                android:text="@string/temp_stop_time_list"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="#707070"
                 android:textSize="15sp" />

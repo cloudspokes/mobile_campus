@@ -1,6 +1,5 @@
 package com.appirio.mobile.aau.nativemap;
 
-import java.util.ArrayList;
 
 import org.json.JSONObject;
 

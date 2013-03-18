@@ -111,7 +111,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 	private View stopListView;
 	// private OrientationEventListener orientationListener;
 	private static AMSalesforceDroidGapActivity mainActivity;
-	private boolean isLiveBusUpdates = false;
+	private boolean isLiveBusUpdates = true;
 	
 	private View getStopListView() {
 		if (stopListView == null) {
@@ -268,7 +268,8 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 		mapContainer = (ViewGroup) mapLayout.findViewById(R.id.mapContainer);
 
 		stopListAdapter = new StopListAdapter(this, getMapManager());
-
+		
+		
 		stopListBtn = (RadioButton) mapLayout
 				.findViewById(R.id.toggle_stop_list_view);
 		mapListBtn = (RadioButton) mapLayout.findViewById(R.id.togle_map_view);
@@ -570,7 +571,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 		int height = metrics.heightPixels;
 
 		int popupWidth = width - 40; // 460;
-		int popupHeight = height - 100; // 650;
+		int popupHeight = height - 120; // 650;
 
 		// Inflate the popup_layout.xml
 		LinearLayout viewGroup = (LinearLayout) context
@@ -604,7 +605,7 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 
 		popup.showAtLocation(layout, Gravity.NO_GRAVITY, pbtn.x
 				+ nativeSettingsButton.getLeft(),
-				pbtn.y + nativeSettingsButton.getHeight());
+				pbtn.y + nativeSettingsButton.getHeight() + 20);
 
 		// Dynamically add bttons here
 		// routeList = mapManager.getRoutesShown();

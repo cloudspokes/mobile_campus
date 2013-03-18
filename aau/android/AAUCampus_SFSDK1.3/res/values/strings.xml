@@ -5,8 +5,8 @@
     <string name="app_name">AAUCampus</string>
     
     <!-- <string name="sf_default_url">https://aau.my.salesforce.com</string> -->
-	<string name="sf_default_url">https://test.salesforce.com</string>
-	<!-- <string name="sf_default_url">https://aausb1.cs3.my.salesforce.com</string> -->     
+	<!-- <string name="sf_default_url">https://test.salesforce.com</string> -->
+	<string name="sf_default_url">https://aausb1.cs3.my.salesforce.com</string>   
     <!-- <string name="sf_default_url">https://test.salesforce.com</string> -->
     <!-- <string name="sf_default_url">https://test.salesforce.com</string> -->
     
@@ -25,5 +25,8 @@
     <string name="map_button">Map</string>
     <string name="stop_list_button">Stop List</string>
 	<string name="external_site_title">External Site</string>
-		
+	<string name="temp_stop_name_Jarrold">Jarrold</string>	
+	<string name="temp_stop_title_Next_Bus_In">Next Bus In: </string> 
+	<string name="temp_stop_3_minutes">3 minutes</string>
+	<string name="temp_stop_time_list">Upcoming Stops: 12:30 PM, 1:30 PM, 2:30 PM, 3:30 PM, 4:30 PM, 5:30 PM, 6:30 PM</string>
 </resources>

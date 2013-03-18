@@ -1,16 +1,9 @@
 package com.appirio.mobile;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import org.apache.cordova.CordovaWebViewClient;
 import org.apache.cordova.DroidGap;
 
-import android.util.Log;
 import android.webkit.WebView;
 
 public class AAUMobileWebViewClient extends CordovaWebViewClient {
@@ -119,7 +112,13 @@ public class AAUMobileWebViewClient extends CordovaWebViewClient {
 	public AAUMobileWebViewClient(DroidGap ctx) {
 		super(ctx);
 	}
-
+	
+	/**
+	 * methods bellow commented by A.I. private and not used
+	 * @param is
+	 * @return
+	 * @throws Exception
+	 *
 	private static String convertStreamToString(InputStream is) throws Exception {
 	    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 	    StringBuilder sb = new StringBuilder();
@@ -156,5 +155,6 @@ public class AAUMobileWebViewClient extends CordovaWebViewClient {
 	        }
 	    }
 	    return out;
-	}	
+	}
+	**/	
 }

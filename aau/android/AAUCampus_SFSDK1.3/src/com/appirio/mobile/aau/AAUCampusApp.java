@@ -27,9 +27,7 @@
 package com.appirio.mobile.aau;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 
 import com.appirio.aau.R;

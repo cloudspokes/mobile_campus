@@ -6,8 +6,6 @@ import java.util.Collections;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.graphics.Color;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.ArcShape;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,8 +23,8 @@ public class StopScheduleActivity extends Activity {
 	private StopScheduleWorker stopScheduleWorker;
 	private ProgressDialog loadScheduleStatusDialog;
 	private boolean isInProgress = false;
-	private ArrayList<RouteStopSchedule> schedule;
-	private String stopName;
+	private static ArrayList<RouteStopSchedule> schedule;
+	private static String stopName;
 	
 	// Task handler to update UI view from thread
 	private Handler showScheduleResults = new Handler() { 
@@ -139,8 +137,10 @@ public class StopScheduleActivity extends Activity {
 		View scheduleView = this.getLayoutInflater().inflate(R.layout.schedule_item, null);
 		
 		((TextView)scheduleView.findViewById(R.id.txtRouteName)).setText("?");
+		((TextView)scheduleView.findViewById(R.id.txtRouteName)).setBackgroundColor(Color.BLUE);
+		// Set Circle drawable for Stop cell removed 3/18/2013 A.I. due to issue I-48489 circles are too large based on cell size
+		//((TextView)scheduleView.findViewById(R.id.txtRouteName)).setBackgroundDrawable(createStopDefaultCircle());
 		
-		((TextView)scheduleView.findViewById(R.id.txtRouteName)).setBackgroundDrawable(createStopDefaultCircle());
 		((TextView)scheduleView.findViewById(R.id.txtUpcomingStops)).setText("Searching...");
 		((TextView)scheduleView.findViewById(R.id.txtNextStopTilte)).setText("");
 		((TextView)scheduleView.findViewById(R.id.txtETA)).setText("");
@@ -165,8 +165,9 @@ public class StopScheduleActivity extends Activity {
 			View scheduleView_List = this.getLayoutInflater().inflate(R.layout.schedule_item, null);
 			
 			((TextView)scheduleView_List.findViewById(R.id.txtRouteName)).setText(routeSchedule.getName());
-			
-			((TextView)scheduleView_List.findViewById(R.id.txtRouteName)).setBackgroundDrawable(createStopCircle(routeSchedule.getColor()));
+			((TextView)scheduleView_List.findViewById(R.id.txtRouteName)).setBackgroundColor(Color.parseColor(routeSchedule.getColor()));
+			// Set Circle drawable for Stop cell removed 3/18/2013 A.I. due to issue I-48489 circles are too large based on cell size
+			//((TextView)scheduleView_List.findViewById(R.id.txtRouteName)).setBackgroundDrawable(createStopCircle(routeSchedule.getColor()));
 			
 			String upcomingStops = routeSchedule.getTodaysNextStops();
 			if(upcomingStops == null) {
@@ -192,10 +193,12 @@ public class StopScheduleActivity extends Activity {
 	}
 
 	/**
+	 * Method commented circle not required for stop schedules 
+	 *
 	 * Create default Stop circle for List view with BLUE color
 	 * 
 	 * @return
-	 */
+	 *
 	private ShapeDrawable createStopDefaultCircle(){		
 		ShapeDrawable circle = new ShapeDrawable( new ArcShape(0, 360));
 		circle.setIntrinsicHeight(150);
@@ -209,7 +212,7 @@ public class StopScheduleActivity extends Activity {
 	 * 
 	 * @param clr
 	 * @return
-	 */
+	 *
 	private ShapeDrawable createStopCircle(String clr){		
 		ShapeDrawable circle = new ShapeDrawable( new ArcShape(0, 360));
 		circle.setIntrinsicHeight(150);
@@ -217,6 +220,7 @@ public class StopScheduleActivity extends Activity {
 		circle.getPaint().setColor(Color.parseColor(clr));
 		return circle;
 	}
+	*/
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

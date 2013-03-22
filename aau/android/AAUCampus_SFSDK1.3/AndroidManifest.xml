@@ -51,7 +51,7 @@
 
     <application
         android:name="com.appirio.mobile.aau.AAUCampusApp"
-        android:icon="@drawable/app_logo"
+        android:icon="@drawable/logo_aau"
         android:label="@string/app_name" >
 
         <!-- Service required for authentication -->

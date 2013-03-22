@@ -26,18 +26,18 @@ import com.appirio.mobile.AMSalesforceDroidGapActivity;
 
 public class SettingsManager {
 
-	private Context ctx;
+	//private Context ctx;
 	private AMSalesforceDroidGapActivity view;
 	private MapManager mapManager;
 	private PopupWindow popup;
 	
 	public SettingsManager(Context ctx, AMSalesforceDroidGapActivity parent_view, MapManager map_mgr) {
-		this.ctx = ctx;
+		//this.ctx = ctx;
 		this.mapManager = map_mgr;
 	}
 
 	// The method that displays the popup.
-	private void showPopup(final Activity context, Point p) {
+	public void showPopup(final Activity context, Point p) {
 		
 		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
 		int width = metrics.widthPixels;

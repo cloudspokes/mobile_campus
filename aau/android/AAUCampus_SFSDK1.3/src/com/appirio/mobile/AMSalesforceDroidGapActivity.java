@@ -193,8 +193,8 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 		
 		super.setIntegerProperty("loadUrlTimeoutValue", 90000);
 
-		super.onCreate(savedInstanceState);
-
+		super.onCreate(savedInstanceState);	
+		
 		try {
 			mapInit(savedInstanceState);
 		} catch (AMException e) {

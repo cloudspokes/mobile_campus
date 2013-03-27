@@ -381,12 +381,24 @@ public class MapManager {
 							}
 						}
 					});
-					Thread.currentThread().sleep(this.autoRefreshInterval);
+					Thread.currentThread().sleep(this.getAutoRefreshInterval());
 				}
 			} catch (Exception e) {
 				// TODO handle issues refreshing buses
 				e.printStackTrace();
 			}
+		}
+
+		private long getAutoRefreshInterval() {
+			try {
+				if(mapProxy.getSettings() != null) {
+					autoRefreshInterval = (int) Math.round(mapProxy.getSettings().getDouble("RefreshRate"));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			return autoRefreshInterval;
 		}
 		
 	}	

@@ -338,4 +338,15 @@ public class APIProxy {
 		
 		return buses;		
 	}
+	
+	public JSONObject getSettings() throws AMException {
+		try {
+			ensureToken();
+			
+			return settings;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AMException(e);
+		}
+	}
 }

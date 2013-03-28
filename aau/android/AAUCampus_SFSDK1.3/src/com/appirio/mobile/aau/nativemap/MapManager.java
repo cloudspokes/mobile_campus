@@ -36,19 +36,20 @@ public class MapManager {
 	private GoogleMap map;
 	private boolean mapAvailable;
 	private BitmapDescriptor stopBitmap;
-	private Map<String, BitmapDescriptor> routeIconMap;
+	private Map<String, BitmapDescriptor> routeIconMap = new HashMap<String, BitmapDescriptor>();
 	private BitmapDescriptor defaultBusIcon;
 	private List<Marker> vehicleMarkers = new Vector<Marker>();
 	private MapUpdater mapUpdater;
 	private RoutesParser routesParser;
 	private TransitMapInfoWindowAdapter infoWindowAdapter;
 	private List<Polyline> routesPolylineShown;
-	private List<Route> routesShown;
+	private List<Route> routesShown = new ArrayList<Route>();
 	private List<BusStop> allBusStopsList = new ArrayList<BusStop>();
 	private MapManager mapManager;
 	private List<MarkerOptions> busStopsMos;
 	private boolean isInit = false;
-
+	private boolean isUpdating = false;
+	
 	public ArrayList<RouteStopSchedule> getSchedule(String stopName) throws AMException {
 		try {
 			JSONObject schedule = mapProxy.getSchedule(stopName);
@@ -170,8 +171,11 @@ public class MapManager {
 		if(mapAvailable) {
 			if(!isInit) {
 				this.init();
+			} else {
+				this.updateBuses();
 			}
 			map.animateCamera(CameraUpdateFactory.newLatLngZoom(initialPos, 14.0f));
+			
 		}
 	}
 	
@@ -282,6 +286,14 @@ public class MapManager {
 	public void stopAutoUpdate() {
 		mapUpdater.autoRefreshOn = false;
 	}
+	
+	public void updateBuses() {
+		MapUpdater updater = new MapUpdater();
+		
+		updater.autoRefreshOn = false;
+		
+		new Thread(updater).start();
+	}
 
 	public boolean getAutoUpdate() {
 		return mapUpdater.autoRefreshOn;
@@ -368,21 +380,26 @@ public class MapManager {
 		@Override
 		public void run() {
 			try {
-				while(this.autoRefreshOn) {
-					this.refreshBuses();
-					((Activity)ctx).runOnUiThread(new Runnable() {
-						
-						@Override
-						public void run() {
-							try {
-								mapUpdater.refreshBusesUI();
-							} catch (AMException e) {
-								e.printStackTrace();
+				do {
+					if(!isUpdating && isInit) {
+						isUpdating = true;
+						this.refreshBuses();
+						((Activity)ctx).runOnUiThread(new Runnable() {
+							
+							@Override
+							public void run() {
+								try {
+									mapUpdater.refreshBusesUI();
+								} catch (AMException e) {
+									e.printStackTrace();
+								}
 							}
-						}
-					});
+						});
+						
+						isUpdating = false;
+					}
 					Thread.currentThread().sleep(this.getAutoRefreshInterval());
-				}
+				} while(this.autoRefreshOn);
 			} catch (Exception e) {
 				// TODO handle issues refreshing buses
 				e.printStackTrace();

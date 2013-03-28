@@ -384,6 +384,8 @@ public class AMSalesforceDroidGapActivity extends SalesforceDroidGapActivity
 		} else {
 			try {
 
+				mapManager.updateBuses();
+				
 				// Restart Live Auto Updates if ON
 				if (this.mapManager.getAutoUpdate()){
 				//if (this.isLiveBusUpdates){

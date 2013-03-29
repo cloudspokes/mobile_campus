@@ -11,8 +11,8 @@ global with sharing class  mob_BusStops_Routes {
                                                Bus_Stop__r.Name, Bus_Stop__r.Active__c, Bus_Stop__r.Id, Bus_Stop__r.Order__c,
                                                Bus_Route__r.Name, Bus_Route__r.Route_Color__c, Bus_Route__r.Teletrac_Name__c,
                                                Bus_Route__r.Route_Marker__c, Bus_Route__r.Id
-                                               From Bus_Stops_Routes__c where Bus_Route__r.Active__c = true and (Bus_Stop__r.Active__c = true OR Bus_Stop__r.High_Fidelity_Waypoint__c = true) order by Stop_Order__c ]){
-            BusStop  stop = new BusStop();
+                                               From Bus_Stops_Routes__c where Bus_Route__r.Active__c = true and Bus_Stop__r.Active__c = true and  Bus_Stop__r.High_Fidelity_Waypoint__c = false order by Stop_Order__c ]){
+        	BusStop  stop = new BusStop();
             stop.id = busStopRoutes.Bus_Stop__r.Id;
             stop.stopName =  busStopRoutes.Bus_Stop__r.Name;
             stop.longitude = busStopRoutes.Bus_Stop__r.Long__c;
@@ -24,24 +24,38 @@ global with sharing class  mob_BusStops_Routes {
             stop.routeMarker = busStopRoutes.Bus_Route__r.Route_Marker__c;
             BusRoutes routes = new BusRoutes();
             routes.stops = new List<BusStop>(); 
-            if(busStopRoutes.Bus_Stop__r.High_Fidelity_Waypoint__c){
-	            if(busStopHiFi.containsKey(busStopRoutes.Bus_Route__r.Name)){
-	               busStopHiFi.get(busStopRoutes.Bus_Route__r.Name).add(stop);
-	            }else{
-	               routes.stops = new List<BusStop>();
-	               routes.stops.add(stop);
-	               busStopHiFi.put(busStopRoutes.Bus_Route__r.Name,routes.stops);    
-	            }
-            } else{
-            	if(busStopMap.containsKey(busStopRoutes.Bus_Route__r.Name)){
-	               busStopMap.get(busStopRoutes.Bus_Route__r.Name).add(stop);
-	            }else{
-	               routes.stops = new List<BusStop>();
-	               routes.stops.add(stop);
-	               busStopMap.put(busStopRoutes.Bus_Route__r.Name,routes.stops);    
-	            }
-            }
+            if(busStopMap.containsKey(busStopRoutes.Bus_Route__r.Name)){
+	            busStopMap.get(busStopRoutes.Bus_Route__r.Name).add(stop);
+	        }else{
+	            routes.stops = new List<BusStop>();
+	            routes.stops.add(stop);
+	            busStopMap.put(busStopRoutes.Bus_Route__r.Name,routes.stops);    
+	        }
         }
+                                              	
+        for(Bus_Route_Waypoints__c busRouteWaypoint:[ Select Route__r.Name, Route__r.Route_Color__c, Route__r.Teletrac_Name__c,
+                                                      Route__r.Route_Marker__c, Route__r.Id, Order__c, Name, Longitude__c, Latitude__c,
+                                                      Id,  External_Id__c From Bus_Route_Waypoints__c ]){                                              	
+            BusStop  stop = new BusStop();
+            stop.id = busRouteWaypoint.Id;
+            stop.stopName =  busRouteWaypoint.Name;
+            stop.longitude = busRouteWaypoint.Longitude__c;
+            stop.latitude =  busRouteWaypoint.Latitude__c; 
+            stop.color = busRouteWaypoint.Route__r.Route_Color__c; 
+            stop.stopOrder = (Integer)busRouteWaypoint.Order__c; 
+            stop.routeTeletracName = busRouteWaypoint.Route__r.Teletrac_Name__c;
+            stop.routeMarker = busRouteWaypoint.Route__r.Route_Marker__c;
+            BusRoutes routes = new BusRoutes();
+            routes.stops = new List<BusStop>(); 
+            if(busStopHiFi.containsKey(busRouteWaypoint.Route__r.Name)){
+	            busStopHiFi.get(busRouteWaypoint.Route__r.Name).add(stop);
+	        }else{
+	            routes.stops = new List<BusStop>();
+	            routes.stops.add(stop);
+	            busStopHiFi.put(busRouteWaypoint.Route__r.Name,routes.stops);    
+	        }
+        }
+        
         if(!busStopMap.isEmpty()){
             for(String key:busStopMap.keySet()){
               BusRoutes routes = new BusRoutes();

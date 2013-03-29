@@ -1,0 +1,1310 @@
+<apex:page standardStylesheets="true" sidebar="true" showHeader="true" controller="Bus_Schedule_Editor_Controller">
+  
+  <head> 
+    <apex:pageMessages /> 
+    
+    <script type="text/javascript" src="{!$Resource.jquery_combined_scripts}"></script>  
+    
+    <script type="text/javascript" src="{!$Resource.jquerytmpl_min}"></script> 
+    
+    <script src="/soap/ajax/27.0/connection.js" type="text/javascript"></script>
+    
+     <link href="{!URLFOR($Resource.route_editor_design,"route_editor_design/styles/screen.css")}" rel="stylesheet" type="text/css"/>
+	
+	
+	<link rel="stylesheet" href="{!URLFOR($Resource.route_editor_design,"route_editor_design/styles/jquery-ui-1.10.0.custom.min.css")}" type="text/css" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.route_editor_design,"route_editor_design/styles/jquery.ui.timepicker.css")}" type="text/css" />
+    
+     <script type="text/javascript" src="{!$Resource.jquery_ui_1_10_1}"></script> 
+     
+     <link rel="stylesheet" href="{!URLFOR($Resource.colorpicker,"css/colorpicker.css")}" type="text/css" />
+     
+      <script type="text/javascript" src="{!URLFOR($Resource.colorpicker,"js/colorpicker.js")}"></script>
+	
+	
+    <script type="text/javascript">
+    	
+		var old_route ;
+		var old_sub_route;
+		var isValid = true;
+    	var isDirty = false;
+    	
+		var j$ = jQuery.noConflict();
+		  
+       j$("#route-details-div").hide();
+		
+		function clearScheduleTable(){
+			//Remove existing rows 
+			  
+             j$("#schedule-table tr").remove();
+             j$("#schedule-table").append('<tr ></tr><tr><td ><a href="javascript:addRow();" class="add-button">+ Add Row</a></td> </tr>');
+             
+		}
+		
+		function onRouteChange(){
+			if(isDirty){
+				var ans = confirm("Your changes for this route/subroute will be lost.\nClick 'Cancel' and then 'Submit' to save current changes.\nClick 'Ok' to continue without saving changes.  ")
+				if(ans == false){
+					j$(".select-route option[value='"+ old_route +"']").attr("selected", "selected");
+					//j$(".select-sub-route option[value='"+ old_sub_route +"']").attr("selected", "selected");
+					return;
+				}
+			}
+			j$('.select-sub-route').prop('disabled','true');
+			showProgress();
+			j$("#route-details-div").hide();
+	        clearScheduleTable();
+	        	
+	        j$( "#div-deleteSubRoute-button" ).hide();	
+			var routeId = j$('.select-route :selected').val();
+			if(routeId == 'ADD' || routeId == ''){
+				j$('.select-sub-route').prop('disabled','true');
+				j$( "#div-deleteRoute-button" ).hide();
+				hideProgress();
+				
+				
+			}else{
+				//j$('.select-sub-route').prop('disabled','');
+				j$( "#div-deleteRoute-button" ).show();
+				
+			}
+	       
+	       if(routeId == 'ADD'){
+				j$( "#div-add-new-route" ).dialog("open");
+				hideProgress();
+				return;
+			}
+			
+			
+			isDirty = false;
+			
+	        old_route = routeId;
+	        old_sub_route = '';
+	        getSubRoutes();
+	        hideProgress();
+	        
+		}
+		
+		function getSubRoutes(){
+			j$("#route-details-div").hide();
+			var routeId = j$('.select-route :selected').val();
+			if(routeId==''){
+				refreshSubRoutesDropDown('');
+				hideProgress();
+				return;
+			}
+			
+			 Visualforce.remoting.Manager.invokeAction(
+	            '{!$RemoteAction.Bus_Schedule_Editor_Controller.get_SubRoutes}',  
+	            routeId,
+	            function(result, event){
+	                if (event.status) {
+	                	//alert(result);
+	                	if(result != ""){
+		                	//alert(result[0].time_list);
+		                    
+		                    clearScheduleTable();
+		                    refreshSubRoutesDropDown(result);
+							
+							hideProgress();
+							
+						}else{
+							 refreshSubRoutesDropDown('');
+							hideProgress();
+						}
+	                    
+	                } else if (event.type === 'exception') {
+	               		 refreshSubRoutesDropDown('');
+	                	alert(  event.message + " - " + event.where + ".");
+	                    hideProgress();
+	                } else {
+	                 	refreshSubRoutesDropDown('');
+	                	alert( event.message);
+	                   hideProgress();
+	                }
+	            }, 
+	            {escape: true}
+	        );
+		}
+		 
+		function buildScheduleTable() {
+			//j$( "#div-deleteRoute-button" ).hide();
+			if(isDirty){
+				var ans = confirm("Your changes for this route/subroute will be lost.\nClick 'Cancel' and then 'Submit' to save current changes.\nClick 'Ok' to continue without saving changes.  ")
+				if(ans == false){
+					//j$(".select-route option[value='"+ old_route +"']").attr("selected", "selected");
+					j$(".select-sub-route option[value='"+ old_sub_route +"']").attr("selected", "selected");
+					return;
+				}
+			}
+			
+			var routeId = j$('.select-route :selected').val();
+	        var subrouteId = j$('.select-sub-route :selected').val(); 
+			
+			if(subrouteId == 'ADD'){
+				hideProgress();
+				j$( "#div-add-new-subroute" ).dialog("open");
+				return;
+			}
+			
+			
+			if(subrouteId == ''){
+				j$( "#div-deleteSubRoute-button" ).hide();
+				
+			}else{
+				j$( "#div-deleteSubRoute-button" ).show();
+			}
+			
+			showProgress();
+			isDirty = false;
+			j$("#route-details-div").hide();
+	        
+	        //if(routeId=='' || subrouteId ==''){
+	        if(subrouteId ==''){
+	        	
+	        	clearScheduleTable();
+	        	hideProgress();
+	        	return;
+	        }
+	        //old_route = routeId;
+	        old_sub_route = subrouteId
+	        
+	        
+	       // alert( routeId + '-' + subrouteId);
+	       
+	        Visualforce.remoting.Manager.invokeAction(
+	            '{!$RemoteAction.Bus_Schedule_Editor_Controller.get_ScheduleData}',  
+	            routeId, subrouteId,
+	            function(result, event){
+	                if (event.status) {
+	                	//alert(result);
+	                	if(result != ""){
+		                	//alert(result[0].time_list);
+		                    
+		                    clearScheduleTable();
+		                    
+		                    //Build Table
+		                    
+		                    //var cols = result.length;
+		                    var rows = 0;
+		                    var min_order =result[0].order_list[0];
+		                    var max_order =0;
+		                    for(var i=0; i<result.length; i++){ 
+		                    	var r = result[i].time_list.length;
+		                    	if(r>rows){
+		                    		rows=r;
+		                    	}
+		                    	
+		                    	
+		                    	if(result[i].order_list[0]<min_order){
+		                    		min_order = result[i].order_list[0];
+		                    	}
+		                    	
+		                    	if(result[i].order_list[r-1]>max_order){
+		                    		max_order = result[i].order_list[r-1];
+		                    	}
+		                    }
+		                    
+		                    //alert(min_order);
+		                    
+							j$.each(result , function(index, item){
+									createColumnHeader(item.stop_id);
+									
+							}); 
+							
+							//Add the + Add Stop column
+							j$("#schedule-table tr:first").append('<th class="th-addStop" ><a href="javascript:addStop();" class="add-button">+ Add Stop</a></th>');
+							
+							
+							var addRowTr = j$("#schedule-table tr:last").remove();
+								
+							/*for(var j=0; j<rows; j++){
+								addRowCells(j +1);
+								
+							}*/
+							
+							//Add last row with add row button
+							//j$("#schedule-table").append(addRowTr);
+							
+							//var order=min_order;
+							var curr_row =1;
+							var break_itr = false;
+							var prev_col = 0;
+							for(var order=min_order; order<=max_order; order++){
+								
+								j$.each(result , function(index, item){ 
+								
+									var col_num = index ;
+									for(var j=0; j<item.time_list.length; j++){
+										if(item.order_list[j] == order){
+											if(index <= prev_col){
+												curr_row++;
+											}
+											if(j$("#tr-"+ curr_row ).length>0){
+												j$("#tr-"+ curr_row + " td:eq(" + col_num +  ") input").val(item.time_list[j]);
+											}
+											else{
+												addRowCells(curr_row);
+												j$("#tr-"+ curr_row + " td:eq(" + col_num +  ") input").val(item.time_list[j]);
+											}
+											
+											prev_col = index;
+											return false;
+										}
+										
+									}
+									
+									
+								});
+							
+							
+							}
+							
+							//Add last row with add row button
+							j$("#schedule-table").append(addRowTr);
+							
+							addEventsToInput();
+							
+							isDirty = false;
+							applyDragDrop();
+							j$("#route-details-div").show();
+							hideProgress();
+						}else{
+							
+							addEmptyCells();
+							hideProgress();
+						}
+	                    
+	                } else if (event.type === 'exception') {
+	               		
+	                	addEmptyCells();
+	                    alert(  event.message + " - " + event.where + ".");
+	                    hideProgress();
+	                } else {
+	                	addEmptyCells();
+	                   alert( event.message);
+	                   hideProgress();
+	                }
+	            }, 
+	            {escape: true}
+	        );
+	        
+	    }
+	    
+	    function addEventsToInput(){
+	    	j$('.tabletimepicker').timepicker({
+					                    showPeriod: true,
+					                    showLeadingZero: false,
+					                    minutes: { interval: 1 },
+					                    rows: 6
+					                });   
+                
+			j$('.time-input').change(function() {
+				isDirty = true;
+			 	validateTime();
+			 	
+			});
+	    }
+	    
+	    function createColumnHeader(stopId){
+	    	var cols = j$("#schedule-table tr:first th").length ;   
+	    	//Add stop select td
+			var lstStops = '<select id="select-stop-' + cols +'" class="select-stop">' + j$("#select-stop-master").clone().html() + '</select>';
+			var str_table = "<table style='margin:0px;'><tr > <td ><span class='reorder'><a href='#'>Reorder</a></span><span class='remove'><a href='javascript:removeStop("+ cols +");'></a></span> </td></tr><tr ><td>"+ lstStops +"</td></tr></table>";
+			j$("#schedule-table tr:first").append("<th  class='th-Stop' style='width:1px;'>"+ str_table +"</th>"); 
+			
+			j$("#schedule-table tr:first th:eq(" + cols +  ") select option[value='"+ stopId +"']").attr("selected", "selected");
+	    }
+	    
+	    function addRowCells(rowInd){
+	    	j$("#schedule-table").append('<tr class="tr-input" id="tr-'+rowInd +'"></tr>');  
+			var newRow = j$("#schedule-table tr:last"); 
+			
+			var cols = j$("#schedule-table tr:first th").length;
+			//alert(cols);
+			for(var i=0; i<cols-1;i++){ 
+				newRow.append('<td style="width:1px;"><input type="text" class="time-input tabletimepicker"       value=""></input></td>');
+			} 
+			newRow.append('<td style="width:1px;"><span class="remove"><a href="javascript:removeRow(\'tr-'+rowInd+'\')">Remove X</a></span></td>');
+			return newRow;
+	    }
+		
+		function addEmptyCells(){
+			j$("#route-details-div").hide();
+			//Remove existing rows
+            clearScheduleTable();
+            
+           for(var i=0; i<5; i++){
+				addStop();
+			} 
+			
+			for(var j=0; j<5; j++){
+				addRow();
+			}
+			
+				
+			j$("#route-details-div").show();
+			applyDragDrop();
+		
+		}
+		
+		
+		function addStop(){
+			showProgress();
+			var rows = j$("#schedule-table tr").length;
+			
+			//Remove  the Last Cloumn ("Add Stop" column) 
+			j$(".tr-input").each(function(){
+				j$(this).find("td:last").remove();
+			});
+			
+			j$("#schedule-table th:last").remove();
+			
+			var cols = j$("#schedule-table tr:first th").length;   
+			
+			
+			createColumnHeader("");
+			
+			//Add the + Add Stop column
+			j$("#schedule-table tr:first").append('<th class="th-addStop" ><a href="javascript:addStop();" class="add-button">+ Add Stop</a></th>'); 
+			
+			j$(".tr-input").each(function(){
+				j$(this).append('<td style="width:1px;"><input type="text" class="time-input tabletimepicker"     value=""></input></td> ');
+				
+				j$(this).find("td:last").find('.tabletimepicker').timepicker({
+                    showPeriod: true,
+                    showLeadingZero: false,
+                    minutes: { interval: 1 },
+                    rows: 6
+                });
+                
+				j$(this).find("td:last").find('.time-input').change(function() {
+					isDirty = true;
+				 	validateTime();
+				 	
+				});
+					
+			
+				
+				var trid =j$(this).attr("id");
+				j$(this).append('<td style="width:1px;"><span class="remove"><a href="javascript:removeRow(\''+trid+'\')">Remove X</a></span></td>');
+				
+			});
+			
+			applyDragDrop();
+			
+			hideProgress(); 
+			//return cols;
+			
+			
+		}
+		 
+		function resetMethodCalls(){
+			var addRowTh = j$(".th-addStop").remove();
+			j$("#schedule-table tr:first").append('<th class="th-addStop" ><a href="javascript:addStop();" class="add-button">+ Add Stop</a></th>'); 
+			
+				var cols = 0;
+				j$("#schedule-table tr:first th").each(function(){
+					j$(this).find(".remove").html("<a href='javascript:removeStop("+ cols +");'>Remove X</a>") ;
+					cols++;
+				});
+		} 
+		function removeStop(colIndex){
+			var busStopName = j$("#schedule-table tr:first th:eq("+colIndex+") select :selected").text();
+			var ans= confirm('You are about to delete the Bus Stop '+ busStopName +'. \nWould you like to continue?');
+			
+			if(ans == true){
+				showProgress();
+				isDirty = true;
+				//remove header
+				j$("#schedule-table tr:first th:eq("+colIndex+")").remove();
+				var rows = j$("#schedule-table tr").length;
+				//for(var row = 1;row<rows-1;row++){
+				j$(".tr-input").each(function(){
+					//j$("#schedule-table tr:eq("+ row +") td:eq("+colIndex+")").remove();
+					j$(this).find("td:eq("+colIndex+")").remove();
+				});
+				
+				resetMethodCalls();
+				hideProgress();  
+			}		
+		}
+		
+		function addRow(){
+			showProgress();
+			var cols = j$("#schedule-table tr:first th").length;
+			var rows = j$("#schedule-table tr").length;
+			
+			var addRowTr = j$("#schedule-table tr:last").remove();
+			
+			var newRow = addRowCells(rows);
+			
+			j$("#schedule-table").append(addRowTr);
+			
+			newRow.find('.tabletimepicker').timepicker({
+                    showPeriod: true,
+                    showLeadingZero: false,
+                    minutes: { interval: 1 },
+                    rows: 6
+                });
+                
+			
+			newRow.find('.time-input').change(function() {
+					isDirty = true;
+				 	validateTime();
+				 	
+				});
+			
+			
+			
+			hideProgress();
+		}
+		
+		function removeRow(rowIndex){
+			var ans = confirm("Are you sure you want to remove this row?");
+			
+			if(ans == true){
+				showProgress();
+				isDirty = true;
+				
+				j$('#'+rowIndex).remove();
+				
+				var addRowTr = j$("#schedule-table tr:last").remove();
+				var rows = 1;
+				j$('.tr-input').each(function(){
+				
+					j$(this).find("td:last").html("");
+					j$(this).attr("id","tr-"+rows);
+					j$(this).find("td:last").html("<span class='remove'><a href='javascript:removeRow(\"tr-"+rows+"\")'>Remove X</a></span>"); 
+					rows++;
+				});
+				j$("#schedule-table").append(addRowTr);
+				hideProgress();
+				
+			}
+		}
+		
+		
+		function submitSchedule(){
+			showProgress();
+			var isValid = validateTime();
+			//alert(isValid);
+			if(!isValid){
+				hideProgress();
+				alert('There are errors in the schedule that need to be resolved before saving.');
+				return;
+			}
+			var routeId = j$('.select-route :selected').val();
+	        var subrouteId = j$('.select-sub-route :selected').val();
+			var cols = j$("#schedule-table tr:first th").length-1;
+			var rows = j$("#schedule-table tr").length-1;
+			
+			var routes_stops = [];
+			var schedules =[];
+				
+			for(var j=0;j<cols; j++){
+				var routeStop = new sforce.SObject("Bus_Stops_Routes_Staging__c");
+				routeStop.Bus_Stop__c = j$("#schedule-table tr:eq(0) th:eq(" + j +  ") select :selected").val();
+				routeStop.Bus_Route__c = j$('.select-route :selected').val();
+				routeStop.Stop_Order__c= j ;
+				routes_stops.push(routeStop);
+			}
+			//alert(routes_stops);
+			 var order_num =0;	
+			j$('.tr-input').each(function(){
+				for(var j=0;j<cols; j++){
+				
+					if(j$(this).find("td:eq(" + j +  ") input").val() != ""){
+						var sch_rec = new sforce.SObject("Bus_Stop_Schedule_Staging__c"); 
+						 sch_rec.Bus_Stop__c = j$("#schedule-table tr:eq(0) th:eq(" + j +  ") select :selected").val();
+						 sch_rec.Bus_Route__c = j$('.select-route :selected').val();
+						 sch_rec.Sub_Route__c = j$('.select-sub-route :selected').val();
+						 
+						 var timeVal = j$(this).find("td:eq(" + j +  ") input").val();
+						  if(timeVal !='' && !( /^(([0-9]|1[0-2])):([0-5]?[0-9]) (AM|PM)?$/.test(timeVal))){
+							  alert('Enter time in hh:mm am/pm format.');
+							  j$(this).find("td:eq(" + j +  ") input").focus();
+							  hideProgress();
+							  return; 
+							  
+						  }
+						 sch_rec.Time__c = j$(this).find("td:eq(" + j +  ") input").val();
+						 sch_rec.Order__c= order_num++;
+						 schedules.push(sch_rec);
+					 }
+				}
+			});
+		
+			//sforce.connection.sessionId = '{!$Api.Session_ID}';
+			//result = sforce.connection.create(routes_stops);
+			//result = sforce.connection.create(schedules);
+			
+			Visualforce.remoting.Manager.invokeAction(
+	            '{!$RemoteAction.Bus_Schedule_Editor_Controller.save_ScheduleData}',  
+	            routeId, subrouteId,routes_stops,schedules,
+	            function(result, event){
+	                if (event.status) {
+	                	
+	                	if(result==""){
+	                		isDirty = false;
+	                		hideProgress();
+	                		alert('Your Data has been saved.');
+	                	}
+	                	
+	                    
+	                } else if (event.type === 'exception') {
+	               		alert(  event.message + " - " + event.where + ".");
+	               		hideProgress();
+	                } else {
+	                	 alert( event.message);
+	                	 hideProgress();
+	                }
+	            }, 
+	            {escape: true}
+	        );
+		
+		}
+		
+		function publishSchedule(){
+			
+			var isValid = validateTime();
+			if(!isValid){
+				hideProgress();
+				alert('There are errors in the schedule that need to be resolved before publishing.');
+				return;
+			}
+			 
+			if(isDirty){
+				alert('Please save your changes before publishsing the schedule. ');
+				return;
+			}
+			
+			var ans= confirm('Are you sure you want to publish changes for this route?');
+			
+			if(ans == false){
+				return;
+			}
+			showProgress();
+			var routeId = j$('.select-route :selected').val();
+	        var subrouteId = j$('.select-sub-route :selected').val();
+	        
+			Visualforce.remoting.Manager.invokeAction(
+	            '{!$RemoteAction.Bus_Schedule_Editor_Controller.publish_ScheduleData}',  
+	            routeId, subrouteId,
+	            function(result, event){
+	                if (event.status) {
+	                	
+	                	if(result==""){
+	                		hideProgress();
+	                		alert('Your Data has been published.');
+	                	}
+	                	
+	                    
+	                } else if (event.type === 'exception') {
+	               		alert(  event.message + " - " + event.where + ".");
+	               		hideProgress();
+	                } else {
+	                	 alert( event.message);
+	                	 hideProgress();
+	                }
+	            }, 
+	            {escape: true}
+	        ); 
+		}
+		
+		function publishEntireSchedule(){
+			
+			 var isValid = validateTime();
+			if(!isValid){
+				hideProgress();
+				alert('There are errors in the schedule that need to be resolved before publishing.');
+				return;
+			}
+			
+			if(isDirty){
+				alert('Please save your changes before publishsing the schedule. ');
+				return;
+			}
+			
+			var ans= confirm('Are you sure you want to publish all changes?');
+			if(ans == false){
+				return;
+			}
+			
+			showProgress();
+			var routeId = j$('.select-route :selected').val();
+	        var subrouteId = j$('.select-sub-route :selected').val();
+	        
+			Visualforce.remoting.Manager.invokeAction(
+	            '{!$RemoteAction.Bus_Schedule_Editor_Controller.publish_ScheduleData_All}',   
+	            
+	            function(result, event){
+	                if (event.status) {
+	                	
+	                	if(result==""){
+	                		hideProgress();
+	                		alert('Your Data has been published.'); 
+	                	}
+	                	
+	                    
+	                } else if (event.type === 'exception') {
+	               		alert(  event.message + " - " + event.where + ".");
+	               		hideProgress();
+	                } else {
+	                	 alert( event.message);
+	                	 hideProgress();
+	                }
+	            }, 
+	            {escape: true}
+	        );
+		}
+		
+		  
+		function applyDragDrop(){
+			
+			j$("#schedule-table tr:first").sortable({ containment: j$("#schedule-table ") ,
+			
+											 axis: "x",
+											 handle: ".reorder",
+											 stop: function( event, ui ) {
+											 			resetMethodCalls();
+											 		},
+											 cancel: ".th-addStop"	,
+											 
+											 });
+											 
+		    j$("#schedule-table tr:first").disableSelection(); 
+		    
+		   
+		}
+		
+		function showProgress(){
+			j$("#loading-div").show();
+		}
+		
+		function hideProgress(){
+			j$("#loading-div").hide();
+		}
+		
+		function getTimeValue(strTime){
+			try{
+				var hr1 = strTime.split(':')[0];
+				var min = strTime.split(':')[1].split(' ')[0];
+				var am_pm = strTime.split(':')[1].split(' ')[1];
+				var hr = parseInt(hr1,10);
+				if( hr1 == '12'){
+					hr = 00;
+				} 
+				if(am_pm == 'PM'){
+					hr += 12;
+				} 
+				var val_time = Date.parse('01/01/2013 ' + hr + ':' + parseInt(min,10) + ':00' );
+				return val_time;
+			}
+			catch(e){
+				return '';
+			}
+		}
+		function validateTime(){
+			var time_prev ;//= Date.parse('01/01/2013 00:00:00');
+			var time_next ;//= Date.parse('01/01/2013 00:00:00');
+			
+			var time_prev_obj;
+			var time_next_obj;
+			
+			isValid = true;
+			
+			var timeinputs = j$('.time-input');
+			for(var i=0; i< timeinputs.length ;i++){
+				var val_time = getTimeValue(j$(timeinputs[i]).val());
+				//alert(val_time);
+					if(val_time !=''){
+						
+						var comp_prev = true;
+						var comp_next = true;
+						if(i>0){
+							var decr=1;
+							time_prev_obj = j$(timeinputs[i-decr]);
+							time_prev = getTimeValue(j$(timeinputs[i-decr]).val());
+							decr++;
+							while(time_prev ==''  && (i-decr)>-1){
+								
+								time_prev = getTimeValue(j$(timeinputs[i-decr]).val());
+								time_prev_obj = j$(timeinputs[i-decr]);
+								decr++;
+							}
+							if(time_prev !=''){
+								comp_prev = val_time > time_prev;
+								
+								if(!comp_prev){//check if Changing from PM to AM
+									var prev = time_prev_obj.val().split(' ')[1];
+									var curr = j$(timeinputs[i]).val().split(' ')[1];
+									comp_prev = (prev!=curr); 
+									
+								}
+							}
+							
+						}
+						
+						if(i<timeinputs.length-1){
+							var incr=1;
+							time_next = getTimeValue(j$(timeinputs[i+incr]).val());
+							time_next_obj = j$(timeinputs[i+incr]);
+							incr++;
+							while(time_next ==''  && (i+incr)<timeinputs.length){
+								
+								time_next = getTimeValue(j$(timeinputs[i+incr]).val());
+								time_next_obj = j$(timeinputs[i+incr]);
+								incr++;
+							}
+							if(time_next !=''){
+								comp_next = val_time < time_next;
+								if(!comp_next){//check if Changing from PM to AM
+									var next = time_next_obj.val().split(' ')[1];
+									var curr = j$(timeinputs[i]).val().split(' ')[1];
+									comp_next = (next!=curr);
+									
+								}
+							}
+							
+						}
+						if(!(comp_prev && comp_next)){
+							j$(timeinputs[i]).addClass('inputError');
+							isValid = false;
+						}else{  
+							j$(timeinputs[i]).removeClass('inputError');  
+						}
+						
+						
+					} 
+			
+			}
+			return isValid;
+		}
+		
+		function AddNewRoute(){
+			
+			showProgress();
+			var routeName = j$('#txt-routename').val();
+	        var routeColor = j$('#txt-routecolor').val();
+	        var routeMarker = j$('#txt-routemarker').val();
+	        var teletracName = j$('#txt-routeteltracname').val();
+	        var isactive = j$('#chk-routeactive').is(":checked");
+	        var externalId = j$('#txt-externalid').val();
+	        
+	        if(routeName==''){
+	        	alert('Enter Route Name.');
+	        	hideProgress();
+	        	return;
+	        }
+	        if(teletracName == '' ){
+	       		
+	        	alert('Enter Teletrac  Name.');
+	        	 hideProgress();
+	        	return;
+	        }
+	        
+			Visualforce.remoting.Manager.invokeAction(
+	            '{!$RemoteAction.Bus_Schedule_Editor_Controller.add_Route}',  
+	            routeName, routeColor,routeMarker,teletracName,isactive,externalId,
+	            function(result, event){
+	                if (event.status) {
+	                	
+	                	if(result!=""){
+	                		refreshRoutesDropDown(result);
+								
+	                		hideProgress();
+	                		j$( "#div-add-new-route" ).dialog("close");
+	                		alert('New Route has been added');
+	                		//alert(result);
+	                		
+	                	}
+	                	
+	                    
+	                } else if (event.type === 'exception') {
+	               		alert(  event.message + " - " + event.where + ".");
+	               		hideProgress();
+	               		j$( "#div-add-new-route" ).dialog("close");
+	                } else {
+	                	 alert( event.message);
+	                	 hideProgress();
+	                	 j$( "#div-add-new-route" ).dialog("close");
+	                }
+	            }, 
+	            {escape: true}
+	        );		
+		}
+		
+		function AddNewSubRoute(){
+			
+			showProgress();
+			var subrouteName = j$('#txt-subroutename').val();
+			
+	        if(subrouteName==''){
+	        	alert('Enter Sub Route Name.');
+	        	hideProgress();
+	        	return;
+	        }
+	        j$(".select-sub-route").append(j$('<option>', { value: subrouteName, text : subrouteName }));
+	        hideProgress();
+	        j$( "#div-add-new-subroute" ).dialog("close");
+	        alert('New Sub Route has been added.');
+				
+		}
+		
+		function refreshRoutesDropDown(result){
+			j$(".select-route").empty();
+	                		
+            j$(".select-route").append(j$('<option>', {  value: '', text : 'Select' }));
+			
+			var set = {!$Setup.Schedule_Editor_Settings__c.Add_Route__c}	;
+			if(set == true){
+				j$(".select-route").append(j$('<option>', { value: 'ADD', text : 'Add New Route...' }));
+		    }
+		    
+             		j$.each(result, function (i, item) {
+             				j$(".select-route").append(j$('<option>', { value: item.Id,text : item.Name }));
+			});
+			
+			clearScheduleTable();
+     		j$('.select-sub-route').prop('disabled','true');
+     		j$( "#div-deleteRoute-button" ).hide();
+			j$( "#div-deleteSubRoute-button" ).hide();
+		}
+		
+		function refreshSubRoutesDropDown(result){
+			j$(".select-sub-route").empty();
+	                		
+            j$(".select-sub-route").append(j$('<option>', {  value: '', text : 'Select' }));
+			
+			var set = {!$Setup.Schedule_Editor_Settings__c.Add_Route__c}	;
+			if(set == true){
+				j$(".select-sub-route").append(j$('<option>', { value: 'ADD', text : 'Add New Sub Route...' }));
+		    }
+		    
+	    	if(result!=''){
+            		j$.each(result, function (i, item) {
+            				j$(".select-sub-route").append(j$('<option>', { value: item,text : item }));
+       		
+				});
+			}
+			j$('.select-sub-route').prop('disabled','');
+		}
+		
+		
+		  
+		  function deleteRoute(){
+			
+			var routeName = j$('.select-route :selected').text();
+			
+			var ans= confirm('You are about to delete the route '+ routeName +'. \nWould you like to continue?');
+			if(ans == false){
+				return;
+			}
+			
+			showProgress();
+			var routeId = j$('.select-route :selected').val();
+	        var subrouteId = j$('.select-sub-route :selected').val();
+	        
+			Visualforce.remoting.Manager.invokeAction(
+	            '{!$RemoteAction.Bus_Schedule_Editor_Controller.delete_Route}',   
+	            routeId,
+	            function(result, event){
+	                if (event.status) {
+	                	
+	                	if(result!=""){
+	                	
+	                		refreshRoutesDropDown(result);
+	                		j$("#route-details-div").hide();
+	        				clearScheduleTable();
+	        				hideProgress();
+	                		alert('The route has been deleted.'); 
+	                		
+	                	}
+	                		
+	                    
+	                } else if (event.type === 'exception') {
+	               		alert(  event.message + " - " + event.where + "."); 
+	               		hideProgress();
+	                } else {
+	                	 alert( event.message);
+	                	 hideProgress();
+	                }
+	            }, 
+	            {escape: true}
+	        );
+		}
+		
+		function deleteSubRoute(){
+			
+			var subrouteName = j$('.select-sub-route :selected').text();
+			var ans= confirm('You are about to delete the sub route '+ subrouteName +'. \nWould you like to continue?');
+			if(ans == false){
+				return;
+			}
+			
+			showProgress();
+			var routeId = j$('.select-route :selected').val();
+	        var subrouteId = j$('.select-sub-route :selected').val();
+	        
+			Visualforce.remoting.Manager.invokeAction(
+	            '{!$RemoteAction.Bus_Schedule_Editor_Controller.delete_SubRoute}',   
+	            routeId,subrouteId,
+	            function(result, event){
+	                if (event.status) {
+	                	
+	                	if(result==""){
+	                		j$("#route-details-div").hide();
+	                		
+	                		 j$('.select-sub-route :selected').remove();
+	                		 j$(".select-sub-route option[value='']").prop("selected", true);
+	                		clearScheduleTable();
+	                		j$( "#div-deleteSubRoute-button" ).hide();
+	                		hideProgress();
+	                		alert('Your data has been deleted.'); 
+	                		
+	                	}
+	                		
+	                } else if (event.type === 'exception') {
+	               		alert(  event.message + " - " + event.where + "."); 
+	               		hideProgress();
+	                } else {
+	                	 alert( event.message);
+	                	 hideProgress();
+	                }
+	            }, 
+	            {escape: true}
+	        );
+		}
+		
+		j$(document).ready(function() { 
+			j$(".select-sub-route").prop("disabled", true);
+			
+			j$( "#div-add-new-route" ).dialog({ 
+			      autoOpen: false,
+			      height: 230,
+			      width: 230,
+			      modal: true,
+			      buttons: {
+			        "Add Route": function() {
+			          AddNewRoute();
+			        },
+			        Cancel: function() {
+			           	
+			          j$( this ).dialog( "close" );
+			        }
+			      },
+			      close: function() {
+			        	 j$('#txt-routename').val("");
+				         j$('#txt-routecolor').val("");
+				         j$('#txt-routemarker').val("");
+				         j$('#txt-routeteltracname').val("");
+				         j$('#txt-externalid').val("");
+				         j$('#chk-routeactive').prop('checked', false);
+				         
+				         j$(".select-route option[value='']").prop("selected", true);
+				         j$('#txt-routecolor').css('backgroundColor', '');
+				  }
+			    });
+			    
+			    j$( "#div-add-new-subroute" ).dialog({ 
+			      autoOpen: false,
+			      height:150,
+			      width: 250,
+			      modal: true,
+			      buttons: {
+			        "Add Sub Route": function() {
+			          AddNewSubRoute();
+			        },
+			        Cancel: function() {
+			           	
+			          j$( this ).dialog( "close" );
+			        }
+			      },
+			      close: function() {
+			        	 
+				         j$(".select-sub-route option[value='']").prop("selected", true);
+				         j$('#txt-routecolor').css('backgroundColor', '');
+				  }
+			    });
+			    
+			j$(".ui-dialog-titlebar-close").remove(); 
+			
+			j$('#txt-routecolor').ColorPicker({
+					onSubmit: function(hsb, hex, rgb, el) {
+						j$(el).val(hex);
+						j$(el).ColorPickerHide();
+					},
+					onBeforeShow: function () {
+						j$(this).ColorPickerSetColor(this.value);
+					},
+					onChange: function (hsb, hex, rgb) {
+						j$('#txt-routecolor').css('backgroundColor', '#' + hex);
+						j$('#txt-routecolor').val( '#' + hex);
+					}
+				})
+				.bind('keyup', function(){
+					j$(this).ColorPickerSetColor(this.value);
+				});   
+		    
+		  });
+		
+    </script> 
+    
+ <style>
+	 .select-stop{ 
+	 	width:85px;
+	 	font-size:9px;
+	 }
+	 .select-route{ 
+	 	width:100px;
+	 	font-size:9px;
+	 }
+	 .select-sub-route{ 
+	 	width:100px;
+	 	font-size:9px;
+	 }
+	a{
+		
+		color:gray;
+	}
+	.time-input{
+		width:70px;
+		font-size:9px;
+	}
+	.ui-timepicker-table{
+		font-size:9px;
+	}
+	
+	span.remove {
+		height:15px;
+		width:15px;
+	}
+	span.reorder {
+		height:15px;
+	}
+	span.remove a{
+		background-size:70%;
+	}
+	span.reorder a{
+		background-size:70%;
+		margin:0px -4px;
+	}
+	a.add-button{
+		width:50px;
+		font-size:.90em;
+	}
+	.primary{
+		font-size:1em;
+		
+		background-color: #1797c0;
+		color: #fff;
+		position: relative;
+		width: 130px;
+		padding: 10px 0px;
+		-moz-border-radius: 7px;
+		-webkit-border-radius: 7px;
+		-khtml-border-radius: 7px;
+		border-radius: 7px;
+		border: none;
+		
+		cursor: pointer;
+	}
+	.button-del{
+		font-size: 1em;
+		background-color: #1797c0;
+		color: #fff;
+		position: relative;
+		width: 125px;
+		-webkit-border-radius: 7px;
+		border-radius: 7px;
+		border: none;
+		height: 20px;
+		cursor: pointer;
+	}
+	.loading-div{
+	
+		vertical-align: middle;
+		height: 100%;
+		width: 100%;
+		position: absolute;
+		padding-top: 200px;
+		z-index: 99999;
+		display:none;
+		}
+	.th-addStop{
+		width:1px;vertical-align: bottom;padding-bottom: 5px;
+	}
+	.inputError{
+		border:2px solid red;
+	}
+	.requiredBlock {
+		background-color: #c00;
+		position: absolute;
+		width: 3px;
+		height:15px;
+		}
+		
+		.ui-dialog-titlebar-close{
+			display:none;
+		}
+		.ui-dialog-titlebar{
+			text-align:center;
+		}
+		.ui-dialog-title{
+			float:center;
+		}
+		
+
+		.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
+			float: center;
+			}
+		.ui-dialog-buttonpane {
+			text-align: center;
+			
+			padding:none;
+			padding-left:1em;
+			}
+		.ui-dialog .ui-dialog-buttonpane {
+			text-align: center;
+			padding: 0 0 0 0;
+			}
+		.colorpicker{
+			z-index:9999;
+		}
+	.ui-widget .ui-widget {
+		font-size: 0.5em;
+		}
+		
+		.ui-widget input {
+		font-size: 1em;
+		height:100%;
+		}
+		.zen .zen-tabMenu {
+			white-space: normal;
+			}
+		body {
+			font-size: 75%;
+			font-family: 'Arial','Helvetica',sans-serif;
+			background-color: #fff;
+			}
+</style> 
+ 
+
+
+</head>
+
+
+
+<body id="page_body" >
+
+	<div id="stop-list-div" style="display:none"> 
+			<select id="select-stop-master"  class="select-stop">
+				<apex:repeat value="{!lst_BusStops}" var="stop" id="repeater">
+					<option value="{!stop.id}"> {!stop.name}</option> 
+       			 </apex:repeat>  
+				
+			</select>
+	</div> 
+	<div id="div-add-new-route" title="Add New Route" style="height:130px;overflow:hidden;font-family:Helvetica,Arial,sans-serif;font-size:9px;">
+		<table>
+			
+			<tr>
+				<td> <label for="txt-routename">Route Name: </label></td><td><div class="requiredBlock" /><input id="txt-routename" type="text" maxlength="80" style="width:100px;" /></td>
+			</tr>
+			<tr>
+				<td><label for="txt-routeteltracname">Teletrac Name: </label></td><td><div class="requiredBlock" /><input id="txt-routeteltracname" type="text"  maxlength="255" style="width:100px;"  /> </td>
+			</tr>
+			<tr> 
+				<td> <label for="txt-routecolor">Route Color: </label></td><td><input id="txt-routecolor" type="text"  maxlength="7" style="width:100px;"  /></td>
+			</tr>
+			<tr>
+				<td> <label for="txt-routemarker">Route Marker: </label></td><td><input id="txt-routemarker" type="text"   maxlength="255" style="width:100px;" /></td>
+			</tr>
+			<tr>
+				<td><label for="txt-externalid">External Id: </label></td><td><input id="txt-externalid" type="text"  maxlength="100" style="width:100px;"  /> </td>
+			</tr>
+			
+			<tr>
+				<td><label for="txt-routeactive">Active: </label></td><td><input id="chk-routeactive" type="checkbox"  /> </td>
+			</tr>
+		</table>
+		
+		
+	</div>
+	<div id="div-add-new-subroute" title="Add New Sub Route" style="height:130px;overflow:hidden;font-family:Helvetica,Arial,sans-serif;font-size:9px;">
+		<table>
+			
+			<tr>
+				<td> <label for="txt-subroutename">Sub Route Name: </label></td><td><div class="requiredBlock" /><input id="txt-subroutename" type="text" maxlength="80" style="width:100px;" /></td>
+			</tr>
+			
+		</table>
+		
+		
+	</div>
+ 	<div id="main-div" align="center" style="vertical-align: middle;height: 100%;width: 100%;background:rgba(179, 174, 174, 0.1);font-family:Helvetica,Arial,sans-serif;font-size:10px;"> 
+ 	<div id="loading-div" class="loading-div" ><img style="height:25px;" src="{!$Resource.mob_Design}/mob_Design/images/ajax-loader.gif"></img> </div>
+        <apex:form >
+        
+		<div id="route-selection-div" style="padding:20px;vertical-align: middle;height: 100%;width: 400px;">
+			
+				<div  style=" width: 150px; float: left; ">
+					<span style="font-weight:bold">Route: </span>
+					
+					<apex:selectList id="select-route" value="{!selected_Route}" multiselect="false" size="1" styleClass="select-route select-stop " onChange="onRouteChange();">
+			            <apex:selectOptions value="{!opt_Routes}"/> 
+			        </apex:selectList>
+			        
+				 </div>
+			
+			<div  style=" float: right; clear: all; width: 200px; "> 
+				<span style="font-weight:bold">Sub Route: </span> 
+				
+				<apex:selectList id="select-sub-route" value="{!selected_SubRoute}" multiselect="false" size="1" styleClass="select-sub-route select-stop " onChange="buildScheduleTable();">
+		            <apex:selectOptions value="{!opt_SubRoutes}"/> 
+		        </apex:selectList>
+		        
+			 </div>
+			 
+			 <div  id="div-deleteRoute-button" style=" width: 150px;float: left;padding-top: 5px; padding-bottom: 5px;display:none;">
+					<input type="button" value="Delete Route" onclick="deleteRoute();" class="button-del" ></input> 
+			        
+				 </div>
+			
+			<div  id="div-deleteSubRoute-button" style=" float: right; clear: all; width: 200px; padding-top: 5px;padding-bottom: 5px;  display:none;"> 
+				<input type="button" value="Delete Sub-Route" onclick="deleteSubRoute();" class="button-del" ></input> 
+		        
+			 </div>
+			
+			
+		</div>
+		
+		</apex:form>
+		<br/><br/>
+		<div id="route-details-div" style="display:none;">
+			 <table id="schedule-table" style="width:1px;float:none;margin: 0px auto 0px auto;clear:both;">
+			 	
+			 	
+			 	<tr><td style="width:1px;"><a href="javascript:addRow();" class="add-button">+ Add Row</a></td> </tr> 
+			 	
+			 	
+			 </table>
+			 <br/>
+			 <div id="div_buttons" style="clear:both;">
+				<input type="button" value="Publish All Routes Data" onclick="publishEntireSchedule();" class="primary" ></input> 
+				<input type="button"  value="Publish this Route Data" onclick="publishSchedule();" class="primary"  ></input> 
+				<input type="button"  value="Submit" onclick="submitSchedule();" class="primary" ></input>
+			</div>
+			 
+			
+		</div>
+		 
+   	 
+	      
+	
+
+	</div>
+</body>
+
+</apex:page>

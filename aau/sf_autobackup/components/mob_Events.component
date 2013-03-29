@@ -1,4 +1,6 @@
 <apex:component >
+<apex:attribute name="appVersion" description="Version number of the application" type="decimal" required="true"/> 
+<apex:attribute name="hasNativeResources" description="True or false for whether or not the device can load from native." type="boolean" required="true"/> 
   <style>
  #event-ul li a{
     padding:0 !important;
@@ -90,7 +92,7 @@
  }
  
  .event-icon span{
- 	background-image: url({!URLFOR($Resource.mob_Design, "/mob_Design/images/sports-icon.png")});
+ 	background-image: url({!IF(AND(hasNativeResources, appVersion >= 2.1), "aaumobile://sports-icon.png", URLFOR($Resource.mob_Design, "/mob_Design/images/sports-icon.png"))});
  	width:32px;
  	height: 32px;
  	margin-top: 39px;

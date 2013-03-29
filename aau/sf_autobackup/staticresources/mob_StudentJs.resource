@@ -296,7 +296,12 @@ classSchedule: {
 		//console.log('onlineClassDetail: '+JSON.stringify(onlineClassDetail));
      	
 		//Change the Page to Show the details of Selected Class meeting
-		$.mobile.changePage("#student-detail", {transition: 'slide', changeHash: true});
+		if(appirioUtils.isAndroid()){
+			$.mobile.changePage("#student-detail", {transition: 'none', changeHash: true});
+		} 
+		else{
+			$.mobile.changePage("#student-detail", {transition: 'slide', changeHash: true});
+		}
 		
 		//Make empty to the components to add selected contents 
 		$('#ulDlId').empty();
@@ -345,14 +350,19 @@ classSchedule: {
 		var detailContent = $("#ulDlId");
      
 		//Change the Page to Show the details of Selected Class meeting
-		$.mobile.changePage("#student-detail", {transition: 'slide', changeHash: true});
+		if(appirioUtils.isAndroid()){
+			$.mobile.changePage("#student-detail", {transition: 'none', changeHash: true});
+		} 
+		else{
+			$.mobile.changePage("#student-detail", {transition: 'slide', changeHash: true});
+		}
 		//Make empty to the components to add selected contents 
 		$('#ulDlId').empty();
 		$('#classNameDv').empty();
 		$('#classDescrDv').empty();
 		$('#classMeetingId').val(meetingId);
 
-		$("<span class='section-details'><b>Code: </b>"+enrolledClass.classSubject+"&nbsp;"+enrolledClass.classCatalogNbr+"."+enrolledClass.classSection+"</span>").appendTo('#classNameDv');
+		$("<span class='section-details'>"+enrolledClass.classSubject+"&nbsp;"+enrolledClass.classCatalogNbr+"."+enrolledClass.classSection+"</span>").appendTo('#classNameDv');
 		$("<h2>"+enrolledClass.courseTitle+"</h2>").appendTo('#classNameDv');
 		$("<h3>"+enrolledClass.classDescription+"</h3>").appendTo('#classDescrDv');
         
@@ -396,6 +406,7 @@ classChatter: {
 		console.log("classChatter Init called");
 		if(aauMobile.classChatter.activeId != ""){
 			$("#loadingChatter").show();
+			$("#meetingNote").val("").blur();
 			var restPath = "/classMeetingChat/" + aauMobile.classChatter.activeId;
 			console.log(restPath);
 			RestDataPlugin.getData(aauMobile.classChatter.showDiscussions, aauMobile.classChatter.initFailure, restPath, true, "GET", "json");
@@ -413,7 +424,13 @@ classChatter: {
 	showDiscussions: function(results){
 		console.log("Discussion Results " + JSON.stringify(results)); 
 		console.log("results length " + results.length);
-		aauMobile.classChatter.activePosts = results;
+		var finalResults = [];
+		$.each(results, function(index, value){
+			if($.trim(this.meetingNote) != ""){
+				finalResults.push(this);
+			}
+		});
+		aauMobile.classChatter.activePosts = finalResults;
 		if(aauMobile.classChatter.activePosts.length > 0){	
 			var toDisplay = aauMobile.classChatter.activePosts.slice(0,5);
 			
@@ -450,13 +467,14 @@ classChatter: {
 	submitChatterPost: function(e){
 		e.preventDefault();
 		e.stopPropagation();
-		
-		var formData = $("#classChatterForm").serialize();
-		var restPath = "/createClassMeetingChat/?" + formData;
-		
-		console.log(restPath);
-		
-		RestDataPlugin.getData(aauMobile.classChatter.submitChatterPostSuccess, aauMobile.classChatter.initFailure, restPath, true, "GET", "json");
+		if($("#meetingNote").val().trim() != ""){
+			var formData = $("#classChatterForm").serialize();
+			var restPath = "/createClassMeetingChat/?" + formData;
+			
+			console.log(restPath);
+			
+			RestDataPlugin.getData(aauMobile.classChatter.submitChatterPostSuccess, aauMobile.classChatter.initFailure, restPath, true, "GET", "json");
+		}
 	},
 	submitChatterPostSuccess: function(result){
 		console.log(result);
@@ -465,7 +483,7 @@ classChatter: {
 		
 		var template = $("#student-classDetail-chatter-template");
 		$(template).tmpl(post).prependTo("#classChatterUl");
-		
+		$("#classChatterNoResults").toggle(false);
 		if($('#classChatterUl').hasClass('ui-listview')){
 			$("#classChatterUl").listview('refresh');
 		}
@@ -671,7 +689,12 @@ classHistory: {
         
 		
 		//Change the Page to Show the details of Selected Class meeting
-		$.mobile.changePage("#history-detail", {transition: 'slide', changeHash: true});
+		if(appirioUtils.isAndroid()){
+			$.mobile.changePage("#history-detail", {transition: 'none', changeHash: true});
+		} 
+		else{
+			$.mobile.changePage("#history-detail", {transition: 'slide', changeHash: true});
+		}
 		//Make empty to the components to add selected contents 
 
 		var nameDiv = $('#history-name').empty();
@@ -1090,7 +1113,12 @@ campusEvents: {
 		});
 		*/
 		//do page transition to detail screen
-		$.mobile.changePage('#campus-event-detail', {transition: 'slide', changeHash: true});
+		if(appirioUtils.isAndroid()){
+			$.mobile.changePage("#campus-event-detail", {transition: 'none', changeHash: true});
+		} 
+		else{
+			$.mobile.changePage("#campus-event-detail", {transition: 'slide', changeHash: true});
+		}
 	},
 
 	//This method is obsolete
@@ -1159,6 +1187,7 @@ campusFeed: {
 		var feedContainer = $("#feed-ul");
 		aauMobile.campusFeed.isRefreshEvent = false;
 		var campusData = aauMobile.getLocalStorage(aauMobile.campusFeed.dataKey);
+		//alert(JSON.stringify(campusData));
 		if(campusData == null || campusData.length < 1 || campusData.channel.title == null){
 			$(feedContainer).empty();
 			$('#no-rss-feed-template').tmpl().appendTo(feedContainer);
@@ -1184,11 +1213,29 @@ campusFeed: {
 		//dataInitComplete('feed-list');
 		aauMobile.campusFeed.onComplete();
 		if(result==""){ return;}
-		if(result.indexOf("Unable to resolve host")>=0){
-			alert("Due to slow or no connection, this action has been canceled. Please try again later.");
-		}else{
+		if(result==null){
 			alert('We have encountered an error.  Please try again later.');
+			return;
 		}
+		try{
+			if(result.indexOf("Unable to resolve host")>=0){
+				alert("Due to slow or no connection, this action has been canceled. Please try again later.");
+				return;
+			}else{
+				alert('We have encountered an error.  Please try again later.');
+				return;
+			}
+		}catch(e){;}
+		try{
+			if(result.status == '400'){
+				alert('We have encountered an error.  Please try again later.');
+				//return;
+			}
+		}catch(e){;}
+		//return;
+		
+		
+		
 	},
 	buildFeed: function(result) {
 		/* PARTH : Commented this as we do this conversion in the Process fresh data method */
@@ -1289,7 +1336,12 @@ campusFeed: {
 			$(feedContainer).listview('refresh');
 		}
 		//do page transition to detail screen
-		$.mobile.changePage('#feed-detail', {transition: 'slide', changeHash: true});
+		if(appirioUtils.isAndroid()){
+			$.mobile.changePage("#feed-detail", {transition: 'none', changeHash: true});
+		} 
+		else{
+			$.mobile.changePage("#feed-detail", {transition: 'slide', changeHash: true});
+		}
 	}
 
 },
@@ -1790,7 +1842,12 @@ chatterFeed: {
 		//alert('chatterDetail: '+JSON.stringify(chatterDetail));    
 		 	
 		//Change the Page to Show the details of Selected chatterpost
-		$.mobile.changePage("#chatter-detail", {transition: 'slide', changeHash: true});
+		if(appirioUtils.isAndroid()){
+			$.mobile.changePage("#chatter-detail", {transition: 'none', changeHash: true});
+		} 
+		else{
+			$.mobile.changePage("#chatter-detail", {transition: 'slide', changeHash: true});
+		}
 		
 		//Make empty to the components to add selected contents 
 		$('#chatter-ulDlId').empty();
@@ -2168,7 +2225,12 @@ tripPlanner: {
    		var tripHeaderData = [];
    		var tripDetailsData = [];
    		//Change the Page to Show the details of Selected chatterpost
-		$.mobile.changePage("#trip-details", {transition: 'slide', changeHash: true});
+		if(appirioUtils.isAndroid()){
+			$.mobile.changePage("#trip-details", {transition: 'none', changeHash: true});
+		} 
+		else{
+			$.mobile.changePage("#trip-details", {transition: 'slide', changeHash: true});
+		}
 		console.log('Changed Page to detail');
 			var hasMore = true;
 			var i=0;
@@ -2267,7 +2329,7 @@ tripPlanner: {
 		      		
 		      		
 		      		//Get the comma separated list of Routes hat cross this stop
-		      		var busStopRoutes = mapManager.busStopDetails;
+		      		var busStopRoutes = aauMobile.tripPlanner.busStopDetails;
 		      		//alert(JSON.stringify(busStopRoutes));
 		      		for(var ind=0;  true; ind++){
 		      			//alert(JSON.stringify(busStopRoutes[ind]));
@@ -2367,6 +2429,7 @@ tripPlanner: {
     //Moved code from Transit Manager//
     busStops : [],
 	busStopNames : [],
+	busStopDetails : [],
 	routeNamesAndColors :[],
 	//Bus Routes with Stops
 	routes : {},
@@ -2484,150 +2547,446 @@ tripPlanner: {
     	});
     	
     },
-   
+   addBusStops: function(stops) {
+      	//alert('addBusStops');
+        var stpRoutes = aauMobile.tripPlanner.stopNamesWithRoutes;
+        
+        //var scale = 0.45;
+        //var listContainer = $('#bus-stop-ul');
+        //var listTemplate = $("#bus-stop-template");
+      //PARTH: Travel Planner items
+      	var startSelectContainer = $('#startStop-select');
+      	var finishSelectContainer = $('#endStop-select');
+        var optionsTemplate = $("#bus-stop-options-template");
+        var startDetailContainer = $('#stopdetails');
+        var optionsDetailTemplate = $("#bus-stop-detail-template");
+        
+        var index = 0;
+        var jsonList =[];
+        $(stops).each( function() {
+        			
+                    var stopRoutes = "";
+                    if(stpRoutes[this.stopName].length > 1) {
+                      stopRoutes = "Routes: ";
+                    } else if(stpRoutes[this.stopName].length == 1) {
+                      stopRoutes = "Route: ";
+                    }
+                    
+                    var separator = ""; 
+                    
+                    $(stpRoutes[this.stopName]).each(function() {
+                      stopRoutes += separator + this;
+                      separator = ", ";
+                    });
+              
+                    //PARTH: add to json List
+					//alert(JSON.stringify(this));
+					//jsonList.push({busStopTitle: this.stopName, busStopRoutes: stopRoutes,stopId: this.stopName.replace(/ /g,"-")});
+					jsonList.push({busStopTitle: this.stopName, busStopRoutes: stopRoutes,stopId: this.id,stopName: encodeURIComponent(this.stopName)});
+					aauMobile.tripPlanner.busStopDetails.push({busStopTitle: this.stopName,lat:this.latitude, lng:this.longitude, busStopRoutes: stopRoutes,stopId: this.id,stopName: encodeURIComponent(this.stopName)});
+					index++;
+				    //listTemplate.tmpl({busStopTitle: this.stopName, busStopRoutes: stopRoutes}).appendTo(listContainer);
+				    
+    	});
+    	//PARTH: run template for json list
+    	//listTemplate.tmpl(jsonList).appendTo(listContainer);
+    	
+    	optionsTemplate.tmpl(jsonList).appendTo(startSelectContainer);
+    	
+    	optionsTemplate.tmpl(jsonList).appendTo(finishSelectContainer);
+    	
+    	optionsDetailTemplate.tmpl(jsonList).appendTo(startDetailContainer);
+    	
+      } //addBusSTops
 },
 
- 
-
-//Mobile Sliding Menu component. 
-//Displays as a side-bar that slides out and pushes content to the side.
-slideMenu: {
+ //////IDEAS///////////////////
+ ideas: {
+	data: [],
+	//data: {},
+    dataKey : 'ideas', /* PARTH: Key to identify this data in localStorage*/
 	
-	lastSlide: new Date().getTime(),
-	//Slides the menu out, and pushes the active page to the right.
-	show: function(callback, event){
-	    event.preventDefault();
-	    console.log('MENU BUTTON CLICKED');
-		$('.mob-header').css('position','absolute');
-		aauMobile.slideMenu.lastSlide = new Date().getTime();
-		
-		$('#menu-header').html($($.mobile.activePage).find('.mob-header').html());
-		$('#menu-header .menu-btn').removeClass('menu-btn');
-		$('#menu-page').removeClass('hidden');
-		
-		//Prevent ugly slide behavior on transit-map
-		//$('#result-container').css('position','absolute');
-		
-		//Activate the sliding.
-		$('#menu-page').addClass('slide-out');
-		$('.page-container').addClass('slide-out');
-		
-		//setTimeout(callback(), 3000);
-		callback(null);
-		//OLD METHOD
-		//$('#slide-menu').animate({marginLeft:'0px'},250, function(){$('#slide-menu').css('position','fixed');});
-		//$($.mobile.activePage).animate({marginLeft:'180px'},250);
+	/* PARTH: This method clears the browser local storage  */   
+    clearLocalStorage: function(){
+		aauMobile.clearLocalStorage(aauMobile.ideas.dataKey);
 	},
-
-	//Removes the slide-out class, causing the active page and 
-	hide: function(callback, event){
-		var curTime = new Date().getTime();
-		var timeDiff = curTime - aauMobile.slideMenu.lastSlide;
-		console.log('curTime - lastSlide = ' + timeDiff);
+	
+	isRefreshEvent : false,
+	onComplete: function(){},
+	searchPhrase:'',
+	
+	init: function(callback){
 		
-		//Android vClick bug solution.
-		if(timeDiff > 400){		
-			console.log('Tapped on the content. Closing Menu.');
+		aauMobile.ideas.onComplete = callback; 
+		aauMobile.ideas.data = [];
+		/* PARTH:  
+		 * Get Data from local storage
+		 * If local Data exists, use it else get fresh data */
+		var localData = aauMobile.getLocalStorage(aauMobile.ideas.dataKey);
+	
+		if(aauMobile.ideas.isRefreshEvent || localData == null || localData.length < 1 || localData.startDate == null){
+			//Load Fresh Data
+			console.log('ideas: NO LOCAL DATA FOUND - FETCHING FRESH DATA');
+			
+			var restPath = "/ideas" ;
+			RestDataPlugin.getData(aauMobile.ideas.processFreshData, aauMobile.ideas.processFailure, restPath, true, "GET", "json");
+		
+		}
+		else{
+			//Load existing data
+			console.log('FOUND LOCAL DATA FOUND - LOADING EXISTING DATA');
+			aauMobile.ideas.buildIdeasList(result,'ideas-popular-list','idea-template','ideas-popular' );
+		}
+		
+	},
+	
+	search: function(callback){
+		
+		aauMobile.ideas.onComplete = callback; 
+		//aauMobile.ideas.data = [];
+		/* PARTH:  
+		 * Get Data from local storage
+		 * If local Data exists, use it else get fresh data */
+		//var localData = aauMobile.getLocalStorage(aauMobile.ideas.dataKey);
+	
+		//if(aauMobile.ideas.isRefreshEvent || localData == null || localData.length < 1 || localData.startDate == null){
+			//Load Fresh Data
+			console.log('ideas: NO LOCAL DATA FOUND - FETCHING FRESH DATA');
+			
+			var restPath = "/ideas?searchTerm="+ aauMobile.ideas.searchPhrase ;
+			//alert(restPath);
+			RestDataPlugin.getData(aauMobile.ideas.processSearchData, aauMobile.ideas.processSearchFailure, restPath, true, "GET", "json");
+		
+		/*}
+		else{
+			//Load existing data
+			console.log('FOUND LOCAL DATA FOUND - LOADING EXISTING DATA');
+			aauMobile.ideas.buildIdeasList(localData,'ideas-search-results','idea-template','ideas-search' );
+		}*/
+		
+	},
+	
+	getLatest: function(callback){
+		
+		aauMobile.ideas.onComplete = callback; 
+		//aauMobile.ideas.data = [];
+		/* PARTH:  
+		 * Get Data from local storage
+		 * If local Data exists, use it else get fresh data */
+		//var localData = aauMobile.getLocalStorage(aauMobile.ideas.dataKey);
+	
+		//if(aauMobile.ideas.isRefreshEvent || localData == null || localData.length < 1 || localData.startDate == null){
+			//Load Fresh Data
+			console.log('ideas: NO LOCAL DATA FOUND - FETCHING FRESH DATA');
+			
+			var restPath = "/ideas?getLatest=true";
+			//alert(restPath);
+			RestDataPlugin.getData(aauMobile.ideas.processLatestData, aauMobile.ideas.processLatestFailure, restPath, true, "GET", "json");
+		
+		/*}
+		else{
+			//Load existing data
+			console.log('FOUND LOCAL DATA FOUND - LOADING EXISTING DATA');
+			aauMobile.ideas.buildIdeasList(localData,'div-latest-list','idea-template','ideas-latest' );
+		}*/
+		
+	},
+	
+	getCategories: function(callback){
+		
+		aauMobile.ideas.onComplete = callback; 
+		//aauMobile.ideas.categories = [];
+		/* PARTH:  
+		 * Get Data from local storage
+		 * If local Data exists, use it else get fresh data */
+		//var localData = aauMobile.getLocalStorage(aauMobile.ideas.dataKey);
+	
+		//if(aauMobile.ideas.isRefreshEvent || localData == null || localData.length < 1 || localData.startDate == null){
+			//Load Fresh Data
+			console.log('ideas: NO LOCAL DATA FOUND - FETCHING FRESH DATA');
+			
+			var restPath = "/ideaCategories" ;
+			RestDataPlugin.getData(aauMobile.ideas.processCategoryData, aauMobile.ideas.processCategoryFailure, restPath, true, "GET", "json");
+		
+		/*}
+		else{
+			//Load existing data
+			console.log('FOUND LOCAL DATA FOUND - LOADING EXISTING DATA');
+			aauMobile.ideas.buildIdeasList(result,'ideas-popular-list','idea-template','ideas-popular' );
+		}*/
+		
+	},
+	
+	newIdea_title : '',
+    newIdea_ideaCategory : '',
+    newIdea_description :'',
+    newIdea_owner :'',
+    
+	addIdea: function(callback){
+		
+		aauMobile.ideas.onComplete = callback; 
+		 
+		var restPath = "/creteIdea?title="+ aauMobile.ideas.newIdea_title + "&ideaCategory=" + aauMobile.ideas.newIdea_ideaCategory + "&description=" +aauMobile.ideas.newIdea_description + "&owner=" +aauMobile.ideas.newIdea_owner;
+			alert(restPath);
+			RestDataPlugin.getData(aauMobile.ideas.processAddNewData, aauMobile.ideas.processAddNewFailure, restPath, true, "GET", "json");
+		
+		
+		
+	},
+	
+	processAddNewData : function(result){
+		alert(JSON.stringify(result)) 
+		//aauMobile.ideas.buildIdeasList(result,'ideas-search-results','idea-template','ideas-search' ); 
+		aauMobile.ideas.onComplete();
+		////$.mobile.changePage("#ideas-search", {transition: 'none', reverse: false});
+		
+	}, 
+	
+	/* PARTH: This method saves the fresh results to database and then builds the DOM */
+	processFreshData : function(result){
+		//alert(JSON.stringify(result))
+		//aauMobile.setLocalStorage(aauMobile.ideas.dataKey,JSON.stringify(result));
+		aauMobile.ideas.isRefreshEvent = false;
+		aauMobile.ideas.buildIdeasList(result,'ideas-popular-list','idea-template','ideas-popular' ); 
+		aauMobile.ideas.onComplete();
+		
+	}, 
+	
+	processSearchData : function(result){
+		//alert(JSON.stringify(result)) 
+		aauMobile.ideas.buildIdeasList(result,'ideas-search-results','idea-template','ideas-search' ); 
+		aauMobile.ideas.onComplete();
+		////$.mobile.changePage("#ideas-search", {transition: 'none', reverse: false});
+		
+	}, 
+	processLatestData : function(result){
+		//alert(JSON.stringify(result)) 
+		aauMobile.ideas.buildIdeasList(result,'ideas-latest-list','idea-template','ideas-latest' );
+		aauMobile.ideas.onComplete();
+		
+	}, 
+	processCategoryData : function(result){
+		//alert(JSON.stringify(result)) 
+		aauMobile.ideas.buildCategoryList(result,'idea-buttons','popular-idea-template','ideas-search' );
+		aauMobile.ideas.onComplete();
+		
+	},
+	buildCategoryList: function(result,container,template,ideasPage){  
+		
+		//console.log("ideas Result: "+ JSON.stringify(result));
+		var listItems = [];
+		
+		var ideaJSON ;
+		if(result != null && result.length > 0){
+			
+			$.each(result, function(index, cat) {
+					ideaJSON = {searchString: cat
+								};
+				listItems.push(ideaJSON);
+			});
+
+			
+		}
+				
+		var blockTemplate = $("#"+template);
+		var ideasContainer = $("#"+container).empty();
+		
+		if(listItems.length >0){
+			//alert($(blockTemplate).tmpl(listItems));
+			$(blockTemplate).tmpl(listItems).appendTo(ideasContainer);
+		}
+
+		  
+		ideasContainer.css("margin","0px");
+		//if(ideasContainer.hasClass('ui-listview')){
+			//ideasContainer.listview('refresh'); 
+		//} 
+		
+		
+		//PARTH: Hide Spinner
+		aauMobile.ideas.onComplete();
+		
+	},
+	
+	buildIdeasList: function(result,container,template,ideasPage){  
+		
+		//console.log("ideas Result: "+ JSON.stringify(result));
+		aauMobile.ideas.data = result;
+	
+		var listItems = [];
+		var myIndex = 0;
+		
+		var ideaJSON ;
+		if(result != null && result.length > 0){
+			
+			$.each(result, function(index, idea) {
+				var i=0;
+				var date = idea.createdDate.split('T')[0].split('-');
+				var year= date[0];
+				var mon= date[1];
+				var day= date[2];
+				var months = new Array("Jan","Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov","Dec");
+				var str_date = months[mon-1] +'. ' + day + '.' + year ; 
+				
+				var name_arr = idea.createdByName.split(' ');
+				var name ;
+				if(name_arr.length > 0){
+					name = name_arr[0] + ' ' + name_arr[1].substring(0,1) + '.';
+				}else{
+					name = idea.createdByName;
+				}
+				
+				ideaJSON = {ind: index,
+							title:idea.title,
+			 				num_likes:idea.numLikes,
+			 				num_dislikes:idea.numDislikes,
+			 				num_comments:idea.numComments,
+			 				postedBy:name,
+			 				group:idea.ideaCategory,
+			 				postedOn:str_date //'Dec. 12. 2012'		
+						};
+									
+					
+			    listItems.push(ideaJSON);
+				
+
+				
+			});
+
+			
+		}
+				
+		var blockTemplate = $("#"+template);
+		var ideasContainer = $("#"+container).empty();
+		
+		if(listItems.length >0){
+			//alert($(blockTemplate).tmpl(listItems));
+			$(blockTemplate).tmpl(listItems).appendTo(ideasContainer);
+		}
+
+		  
+		ideasContainer.css("margin","0px");
+		
+		if($($.mobile.activePage).attr('id') == ideasPage){
+			//Hide loading message.
+			//Resize the container so the device can scroll.
 			if(aauMobile.isAndroid()){
-				$('#menu-page').css('position','absolute');
-			}
-			$('#menu-page').removeClass('slide-out');
-			
-			$('.page-container').removeClass('slide-out');
-			
-			aauMobile.slideMenu.lastSlide = new Date().getTime();
-		}
-		callback(null);
-		
-		//OLD METHOD
-		//$('#slide-menu').animate({marginLeft:'-180px'},250, function(){$('#menu-page').css('display','none');});
-		//$($.mobile.activePage).animate({marginLeft:'0px'},250, function(){$('.mob-header').css('position','fixed');});
-	},
-
-	//Changes the active page and slides the menu back into hiding.
-	linkClicked: function(event){
-		event.stopPropagation();
-		event.preventDefault();
-		
-		var curTime = new Date().getTime();
-		var timeDiff = curTime - aauMobile.slideMenu.lastSlide;
-		console.log('curTime - lastSlide = ' + timeDiff);
-		
-		//Android vClick bug solution.
-		if(timeDiff > 400){		
-			var pageLink = $(this).attr('href');
-			if(pageLink.length <= 1){
-				//jQuery Mobile has hijacked our link to prevent the address bar from showing.
-				pageLink = $(this).data('href');
-			}
-			console.log('Link clicked. Target Name  = ' + pageLink);
-			
-			//Logout if logout link clicked.
-			//Otherwise go to page.
-			if($(this).attr('id') == 'logout-link'){
-				console.log('Logging out 2');
-
-				//TODO: Change this to be a native plugin instead of phonegap.resource call
-				$.mobile.changePage('#student-home', {changeHash: true});
-				if(aauMobile.isAndroid()){
-					$('#menu-page').css('position','absolute');
-				}
-				$('#menu-page').removeClass('slide-out');
-				$('.page-container').removeClass('slide-out');
-				
-				SalesforceOAuthPlugin.logout();
-			}
-			else{
-			   console.log('Link clicked. Else  Target Name  = ' + pageLink);
-				appirioUtils.log("")
-			
-				$('#menu-header').html($(pageLink).find('.mob-header').html());
-				$.mobile.changePage(pageLink, {changeHash: true});
-				$('#menu-page').css('height',$(window).height());
-				$('#slide-menu').css('height',$(window).height());
-				
-				//Remove the fixed so that Android 2.3 doesn't freak.
-				if(aauMobile.isAndroid()){
-					$('#menu-page').css('position','absolute');
-				}
-				
-				//Slide the page and the menu back to starting position.
-				$('#menu-page').removeClass('slide-out');
-				$('.page-container').removeClass('slide-out');
-				
-				aauMobile.slideMenu.lastSlide = new Date().getTime();
-
-				/*****  START: Standardize the Spinner for all page loads  ****
-				if(pageLink == '#student-home' & aauMobile.classSchedule.data.length < 1){
-					$.mobile.showPageLoadingMsg("b", "Loading...", false);
-				}
-				if(pageLink == '#feed-list' & !aauMobile.campusFeed.feedData){
-					$.mobile.showPageLoadingMsg("b", "Loading...", false);
-				}
-				console.log('Campus Events: '+aauMobile.campusFeed.feedCount);
-				if(pageLink == '#campus-event-list' & aauMobile.campusEvents.feedCount < 3){
-					console.log('Go Spinny Go!');
-					$.mobile.showPageLoadingMsg("b", "Loading...", false);
-				}
-				if(pageLink == '#event-list' & !aauMobile.rssEvent.feedData){
-					$.mobile.showPageLoadingMsg("b", "Loading...", false);
-				}
-				if(pageLink == '#link-list' & !aauMobile.externalLinks.linkData){
-					$.mobile.showPageLoadingMsg("b", "Loading...", false);
-				}
-				if(pageLink == '#transit-map' & !aauMobile.campusEvents.feedData){
-					$.mobile.showPageLoadingMsg("b", "Loading...", false);
-				}
-				/*****  END: Standardize the Spinner for all page loads  ****/
-
-				
-				//Old Method
-				//$('#slide-menu').animate({marginLeft:'-180px'},250, function(){$('#menu-page').css('display','none');});
-				//$(pageLink).animate({marginLeft:'0px'},250, function(){$('.mob-header').css('position','fixed');});
+				$(window).trigger('orientationchange');
 			}
 		}
+		
+		$(window).trigger("orientationchange");
+		
+		
+		//PARTH: Hide Spinner
+		aauMobile.ideas.onComplete();
+		
 	},
-    toggleMenu: function(e){
+	
+	processFailure:function(result) {
+		console.log("failureCallback Result: "+ JSON.stringify(result));
+		aauMobile.ideas.isRefreshEvent = false;
+		/*PARTH: Hide Spinner*/
+		var blockTemplate = $("#idea-template");
+		var ideasContainer = $("#ideas-popular-list").empty();
+		
+		var localData = aauMobile.getLocalStorage(aauMobile.ideas.dataKey);
+		
+		if( localData == null || localData.length < 1 ){
+			;
+		}else{
+			aauMobile.ideas.buildTripList(localData);
+			 
+		}
+		ideasContainer.css("margin","0px");
+		aauMobile.ideas.initFailure(result,'ideas-popular-list','idea-template','ideas-popular' );
+	
+	},
+	processSearchFailure:function(result) {
+		var blockTemplate = $("#idea-template");
+		var ideasContainer = $("#ideas-search-results").empty();
+		ideasContainer.css("margin","0px");
+		aauMobile.ideas.initFailure(result,'ideas-search-results','idea-template','ideas-search' );
+	},
+	processCategoryFailure:function(result) {
+		var blockTemplate = $("#idea-template");
+		var ideasContainer = $("#idea-buttons").empty();
+		ideasContainer.css("margin","0px");
+		aauMobile.ideas.initFailure(result,'idea-buttons','idea-template','ideas-search' );
+	},
+	
+	processLatestFailure:function(result) {
+		var blockTemplate = $("#idea-template");
+		var ideasContainer = $("#div-latest-results").empty();
+		ideasContainer.css("margin","0px");
+		aauMobile.ideas.initFailure(result,'ideas-latest-results','idea-template','ideas-latest' );
+	},
+	
+	processAddNewFailure:function(result) {
+		//var blockTemplate = $("#idea-template");
+		//var ideasContainer = $("#ideas-search-results").empty();
+		//ideasContainer.css("margin","0px");
+		//aauMobile.ideas.initFailure(result,'ideas-search-results','idea-template','ideas-search' );
+	},
+	initFailure: function(result,container,template,page) {
+		
+		
+		if($($.mobile.activePage).attr('id') == page){
+			//Hide loading message.
+			//Resize the container so the device can scroll.
+			if(aauMobile.isAndroid()){
+				$(window).trigger('orientationchange');
+			}
+		}
+		aauMobile.ideas.onComplete();
+		if(result==""){ return;}
+		if(result.indexOf("Unable to resolve host")>=0){
+			alert("Due to slow or no connection, this action has been canceled. Please try again later.");
+		}else{
+			alert('We have encountered an error.  Please try again later.');
+		}
+	},
+    
+    showIdeaDetails: function(callback,tripId) { 
+		/*console.log('Inside showIdeaDetails: '+idea+' = Id');
+    	aauMobile.ideas.onComplete = callback; 
+		var ideaDetail;
+   		var idea = aauMobile.idea.data[ideaId];
+		//Change the Page to Show the details of Selected chatterpost
+		if(appirioUtils.isAndroid()){
+			$.mobile.changePage("#idea-details", {transition: 'none', changeHash: true});
+		} 
+		else{
+			$.mobile.changePage("#idea-details", {transition: 'slide', changeHash: true});
+		}
+				
+				
+		if($($.mobile.activePage).attr('id') == 'idea-details'){
+			//Hide loading message.
+			//Resize the container so the device can scroll.
+			if(aauMobile.isAndroid()){
+				$(window).trigger('orientationchange');
+			}
+		}
+		
+		$(window).trigger("orientationchange");
+		
+		//PARTH: Hide Spinner
+		aauMobile.ideas.onComplete();*/
+    },
+    
+    
+    
+    	
+	
+    
+    
+   
+},
+ //////END IDEAS////////////////// 
+
+nativeMenu: { 
+  toggleMenu: function(e){
         event.preventDefault();
         event.stopPropagation();
 		aauMobile.nativeAdapter.exec(function (){}, function(){}, "com.appirio.mobile.menu", "toggleMenu", []);
@@ -2653,95 +3012,19 @@ slideMenu: {
 										{"title":"Campus Events", "id" : "campus-events-link", "icon":"iconsprite_grey.png","nonsprite":"agenda.png", "imageRect":{ "x": 0, "y": 63, "width": 38, "height": 22}, "action":"$.mobile.changePage('#campus-event-list');", "actionType":"js"},
 										{"title":"Sports", "id" : "sports-link", "icon":"iconsprite_grey.png","nonsprite":"aaulogo.png", "imageRect":{ "x": 0, "y": 118, "width": 38, "height": 31}, "action":"$.mobile.changePage('#event-list');", "actionType":"js"},
 										{"title":"Helpful Links", "id" : "links-link", "icon":"iconsprite_grey.png","nonsprite":"contact.png", "imageRect":{ "x": 0, "y": 86, "width": 38, "height": 33}, "action":"$.mobile.changePage('#link-list');", "actionType":"js"},
+										{"title":"Ideas", "id" : "ideas-link", "icon":"iconsprite_grey.png","nonsprite":"contact.png", "imageRect":{ "x": 0, "y": 86, "width": 38, "height": 33}, "action":"$.mobile.changePage('#ideas-popular');", "actionType":"js"},
 										{"title":"Logout", "id" : "logout-link", "icon":"iconsprite_grey.png","nonsprite":"gear.png", "imageRect":{ "x": 0, "y": 149, "width": 38, "height": 31}, "action":"SalesforceOAuthPlugin.logout();", "actionType":"js"}
 										]}
 									]);
 	},
 	nativeInit: function(){
-		aauMobile.slideMenu.nativeSetup();
+		aauMobile.nativeMenu.nativeSetup();
 		
-		$('.menu-btn').on(aauMobile.clickEvent, aauMobile.slideMenu.toggleMenu); 
+		$('.menu-btn').on(aauMobile.clickEvent, aauMobile.nativeMenu.toggleMenu); 
 		
 		if(navigator.splashscreen && (aauMobile.isAndroid() || aauMobile.isIOS())){
 	   		navigator.splashscreen.hide();
 	   	} else if(aauMobile.isAndroid() || aauMobile.isIOS()){
-	   		aauMobile.nativeAdapter.exec(null, null, "SplashScreen", "hide", []);
-	   	}
-	},	
-	//Initializes the menu, and relevant events.
-	init: function(){
-		
-		console.log('Start Initialize Menu');
-		//We don't want the menu visible by default, we want to show the schedule or the current hash.
-		$.mobile.changePage('#student-home', {changeHash: true});
-		appirioUtils.log('aauMobile.slideMenu.init called');
-		console.log('aauMobile.slideMenu.init called');
-		
-		//$('#menu-page').on(aauMobile.clickEvent, aauMobile.slideMenu.hide);
-		$('#menu-page').on(aauMobile.clickEvent, function(event){
-			appirioUtils.fireEvent(aauMobile.slideMenu.hide, event, null);
-		});
-		
-		//The UL needs to stretch the entire length of the page, and not allow the 
-		//underlying part of the page to fire the close event.
-		$('#slide-menu').on(aauMobile.clickEvent, function(event){
-			event.stopPropagation();
-			console.log('Tapped on the menu.');
-		});
-	
-		$('#slide-menu li a').on(aauMobile.clickEvent, aauMobile.slideMenu.linkClicked);
-		/*
-		$('#slide-menu li a').on(aauMobile.clickEvent, function(event){
-			appirioUtils.fireEvent(aauMobile.slideMenu.linkClicked, event, null);
-		});
-		$('.menu-btn').on(aauMobile.clickEvent, aauMobile.slideMenu.show);
-		$('.menu-btn').on(aauMobile.clickEvent, appirioUtils.fireEvent(aauMobile.slideMenu.show, event, null));
-		*/
-		$('.menu-btn').on(aauMobile.clickEvent, function(event){
-			event.preventDefault();
-			event.stopPropagation();
-			appirioUtils.fireEvent(aauMobile.slideMenu.show, event, null);
-		});
-	
-		//Android pre-3.0 devices aren't fully responsive to click.
-		if(aauMobile.isAndroid()) {
-			$('#menu-page').addClass('android-menu');
-			$('.page-container').addClass('android-menu');
-		}else{
-			$('#menu-page').addClass('standard-menu');
-			$('.page-container').addClass('standard-menu');
-			}
-	   	
-	   	
-	   	//Occurs when the menu finishes sliding.
-	    $('#menu-page').on('webkitTransitionEnd', function(){
-	    	console.log('Menu Transition End');
-	    	if($(this).hasClass('slide-out')){
-	    		$(this).css('position','fixed');
-	    		$('#slide-menu').css('height',$(window).height());
-	    	} else{
-	    		$(this).addClass('hidden');
-	    		$(document).width($(window).width());
-	    	}
-	    });
-	    
-	    //When the current page finishes sliding, this will occur.
-	    $('.page-container').on('webkitTransitionEnd', function(){
-			console.log('Page Transition End');
-			if($(this).attr('id') == "transit-map" && $.mobile.urlHistory.getPrev().pageUrl != 'bus-detail'){
-				//mapManager.triggerResize();
-				$(window).trigger('orientationchange');
-			}
- 
-			if(!$(this).hasClass('slide-out')){
-				$('.mob-header').css('position','fixed');
-				//$('#result-container').css('position','fixed');
-			}
-	   	});
-	   	
-	   	if(navigator.splashscreen){
-	   		navigator.splashscreen.hide();
-	   	} else{
 	   		aauMobile.nativeAdapter.exec(null, null, "SplashScreen", "hide", []);
 	   	}
 	}
@@ -2885,7 +3168,22 @@ var AppirioUtils = function() {
 
 			return dayList[myDate.getDay()]+', '+monthList[myDate.getMonth()]+' '+myDate.getDate();
 		},
-
+		formatDateShort: function(myDate){
+			var date = new Date(myDate);
+			var monthList = new Array('Jan. ','Feb. ','Mar. ','Apr. ','May ','Jun. ','Jul. ','Aug. ','Sep. ','Oct. ','Nov. ','Dec. ');
+			if(date != "Invalid Date"){
+				return monthList[date.getMonth()] + date.getDate() + ", " + date.getFullYear();
+			} else{
+				return myDate;
+			}
+		},
+		shortName: function(name){
+			if(name.indexOf(" ") > 0){
+				return name.substr(0, name.indexOf(" ") + 2) + ".";
+			} else{
+				return name;
+			}
+		},
 		fireEvent: function(mainFunction, params, onSuccess){ //, params){
 			console.log('fireEvent: Start, eventInProgress: '+eventInProgress);
 			if(eventInProgress){ 
@@ -2968,10 +3266,14 @@ function IsInputTypeSupported(typeName) {
 function bindEvents() {
 	
 	console.log('bindEvents method called');
-  $.mobile.pageContainer = $('#container');
+  $.mobile.pageContainer = $('body');
   //Disable page transitions. With the way the menu works, we have to use our own.
-  $.mobile.defaultPageTransition = 'none';	
+  $.mobile.defaultPageTransition = 'none';
+  $.mobile.defaultDialogTransition = 'none';	
   
+  		if(window.innerHeight > 600 && !isMinimum){
+			$("#version-control").css("background-size", "50%");
+		}
   
     $("#transit-settings").live(aauMobile.clickEvent, function(){ 
 	        $('#result-container').toggle(); 
@@ -3068,7 +3370,7 @@ function bindEvents() {
   
   
   	//alert('android');
-  	$("#container").css("position", "relative");
+  	//$("#container").css("position", "relative");
   	//Don't display Back button on Android devices.
   	
   	 $('.mob-back-button').css('display','none');
@@ -3148,7 +3450,12 @@ function bindEvents() {
 	  		$(element).on(aauMobile.clickEvent, function(e){
 	  			event.preventDefault();
 	  			
-	  			$.mobile.changePage('#transit-map',{transition: 'slide', reverse: true});
+	  			if(appirioUtils.isAndroid()){
+					$.mobile.changePage("#transit-map", {transition: 'none', changeHash: true});
+				} 
+				else{
+					$.mobile.changePage("#transit-map", {transition: 'slide', changeHash: true});
+				}
 	  			
 	  		});
 	  		console.log('BACK BUTTON HAS BEEN RE-ADDED');
@@ -3170,14 +3477,16 @@ function bindEvents() {
 		});
 	  }
   } else{
-  	aauMobile.slideMenu.nativeInit();
+  	aauMobile.nativeMenu.nativeInit();
   } 
+  
+  $(window).trigger("orientationchange");
  //callback();
 }
 
 function resizeElements(){
 			//Reset Inline Styles.
-			$('#container').css('height', "");
+				/*$('#container').css('height', "");
 	  		$(".page-container").css('min-height', "" );
 	  		$(".mob-content").css('height', "" );
 			
@@ -3190,13 +3499,19 @@ function resizeElements(){
 	  			$('#container').css('height', (window.outerHeight /window.devicePixel) + "px" );
 	  			$(".page-container").css('min-height', ($(window).height()) + "px" );
 	  			$(".mob-content").css('height', ($(window).height() - 44) + "px" );
-	  		}
-	  		
+	  		}*/
+	  		$(".page-container").css('min-height', ($(window).height()) + "px" );
+	  		$(".mob-content").css('min-height', ($(window).height() - 44) + "px" );
   		}
 
 function map_BackButtonClick(){
 	//alert('aaa');
-	$.mobile.changePage('#transit-map',{transition: 'slide', reverse: true});
+	if(appirioUtils.isAndroid()){
+			$.mobile.changePage("#transit-map", {transition: 'none', changeHash: true});
+		} 
+		else{
+			$.mobile.changePage("#transit-map", {transition: 'slide', changeHash: true});
+		}
 	//callback();
 }
 
@@ -3238,10 +3553,17 @@ function initApp(){
 				console.log('App Initialized');
 			});
 		});*/
+		
+		if(!hasNativeMap){
+			mapInit();
+		}
+		aauMobile.tripPlanner.getBusStopsFromSFDC(aauMobile.tripPlanner.addBusStops);
+		
 		aauMobile.campusFeed.init(function(){$.mobile.hidePageLoadingMsg();});
-		mapInit();
 		loadPage();  //call method to load data for whatever page is active
-		TripPlannerInit();
+		if(navigator.splashscreen){
+			navigator.splashscreen.hide();
+		}
 	}
 }
 
@@ -3481,7 +3803,12 @@ function loadPage(){
 				|| (aauMobile.tripPlanner.weekdayOption != $('#day-select :selected').val() )){
 					
 					if($('#startStop-select :selected').val() == '0' || $('#endStop-select :selected').val()=='0' || $('#plantime').val() == ''){
-						$.mobile.changePage('#trip-planner',{transition: 'slide', reverse: true});
+						if(appirioUtils.isAndroid()){
+							$.mobile.changePage("#trip-planner", {transition: 'none', changeHash: true});
+						} 
+						else{
+							$.mobile.changePage("#trip-planner", {transition: 'slide', changeHash: true});
+						}
 						alert('Please select a pickup/drop off point and time');
 						return false;
 					}
@@ -3497,6 +3824,26 @@ function loadPage(){
 					appirioUtils.fireEvent(aauMobile.tripPlanner.init, null, null);
 			}
 		}
+		
+		if(currPage == 'ideas-popular' ){//&& aauMobile.ideas.data.length === 0){
+			console.log('Go Spinny Go!');
+			/* Parth: Load Ideas Data */
+			appirioUtils.fireEvent(aauMobile.ideas.init, null, null);
+		}
+		
+		if(currPage == 'ideas-latest' ){//&& aauMobile.ideas.data.length === 0){
+			console.log('Go Spinny Go!');
+			/* Parth: Load Ideas Data */
+			appirioUtils.fireEvent(aauMobile.ideas.getLatest, null, null);
+		}
+		
+		if(currPage == 'ideas-search' ){//&& aauMobile.ideas.data.length === 0){
+			console.log('Go Spinny Go!');
+			/* Parth: Load Ideas Data */
+			appirioUtils.fireEvent(aauMobile.ideas.getCategories, null, null);
+		}
+
+		
 		
 		/*if(currPage == 'transit-map'){
 			//console.log('Go Spinny Go!');
@@ -3517,7 +3864,12 @@ function searchTripOptions(){
 			alert('Pickup and drop off point should be different.');
 			return false;
 		}else{
-			$.mobile.changePage('#trip-options',{transition: 'slide', reverse: true});
+			if(appirioUtils.isAndroid()){
+				$.mobile.changePage("#trip-options", {transition: 'none', changeHash: true});
+			} 
+			else{
+				$.mobile.changePage("#trip-options", {transition: 'slide', changeHash: true});
+			}
 			return true;
 		}
 	}

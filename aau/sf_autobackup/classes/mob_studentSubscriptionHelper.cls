@@ -21,7 +21,7 @@ global without sharing class mob_studentSubscriptionHelper {
 	 	for(string membership:newMembersList){
 	 		 string grpId = membership.split('-')[0];
 	 		 string stdId = membership.split('-')[1];
-	 		 CollaborationGroupMember newMembership= new CollaborationGroupMember(MemberId=stdId,CollaborationGroupId = grpId );
+	 		 CollaborationGroupMember newMembership= new CollaborationGroupMember(MemberId=stdId,CollaborationGroupId = grpId,NotificationFrequency = 'N' );
 			 newMembers.add(newMembership);
 	 		 
 	 	}

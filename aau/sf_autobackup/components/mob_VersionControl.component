@@ -1,0 +1,57 @@
+<apex:component >
+<style>
+#version-control{
+	background-color: #000;
+	background-image: url({!URLFOR($Resource.mob_Design, "/mob_Design/images/logo-large.png")});
+	background-size: 75%;
+	background-repeat: no-repeat;
+	background-position: 50% 10%;
+}
+#version-control .update-content{
+	position: absolute;
+	bottom:15%;
+	left: 5%;
+	height: 175px !important;
+	width: 90% !important;
+	text-align: center;
+	background-color: #242424;
+	border-radius: 5px;
+	border: solid 1px #2a2a2a;
+	box-shadow: inset 0 0 10px #141414;
+	color: #fff;
+	text-shadow: rgb(0, 0, 0) 0px 1px 0px;
+}
+#version-control .update-content a{
+	width: 88%;
+	margin-left: 6%;
+	font-size: 11px;
+	border-radius: 3px;
+	border: solid 1px #6e272a;
+	background-color: #b11312;
+	background-image: none;
+}
+#version-control .update-content a span.ui-btn-inner{
+	padding-top: 7px;
+	padding-bottom: 7px;
+	border-color: rgba(255,0,0,.3);
+}
+#version-control .update-content a span.ui-btn-inner span.ui-btn-text{
+	color: #fff;
+	text-shadow: rgb(0, 0, 0) 0px 1px 0px;
+}
+
+</style>
+<apex:attribute name="isAndroid" description="True or false for whether or not the device can load from native." type="boolean" required="true"/> 
+<div data-role="page" id="version-control" class="page-container" > 
+    <div data-role="content"  class="update-content">
+    	<div>
+    		<h2>Update Needed</h2>
+    		<p>To access this app you will need to download the latest update.</p>
+    		<a data-role="button" href="{!IF(isAndroid,"market://details?id=com.appirio.aau", "itms-apps://itunes.apple.com/us/app/aau-campus/id553294355")}">DOWNLOAD UPDATE</a>
+    	</div>
+    </div>
+</div>
+<script>
+
+</script>
+</apex:component>

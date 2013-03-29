@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StaticResource xmlns="http://soap.sforce.com/2006/04/metadata">
+    <cacheControl>Private</cacheControl>
+    <contentType>text/javascript</contentType>
+    <description>jquery-1.9.1.min.js
+customSelect.jquery.js&quot;    
+jquery.ui.core.min.js
+jquery.ui.widget.min.js
+jquery.ui.tabs.min.js
+jquery.ui.position.min.js
+jquery.ui.timepicker.js</description>
+</StaticResource>

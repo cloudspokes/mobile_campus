@@ -1,35 +1,44 @@
 <apex:component >
 <apex:attribute name="hasNativeResources" description="True or false for whether or not the device can load from native." type="boolean" required="true"/> 
 <style>
+
+.classDetail {
+    font-family: sans-serif  !important;
+    margin-left: 15px;
+    color: #DC2221;
+    margin-top: 10px;
+ }
+ 
 .classDetail-icon1 {
     background:url({!IF(hasNativeResources,"aaumobile://iconsprite_grey.png", URLFOR($Resource.mob_Design, "/mob_Design/iconsprite_grey.png"))}) no-repeat 0px 0px;
     float:left;
-    background-position-y: -165px;
-    background-size: 100%;
-    width: 35px;
-    height: 31px;
-    margin: auto;
-    margin-left: 10px;
+	background-position-y: -131px;
+	background-size: 100%;
+	width: 28px;
+	height: 26px;
+	margin: auto;
+	margin-left: 15px;
+	margin-top: 5px;
 }
 .classDetail-icon2 {
     background:url({!IF(hasNativeResources,"aaumobile://iconsprite_grey.png", URLFOR($Resource.mob_Design, "/mob_Design/iconsprite_grey.png"))}) no-repeat 0px 0px;
     float:left;
-    background-position-y: -28px;
-    background-size:100%;
-    width:35px;
-    height:29px;
-    margin-left: 10px;
-    margin-top: 5px;
+	background-position-y: -23px;
+	background-size: 100%;
+	width: 28px;
+	height: 22px;
+	margin-left: 15px;
+	margin-top: 5px;
 }
 .classDetail-icon3{
     background:url({!IF(hasNativeResources,"aaumobile://iconsprite_grey.png", URLFOR($Resource.mob_Design, "/mob_Design/iconsprite_grey.png"))}) no-repeat 0px 0px;
     float:left;
-    background-position-y: -197px;
-    background-size: 100%;
-    width:35px;
-    height:32px;
-    margin-left: 10px;
-    margin-top: 5px;
+	margin-left: 15px;
+	margin-top: 5px;
+	background-position-y: -157px;
+	background-size: 100%;
+	width: 28px;
+	height: 26px;
 }    
 .classDetail-icon4{
     background:url({!IF(hasNativeResources,"aaumobile://iconsprite_grey.png", URLFOR($Resource.mob_Design, "/mob_Design/iconsprite_grey.png"))}) no-repeat 0px 0px;
@@ -38,40 +47,47 @@
     background-size: 100%;
     width:35px;
     height:21px;
-    margin-left: 10px;
+    margin-left: 15px;
     margin-top: 10px;
 }    
 .classLi{
    margin: 0px;
-   border-bottom: solid 1px #626262;
+   border-bottom: solid 1px #dfdfdf;
+   height: 34px;
 }    
 .classDetail-detail{
     /*height:28px;*/
+    margin-top: -2px;
     font-weight:bold;
     line-height: 0.9;
+    padding-top: 3px !important;
 }
 .classDetail-label{
-    font-size:10pt;
-    color: #808080;
+    font-size:10px;
+    color: #a8a8a8;
 }
 #classDescrDv {
-    padding-left:10px;
-    padding-right:10px;
-    min-height: 100px;
-    border-bottom: solid 1px #626262;
+	padding-right: 6%;
+	padding-left: 8%;
+	min-height: 100px;
+	border-bottom: solid 1px #626262;
+	width: 86%;
 }
 #classChatterPosts{
 	min-height:50px; 
-    border-bottom: solid 1px #626262;
 }
 
 #classDescrDv h3 {
     font-weight: normal;
+    font-size: 14px;
+	color: #5a5a5a;
 }
 
 .classDetail h2{
     font-size:14pt;
 	margin-top: 2px;
+	margin-bottom: 15px;
+	line-height: 16px;
 }
 .classLi div.ui-btn-inner span.ui-icon{
     display: none;
@@ -80,59 +96,152 @@
 	white-space: normal;
 }
 .section-details {
-	color:#000;
+	color:#a3a3a3;
 	font-size:12px;
+	font-weight:bold;
 	margin-bottom:0px;
 	padding: 5px 5px 0px 2px;
 }
 #classChatterUl{
-	display:block;
+	display: block;
 	margin-top: 0;
 	margin-bottom: 0;
+	width: 94%;
+	margin-left: 3%;
+	margin-right: 3%;
 }
 .classChatLi{
-	border-top: solid 1px #626262;
+	border-bottom: solid 1px #c6c6c6;
 	margin-top: 2px;
 }
+.classChatLiPosted{
+	text-transform: uppercase;
+	font-size: 8pt;	
+	color: #969696;
+	margin-top: 8px;
+}
 .classChatLiName{
-	color: #626262;
+	color: #5a5a5a;
 }
 .classChatLiText{
-	color: #000;
+	color: #5a5a5a;
+	font-weight: normal;
+	font-style: oblique;
 }
 #classChatterNoResults, #classChatterShowMore{
-	display: block;
-	height: 30px;
-	width: 100%;
-	color: #000;
-	border-top: solid 1px #626262;
-	padding: 5px;
+	height: 20px;
+	width: 94%;
+	border-bottom: solid 1px #c6c6c6;
+	padding: 6px 0;
+	margin-left: 3%;
+	text-align: center;
+	font-size: 10pt;
+	font-weight: bold;
 }
-
+#classChatterShowMore{
+	color: #c00018;
+	background-color: rgba(0,0,0,0.04);
+}
+#classChatterNoResults{
+	color: #000;
+}
+#student-detail{
+	background: none;
+}
+#classDetailContainer{
+	background-color: #fff;
+	margin-left: 5%;
+	width: 90%;
+	border-radius: 7px;
+	border: solid 1px #bababa;
+	margin-top: 10px;
+}
+#ulDlId{
+	background-color: #f3f3f3;
+	box-shadow: inset 0 16px 24px -24px rgba(0,0,0,0.5);
+	border-bottom-left-radius: 7px;
+	border-bottom-right-radius: 7px;
+}
+#ulDlId li:last-child{
+	border-bottom-width: 0;
+	border-bottom-left-radius: 7px;
+	border-bottom-right-radius: 7px;
+}
+#ulDlId li:first-child div.ui-btn-inner div.ui-btn-text a.classDetail-detail span.detail-value{
+	display: block;
+	margin-top:8px;
+	font-size: 13px;
+}
+span.detail-value{
+	font-size: 13px;
+}
+#classChatterHeader{
+    color: #FFFFFF;
+    text-shadow: 0 1px 1px #000000;
+    background-image: -webkit-linear-gradient( top, #303030 0%, #565656 20%, #565656 80%, #303030 100% );
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#303030), color-stop(0.2, #565656), color-stop(0.8, #565656), to(#303030));
+    background-color: #565656;
+    font-size: 11pt;
+    padding: 5px;
+    border: none;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
+    z-index:0;
+    font-weight: bold;
+    padding-left: 15px;
+ }
+ #meetingNote{
+	display: block;
+	max-width: 82%;
+	height: 80px;
+	background-color: #ffffff;
+	margin-left: 3%;
+	margin-right: 3%;
+	border-radius: 24px;
+	border-width: 1px;
+	padding: 15px 0 0px 12%;
+	font-weight: bold;
+	background-image: url({!URLFOR($Resource.mob_design_ideas, "mob_design_ideas/images/add_comment.png")});
+	background-position: 5% 18px;
+	background-repeat: no-repeat;
+	background-size: 24px;
+ }
+ #classChatterInput div.ui-btn{
+	border: 1px solid #cccccc;
+	background: #eeeeee;
+	color: #2F3E46;
+	text-shadow: 0 1px 0 #000;
+	background-image: -webkit-gradient(linear,left top,left bottom,from( #c41f1e ),to( #ad1010 ));
+	background-image: -webkit-linear-gradient(#c41f1e, #ad1010 );
+	width: 45%;
+	border-radius: 10px;
+	float: right;
+	margin-right: 4%;
+	color: #fff;
+	font-size: 11pt;
+ }
 </style>
 
-<script id="student-classDetail-template" type="text/x-jquery-tmpl">
-<hr/>                
-<li id="classTime" class="classLi" style="padding-top: 2px;padding-bottom: 2px;">
+<script id="student-classDetail-template" type="text/x-jquery-tmpl">             
+<li id="classTime" class="classLi" style="padding-top: 2px;padding-bottom: 1px;">
 	<span class="classDetail-icon1" /> <a href="#" class="classDetail-detail">
 	   <span class="detail-value">${meetingTime}</span>
 	</a>  
 </li>  
 <li class="classLi" style="padding-top: 2px;padding-bottom: 1px;">
-   <span class="classDetail-icon2" /> <a href="#" class="classDetail-detail" style="padding-top:0.4em">
+   <span class="classDetail-icon2" /> <a href="#" class="classDetail-detail">
 	   <span class="detail-value">${mLocation}</span>
 	   <br/><span class="classDetail-label">LOCATION</span>
 	</a>  
 </li>
 <li class="classLi" style="padding-top: 2px;padding-bottom: 1px;">
-   <span class="classDetail-icon3" /><a href="#" class="classDetail-detail" style="padding-top:0.4em">
+   <span class="classDetail-icon3" /><a href="#" class="classDetail-detail">
 	   <span class="detail-value">${meetingInstruction}</span>
 	   <br/><span class="classDetail-label">INSTRUCTOR</span>
 	</a>  
 </li>
 {{if hasGrade}}
 <li class="classLi" style="padding-top: 2px;padding-bottom: 1px;">
-   <span class="classDetail-icon4" /><a href="#" class="classDetail-detail" style="padding-top:0.4em">
+   <span class="classDetail-icon4" /><a href="#" class="classDetail-detail">
 	   <span class="detail-value">${grade}</span>
 	   <br/><span class="classDetail-label">GRADE</span>
 	</a>  
@@ -142,8 +251,8 @@
 
 <script id="student-classDetail-chatter-template" type="text/x-jquery-tmpl">
 <li class="classChatLi">
-	<div class="classChatLiName"><strong>Posted By:</strong> ${userName} <strong>At:</strong> ${postDate}</div>
 	<div class="classChatLiText">${meetingNote}</div>
+	<div class="classChatLiPosted">POSTED BY <span class="classChatLiName">${appirioUtils.shortName(userName)}</span> ON <span class="classChatLiName">${appirioUtils.formatDateShort(postDate)}</span></div>
 </li>
 </script>
 </apex:component>

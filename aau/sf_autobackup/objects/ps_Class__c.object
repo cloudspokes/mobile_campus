@@ -139,6 +139,7 @@
         <columns>Subject__c</columns>
         <columns>Catalog_Nbr__c</columns>
         <columns>Class_Section__c</columns>
+        <columns>Online_Class__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
         <language>en_US</language>

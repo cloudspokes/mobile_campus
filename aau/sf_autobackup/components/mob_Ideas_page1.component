@@ -1,0 +1,97 @@
+<apex:component >
+<style>
+#bar ul li .ui-link{
+		font-weight: bold;
+		color: #fff;
+		font-family: helvetica;
+		font-size: 12px;
+		text-shadow:none;
+		}
+
+#bar ul li {
+		font-weight: bold;
+		color: #fff;
+		font-family: helvetica;
+		font-size: 12px;
+		text-shadow:none;
+		}
+#bar ul span{
+		font-weight: bold;
+		color: #fff;
+		font-family: helvetica;
+		font-size: 12px;
+		text-shadow:none;
+		padding:0px;
+		}
+ #bar ul span .ui-link{
+		font-weight: bold;
+		color: #fff;
+		font-family: helvetica;
+		font-size: 12px;
+		text-shadow:none;
+		} 
+nav{ 
+	left: 10px;
+	width: 90%;
+	position: relative;
+	float: center; 
+}
+nav li{
+	width:31%;
+	cursor:pointer; 
+	border-left: 1px solid #a7a7a7;
+	} 
+	
+#ideas-popular{
+	background-image: url({!URLFOR($Resource.mob_design_ideas, "mob_design_ideas/images/background_image.jpg")});
+	
+	}
+	#ideas-latest{
+	background-image: url({!URLFOR($Resource.mob_design_ideas, "mob_design_ideas/images/background_image.jpg")});
+	
+	}
+	#ideas-search{
+	background-image: url({!URLFOR($Resource.mob_design_ideas, "mob_design_ideas/images/background_image.jpg")});
+	
+	}
+#ideas-addnew{
+	background-image: url({!URLFOR($Resource.mob_design_ideas, "mob_design_ideas/images/background_image.jpg")});
+	
+	}
+#target, #target_right{
+	background-color: rgb(204,0,24);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(3%,rgb(204,0,24)), color-stop(52%,rgb(173,16,16)));
+	background-image: -webkit-linear-gradient(top, rgb(204,0,24) 3%, rgb(173,16,16) 52%);
+}
+</style>
+
+<script>
+	function addIdea(){
+		$.mobile.changePage('#ideas-addnew',{transition: 'slide', reverse: false}); 
+	}
+	function openSearchPage(){ 
+		$.mobile.changePage('#ideas-search',{transition: 'none', reverse: false}); 
+	}
+	function openLatestPage(){
+		$.mobile.changePage('#ideas-latest',{transition: 'none', reverse: false});
+		
+	}
+	function openPopularPage(){
+		$.mobile.changePage('#ideas-popular',{transition: 'none', reverse: false});
+	}
+</script>
+	<div style="padding_left:10px;" align="center" >
+			<nav>
+				<ul>
+				<li id="target" onclick="javascript:openPopularPage();"><a href="javascript:openPopularPage();" title="POPULAR">POPULAR IDEAS</a></li>
+				<li id="" onclick="javascript:openLatestPage();"><a href="javascript:openLatestPage();" title="LATEST">LATEST IDEAS</a></li>
+				<li id="nav_right" onclick="javascript:openSearchPage();"><a href="javascript:openSearchPage();" title="SEARCH">SEARCH</a></li>
+				</ul>
+			</nav>
+		</div>
+
+		<div id="ideas-popular-list" style="padding:10px;width:95%;padding-left:20x;" align="center">
+		   <!-- idea-template -->
+	    
+	   </div>
+</apex:component>

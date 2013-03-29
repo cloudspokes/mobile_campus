@@ -21,12 +21,13 @@
 .chatterDetail-icon2 {
     background:url({!IF(hasNativeResources,"aaumobile://iconsprite_grey.png", URLFOR($Resource.mob_Design, "/mob_Design/iconsprite_grey.png"))}) no-repeat 0px 0px;
     float:left;
-    background-position-y: -28px;
     background-size:100%;
-    width:35px;
-    height:29px;
-    margin-left: 10px;
+    margin-left: 15px;
     margin-top: 5px;
+    background-position-y: -26px;
+	width: 32px;
+	height: 26px;
+
 }
 .chatterDetail-icon3{
     background:url({!IF(hasNativeResources,"aaumobile://iconsprite_grey.png", URLFOR($Resource.mob_Design, "/mob_Design/iconsprite_grey.png"))}) no-repeat 0px 0px;
@@ -80,12 +81,6 @@
 .detail-value {
 	white-space: normal;
 }
-.section-details {
-	color:#000;
-	font-size:12px;
-	margin-bottom:0px;
-	padding: 5px 5px 0px 2px;
-}
 </style>
 
 <script id="chatterDetail-template" type="text/x-jquery-tmpl">
@@ -98,7 +93,7 @@
                 </li>
 			{{/if}}
                 
-				 <li id="chatterTime" class="chatterLi" style="padding-top: 2px;padding-bottom: 2px;">
+				 <li id="chatterTime" class="chatterLi" style="padding-top: 2px;padding-bottom: 1px;">
                     <span class="chatterDetail-icon1" /> <a href="#" class="chatterDetail-detail">
                        <span class="detail-value">${CreatedDayAndDay}</span>
 						<br/><span class="chatterDetail-label">Posted On</span>

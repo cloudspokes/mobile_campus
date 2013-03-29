@@ -1,7 +1,7 @@
 <apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="mob_DeviceDetection">
   <!-- controller="ContentController"> -->
   <!--   <apex:outputText escape="false" value="{!"<!DOCTYPE html>"}"/>-->
-<html manifest="{!IF($Setup.mob_Student__c.Cache_Pages__c,'/apex/mob_Manifest','')}">
+<html manifest="{!IF(isMinimum, IF($Setup.mob_Student__c.Cache_Pages__c,'/apex/mob_Manifest',''), '')}">
 <head> 
     <apex:pageMessages />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/> 
@@ -16,7 +16,8 @@
 ======= -->
      <link rel="Stylesheet" type="text/css" href="{!IF(hasNativeResources,"aaumobile://jquery_mobile.css", URLFOR($Resource.jquerymobile1dot1, "jquery.mobile-1.1.0-rc.1.min.css"))}"></link>
     <link rel="Stylesheet" type="text/css" href="{!IF(hasNativeResources,"aaumobile://AAUjQueryTheme_min.css", URLFOR($Resource.mob_Design, "/mob_Design/AAUjQueryTheme.min.css"))}"></link>
-
+	
+	<link href="{!URLFOR($Resource.mob_design_ideas, "mob_design_ideas/style.css")}" type="text/css" rel="stylesheet"></link> 
 
 
     <!--  <script type="text/javascript">
@@ -79,6 +80,8 @@
 	var hasNativeResources = {!hasNativeResources}; 
 	var hasNativeMenu = {!hasNativeMenu}; 
 	var hasNativeMap = {!hasNativeMap};
+	var isMinimum = {!isMinimum};
+	var appVersion = {!appVersion};
 		var rangeValue;
 		var locationValue;
 		//alert('hasNativeResource: '+hasNativeResources+'. hasNativeMenu: '+hasNativeMenu);
@@ -125,11 +128,11 @@
      
 	
    
-    <script type="text/javascript" src="{!$Resource.appirioPlugins}"></script>
-    <script type="text/javascript" src="{!$Resource.mob_mapManager}"></script>
+       <script type="text/javascript" src="{!$Resource.appirioPlugins}"></script>
+    <script type="text/javascript" src="{!IF(NOT(hasNativeMenu), URLFOR($Resource.mob_mapManager, ''), '')}"></script>
     <script type="text/javascript" src="{!$Resource.mob_StudentJs}"></script>
-    <script type="text/javascript" src="{!$Resource.mob_mapJS}"></script>
-    <script type="text/javascript" src="{!$Resource.mob_transitManager}"></script>
+    <script type="text/javascript" src="{!IF(NOT(hasNativeMenu), URLFOR($Resource.mob_mapJS, ''), '')}"></script>
+    <script type="text/javascript" src="{!IF(NOT(hasNativeMenu), URLFOR($Resource.mob_transitManager, ''), '')}"></script>
     <!--  
 	<script type="text/javascript" src="{!$Resource.mob_CombinedJs_min}"></script>
 	-->
@@ -139,13 +142,9 @@
     <c:mob_ListArrow />
 
  <style>
+ 
 	select{ font-size: 16px}	
    .page-map, .ui-content, #map-div { width: 100%; height: 100%; padding: 0; }
-   .classDetail {
-       font-family: sans-serif  !important;
-       margin-left: 10px;
-       color: #DC2221;
-    }
 	.mob-content {
 		position:absolute;
 		top:44px;
@@ -441,9 +440,13 @@
     padding-bottom:5px;
     overflow-x: hidden;
     background:rgba(128, 128, 128, 0.58);
-    height:100%;
+    height:100%; 
     
     
+ }
+ 
+ .userProfileImage{ 
+ 	src : {!URLFOR(userPicUrl)}; 
  }
 
 
@@ -455,16 +458,15 @@
 
 
 
-<body id="homepage" style="background:#121212">
- <div id="container"> 
+<body id="homepage" style="background-image: url({!URLFOR($Resource.mob_design_ideas, "mob_design_ideas/images/background_image.jpg")});">
     <div id="tt-content">
     </div>
+
+<c:mob_VersionControl rendered="{!NOT(isMinimum)}" isAndroid="{!isAndroid}"/>
     <!--  STORY DETAIL PAGE - LIST OF STORY FIELDS-->
+
 <c:mob_Menu rendered="{!NOT(hasNativeMenu)}" />
-
-
-
-    
+   
 <div data-role="page" id="student-home" class="page-container" >
     
        <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false" >
@@ -488,15 +490,17 @@
 <c:mob_ClassSchedule />  
 
 <div data-role="page" id="student-detail" class="page-container" style="min-height:100%;">
-    <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false">
+      <div data-role="header"  class="mob-header aau-fixed-header" data-tap-toggle="false">
          <a data-rel="back" class="mob-back-button">Back</a>
         <h1>Class Info</h1>
     </div>
     <div data-role="content" id="dtlId" style="overflow-x: hidden;" class="mob-content">
-      <div id="classNameDv" class="classDetail"/>
-       <ul data-role="listview"  data-theme="g" id="ulDlId">
-       </ul>
-     <c:mob_ClassDetail hasNativeResources="{!hasNativeResources}" />  
+      <div id="classDetailContainer">
+	       <div id="classNameDv" class="classDetail"/>
+	       <ul data-role="listview"  data-theme="g" id="ulDlId">
+	       </ul>
+       </div>
+      <c:mob_ClassDetail hasNativeResources="{!hasNativeResources}" />  
       <div id="classDescrDv"/>
       <div id="classChatterPosts">
       	<div id="classChatterHeader">Class Discussions</div>
@@ -504,15 +508,14 @@
       	<div  id="loadingChatter" style="text-align: center;"><img src="{!IF(hasNativeResources,"aaumobile://spinner.gif", URLFOR($Resource.mob_Design, "/mob_Design/images/ajax-loader.gif"))}"/></div>
       	<ul data-role="listview" data-theme="g" id="classChatterUl">
       	</ul>
-      	<div id="classChatterShowMore">Show More Comments <span class="ui-icon ui-icon-arrow-r ui-icon-shadow" style="display:block; float:right; margin-right: 10px; margin-top: 10px;"></span></div>
+      	<div id="classChatterShowMore">LOAD MORE POSTS</div>
       </div>
       <div id="classChatterInput">
       	<form id="classChatterForm" name="classChatterForm">
       		<fieldset style="padding: 4px;">
-      			<legend style="margin-left: 3px;"><strong>Post a Comment</strong></legend>
       			<input type="hidden" name="classMeetingId" id="classMeetingId" value=""/>
-      			<label for="userId" style="margin-left: 5px"><strong>Name:</strong> {!$User.FirstName} {!$User.LastName}</label><input type="hidden" name="userId" value="{!$User.ID}"/>
-      			<label for="meetingNote"></label><textarea id="meetingNote" name="meetingNote" rows="8" cols="5" style="margin-left: 4px; width: 93%; height: 80px;"></textarea>
+      			<input type="hidden" name="userId" value="{!$User.ID}"/>
+      			<label for="meetingNote"></label><textarea placeholder="Add a comment" id="meetingNote" name="meetingNote" rows="8" cols="5"></textarea>
       		</fieldset>
       	</form>
       	<button id="classChatterSubmit">Submit</button>                                                                              
@@ -611,7 +614,7 @@
     </div>
    <c:mob_SportsSettings hasNativeResources="{!hasNativeResources}"  isAndroid="{!isAndroid}"/>
     <div data-role="content" class="mob-content">
-        <c:mob_Events />  
+        <c:mob_Events hasNativeResources="{!hasNativeResources}" appVersion="{!appVersion}"/>  
     </div>
     
 </div>
@@ -753,7 +756,78 @@
         <iframe id="external-page-frame" src="http://newsfeed.academyart.edu/"></iframe>
      </div>
 </div> -->
+
+<!-- Ideas -->
+<div data-role="page" id="ideas-popular" class="page-container">
+	<c:mob_Ideas_templates /> 
+	<div data-role="header"   class="mob-header aau-fixed-header" data-tap-toggle="false">
+		 <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div> 
+		 <div class="mob-header-icon header-right" id="refreshBtn"  onClick="JavaScript:addIdea();"><div class="mob-header-RefreshIcon" /></div> 
+		
+		
+		<h1>Ideas</h1>
+	</div>
+
+	<div id="container-ideas-popular" class="mob-content">
+
+		<c:mob_Ideas_page1 /> 
+
+	</div>
 </div>
+
+<div data-role="page" id="ideas-latest" class="page-container">
+	<c:mob_Ideas_templates /> 
+	<div data-role="header"   class="mob-header aau-fixed-header" data-tap-toggle="false">
+		 <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div> 
+		<!-- <div class="mob-header-icon header-right transit-settings" id="transit-settings"><div class="mob-header-MenuIcon3" /></div> -->
+		
+		
+		<h1>Ideas</h1>
+	</div>
+
+	<div id="container-ideas-latest" class="mob-content">
+
+		<c:mob_Ideas_page3 /> 
+
+	</div>
+</div>
+
+<div data-role="page" id="ideas-search" class="page-container">
+
+	<div data-role="header"   class="mob-header aau-fixed-header" data-tap-toggle="false">
+		 <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div> 
+		<!-- <div class="mob-header-icon header-right transit-settings" id="transit-settings"><div class="mob-header-MenuIcon3" /></div> -->
+		
+		
+		<h1>Ideas</h1>
+	</div>
+
+	<div id="container-ideas-search" class="mob-content">
+
+		<c:mob_Ideas_page2 /> 
+
+	</div>
+</div>
+
+ <div data-role="page" id="ideas-addnew" class="page-container"> 
+
+	<div data-role="header"   class="mob-header aau-fixed-header" data-tap-toggle="false">
+		 <!-- <div class="mob-header-icon menu-btn" id="linksMenuBtn"><div class="mob-header-MenuIcon1"/></div>-->
+		 <div class="div-back"><a id="idea-back-lnk" href="javascript: goBack();">BACK</a><div><span></span></div>
+        </div> 
+		<!-- <div class="mob-header-icon header-right transit-settings" id="transit-settings"><div class="mob-header-MenuIcon3" /></div> -->
+		
+		
+		 <h1>Ideas</h1>
+	</div>
+
+	<div id="container-ideas-addnew" class="mob-content" align="center">
+
+		<c:mob_Ideas_page4 PicURL="{!userPicUrl}" UserName="{!userName}" UserProfile="{!userProfile}"/> 
+
+	</div>
+</div>
+<!-- End Ideas -->
 </body>
 </html> 
 </apex:page>

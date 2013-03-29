@@ -61,6 +61,18 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Minimum_Version__c</fullName>
+        <description>The minimum version of the application required.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The minimum version of the application required.</inlineHelpText>
+        <label>Minimum Version</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Rest_Url__c</fullName>
         <defaultValue>&quot;https://aau--dev6.cs12.my.salesforce.com&quot;</defaultValue>
         <description>This is the Base Url for Rest Calls into Salesforce.  We are passing this to Phonegap.GetRestData</description>

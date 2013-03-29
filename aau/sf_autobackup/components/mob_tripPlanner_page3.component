@@ -24,23 +24,22 @@
 	padding-left: 10px;
 }
 </style>
-	<div class="div-tripplanner-page3"   >
-	   		<div class="div-header-routes">
-		   		<table><tr><td><span class="bus-icon"></span></td> </tr>
-		   		<tr><td><span  class="text-routes">Routes</span></td> </tr>
-		   		</table>
-	   		</div>
-	   		<div class="div-selection">
-				<table width="100%"><tr><td>
-					<ul id="ul-trip-details-selection" class="ul-selection">
-						<!-- trip-selection-template -->
-					</ul></td></tr></table>
-			</div>
-	   		
-	   		
-	   	</div>
-	   	
 	   	<div class="mob-content ui-content div-tripDetails-content" data-role="content" role="main">
+		   	<div class="div-tripplanner-page3"   >
+		   		<div class="div-header-routes">
+			   		<table><tr><td><span class="bus-icon"></span></td> </tr>
+			   		<tr><td><span  class="text-routes">Routes</span></td> </tr>
+			   		</table>
+		   		</div>
+		   		<div class="div-selection">
+					<table width="100%"><tr><td>
+						<ul id="ul-trip-details-selection" class="ul-selection">
+							<!-- trip-selection-template -->
+						</ul></td></tr></table>
+				</div>
+		   		
+		   		
+		   	</div>
         	<ul data-role="listview" data-theme="d" id="trip-detail-option-list" class="ui-listview">
         		<!-- trip-options-template -->
         	</ul>

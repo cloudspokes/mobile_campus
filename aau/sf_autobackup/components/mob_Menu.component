@@ -143,6 +143,230 @@
     }
 
 </style>
+
+<script>
+
+	//Mobile Sliding Menu component. 
+//Displays as a side-bar that slides out and pushes content to the side.
+aauMobile.slideMenu = {
+	
+	lastSlide: new Date().getTime(),
+	//Slides the menu out, and pushes the active page to the right.
+	show: function(callback, event){
+	    event.preventDefault();
+	    console.log('MENU BUTTON CLICKED');
+		$('.mob-header').css('position','absolute');
+		aauMobile.slideMenu.lastSlide = new Date().getTime();
+		
+		$('#menu-header').html($($.mobile.activePage).find('.mob-header').html());
+		$('#menu-header .menu-btn').removeClass('menu-btn');
+		$('#menu-page').removeClass('hidden');
+		
+		//Prevent ugly slide behavior on transit-map
+		//$('#result-container').css('position','absolute');
+		
+		//Activate the sliding.
+		$('#menu-page').addClass('slide-out');
+		$('.page-container').addClass('slide-out');
+		
+		//setTimeout(callback(), 3000);
+		callback(null);
+		//OLD METHOD
+		//$('#slide-menu').animate({marginLeft:'0px'},250, function(){$('#slide-menu').css('position','fixed');});
+		//$($.mobile.activePage).animate({marginLeft:'180px'},250);
+	},
+
+	//Removes the slide-out class, causing the active page and 
+	hide: function(callback, event){
+		var curTime = new Date().getTime();
+		var timeDiff = curTime - aauMobile.slideMenu.lastSlide;
+		console.log('curTime - lastSlide = ' + timeDiff);
+		
+		//Android vClick bug solution.
+		if(timeDiff > 400){		
+			console.log('Tapped on the content. Closing Menu.');
+			if(aauMobile.isAndroid()){
+				$('#menu-page').css('position','absolute');
+			}
+			$('#menu-page').removeClass('slide-out');
+			
+			$('.page-container').removeClass('slide-out');
+			
+			aauMobile.slideMenu.lastSlide = new Date().getTime();
+		}
+		callback(null);
+		
+		//OLD METHOD
+		//$('#slide-menu').animate({marginLeft:'-180px'},250, function(){$('#menu-page').css('display','none');});
+		//$($.mobile.activePage).animate({marginLeft:'0px'},250, function(){$('.mob-header').css('position','fixed');});
+	},
+
+	//Changes the active page and slides the menu back into hiding.
+	linkClicked: function(event){
+		event.stopPropagation();
+		event.preventDefault();
+		
+		var curTime = new Date().getTime();
+		var timeDiff = curTime - aauMobile.slideMenu.lastSlide;
+		console.log('curTime - lastSlide = ' + timeDiff);
+		
+		//Android vClick bug solution.
+		if(timeDiff > 400){		
+			var pageLink = $(this).attr('href');
+			if(pageLink.length <= 1){
+				//jQuery Mobile has hijacked our link to prevent the address bar from showing.
+				pageLink = $(this).data('href');
+			}
+			console.log('Link clicked. Target Name  = ' + pageLink);
+			
+			//Logout if logout link clicked.
+			//Otherwise go to page.
+			if($(this).attr('id') == 'logout-link'){
+				console.log('Logging out 2');
+
+				//TODO: Change this to be a native plugin instead of phonegap.resource call
+				$.mobile.changePage('#student-home', {changeHash: true});
+				if(aauMobile.isAndroid()){
+					$('#menu-page').css('position','absolute');
+				}
+				$('#menu-page').removeClass('slide-out');
+				$('.page-container').removeClass('slide-out');
+				
+				SalesforceOAuthPlugin.logout();
+			}
+			else{
+			   console.log('Link clicked. Else  Target Name  = ' + pageLink);
+				appirioUtils.log("")
+			
+				$('#menu-header').html($(pageLink).find('.mob-header').html());
+				$.mobile.changePage(pageLink, {changeHash: true});
+				$('#menu-page').css('height',$(window).height());
+				$('#slide-menu').css('height',$(window).height());
+				
+				//Remove the fixed so that Android 2.3 doesn't freak.
+				if(aauMobile.isAndroid()){
+					$('#menu-page').css('position','absolute');
+				}
+				
+				//Slide the page and the menu back to starting position.
+				$('#menu-page').removeClass('slide-out');
+				$('.page-container').removeClass('slide-out');
+				
+				aauMobile.slideMenu.lastSlide = new Date().getTime();
+
+				/*****  START: Standardize the Spinner for all page loads  ****
+				if(pageLink == '#student-home' & aauMobile.classSchedule.data.length < 1){
+					$.mobile.showPageLoadingMsg("b", "Loading...", false);
+				}
+				if(pageLink == '#feed-list' & !aauMobile.campusFeed.feedData){
+					$.mobile.showPageLoadingMsg("b", "Loading...", false);
+				}
+				console.log('Campus Events: '+aauMobile.campusFeed.feedCount);
+				if(pageLink == '#campus-event-list' & aauMobile.campusEvents.feedCount < 3){
+					console.log('Go Spinny Go!');
+					$.mobile.showPageLoadingMsg("b", "Loading...", false);
+				}
+				if(pageLink == '#event-list' & !aauMobile.rssEvent.feedData){
+					$.mobile.showPageLoadingMsg("b", "Loading...", false);
+				}
+				if(pageLink == '#link-list' & !aauMobile.externalLinks.linkData){
+					$.mobile.showPageLoadingMsg("b", "Loading...", false);
+				}
+				/*if(pageLink == '#ideas-list' & !aauMobile.externalLinks.linkData){
+					$.mobile.showPageLoadingMsg("b", "Loading...", false);
+				}*/
+				if(pageLink == '#transit-map' & !aauMobile.campusEvents.feedData){
+					$.mobile.showPageLoadingMsg("b", "Loading...", false);
+				}
+				/*****  END: Standardize the Spinner for all page loads  ****/
+
+				
+				//Old Method
+				//$('#slide-menu').animate({marginLeft:'-180px'},250, function(){$('#menu-page').css('display','none');});
+				//$(pageLink).animate({marginLeft:'0px'},250, function(){$('.mob-header').css('position','fixed');});
+			}
+		}
+	},	
+	//Initializes the menu, and relevant events.
+	init: function(){
+		
+		console.log('Start Initialize Menu');
+		//We don't want the menu visible by default, we want to show the schedule or the current hash.
+		$.mobile.changePage('#student-home', {changeHash: true});
+		appirioUtils.log('aauMobile.slideMenu.init called');
+		console.log('aauMobile.slideMenu.init called');
+		
+		//$('#menu-page').on(aauMobile.clickEvent, aauMobile.slideMenu.hide);
+		$('#menu-page').on(aauMobile.clickEvent, function(event){
+			appirioUtils.fireEvent(aauMobile.slideMenu.hide, event, null);
+		});
+		
+		//The UL needs to stretch the entire length of the page, and not allow the 
+		//underlying part of the page to fire the close event.
+		$('#slide-menu').on(aauMobile.clickEvent, function(event){
+			event.stopPropagation();
+			console.log('Tapped on the menu.');
+		});
+	
+		$('#slide-menu li a').on(aauMobile.clickEvent, aauMobile.slideMenu.linkClicked);
+		/*
+		$('#slide-menu li a').on(aauMobile.clickEvent, function(event){
+			appirioUtils.fireEvent(aauMobile.slideMenu.linkClicked, event, null);
+		});
+		$('.menu-btn').on(aauMobile.clickEvent, aauMobile.slideMenu.show);
+		$('.menu-btn').on(aauMobile.clickEvent, appirioUtils.fireEvent(aauMobile.slideMenu.show, event, null));
+		*/
+		$('.menu-btn').on(aauMobile.clickEvent, function(event){
+			event.preventDefault();
+			event.stopPropagation();
+			appirioUtils.fireEvent(aauMobile.slideMenu.show, event, null);
+		});
+	
+		//Android pre-3.0 devices aren't fully responsive to click.
+		if(aauMobile.isAndroid()) {
+			$('#menu-page').addClass('android-menu');
+			$('.page-container').addClass('android-menu');
+		}else{
+			$('#menu-page').addClass('standard-menu');
+			$('.page-container').addClass('standard-menu');
+			}
+	   	
+	   	
+	   	//Occurs when the menu finishes sliding.
+	    $('#menu-page').on('webkitTransitionEnd', function(){
+	    	console.log('Menu Transition End');
+	    	if($(this).hasClass('slide-out')){
+	    		$(this).css('position','fixed');
+	    		$('#slide-menu').css('height',$(window).height());
+	    	} else{
+	    		$(this).addClass('hidden');
+	    		$(document).width($(window).width());
+	    	}
+	    });
+	    
+	    //When the current page finishes sliding, this will occur.
+	    $('.page-container').on('webkitTransitionEnd', function(){
+			console.log('Page Transition End');
+			if($(this).attr('id') == "transit-map" && $.mobile.urlHistory.getPrev().pageUrl != 'bus-detail'){
+				//mapManager.triggerResize();
+				$(window).trigger('orientationchange');
+			}
+ 
+			if(!$(this).hasClass('slide-out')){
+				$('.mob-header').css('position','fixed');
+				//$('#result-container').css('position','fixed');
+			}
+	   	});
+	   	
+	   	if(navigator.splashscreen){
+	   		navigator.splashscreen.hide();
+	   	} else{
+	   		aauMobile.nativeAdapter.exec(null, null, "SplashScreen", "hide", []);
+	   	}
+	}
+}	
+</script>
+
  <div data-role="header" id="menu-header"><div class="mob-header-icon"><div class="mob-header-MenuIcon1"/></div><h1 id="menu-header-title"></h1></div>
  <ul data-role="listview"  data-theme="d" id="slide-menu" class="slide-menu">
     <li><a id="schedule-link" href="#student-home" data-transition="slide">
@@ -181,6 +405,10 @@
     <li><a id="link-list-link" href="#link-list" data-transition="slide">
 		<span id="slide-menu-icon-links" class="slide-menu-icon">&nbsp;</span>
 		<h3>Helpful Links</h3>
+	</a></li> 
+	<li><a id="ideas-list-link" href="#ideas-popular" data-transition="slide">
+		<span id="slide-menu-icon-links" class="slide-menu-icon">&nbsp;</span>
+		<h3>Ideas</h3>
 	</a></li> 
 	 
     <li id="logout-item"><a href="#" id="logout-link">

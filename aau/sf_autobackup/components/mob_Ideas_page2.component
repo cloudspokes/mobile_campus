@@ -1,0 +1,180 @@
+<apex:component >
+<style>
+.popular-button{
+
+	font-family: Helvetica;
+	font-size:9px;
+	letter-spacing: inherit;
+	text-transform: uppercase;
+	text-shadow: none;
+	margin: 5px;
+	padding: 4px 4px 4px 4px; 
+	color: #fff; 
+	border-top: 1px solid #e02e36;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	background: #ad1010;
+	border:0px;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#cc0018), color-stop(100%,#ad1010));
+	background: -webkit-linear-gradient(top, #cc0018 0%,#ad1010 100%);
+}
+	
+ #idea-buttons{
+ 	padding:10px;width:80%;display:block;float:left;
+ 	
+ }
+    #idea-buttons a{
+   
+		font-family: Helvetica;
+		font-size:9px;
+		letter-spacing: inherit;
+		text-transform: uppercase;
+		text-shadow: none;
+		margin: 5px;
+		padding: 4px 4px 4px 4px;
+		color: #fff;
+		border-top: 1px solid #e02e36;
+		border-radius: 5px;
+		-webkit-border-radius: 5px;
+		background: #ad1010;
+		border:0px;
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#cc0018), color-stop(100%,#ad1010));
+		background: -webkit-linear-gradient(top, #cc0018 0%,#ad1010 100%);
+		white-space: nowrap;
+		
+		cursor:pointer;
+		line-height:2;
+		float:left;
+    
+    }
+    .input{
+    padding:0px 0px 0px 20px;
+    padding-left:50px;
+    
+	border-radius: 30px;
+	-webkit-border-radius: 30px;
+	border: 1px solid #c2c2c2;
+	width:89%;
+	margin-top:10px;
+	margin-bottom:10px;
+	font-family:Helvetica; 
+	
+	font-size:12px;
+	color:#969696;
+	display:block;
+	float:left;
+    }
+    .search{
+	position:absolute;
+	top:20px;
+	left:15px;
+}
+.clear{
+	position:absolute; 
+	top:20px;
+	/*left:87%;*/
+	right:4.5%;
+}
+#div-main input{
+	padding-left:40px;
+	
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box; 
+}
+
+
+#idea-buttons-ul{
+	display: inline;
+	float: left;
+	clear: both;
+	width: 80%;
+	position:relative;
+}
+
+#idea-buttons-ul li{
+	display: inline;
+	clear: both;
+
+}
+
+</style>
+<script>
+	function doSearch(){
+		if( $("#txtIdeaSearch").val() !=''){
+			$("#idea-buttons").hide();
+			$("#popsearch").hide();
+			
+			$("#ideas-search-results").empty();
+			$("#ideas-search-results").show();
+			aauMobile.ideas.searchPhrase = encodeURI($("#txtIdeaSearch").val());  
+			appirioUtils.fireEvent(aauMobile.ideas.search, null, null); 
+		}
+		return false;
+	} 
+	
+	function doCategorySearch(cat){
+		
+			$("#idea-buttons").hide();
+			$("#popsearch").hide();
+			
+			$("#ideas-search-results").empty();
+			$("#ideas-search-results").show();
+			$("#txtIdeaSearch").val(cat);
+			aauMobile.ideas.searchPhrase = encodeURI(cat);  
+			appirioUtils.fireEvent(aauMobile.ideas.search, null, null); 
+		
+	} 
+	
+	function doClear(){
+		$("#idea-buttons").show();
+		$("#popsearch").show();
+		$("#ideas-search-results").empty();
+		$("#ideas-search-results").hide();
+		 $("#txtIdeaSearch").val('');
+	}
+	
+	$(document).ready(function() { 
+		
+			$("#txtIdeaSearch").focus(function (){
+								if($(this).val()=="Search ideas..."){
+									$(this).val("");
+								}
+							});
+			
+	});
+	
+</script>
+	<div style="padding-left:10px;" align="center" > 
+		<nav>
+			<ul> 
+			<li id="nav_left" onclick="javascript:openPopularPage();"><a  href="javascript:openPopularPage();" title="POPULAR">POPULAR IDEAS</a></li>
+			<li id="" onclick="javascript:openLatestPage();"><a href="javascript:openLatestPage();" title="LATEST">LATEST IDEAS</a></li>
+			<li id="target_right" onclick="javascript:openSearchPage();"><a href="javascript:openSearchPage();" title="SEARCH">SEARCH</a></li>
+			</ul>
+		</nav>
+		</div>
+    	
+        <div id="div-main" style="padding-left:6px;width:105%;float:center;" align="center">
+	         <form id="search"  onSubmit="return doSearch(); "   data-ajax="false">  
+	    		<input id="txtIdeaSearch" class="input" type="text" value="Search ideas..."/>
+	        	<a href="javascript: doSearch();"><img class="search" src="{!URLFOR($Resource.mob_design_ideas, "mob_design_ideas/images/search.png")}" height="20px"/> </a>
+	       		<a href="javascript: doClear();"> <img class="clear" src="{!URLFOR($Resource.mob_design_ideas, "mob_design_ideas/images/clear.png")}" height="20px"/></a>
+	       		
+	       </form>   
+	      
+	        <div id="popsearch">
+	        	<p>POPULAR SEARCH</p>
+	        	
+        	</div>
+        
+	        <div id="idea-buttons"  align="center">
+	        	
+	        </div>
+	        <div id="ideas-search-results" style="padding:10px;width:100%;display:none;" align="center">
+			   <!-- idea-template -->
+	    
+	   </div>
+       </div> 
+     
+</apex:component>

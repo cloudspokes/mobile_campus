@@ -4,15 +4,25 @@
         <members>BatchUpdateStudentUsers</members>
         <members>BusRouterController</members>
         <members>BusRouterController_Test</members>
+        <members>Bus_Schedule_Editor_Controller</members>
+        <members>Bus_Schedule_Editor_Test</members>
+        <members>GroupAdministration_Controller</members>
         <members>mob_BusStop_Schedule</members>
         <members>mob_BusStop_Schedule_Test</members>
         <members>mob_BusStops_Routes</members>
         <members>mob_BusStops_Routes_Test</members>
         <members>mob_ClassHistoryRest</members>
+        <members>mob_ClassHistoryRest_Test</members>
+        <members>mob_ClassMeeting_ChatRest</members>
+        <members>mob_ClassMeeting_ChatRest_Test</members>
+        <members>mob_ClassMeeting_Save_ChatRest</members>
+        <members>mob_CreateIdeaREST</members>
         <members>mob_DeviceDetection</members>
         <members>mob_DeviceDetection_Test</members>
         <members>mob_EventsREST</members>
         <members>mob_EventsREST_Test</members>
+        <members>mob_GetIdeasREST</members>
+        <members>mob_Ideas_Categories_REST</members>
         <members>mob_LinksREST</members>
         <members>mob_LinksREST_Test</members>
         <members>mob_NextStopLocator</members>
@@ -22,6 +32,7 @@
         <members>mob_TeletracInfoRest_Test</members>
         <members>mob_TestUtil</members>
         <members>mob_TripPlanner</members>
+        <members>mob_VoteIdeaREST</members>
         <members>mob_studentSubscriptionHelper</members>
         <members>mob_teletracInfoRest</members>
         <members>mob_testClasses</members>
@@ -37,12 +48,19 @@
         <members>mob_Events</members>
         <members>mob_Feed</members>
         <members>mob_FeedDetail</members>
+        <members>mob_Ideas_page1</members>
+        <members>mob_Ideas_page2</members>
+        <members>mob_Ideas_page3</members>
+        <members>mob_Ideas_templates</members>
         <members>mob_Links</members>
         <members>mob_ListArrow</members>
         <members>mob_Map</members>
         <members>mob_MapSettings</members>
         <members>mob_Menu</members>
+        <members>mob_SportsSettings</members>
         <members>mob_TripPlanner</members>
+        <members>mob_TripPlanner</members>
+        <members>mob_VersionControl</members>
         <members>mob_chatterDetail</members>
         <members>mob_chatterFeed</members>
         <members>mob_tripPlanner_page1</members>
@@ -51,6 +69,8 @@
         <name>ApexComponent</name>
     </types>
     <types>
+        <members>Bus_Schedule_Editor</members>
+        <members>GroupAdministration</members>
         <members>bus_router_debug</members>
         <members>bus_router_json</members>
         <members>bus_router_text</members>
@@ -61,78 +81,28 @@
     <types>
         <members>SubscribeToStudentServices</members>
         <members>generateCrosses</members>
+        <members>mob_ContactSharingRecord</members>
         <name>ApexTrigger</name>
     </types>
     <types>
-        <members>Contact.Academic_Action_Date__c</members>
-        <members>Contact.Academic_Admit_Term__c</members>
-        <members>Contact.Academic_Career__c</members>
-        <members>Contact.Academic_Cumulative_GPA__c</members>
-        <members>Contact.Academic_Expected_Grade_Term__c</members>
-        <members>Contact.Academic_Plan__c</members>
-        <members>Contact.Academic_Program_Action__c</members>
-        <members>Contact.Academic_Program_Reason__c</members>
-        <members>Contact.Academic_Program_Status__c</members>
-        <members>Contact.Academic_Program__c</members>
-        <members>Contact.Academic_Requirement_Term__c</members>
-        <members>Contact.Academic_Sub_Plan__c</members>
-        <members>Contact.Academic_Units_Completed__c</members>
-        <members>Contact.Advisor__c</members>
-        <members>Contact.Billing_Address__c</members>
-        <members>Contact.Billing_City__c</members>
-        <members>Contact.Billing_Country__c</members>
-        <members>Contact.Billing_Postal__c</members>
-        <members>Contact.Billing_State__c</members>
-        <members>Contact.Business_Address__c</members>
-        <members>Contact.Business_City__c</members>
-        <members>Contact.Business_Country__c</members>
-        <members>Contact.Business_Email__c</members>
-        <members>Contact.Business_Phone_Country_Code__c</members>
-        <members>Contact.Business_Phone_Number__c</members>
-        <members>Contact.Business_Postal__c</members>
-        <members>Contact.Business_State__c</members>
-        <members>Contact.City__c</members>
-        <members>Contact.Country__c</members>
-        <members>Contact.Financial_Aid_Advisor__c</members>
-        <members>Contact.Gender__c</members>
-        <members>Contact.Home_Email__c</members>
-        <members>Contact.Is_Student__c</members>
-        <members>Contact.Mailing_Address__c</members>
-        <members>Contact.Mailing_City__c</members>
-        <members>Contact.Mailing_Country__c</members>
-        <members>Contact.Mailing_Postal__c</members>
-        <members>Contact.Mailing_State__c</members>
-        <members>Contact.Other_Address__c</members>
-        <members>Contact.Other_Email_Address__c</members>
-        <members>Contact.PeopleSoft_Person_ID__c</members>
-        <members>Contact.Permanent_Address__c</members>
-        <members>Contact.Permanent_City__c</members>
-        <members>Contact.Permanent_Country__c</members>
-        <members>Contact.Permanent_Postal__c</members>
-        <members>Contact.Permanent_State__c</members>
-        <members>Contact.Preferred_First_Name__c</members>
-        <members>Contact.Preferred_Last_Name__c</members>
-        <members>Contact.Preferred_Middle_Name__c</members>
-        <members>Contact.Preferred_Phone__c</members>
-        <members>Contact.Program_Effective_Status__c</members>
-        <members>Contact.Skype_Name__c</members>
-        <members>Contact.State_Province__c</members>
-        <members>Contact.Street__c</members>
-        <members>Contact.Student_Email__c</members>
-        <members>Contact.Student_User__c</members>
-        <members>Contact.Zip_Postal_Code__c</members>
-        <name>CustomField</name>
+        <members>My_Day_Admin</members>
+        <name>CustomApplication</name>
     </types>
     <types>
+        <members>Bus_Route_Waypoints__c</members>
         <members>Bus_Route__c</members>
+        <members>Bus_Stop_Schedule_Staging__c</members>
         <members>Bus_Stop_Schedule__c</members>
         <members>Bus_Stop__c</members>
+        <members>Bus_Stops_Routes_Staging__c</members>
         <members>Bus_Stops_Routes__c</members>
         <members>Direction_Leg__c</members>
         <members>Direction__c</members>
         <members>Key_Val__c</members>
         <members>Mobile_Links__c</members>
         <members>Mobile_Post__c</members>
+        <members>Schedule_Editor_Settings__c</members>
+        <members>Student_Group__c</members>
         <members>mob_Student__c</members>
         <members>ps_Class_Meeting__c</members>
         <members>ps_Class__c</members>
@@ -141,11 +111,16 @@
         <name>CustomObject</name>
     </types>
     <types>
+        <members>Bus_Route_Waypoints__c</members>
         <members>Bus_Route__c</members>
+        <members>Bus_Stop_Schedule_Staging__c</members>
         <members>Bus_Stop__c</members>
+        <members>Bus_Stops_Routes_Staging__c</members>
         <members>Bus_Stops_Routes__c</members>
         <members>Mobile_Links__c</members>
         <members>Mobile_Post__c</members>
+        <members>Route_Editor</members>
+        <members>Student_Group__c</members>
         <members>ps_Class_Meeting__c</members>
         <members>ps_Class__c</members>
         <members>ps_Enrollment__c</members>
@@ -154,7 +129,10 @@
     </types>
     <types>
         <members>appirioPlugins</members>
+        <members>colorpicker</members>
         <members>jquery1dot7</members>
+        <members>jquery_combined_scripts</members>
+        <members>jquery_ui_1_10_1</members>
         <members>jquerymobile1dot1</members>
         <members>jquerytmpl_min</members>
         <members>mob_CombinedJs_min</members>
@@ -163,12 +141,14 @@
         <members>mob_StudentJs</members>
         <members>mob_XML2JSON_min</members>
         <members>mob_busmap</members>
+        <members>mob_design_ideas</members>
         <members>mob_forceJsToolkit_min</members>
         <members>mob_infoBuble</members>
         <members>mob_mapJS</members>
         <members>mob_mapManager</members>
         <members>mob_transitManager</members>
         <members>phonegapJS</members>
+        <members>route_editor_design</members>
         <name>StaticResource</name>
     </types>
     <version>25.0</version>

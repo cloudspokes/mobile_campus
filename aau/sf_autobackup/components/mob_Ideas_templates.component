@@ -1,0 +1,42 @@
+<apex:component >
+
+<script id="idea-template" type="text/x-jquery-tmpl">
+		{{if ind==0	}}
+			<section class="first">
+		{{else}}
+			<section >
+		{{/if}}
+				<div id="content">
+				<p>${title}</p>
+				</div>
+		
+				<aside>
+		        <ul>
+		        <li id="like"  onclick=""><img src="{!URLFOR($Resource.mob_design_ideas, "mob_design_ideas/images/like_highlighted.png")}" height="17px"/><a class="highlighted"> ${num_likes}</a></li>
+				<li id="dislike" onclick=""><img  src="{!URLFOR($Resource.mob_design_ideas, "mob_design_ideas/images/dislike.png")}" height="17px"/><a> ${num_dislikes}</a></li>
+				<li id="comment" onclick=""><img src="{!URLFOR($Resource.mob_design_ideas, "mob_design_ideas/images/comment.png")}" height="14px"/><a> ${num_comments} </a></li>
+		        </ul>
+				</aside>
+				
+				
+				<div id="bar" class="idea-bottom-bar">
+				<ul>
+				<li id="name"><a class="bold">${postedBy}</a></li>
+				<li><a>${group}</a></li>
+		        <span><a>${postedOn}</a></span>
+				</ul>
+		        </div>
+		        
+		        <div id="expand">
+				<img src="{!URLFOR($Resource.mob_design_ideas, "mob_design_ideas/images/expand.png")}" height="21px"/>
+		        </div>
+			</section>
+	    
+		</script>
+<script id="popular-idea-template" type="text/x-jquery-tmpl">		
+		<a   onclick="javascript:doCategorySearch('${searchString}');">${searchString}</a>
+			        
+</script>
+
+
+</apex:component>

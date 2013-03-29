@@ -10,5 +10,11 @@
     <tab>Bus_Stop__c</tab>
     <tab>Bus_Route__c</tab>
     <tab>Mobile_Links__c</tab>
+    <tab>Student_Group__c</tab>
     <tab>Bus_Stops_Routes__c</tab>
+    <tab>Mobile_Post__c</tab>
+    <tab>Bus_Stop_Schedule_Staging__c</tab>
+    <tab>Bus_Stops_Routes_Staging__c</tab>
+    <tab>Route_Editor</tab>
+    <tab>Bus_Route_Waypoints__c</tab>
 </CustomApplication>
